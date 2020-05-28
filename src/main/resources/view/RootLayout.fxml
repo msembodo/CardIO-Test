@@ -13,24 +13,19 @@
                 <Menu mnemonicParsing="false" text="File">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#handleMenuLoadVariables" text="Load Variables" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleMenuSaveSettings" text="Save Settings" />
                         <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem mnemonicParsing="false" onAction="#handleMenuQuit" text="Quit" />
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Sessions">
+                <Menu mnemonicParsing="false" text="Modules">
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#handleMenuNewSession" text="New Session" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" text="Open Session" />
-                        <MenuItem disable="true" mnemonicParsing="false" text="Close Session" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem disable="true" mnemonicParsing="false" text="Save Session" />
+                  <Menu mnemonicParsing="false" text="Run Module">
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="ATR" />
+                        <MenuItem mnemonicParsing="false" text="Authentication" />
                     </items>
-                </Menu>
-                <Menu fx:id="menuRun" disable="true" mnemonicParsing="false" text="Run">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="Add Test Module" />
-                        <MenuItem mnemonicParsing="false" text="Manage Test Modules" />
+                  </Menu>
                         <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem mnemonicParsing="false" text="Run All" />
                     </items>

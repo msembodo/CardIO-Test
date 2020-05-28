@@ -13,6 +13,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.apache.log4j.BasicConfigurator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -29,6 +30,9 @@ public class CardiotestApplication extends Application {
 
 	private ObservableList<AdvSaveVariable> advSaveVariables = FXCollections.observableArrayList();
 	private ObservableList<VariableMapping> mappings = FXCollections.observableArrayList();
+
+	@Autowired
+	private RootLayoutController root;
 
 	public CardiotestApplication() {}
 
@@ -68,7 +72,7 @@ public class CardiotestApplication extends Application {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/RootLayout.fxml"));
 			loader.setControllerFactory(springContext::getBean);
-			rootLayout = (BorderPane) loader.load();
+			rootLayout = loader.load();
 
 			// give controller access to main application
 			RootLayoutController controller = loader.getController();
@@ -88,13 +92,15 @@ public class CardiotestApplication extends Application {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Cardiotest.fxml"));
 			loader.setControllerFactory(springContext::getBean);
-			AnchorPane cardiotest = (AnchorPane) loader.load();
+			AnchorPane cardiotest = loader.load();
 
 			rootLayout.setCenter(cardiotest);
 
 			// give controller access to main application
 			CardiotestController controller = loader.getController();
 			controller.setMainApp(this);
+
+			controller.setObservableList();
 
 		} catch (IOException e) {
 			e.printStackTrace();

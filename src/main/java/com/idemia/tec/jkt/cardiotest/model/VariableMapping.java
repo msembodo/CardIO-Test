@@ -24,7 +24,7 @@ public class VariableMapping {
     }
 
     public void setMappedVariable(String mappedVariable) {
-        this.mappedVariable.set(mappedVariable);
+        this.mappedVariable = new SimpleStringProperty(mappedVariable);
     }
 
     public StringProperty mappedVariable() {
@@ -36,7 +36,7 @@ public class VariableMapping {
     }
 
     public void setMccVariable(String mccVariable) {
-        this.mccVariable.set(mccVariable);
+        this.mccVariable = new SimpleStringProperty(mccVariable);
     }
 
     public StringProperty mccVariable() {
@@ -51,7 +51,7 @@ public class VariableMapping {
     }
 
     public void setValue(String value) {
-        this.value.set(value);
+        this.value = new SimpleStringProperty(value);
     }
 
     public StringProperty value() {

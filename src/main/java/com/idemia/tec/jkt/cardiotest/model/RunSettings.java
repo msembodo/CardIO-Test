@@ -12,15 +12,17 @@ public class RunSettings {
     private String requestName;
     private String profileName;
     private int profileVersion;
+    private String cardImageItemId;
     private String customer;
     private String developerName;
     private String testerName;
-    private List<RunModule> runModules;
     private List<VariableMapping> variableMappings;
 
     public RunSettings() {}
 
-    public RunSettings(String projectPath, String advSaveVariablesPath, int readerNumber, boolean stopOnError, String requestId, String requestName, String profileName, int profileVersion, String customer, String developerName, String testerName, List<RunModule> runModules, List<VariableMapping> variableMappings) {
+    public RunSettings(String projectPath, String advSaveVariablesPath, int readerNumber, boolean stopOnError,
+                       String requestId, String requestName, String profileName, int profileVersion,
+                       String cardImageItemId, String customer, String developerName, String testerName, List<VariableMapping> variableMappings) {
         this.projectPath = projectPath;
         this.advSaveVariablesPath = advSaveVariablesPath;
         this.readerNumber = readerNumber;
@@ -29,10 +31,10 @@ public class RunSettings {
         this.requestName = requestName;
         this.profileName = profileName;
         this.profileVersion = profileVersion;
+        this.cardImageItemId = cardImageItemId;
         this.customer = customer;
         this.developerName = developerName;
         this.testerName = testerName;
-        this.runModules = runModules;
         this.variableMappings = variableMappings;
     }
 
@@ -100,6 +102,14 @@ public class RunSettings {
         this.profileVersion = profileVersion;
     }
 
+    public String getCardImageItemId() {
+        return cardImageItemId;
+    }
+
+    public void setCardImageItemId(String cardImageItemId) {
+        this.cardImageItemId = cardImageItemId;
+    }
+
     public String getCustomer() {
         return customer;
     }
@@ -122,14 +132,6 @@ public class RunSettings {
 
     public void setTesterName(String testerName) {
         this.testerName = testerName;
-    }
-
-    public List<RunModule> getRunModules() {
-        return runModules;
-    }
-
-    public void setRunModules(List<RunModule> runModules) {
-        this.runModules = runModules;
     }
 
     public List<VariableMapping> getVariableMappings() {

@@ -22,7 +22,8 @@ public class RunSettings {
 
     public RunSettings(String projectPath, String advSaveVariablesPath, int readerNumber, boolean stopOnError,
                        String requestId, String requestName, String profileName, int profileVersion,
-                       String cardImageItemId, String customer, String developerName, String testerName, List<VariableMapping> variableMappings) {
+                       String cardImageItemId, String customer, String developerName, String testerName,
+                       List<VariableMapping> variableMappings) {
         this.projectPath = projectPath;
         this.advSaveVariablesPath = advSaveVariablesPath;
         this.readerNumber = readerNumber;

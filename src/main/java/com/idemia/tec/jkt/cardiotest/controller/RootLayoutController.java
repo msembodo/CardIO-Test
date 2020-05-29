@@ -6,6 +6,9 @@ import com.idemia.tec.jkt.cardiotest.model.RunSettings;
 import com.idemia.tec.jkt.cardiotest.service.CardioConfigService;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.geometry.Orientation;
+import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import org.apache.log4j.Logger;
@@ -13,6 +16,9 @@ import org.controlsfx.control.StatusBar;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.smartcardio.CardException;
+import javax.smartcardio.CardTerminal;
+import javax.smartcardio.TerminalFactory;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -28,6 +34,7 @@ public class RootLayoutController {
 
     private CardiotestApplication application;
     private File selectedVarFile;
+    private TerminalFactory terminalFactory;
 
     @Autowired
     private CardiotestController cardiotest;
@@ -39,6 +46,7 @@ public class RootLayoutController {
     private BorderPane rootBorderPane;
 
     private StatusBar appStatusBar;
+    private Label lblTerminalInfo;
 
     public RootLayoutController() {}
 
@@ -57,6 +65,22 @@ public class RootLayoutController {
 
         // get run settings from 'run-settings.json' or by default values
         runSettings = cardioConfigService.initConfig();
+
+        terminalFactory = TerminalFactory.getDefault();
+        try {
+            // list available readers
+            List<CardTerminal> terminals = terminalFactory.terminals().list();
+            lblTerminalInfo = new Label();
+            appStatusBar.getRightItems().add(new Separator(Orientation.VERTICAL));
+            appStatusBar.getRightItems().add(lblTerminalInfo);
+            if (terminals.isEmpty())
+                lblTerminalInfo.setText("(no terminal/reader detected)");
+            else
+                if (runSettings.getReaderNumber() != -1)
+                    lblTerminalInfo.setText(terminals.get(runSettings.getReaderNumber()).getName());
+        } catch (CardException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -106,7 +130,20 @@ public class RootLayoutController {
         cardioConfigService.saveConfig(runSettings);
     }
 
+    @FXML
+    private void handleMenuSelectReader() {
+        application.showSelectReader();
+    }
+
     public StatusBar getAppStatusBar() {
         return appStatusBar;
+    }
+
+    public TerminalFactory getTerminalFactory() {
+        return terminalFactory;
+    }
+
+    public Label getLblTerminalInfo() {
+        return lblTerminalInfo;
     }
 }

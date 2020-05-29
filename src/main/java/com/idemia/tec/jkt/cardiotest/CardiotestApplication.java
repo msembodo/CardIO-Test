@@ -2,6 +2,7 @@ package com.idemia.tec.jkt.cardiotest;
 
 import com.idemia.tec.jkt.cardiotest.controller.CardiotestController;
 import com.idemia.tec.jkt.cardiotest.controller.RootLayoutController;
+import com.idemia.tec.jkt.cardiotest.controller.SelectReaderController;
 import com.idemia.tec.jkt.cardiotest.model.AdvSaveVariable;
 import com.idemia.tec.jkt.cardiotest.model.VariableMapping;
 import javafx.application.Application;
@@ -11,6 +12,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.apache.log4j.BasicConfigurator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,7 @@ public class CardiotestApplication extends Application {
 
 	private BorderPane rootLayout;
 	private Stage primaryStage;
+	private Stage selectReaderDialogStage;
 
 	private ObservableList<AdvSaveVariable> advSaveVariables = FXCollections.observableArrayList();
 	private ObservableList<VariableMapping> mappings = FXCollections.observableArrayList();
@@ -107,8 +110,36 @@ public class CardiotestApplication extends Application {
 		}
 	}
 
+	public void showSelectReader() {
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/SelectReader.fxml"));
+			loader.setControllerFactory(springContext::getBean);
+			AnchorPane selectReader = loader.load();
+
+			// give controller access to main app
+			SelectReaderController controller = loader.getController();
+			controller.setMainApp(this);
+
+			// create dialog
+			selectReaderDialogStage = new Stage();
+			selectReaderDialogStage.setTitle("Select Reader");
+			selectReaderDialogStage.setResizable(false);
+			selectReaderDialogStage.initModality(Modality.WINDOW_MODAL);
+			selectReaderDialogStage.initOwner(primaryStage);
+			Scene scene = new Scene(selectReader);
+			selectReaderDialogStage.setScene(scene);
+
+			selectReaderDialogStage.showAndWait();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	public Stage getPrimaryStage() {
 		return primaryStage;
 	}
 
+	public Stage getSelectReaderDialogStage() {
+		return selectReaderDialogStage;
+	}
 }

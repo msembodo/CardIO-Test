@@ -235,7 +235,6 @@ public class CardiotestController {
 
     public void saveControlState() {
         root.getRunSettings().setProjectPath(txtProjectFolder.getText());
-        root.getRunSettings().setReaderNumber(0); // TODO: will be selected by user
         root.getRunSettings().setStopOnError(false); // TODO: will be selected by user as option
         root.getRunSettings().setRequestId(txtRequestId.getText());
         root.getRunSettings().setRequestName(txtRequestName.getText());

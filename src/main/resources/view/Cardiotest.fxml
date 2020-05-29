@@ -13,6 +13,7 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -97,7 +98,7 @@
                                                                                                 </GridPane>
                                                                                                 <ButtonBar buttonMinWidth="65.0">
                                                                                                     <buttons>
-                                                                                                        <Button mnemonicParsing="false" onAction="#handleBtnDeleteMapping" text="Delete" />
+                                                                                                        <Button focusTraversable="false" mnemonicParsing="false" onAction="#handleBtnDeleteMapping" text="Delete" />
                                                                                                         <Button defaultButton="true" layoutX="30.0" layoutY="16.0" mnemonicParsing="false" onAction="#handleBtnUpdateMapping" text="Update" />
                                                                                                     </buttons>
                                                                                                     <padding>
@@ -174,6 +175,31 @@
                                                                         <TextField fx:id="txtTesterName" GridPane.columnIndex="1" GridPane.rowIndex="8" />
                                                                      </children>
                                                                   </GridPane>
+                                                                   <TitledPane animated="false" collapsible="false" focusTraversable="false" prefHeight="100.0" prefWidth="945.0" text="ATR" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="285.0">
+                                                                       <content>
+                                                                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="83.0" prefWidth="943.0">
+                                                                               <children>
+                                                                                   <GridPane hgap="2.0" layoutX="8.0" vgap="2.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="1.0">
+                                                                                       <columnConstraints>
+                                                                                           <ColumnConstraints hgrow="SOMETIMES" maxWidth="842.0" minWidth="10.0" prefWidth="835.0" />
+                                                                                           <ColumnConstraints hgrow="SOMETIMES" maxWidth="452.0" minWidth="10.0" prefWidth="76.0" />
+                                                                                       </columnConstraints>
+                                                                                       <rowConstraints>
+                                                                                           <RowConstraints />
+                                                                                       </rowConstraints>
+                                                                                       <children>
+                                                                                           <Button mnemonicParsing="false" text="Get ATR" GridPane.columnIndex="1" />
+                                                                                           <TextField focusTraversable="false" />
+                                                                                       </children>
+                                                                                       <padding>
+                                                                                           <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                                                                                       </padding>
+                                                                                   </GridPane>
+                                                                              <CheckBox layoutX="13.0" layoutY="65.0" mnemonicParsing="false" text="Include in 'run all'" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="2.0" />
+                                                                               </children>
+                                                                           </AnchorPane>
+                                                                       </content>
+                                                                   </TitledPane>
                                                                </children>
                                                             </AnchorPane>
                                                         </content>

@@ -1,0 +1,39 @@
+.titled-pane {
+    -fx-animated: true;
+    -fx-text-fill: #f4f5f7;
+}
+
+.titled-pane > .title  {
+    -fx-background-radius: 0, 0, 0;
+    -fx-font: bold 14px System;
+
+    -fx-background-color: #576B82;
+}
+
+.titled-pane:focused > .title > .arrow-button .arrow {
+    -fx-background-color: #606060;
+}
+
+.split-pane > .split-pane-divider {
+    -fx-padding: 0;
+}
+
+.button {
+	-fx-background-radius: 0;
+}
+
+.text-field {
+	-fx-background-radius: 0;
+}
+
+.check-box .box {
+	-fx-background-radius: 0;
+}
+
+.combo-box {
+	-fx-background-radius: 0;
+}
+
+.tab-header-area .tab{
+    -fx-background-radius: 0;
+ }

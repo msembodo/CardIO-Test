@@ -3,6 +3,7 @@ package com.idemia.tec.jkt.cardiotest;
 import com.idemia.tec.jkt.cardiotest.controller.CardiotestController;
 import com.idemia.tec.jkt.cardiotest.controller.RootLayoutController;
 import com.idemia.tec.jkt.cardiotest.controller.SelectReaderController;
+import com.idemia.tec.jkt.cardiotest.controller.ToolOptionsController;
 import com.idemia.tec.jkt.cardiotest.model.AdvSaveVariable;
 import com.idemia.tec.jkt.cardiotest.model.VariableMapping;
 import javafx.application.Application;
@@ -30,6 +31,7 @@ public class CardiotestApplication extends Application {
 	private BorderPane rootLayout;
 	private Stage primaryStage;
 	private Stage selectReaderDialogStage;
+	private Stage toolOptionsDialogStage;
 
 	private ObservableList<AdvSaveVariable> advSaveVariables = FXCollections.observableArrayList();
 	private ObservableList<VariableMapping> mappings = FXCollections.observableArrayList();
@@ -47,7 +49,7 @@ public class CardiotestApplication extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		BasicConfigurator.configure();
 		this.primaryStage = primaryStage;
-		this.primaryStage.setTitle("CardIO Test");
+		this.primaryStage.setTitle("CardIO Tool");
 
 		initRootLayout();
 		showCardioTest();
@@ -135,11 +137,41 @@ public class CardiotestApplication extends Application {
 		}
 	}
 
+	public void showToolOptions() {
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/ToolOptions.fxml"));
+			loader.setControllerFactory(springContext::getBean);
+			AnchorPane toolOptions = loader.load();
+
+			// give controller access to main app
+			ToolOptionsController controller = loader.getController();
+			controller.setMainApp(this);
+
+			// create dialog
+			toolOptionsDialogStage = new Stage();
+			toolOptionsDialogStage.setTitle("Options");
+			toolOptionsDialogStage.setResizable(false);
+			toolOptionsDialogStage.initModality(Modality.WINDOW_MODAL);
+			toolOptionsDialogStage.initOwner(primaryStage);
+			Scene scene = new Scene(toolOptions);
+			toolOptionsDialogStage.setScene(scene);
+
+			toolOptionsDialogStage.showAndWait();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
 	public Stage getPrimaryStage() {
 		return primaryStage;
 	}
 
 	public Stage getSelectReaderDialogStage() {
 		return selectReaderDialogStage;
+	}
+
+	public Stage getToolOptionsDialogStage() {
+		return toolOptionsDialogStage;
 	}
 }

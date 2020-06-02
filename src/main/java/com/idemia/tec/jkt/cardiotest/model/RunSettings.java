@@ -17,13 +17,14 @@ public class RunSettings {
     private String developerName;
     private String testerName;
     private List<VariableMapping> variableMappings;
+    private ATR atr;
 
     public RunSettings() {}
 
     public RunSettings(String projectPath, String advSaveVariablesPath, int readerNumber, boolean stopOnError,
                        String requestId, String requestName, String profileName, int profileVersion,
                        String cardImageItemId, String customer, String developerName, String testerName,
-                       List<VariableMapping> variableMappings) {
+                       List<VariableMapping> variableMappings, ATR atr) {
         this.projectPath = projectPath;
         this.advSaveVariablesPath = advSaveVariablesPath;
         this.readerNumber = readerNumber;
@@ -37,6 +38,7 @@ public class RunSettings {
         this.developerName = developerName;
         this.testerName = testerName;
         this.variableMappings = variableMappings;
+        this.atr = atr;
     }
 
     public String getProjectPath() {
@@ -143,4 +145,11 @@ public class RunSettings {
         this.variableMappings = variableMappings;
     }
 
+    public ATR getAtr() {
+        return atr;
+    }
+
+    public void setAtr(ATR atr) {
+        this.atr = atr;
+    }
 }

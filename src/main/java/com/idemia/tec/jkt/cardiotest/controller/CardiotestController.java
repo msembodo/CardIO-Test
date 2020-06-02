@@ -1,14 +1,21 @@
 package com.idemia.tec.jkt.cardiotest.controller;
 
 import com.idemia.tec.jkt.cardiotest.CardiotestApplication;
+import com.idemia.tec.jkt.cardiotest.model.ATR;
 import com.idemia.tec.jkt.cardiotest.model.AdvSaveVariable;
 import com.idemia.tec.jkt.cardiotest.model.VariableMapping;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.Modality;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.smartcardio.Card;
+import javax.smartcardio.CardException;
+import javax.smartcardio.CardTerminal;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -59,6 +66,14 @@ public class CardiotestController {
     @FXML
     private TextField txtTesterName;
 
+    // ATR box
+    @FXML
+    private TextField txtAtr;
+    @FXML
+    private CheckBox chkIncludeAtr;
+    @FXML
+    private Label lblProtocol;
+
     static Logger logger = Logger.getLogger(CardiotestController.class);
 
     private CardiotestApplication application;
@@ -99,7 +114,9 @@ public class CardiotestController {
                     cmbMccVar.getItems().add(components[1].substring(1));
                 }
             } catch (FileNotFoundException e) {
-                e.printStackTrace();
+                logger.warn("Can't find variable file. Please select from MCC Advance Save.");
+                root.getAppStatusBar().setText("Can't find variable file. Please select from MCC Advance Save.");
+//                e.printStackTrace();
             }
         }
 
@@ -149,6 +166,9 @@ public class CardiotestController {
         txtDeveloperName.setText(root.getRunSettings().getDeveloperName());
         txtTesterName.setText(root.getRunSettings().getTesterName());
 
+        // ATR box
+        chkIncludeAtr.setSelected(root.getRunSettings().getAtr().isIncludeAtr());
+        txtAtr.setText(root.getRunSettings().getAtr().getAtrString());
     }
 
     private void showMappings(VariableMapping mapping) {
@@ -225,6 +245,61 @@ public class CardiotestController {
         }
     }
 
+    @FXML
+    private void handleButtonBrowseProjectFolder() {
+        DirectoryChooser projectChooser = new DirectoryChooser();
+        projectChooser.setTitle("Select Project Directory");
+        String initialDirectory;
+        if (root.getRunSettings().getProjectPath() != "C:\\") {
+            initialDirectory = new File(root.getRunSettings().getProjectPath()).getAbsolutePath();
+            if (initialDirectory == null)
+                initialDirectory = "C:\\";
+        }
+        else
+            initialDirectory = "C:\\";
+        projectChooser.setInitialDirectory(new File(initialDirectory));
+        File projectDir = projectChooser.showDialog(application.getPrimaryStage());
+        if (projectDir != null) {
+            root.getRunSettings().setProjectPath(projectDir.getAbsolutePath());
+            txtProjectFolder.setText(projectDir.getAbsolutePath());
+        }
+    }
+
+    @FXML
+    private void handleButtonGetAtr() {
+        try {
+            CardTerminal terminal = root.getTerminalFactory().terminals().list().get(
+                    root.getRunSettings().getReaderNumber()
+            );
+            Card connection = terminal.connect("*");
+            javax.smartcardio.ATR atr = connection.getATR();
+            byte[] atrBytes = atr.getBytes();
+            String atrString = Hex.encodeHexString(atrBytes);
+            int bytesLength = atrString.length();
+            root.getRunSettings().getAtr().setAtrString(atrString.toUpperCase().substring(0, bytesLength-6)); // ATR
+            String statusTck = atrString.substring(bytesLength-6);
+            root.getRunSettings().getAtr().setStatus(statusTck.substring(0, 4)); // status
+            root.getRunSettings().getAtr().setTck(statusTck.substring(4).toUpperCase()); // TCK
+            txtAtr.setText(root.getRunSettings().getAtr().getAtrString());
+            lblProtocol.setText("Protocol: " + connection.getProtocol()
+                    + "; Status: " + root.getRunSettings().getAtr().getStatus()
+                    + "; TCK: " + root.getRunSettings().getAtr().getTck());
+            connection.disconnect(false);
+
+        } catch (CardException e) {
+//            e.printStackTrace();
+            logger.error(e.getMessage());
+            Alert cardAlert = new Alert(Alert.AlertType.ERROR);
+            cardAlert.initModality(Modality.APPLICATION_MODAL);
+            cardAlert.initOwner(application.getPrimaryStage());
+            cardAlert.setTitle("Card Error");
+            cardAlert.setHeaderText("Failed to get ATR");
+            cardAlert.setContentText(e.getMessage());
+            cardAlert.showAndWait();
+        }
+
+    }
+
     private boolean mappedVariableExist(String testMappedVariable) {
         for (VariableMapping mapping : application.getMappings()) {
             if (mapping.getMappedVariable().equals(testMappedVariable))
@@ -234,8 +309,8 @@ public class CardiotestController {
     }
 
     public void saveControlState() {
+        // project details
         root.getRunSettings().setProjectPath(txtProjectFolder.getText());
-        root.getRunSettings().setStopOnError(false); // TODO: will be selected by user as option
         root.getRunSettings().setRequestId(txtRequestId.getText());
         root.getRunSettings().setRequestName(txtRequestName.getText());
         root.getRunSettings().setProfileName(txtProfileName.getText());

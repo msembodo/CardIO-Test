@@ -1,11 +1,14 @@
 package com.idemia.tec.jkt.cardiotest.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.idemia.tec.jkt.cardiotest.model.ATR;
 import com.idemia.tec.jkt.cardiotest.model.RunSettings;
+import com.idemia.tec.jkt.cardiotest.model.VariableMapping;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 @Service
 public class CardioConfigServiceImpl implements CardioConfigService {
@@ -52,6 +55,8 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             defaultSettings.setCustomer(CUSTOMER);
             defaultSettings.setDeveloperName(DEVELOPER_NAME);
             defaultSettings.setTesterName(TESTER_NAME);
+            defaultSettings.setVariableMappings(new ArrayList<>());
+            defaultSettings.setAtr(new ATR(true, "", "", ""));
 
             ObjectMapper mapper = new ObjectMapper();
             try {

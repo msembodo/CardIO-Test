@@ -4,12 +4,14 @@ import com.idemia.tec.jkt.cardiotest.CardiotestApplication;
 import com.idemia.tec.jkt.cardiotest.model.AdvSaveVariable;
 import com.idemia.tec.jkt.cardiotest.model.RunSettings;
 import com.idemia.tec.jkt.cardiotest.service.CardioConfigService;
+import com.idemia.tec.jkt.cardiotest.service.RunService;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Orientation;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import org.apache.log4j.Logger;
 import org.controlsfx.control.StatusBar;
@@ -33,14 +35,14 @@ public class RootLayoutController {
     private RunSettings runSettings;
 
     private CardiotestApplication application;
-    private File selectedVarFile;
     private TerminalFactory terminalFactory;
 
     @Autowired
     private CardiotestController cardiotest;
-
     @Autowired
     private CardioConfigService cardioConfigService;
+    @Autowired
+    private RunService runService;
 
     @FXML
     private BorderPane rootBorderPane;
@@ -67,19 +69,22 @@ public class RootLayoutController {
         runSettings = cardioConfigService.initConfig();
 
         terminalFactory = TerminalFactory.getDefault();
+        lblTerminalInfo = new Label();
+        appStatusBar.getRightItems().add(new Separator(Orientation.VERTICAL));
+        appStatusBar.getRightItems().add(lblTerminalInfo);
         try {
             // list available readers
             List<CardTerminal> terminals = terminalFactory.terminals().list();
-            lblTerminalInfo = new Label();
-            appStatusBar.getRightItems().add(new Separator(Orientation.VERTICAL));
-            appStatusBar.getRightItems().add(lblTerminalInfo);
             if (terminals.isEmpty())
                 lblTerminalInfo.setText("(no terminal/reader detected)");
             else
                 if (runSettings.getReaderNumber() != -1)
                     lblTerminalInfo.setText(terminals.get(runSettings.getReaderNumber()).getName());
         } catch (CardException e) {
-            e.printStackTrace();
+            logger.error("Failed to list PCSC terminals");
+            lblTerminalInfo.setText("(no terminal/reader detected)");
+            lblTerminalInfo.setTextFill(Color.RED);
+//            e.printStackTrace();
         }
     }
 
@@ -97,7 +102,7 @@ public class RootLayoutController {
         variableFileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Variables data", "*.txt")
         );
-        selectedVarFile = variableFileChooser.showOpenDialog(application.getPrimaryStage());
+        File selectedVarFile = variableFileChooser.showOpenDialog(application.getPrimaryStage());
         if (selectedVarFile != null) {
             try {
                 Scanner scanner = new Scanner(selectedVarFile);
@@ -133,6 +138,17 @@ public class RootLayoutController {
     @FXML
     private void handleMenuSelectReader() {
         application.showSelectReader();
+    }
+
+    @FXML
+    private void handleMenuToolOptions() {
+        application.showToolOptions();
+    }
+
+    @FXML
+    private void handleMenuRunAll() {
+        handleMenuSaveSettings();
+        runService.runAll();
     }
 
     public StatusBar getAppStatusBar() {

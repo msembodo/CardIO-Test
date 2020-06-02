@@ -6,7 +6,7 @@
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane fx:id="rootBorderPane" prefHeight="768.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.idemia.tec.jkt.cardiotest.controller.RootLayoutController">
+<BorderPane fx:id="rootBorderPane" prefHeight="900.0" prefWidth="1920.0" stylesheets="@light.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.idemia.tec.jkt.cardiotest.controller.RootLayoutController">
     <top>
         <MenuBar BorderPane.alignment="CENTER">
             <menus>
@@ -27,13 +27,13 @@
                     </items>
                   </Menu>
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" text="Run All" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleMenuRunAll" text="Run All" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Tools">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#handleMenuSelectReader" text="Select Reader" />
-                  <MenuItem mnemonicParsing="false" text="Options" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleMenuToolOptions" text="Options" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Help">

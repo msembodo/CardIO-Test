@@ -3,17 +3,26 @@ package com.idemia.tec.jkt.cardiotest.controller;
 import com.idemia.tec.jkt.cardiotest.CardiotestApplication;
 import com.idemia.tec.jkt.cardiotest.model.AdvSaveVariable;
 import com.idemia.tec.jkt.cardiotest.model.RunSettings;
+import com.idemia.tec.jkt.cardiotest.model.TestCase;
+import com.idemia.tec.jkt.cardiotest.response.TestSuiteResponse;
 import com.idemia.tec.jkt.cardiotest.service.CardioConfigService;
 import com.idemia.tec.jkt.cardiotest.service.RunService;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.geometry.Orientation;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuBar;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import org.apache.log4j.Logger;
+import org.controlsfx.control.Notifications;
 import org.controlsfx.control.StatusBar;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -36,6 +45,7 @@ public class RootLayoutController {
 
     private CardiotestApplication application;
     private TerminalFactory terminalFactory;
+    private TestSuiteResponse tsResponse;
 
     @Autowired
     private CardiotestController cardiotest;
@@ -46,6 +56,8 @@ public class RootLayoutController {
 
     @FXML
     private BorderPane rootBorderPane;
+    @FXML
+    private MenuBar menuBar;
 
     private StatusBar appStatusBar;
     private Label lblTerminalInfo;
@@ -148,7 +160,100 @@ public class RootLayoutController {
     @FXML
     private void handleMenuRunAll() {
         handleMenuSaveSettings();
-        runService.runAll();
+
+        // make user wait as verification executes
+        cardiotest.getMaskerPane().setText("Executing RunAll. Please wait..");
+        // display masker pane
+        cardiotest.getMaskerPane().setVisible(true);
+        menuBar.setDisable(true);
+        appStatusBar.setDisable(true);
+
+        cardiotest.getTxtInterpretedLog().getChildren().clear();
+        appendTextFlow("Executing RunAll..\n\n");
+
+        // use threads to avoid application freeze
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                tsResponse = runService.runAll();
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                // dismiss masker pane
+                cardiotest.getMaskerPane().setVisible(false);
+                menuBar.setDisable(false);
+                appStatusBar.setDisable(false);
+                // update status bar
+                if (tsResponse.isSuccess()) {
+                    appStatusBar.setText(tsResponse.getMessage());
+                    // show notification
+                    Notifications.create().title("CardIO").text(tsResponse.getMessage()).showInformation();
+
+                    // display log
+                    int testModules = Integer.parseInt(tsResponse.getTestSuite().getTests());
+                    List<TestCase> testCases = tsResponse.getTestSuite().getTestCases();
+                    int runErrors = Integer.parseInt(tsResponse.getTestSuite().getErrors());
+                    int runFailures = 0;
+                    if (tsResponse.getTestSuite().getFailures() != null)
+                        runFailures = Integer.parseInt(tsResponse.getTestSuite().getFailures());
+                    if (runErrors != 0) {
+                        appendTextFlow(">> NOT OK\n", 1);
+                        appendTextFlow("System error: " + tsResponse.getTestSuite().getSystemErr() + "\n\n");
+                    }
+                    if (runFailures != 0) {
+                        appendTextFlow(">> NOT OK\n", 1);
+                        appendTextFlow("Failures: " + runFailures + "\n\n");
+                    }
+                    if (runErrors == 0 & runFailures == 0)
+                        appendTextFlow(">> OK\n\n", 0);
+                    appendTextFlow("Test modules: " + testModules + "\n\n");
+                    if (testCases != null) {
+                        for (TestCase module : testCases) {
+                            appendTextFlow("Name: " + module.getName() + "\n");
+                            appendTextFlow("Execution time: " + Float.parseFloat(module.getTime()) + " s\n");
+                            if (module.getError() != null)
+                                appendTextFlow("Error: \n" + module.getError() + "\n", 1);
+                            if (module.getFailure() != null)
+                                appendTextFlow("Failure: \n" + module.getFailure() + "\n", 1);
+                        }
+                    }
+                }
+                else {
+                    appStatusBar.setText(tsResponse.getMessage());
+                    Notifications.create().title("CardIO").text(tsResponse.getMessage()).showError();
+                    logger.error(tsResponse.getMessage());
+                    appendTextFlow(">> ABORTED");
+                    Alert pcomAlert = new Alert(Alert.AlertType.ERROR);
+                    pcomAlert.initModality(Modality.APPLICATION_MODAL);
+                    pcomAlert.initOwner(application.getPrimaryStage());
+                    pcomAlert.setTitle("Execution error");
+                    pcomAlert.setHeaderText("Failed to execute");
+                    pcomAlert.setContentText(tsResponse.getMessage());
+                    pcomAlert.showAndWait();
+                }
+            }
+        };
+
+        Thread runAllThread = new Thread(task);
+        runAllThread.start(); // run in background
+
+    }
+
+    private void appendTextFlow(String text) {
+        Text message = new Text(text);
+        cardiotest.getTxtInterpretedLog().getChildren().add(message);
+    }
+
+    private void appendTextFlow(String text, int style) {
+        Text message = new Text(text);
+        if (style == 0)
+            message.setStyle("-fx-fill: #4F8A10;-fx-font-weight:bold;");
+        if (style == 1)
+            message.setStyle("-fx-fill: RED;-fx-font-weight:normal;");
+        cardiotest.getTxtInterpretedLog().getChildren().add(message);
     }
 
     public StatusBar getAppStatusBar() {

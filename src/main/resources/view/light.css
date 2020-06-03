@@ -37,3 +37,9 @@
 .tab-header-area .tab{
     -fx-background-radius: 0;
  }
+
+/*
+TextFlow {
+    -fx-background-color: white;
+}
+*/

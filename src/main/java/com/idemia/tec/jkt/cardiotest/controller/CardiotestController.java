@@ -5,11 +5,21 @@ import com.idemia.tec.jkt.cardiotest.model.ATR;
 import com.idemia.tec.jkt.cardiotest.model.AdvSaveVariable;
 import com.idemia.tec.jkt.cardiotest.model.VariableMapping;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.log4j.Logger;
+import org.controlsfx.control.MaskerPane;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -42,6 +52,11 @@ public class CardiotestController {
     @FXML
     private ComboBox<String> cmbMccVar;
     @FXML
+    private StackPane stackPane;
+
+    private MaskerPane maskerPane;
+
+    @FXML
     private CheckBox chkFixedVal;
     @FXML
     private TextField txtMccVar;
@@ -73,6 +88,10 @@ public class CardiotestController {
     private CheckBox chkIncludeAtr;
     @FXML
     private Label lblProtocol;
+
+    // bottom tab pane
+    @FXML
+    private TextFlow txtInterpretedLog;
 
     static Logger logger = Logger.getLogger(CardiotestController.class);
 
@@ -153,6 +172,11 @@ public class CardiotestController {
             }
         });
 
+        // for masking main window while verification is executing
+        maskerPane = new MaskerPane();
+        maskerPane.setVisible(false);
+        stackPane.getChildren().add(maskerPane);
+
         // restore values of controls
 
         // project details
@@ -169,6 +193,8 @@ public class CardiotestController {
         // ATR box
         chkIncludeAtr.setSelected(root.getRunSettings().getAtr().isIncludeAtr());
         txtAtr.setText(root.getRunSettings().getAtr().getAtrString());
+
+
     }
 
     private void showMappings(VariableMapping mapping) {
@@ -191,6 +217,14 @@ public class CardiotestController {
 
     public ComboBox<String> getCmbMccVar() {
         return cmbMccVar;
+    }
+
+    public MaskerPane getMaskerPane() {
+        return maskerPane;
+    }
+
+    public TextFlow getTxtInterpretedLog() {
+        return txtInterpretedLog;
     }
 
     @FXML
@@ -319,6 +353,8 @@ public class CardiotestController {
         root.getRunSettings().setCustomer(txtCustomer.getText());
         root.getRunSettings().setDeveloperName(txtDeveloperName.getText());
         root.getRunSettings().setTesterName(txtTesterName.getText());
+
+        root.getRunSettings().getAtr().setIncludeAtr(chkIncludeAtr.isSelected());
     }
 
 }

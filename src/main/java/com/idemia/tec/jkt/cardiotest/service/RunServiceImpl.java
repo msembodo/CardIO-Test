@@ -3,6 +3,7 @@ package com.idemia.tec.jkt.cardiotest.service;
 import com.idemia.tec.jkt.cardiotest.controller.RootLayoutController;
 import com.idemia.tec.jkt.cardiotest.model.ATR;
 import com.idemia.tec.jkt.cardiotest.model.TestSuite;
+import com.idemia.tec.jkt.cardiotest.response.TestSuiteResponse;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,19 +38,23 @@ public class RunServiceImpl implements RunService {
     private ScriptGeneratorService scriptGenerator;
 
     @Override
-    public void runAll() {
+    public TestSuiteResponse runAll() {
         composeScripts();
         runShellCommand("pcomconsole", root.getRunSettings().getProjectPath() + "\\RunAll.pcom");
+        // parse result xml
+        TestSuite runAllResult = parseRunAllXml();
         if (exitVal == 0) {
-            // parse result xml
-            TestSuite runAllResult = parseRunAllXml();
             if (runAllResult != null) {
                 logger.info(runAllResult.toJson());
-            } else
-                logger.error("Failed parsing RunAll output");
+                return new TestSuiteResponse(true, "RunAll executed normally", runAllResult);
+            } else {
+                return new TestSuiteResponse(false, "Failed parsing RunAll output", null);
+            }
         }
-        else
-            logger.error("Failed to execute RunAll");
+        else {
+            logger.error("Exit value: " + exitVal);
+            return new TestSuiteResponse(true, "Some error in execution", runAllResult);
+        }
     }
 
     private void composeScripts() {

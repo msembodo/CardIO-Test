@@ -1,9 +1,7 @@
 package com.idemia.tec.jkt.cardiotest.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.idemia.tec.jkt.cardiotest.model.ATR;
-import com.idemia.tec.jkt.cardiotest.model.RunSettings;
-import com.idemia.tec.jkt.cardiotest.model.VariableMapping;
+import com.idemia.tec.jkt.cardiotest.model.*;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -56,7 +54,41 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             defaultSettings.setDeveloperName(DEVELOPER_NAME);
             defaultSettings.setTesterName(TESTER_NAME);
             defaultSettings.setVariableMappings(new ArrayList<>());
+
             defaultSettings.setAtr(new ATR(true, "", "", ""));
+            defaultSettings.setSecretCodes(new SecretCodes(true, true, true, false));
+
+            CardParameters cardParameters = new CardParameters();
+            cardParameters.setCardManagerAid("A000000151000000");
+            cardParameters.setUsimAid("A0000000871002FFFFFFFF89");
+            cardParameters.setDfUsim("7FF0");
+            cardParameters.setDfGsmAccess("5F3B");
+            cardParameters.setDfTelecom("7F10");
+            cardParameters.setIsimAid("A0000000871004FFFFFFFF89");
+            cardParameters.setDfIsim("7FF2");
+            cardParameters.setCsimAid("A0000000871006FFFFFFFF89");
+            cardParameters.setDfCsim("7FF3");
+            defaultSettings.setCardParameters(cardParameters);
+
+            Authentication authentication = new Authentication();
+            authentication.setIncludeDeltaTest(true);
+            authentication.setIncludeSqnMax(true);
+            authentication.setResLength(8);
+            authentication.setAkaC1("C1");
+            authentication.setAkaC2("C2");
+            authentication.setAkaC3("C3");
+            authentication.setAkaC4("C4");
+            authentication.setAkaC5("C5");
+            authentication.setAkaRi("RI");
+            authentication.setRand("12345678 9ABCDEF0 12345678 9ABCDEF0");
+            authentication.setSqn("00 00 00 00 00 01");
+            authentication.setDelta("FF FF FF FF FF E0");
+            authentication.setAmf("0000");
+            authentication.setComp1282(false);
+            authentication.setComp1283(false);
+            authentication.setMilenage(true);
+            authentication.setIsimAuth(false);
+            defaultSettings.setAuthentication(authentication);
 
             ObjectMapper mapper = new ObjectMapper();
             try {

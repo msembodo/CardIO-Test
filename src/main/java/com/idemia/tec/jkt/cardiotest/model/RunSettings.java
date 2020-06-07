@@ -18,13 +18,17 @@ public class RunSettings {
     private String testerName;
     private List<VariableMapping> variableMappings;
     private ATR atr;
+    private SecretCodes secretCodes;
+    private CardParameters cardParameters;
+    private Authentication authentication;
 
     public RunSettings() {}
 
     public RunSettings(String projectPath, String advSaveVariablesPath, int readerNumber, boolean stopOnError,
                        String requestId, String requestName, String profileName, int profileVersion,
                        String cardImageItemId, String customer, String developerName, String testerName,
-                       List<VariableMapping> variableMappings, ATR atr) {
+                       List<VariableMapping> variableMappings, ATR atr, SecretCodes secretCodes,
+                       CardParameters cardParameters, Authentication authentication) {
         this.projectPath = projectPath;
         this.advSaveVariablesPath = advSaveVariablesPath;
         this.readerNumber = readerNumber;
@@ -39,6 +43,9 @@ public class RunSettings {
         this.testerName = testerName;
         this.variableMappings = variableMappings;
         this.atr = atr;
+        this.secretCodes = secretCodes;
+        this.cardParameters = cardParameters;
+        this.authentication = authentication;
     }
 
     public String getProjectPath() {
@@ -152,4 +159,29 @@ public class RunSettings {
     public void setAtr(ATR atr) {
         this.atr = atr;
     }
+
+    public SecretCodes getSecretCodes() {
+        return secretCodes;
+    }
+
+    public void setSecretCodes(SecretCodes secretCodes) {
+        this.secretCodes = secretCodes;
+    }
+
+    public CardParameters getCardParameters() {
+        return cardParameters;
+    }
+
+    public void setCardParameters(CardParameters cardParameters) {
+        this.cardParameters = cardParameters;
+    }
+
+    public Authentication getAuthentication() {
+        return authentication;
+    }
+
+    public void setAuthentication(Authentication authentication) {
+        this.authentication = authentication;
+    }
+
 }

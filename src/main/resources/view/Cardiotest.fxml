@@ -198,12 +198,57 @@
                                                                                                                 <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                                                                                                             </padding>
                                                                                                         </GridPane>
-                                                                                                        <CheckBox fx:id="chkIncludeAtr" layoutX="13.0" layoutY="65.0" mnemonicParsing="false" text="Include in 'run all'" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="4.0" />
+                                                                                                        <CheckBox fx:id="chkIncludeAtr" layoutX="13.0" layoutY="65.0" mnemonicParsing="false" text="Include ATR script" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="4.0" />
                                                                               <Label fx:id="lblProtocol" layoutX="589.0" layoutY="61.0" AnchorPane.bottomAnchor="1.0" AnchorPane.rightAnchor="14.0" />
                                                                                                     </children>
                                                                                                 </AnchorPane>
                                                                                             </content>
                                                                                         </TitledPane>
+                                                                  <TitledPane animated="false" collapsible="false" focusTraversable="false" layoutX="860.0" layoutY="158.0" prefHeight="360.0" prefWidth="640.0" text="Card Parameters" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="160.0">
+                                                                    <content>
+                                                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                                           <children>
+                                                                              <GridPane layoutX="14.0" layoutY="14.0" prefHeight="290.0" prefWidth="600.0">
+                                                                                <columnConstraints>
+                                                                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="293.0" minWidth="10.0" prefWidth="154.0" />
+                                                                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="446.0" minWidth="10.0" prefWidth="446.0" />
+                                                                                </columnConstraints>
+                                                                                <rowConstraints>
+                                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                </rowConstraints>
+                                                                                 <children>
+                                                                                    <Label text="Card Manager AID" />
+                                                                                    <Label text="USIM AID" GridPane.rowIndex="1" />
+                                                                                    <Label text="DF USIM" GridPane.rowIndex="2" />
+                                                                                    <Label text="DF GSM Access" GridPane.rowIndex="3" />
+                                                                                    <Label text="DF Telecom" GridPane.rowIndex="4" />
+                                                                                    <Label text="ISIM AID" GridPane.rowIndex="5" />
+                                                                                    <Label text="DF ISIM" GridPane.rowIndex="6" />
+                                                                                    <Label text="CSIM AID" GridPane.rowIndex="7" />
+                                                                                    <Label text="DF CSIM" GridPane.rowIndex="8" />
+                                                                                    <TextField fx:id="txtCardManagerAid" GridPane.columnIndex="1" />
+                                                                                    <TextField fx:id="txtUsimAid" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                                    <TextField fx:id="txtDfUsim" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                                    <TextField fx:id="txtDfGsmAccess" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                                    <TextField fx:id="txtDfTelecom" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                                                    <TextField fx:id="txtIsimAid" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                                                    <TextField fx:id="txtDfIsim" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                                                                    <TextField fx:id="txtCsimAid" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                                                                    <TextField fx:id="txtDfCsim" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                                                                                 </children>
+                                                                              </GridPane>
+                                                                           </children>
+                                                                        </AnchorPane>
+                                                                    </content>
+                                                                  </TitledPane>
                                                                                     </children>
                                                                                 </AnchorPane>
                                                                             </content>
@@ -213,8 +258,215 @@
                                                             </content>
                                                         </Tab>
                                                         <Tab closable="false" text="Authentication">
+                                             <content>
+                                                <AnchorPane>
+                                                   <children>
+                                                      <ScrollPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                        <content>
+                                                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="560.0" prefWidth="1500.0">
+                                                               <children>
+                                                                 <CheckBox fx:id="chkIncludeDeltaTest" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" text="Include 'Authentication_MILLENAGE_DELTA_TEST'" AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="14.0" />
+                                                                 <CheckBox fx:id="chkIncludeSqnMax" layoutX="422.0" layoutY="14.0" mnemonicParsing="false" text="Include 'Authentication_MILLENAGE_SQN_MAX'" AnchorPane.leftAnchor="400.0" AnchorPane.topAnchor="14.0" />
+                                                                  <TitledPane animated="false" collapsible="false" focusTraversable="false" layoutX="14.0" layoutY="31.0" prefHeight="295.0" prefWidth="700.0" text="Authentication Algo Parameters" AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="50.0">
+                                                                    <content>
+                                                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                                           <children>
+                                                                              <GridPane layoutX="50.0" layoutY="68.0" prefHeight="180.0" prefWidth="534.0" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="2.0">
+                                                                                <columnConstraints>
+                                                                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="381.0" minWidth="10.0" prefWidth="372.0" />
+                                                                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="399.0" minWidth="10.0" prefWidth="280.0" />
+                                                                                </columnConstraints>
+                                                                                <rowConstraints>
+                                                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                </rowConstraints>
+                                                                                 <children>
+                                                                                   <Label text="RES length" />
+                                                                                    <Label text="Authentication algorithm (AKA) - Ci Value 1" GridPane.rowIndex="1" />
+                                                                                    <Label text="Authentication algorithm (AKA) - Ci Value 2" GridPane.rowIndex="2" />
+                                                                                    <Label text="Authentication algorithm (AKA) - Ci Value 3" GridPane.rowIndex="3" />
+                                                                                    <Label text="Authentication algorithm (AKA) - Ci Value 4" GridPane.rowIndex="4" />
+                                                                                    <Label text="Authentication algorithm (AKA) - Ci Value 5" GridPane.rowIndex="5" />
+                                                                                    <Label text="Rotation Constants (Ri)" GridPane.rowIndex="6" />
+                                                                                   <TextField fx:id="txtResLength" GridPane.columnIndex="1" />
+                                                                                   <ComboBox fx:id="cmbAkaC1" focusTraversable="false" prefWidth="279.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                                    <ComboBox fx:id="cmbAkaC2" focusTraversable="false" prefWidth="279.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                                    <ComboBox fx:id="cmbAkaC3" focusTraversable="false" prefWidth="279.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                                    <ComboBox fx:id="cmbAkaC4" focusTraversable="false" prefWidth="279.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                                                    <ComboBox fx:id="cmbAkaC5" focusTraversable="false" prefWidth="279.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                                                    <ComboBox fx:id="cmbAkaRi" focusTraversable="false" prefWidth="279.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                                                                 </children>
+                                                                              </GridPane>
+                                                                           </children>
+                                                                        </AnchorPane>
+                                                                    </content>
+                                                                  </TitledPane>
+                                                                  <TitledPane animated="false" collapsible="false" focusTraversable="false" layoutX="744.0" layoutY="50.0" prefHeight="294.0" prefWidth="500.0" text="Test Parameters" AnchorPane.topAnchor="50.0">
+                                                                    <content>
+                                                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                                           <children>
+                                                                              <GridPane layoutX="36.0" layoutY="26.0" prefHeight="135.0" prefWidth="450.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="2.0">
+                                                                                <columnConstraints>
+                                                                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="218.0" minWidth="10.0" prefWidth="60.0" />
+                                                                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="359.0" minWidth="10.0" prefWidth="359.0" />
+                                                                                </columnConstraints>
+                                                                                <rowConstraints>
+                                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                </rowConstraints>
+                                                                                 <children>
+                                                                                    <Label text="RAND" />
+                                                                                    <Label text="SQN" GridPane.rowIndex="1" />
+                                                                                    <Label text="DELTA" GridPane.rowIndex="2" />
+                                                                                    <Label text="AMF" GridPane.rowIndex="3" />
+                                                                                    <TextField fx:id="txtRand" GridPane.columnIndex="1" />
+                                                                                    <TextField fx:id="txtSqn" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                                    <TextField fx:id="txtDelta" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                                    <TextField fx:id="txtAmf" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                                 </children>
+                                                                              </GridPane>
+                                                                           </children>
+                                                                        </AnchorPane>
+                                                                    </content>
+                                                                  </TitledPane>
+                                                                  <TitledPane animated="false" collapsible="false" focusTraversable="false" layoutX="12.0" layoutY="358.0" prefHeight="185.0" prefWidth="260.0" text="Authentication Options" AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="360.0">
+                                                                    <content>
+                                                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                                           <children>
+                                                                              <GridPane layoutX="14.0" layoutY="14.0" prefHeight="122.0" prefWidth="323.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="2.0">
+                                                                                <columnConstraints>
+                                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                                                </columnConstraints>
+                                                                                <rowConstraints>
+                                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                </rowConstraints>
+                                                                                 <children>
+                                                                                    <CheckBox fx:id="chkComp1282" mnemonicParsing="false" text="COMP128_2" />
+                                                                                    <CheckBox fx:id="chkComp1283" mnemonicParsing="false" text="COMP128_3" GridPane.rowIndex="1" />
+                                                                                    <CheckBox fx:id="chkMilenage" mnemonicParsing="false" text="MILENAGE" GridPane.rowIndex="2" />
+                                                                                    <CheckBox fx:id="chkIsimAuth" mnemonicParsing="false" text="ISIM_AUTH" GridPane.rowIndex="3" />
+                                                                                 </children>
+                                                                              </GridPane>
+                                                                           </children>
+                                                                        </AnchorPane>
+                                                                    </content>
+                                                                  </TitledPane>
 
-                                                        </Tab>
+                                                               </children></AnchorPane>
+                                                        </content>
+                                                      </ScrollPane>
+                                                   </children>
+                                                </AnchorPane>
+                                             </content></Tab>
+                                                        <Tab closable="false" text="Secret Codes">
+                                             <content>
+                                                <AnchorPane>
+                                                   <children>
+                                                      <ScrollPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                        <content>
+                                                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="560.0" prefWidth="1500.0">
+                                                               <children>
+                                                                 <CheckBox fx:id="chkPin1Disabled" layoutX="14.0" layoutY="20.0" mnemonicParsing="false" selected="true" text="PIN1 disabled" AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="14.0" />
+                                                                 <CheckBox fx:id="chkPin2Disabled" layoutX="155.0" layoutY="20.0" mnemonicParsing="false" text="PIN2 disabled" AnchorPane.leftAnchor="150.0" AnchorPane.topAnchor="14.0" />
+                                                                 <CheckBox fx:id="chkInclude3gScript" layoutX="301.0" layoutY="20.0" mnemonicParsing="false" selected="true" text="Include 3G script" AnchorPane.leftAnchor="290.0" AnchorPane.topAnchor="14.0" />
+                                                                 <CheckBox fx:id="chkInclude2gScript" layoutX="444.0" layoutY="14.0" mnemonicParsing="false" selected="true" text="Include 2G script" AnchorPane.leftAnchor="450.0" AnchorPane.topAnchor="14.0" />
+                                                                 <TitledPane animated="false" collapsible="false" focusTraversable="false" layoutX="14.0" layoutY="20.0" prefHeight="211.0" prefWidth="600.0" text="PINs" AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="50.0">
+                                                                    <content>
+                                                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                                           <children>
+                                                                              <GridPane hgap="12.0" layoutX="26.0" layoutY="20.0" prefHeight="135.0" prefWidth="554.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="8.0">
+                                                                                <columnConstraints>
+                                                                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="110.0" minWidth="10.0" prefWidth="102.0" />
+                                                                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="283.0" minWidth="10.0" prefWidth="278.0" />
+                                                                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="242.0" minWidth="10.0" prefWidth="55.0" />
+                                                                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="130.0" minWidth="10.0" prefWidth="76.0" />
+                                                                                </columnConstraints>
+                                                                                <rowConstraints>
+                                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                </rowConstraints>
+                                                                                 <children>
+                                                                                    <Label text="Global PIN" />
+                                                                                    <Label text="Local PIN" GridPane.rowIndex="1" />
+                                                                                    <Label text="Global PUK" GridPane.rowIndex="2" />
+                                                                                    <Label text="Local PUK" GridPane.rowIndex="3" />
+                                                                                    <ComboBox fx:id="cmbGpin" focusTraversable="false" prefHeight="31.0" prefWidth="245.0" GridPane.columnIndex="1" />
+                                                                                    <ComboBox fx:id="cmbLpin" focusTraversable="false" prefHeight="31.0" prefWidth="245.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                                    <ComboBox fx:id="cmbGpuk" focusTraversable="false" prefHeight="31.0" prefWidth="245.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                                    <ComboBox fx:id="cmbLpuk" focusTraversable="false" prefHeight="31.0" prefWidth="245.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                                    <Label text="Retries" GridPane.columnIndex="2" />
+                                                                                    <Label text="Retries" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                                    <Label text="Retries" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                                    <Label text="Retries" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                                    <TextField fx:id="txtGpinRetries" text="3" GridPane.columnIndex="3" />
+                                                                                    <TextField fx:id="txtLpinRetries" text="3" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                                                                    <TextField fx:id="txtGpukRetries" text="10" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                                                                                    <TextField fx:id="txtLpukRetries" text="10" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                                                                                 </children>
+                                                                              </GridPane>
+                                                                           </children>
+                                                                        </AnchorPane>
+                                                                    </content>
+                                                                  </TitledPane>
+                                                                  <TitledPane animated="false" collapsible="false" focusTraversable="false" layoutX="622.0" layoutY="53.0" prefHeight="211.0" prefWidth="600.0" text="CHVs" AnchorPane.leftAnchor="630.0" AnchorPane.topAnchor="50.0">
+                                                                     <content>
+                                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                                           <children>
+                                                                              <GridPane hgap="12.0" layoutX="26.0" layoutY="20.0" prefHeight="135.0" prefWidth="554.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="8.0">
+                                                                                 <columnConstraints>
+                                                                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="110.0" minWidth="10.0" prefWidth="102.0" />
+                                                                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="283.0" minWidth="10.0" prefWidth="278.0" />
+                                                                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="242.0" minWidth="10.0" prefWidth="55.0" />
+                                                                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="130.0" minWidth="10.0" prefWidth="76.0" />
+                                                                                 </columnConstraints>
+                                                                                 <rowConstraints>
+                                                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                 </rowConstraints>
+                                                                                 <children>
+                                                                                    <Label text="CHV1" />
+                                                                                    <Label text="CHV2" GridPane.rowIndex="1" />
+                                                                                    <Label text="PUK1" GridPane.rowIndex="2" />
+                                                                                    <Label text="PUK2" GridPane.rowIndex="3" />
+                                                                                    <ComboBox fx:id="cmbChv1" focusTraversable="false" prefHeight="31.0" prefWidth="245.0" GridPane.columnIndex="1" />
+                                                                                    <ComboBox fx:id="cmbChv2" focusTraversable="false" prefHeight="31.0" prefWidth="245.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                                    <ComboBox fx:id="cmbPuk1" focusTraversable="false" prefHeight="31.0" prefWidth="245.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                                    <ComboBox fx:id="cmbPuk2" focusTraversable="false" prefHeight="31.0" prefWidth="245.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                                    <Label text="Retries" GridPane.columnIndex="2" />
+                                                                                    <Label text="Retries" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                                    <Label text="Retries" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                                    <Label text="Retries" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                                    <TextField fx:id="txtChv1Retries" text="3" GridPane.columnIndex="3" />
+                                                                                    <TextField fx:id="txtChv2Retries" text="3" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                                                                    <TextField fx:id="txtPuk1Retries" text="10" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                                                                                    <TextField fx:id="txtPuk2Retries" text="10" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                                                                                 </children>
+                                                                              </GridPane>
+                                                                           </children>
+                                                                        </AnchorPane>
+                                                                     </content>
+                                                                  </TitledPane>
+                                                                 </children>
+                                                            </AnchorPane>
+                                                        </content>
+                                                      </ScrollPane>
+                                                   </children>
+                                                </AnchorPane>
+                                             </content></Tab>
                                                     </tabs>
                                                 </TabPane>
                                             </children>

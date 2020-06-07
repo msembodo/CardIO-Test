@@ -1,19 +1,13 @@
 package com.idemia.tec.jkt.cardiotest.controller;
 
 import com.idemia.tec.jkt.cardiotest.CardiotestApplication;
-import com.idemia.tec.jkt.cardiotest.model.ATR;
 import com.idemia.tec.jkt.cardiotest.model.AdvSaveVariable;
 import com.idemia.tec.jkt.cardiotest.model.VariableMapping;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.scene.control.*;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
@@ -81,6 +75,9 @@ public class CardiotestController {
     @FXML
     private TextField txtTesterName;
 
+    private List<ComboBox<String>> comboPool;
+    private ObservableList<String> mappedVariables;
+
     // ATR box
     @FXML
     private TextField txtAtr;
@@ -88,6 +85,104 @@ public class CardiotestController {
     private CheckBox chkIncludeAtr;
     @FXML
     private Label lblProtocol;
+
+    // card parameters
+    @FXML
+    private TextField txtCardManagerAid;
+    @FXML
+    private TextField txtUsimAid;
+    @FXML
+    private TextField txtDfUsim;
+    @FXML
+    private TextField txtDfGsmAccess;
+    @FXML
+    private TextField txtDfTelecom;
+    @FXML
+    private TextField txtIsimAid;
+    @FXML
+    private TextField txtDfIsim;
+    @FXML
+    private TextField txtCsimAid;
+    @FXML
+    private TextField txtDfCsim;
+
+    // secret code tab
+    @FXML
+    private CheckBox chkPin1Disabled;
+    @FXML
+    private CheckBox chkPin2Disabled;
+    @FXML
+    private CheckBox chkInclude3gScript;
+    @FXML
+    private CheckBox chkInclude2gScript;
+    @FXML
+    private ComboBox<String> cmbGpin;
+    @FXML
+    private ComboBox<String> cmbLpin;
+    @FXML
+    private ComboBox<String> cmbGpuk;
+    @FXML
+    private ComboBox<String> cmbLpuk;
+    @FXML
+    private TextField txtGpinRetries;
+    @FXML
+    private TextField txtLpinRetries;
+    @FXML
+    private TextField txtGpukRetries;
+    @FXML
+    private TextField txtLpukRetries;
+    @FXML
+    private ComboBox<String> cmbChv1;
+    @FXML
+    private ComboBox<String> cmbChv2;
+    @FXML
+    private ComboBox<String> cmbPuk1;
+    @FXML
+    private ComboBox<String> cmbPuk2;
+    @FXML
+    private TextField txtChv1Retries;
+    @FXML
+    private TextField txtChv2Retries;
+    @FXML
+    private TextField txtPuk1Retries;
+    @FXML
+    private TextField txtPuk2Retries;
+
+    // authentication tab
+    @FXML
+    private CheckBox chkIncludeDeltaTest;
+    @FXML
+    private CheckBox chkIncludeSqnMax;
+    @FXML
+    private TextField txtResLength;
+    @FXML
+    private ComboBox<String> cmbAkaC1;
+    @FXML
+    private ComboBox<String> cmbAkaC2;
+    @FXML
+    private ComboBox<String> cmbAkaC3;
+    @FXML
+    private ComboBox<String> cmbAkaC4;
+    @FXML
+    private ComboBox<String> cmbAkaC5;
+    @FXML
+    private ComboBox<String> cmbAkaRi;
+    @FXML
+    private TextField txtRand;
+    @FXML
+    private TextField txtSqn;
+    @FXML
+    private TextField txtDelta;
+    @FXML
+    private TextField txtAmf;
+    @FXML
+    private CheckBox chkComp1282;
+    @FXML
+    private CheckBox chkComp1283;
+    @FXML
+    private CheckBox chkMilenage;
+    @FXML
+    private CheckBox chkIsimAuth;
 
     // bottom tab pane
     @FXML
@@ -139,10 +234,21 @@ public class CardiotestController {
             }
         }
 
-        // load mappings from saved settings
+//        // load mappings from saved settings
         for (VariableMapping mapping : root.getRunSettings().getVariableMappings())
             application.getMappings().add(mapping);
 
+        // add authentication RiCi default values
+        if (application.getMappings().size() == 0) {
+            application.getMappings().add(new VariableMapping("C1", null, "00000000000000000000000000000000", true));
+            application.getMappings().add(new VariableMapping("C2", null, "00000000000000000000000000000001", true));
+            application.getMappings().add(new VariableMapping("C3", null, "00000000000000000000000000000002", true));
+            application.getMappings().add(new VariableMapping("C4", null, "00000000000000000000000000000004", true));
+            application.getMappings().add(new VariableMapping("C5", null, "00000000000000000000000000000008", true));
+            application.getMappings().add(new VariableMapping("RI", null, "4000204060", true));
+            for (VariableMapping mapping : application.getMappings())
+                mappedVariables.add(mapping.getMappedVariable());
+        }
     }
 
     @FXML
@@ -194,7 +300,123 @@ public class CardiotestController {
         chkIncludeAtr.setSelected(root.getRunSettings().getAtr().isIncludeAtr());
         txtAtr.setText(root.getRunSettings().getAtr().getAtrString());
 
+        mappedVariables = FXCollections.observableArrayList();
+        for (VariableMapping mapping : root.getRunSettings().getVariableMappings())
+            mappedVariables.add(mapping.getMappedVariable());
 
+        // card parameters
+        txtCardManagerAid.setText(root.getRunSettings().getCardParameters().getCardManagerAid());
+        txtUsimAid.setText(root.getRunSettings().getCardParameters().getUsimAid());
+        txtDfUsim.setText(root.getRunSettings().getCardParameters().getDfUsim());
+        txtDfGsmAccess.setText(root.getRunSettings().getCardParameters().getDfGsmAccess());
+        txtDfTelecom.setText(root.getRunSettings().getCardParameters().getDfTelecom());
+        txtIsimAid.setText(root.getRunSettings().getCardParameters().getIsimAid());
+        txtDfIsim.setText(root.getRunSettings().getCardParameters().getDfIsim());
+        txtCsimAid.setText(root.getRunSettings().getCardParameters().getCsimAid());
+        txtDfCsim.setText(root.getRunSettings().getCardParameters().getDfCsim());
+
+        comboPool = new ArrayList<>();
+
+        // secret codes
+        cmbGpin.setItems(mappedVariables);
+        registerForComboUpdate(cmbGpin);
+        if (root.getRunSettings().getSecretCodes().getGpin() != null)
+            cmbGpin.getSelectionModel().select(root.getRunSettings().getSecretCodes().getGpin());
+
+        if (root.getRunSettings().getSecretCodes().getGpinRetries() != 0)
+            txtGpinRetries.setText(Integer.toString(root.getRunSettings().getSecretCodes().getGpinRetries()));
+
+        cmbLpin.setItems(mappedVariables);
+        registerForComboUpdate(cmbLpin);
+        if (root.getRunSettings().getSecretCodes().getLpin() != null)
+            cmbLpin.getSelectionModel().select(root.getRunSettings().getSecretCodes().getLpin());
+
+        if (root.getRunSettings().getSecretCodes().getLpinRetries() != 0)
+            txtLpinRetries.setText(Integer.toString(root.getRunSettings().getSecretCodes().getLpinRetries()));
+
+        cmbGpuk.setItems(mappedVariables);
+        registerForComboUpdate(cmbGpuk);
+        if (root.getRunSettings().getSecretCodes().getGpuk() != null)
+            cmbGpuk.getSelectionModel().select(root.getRunSettings().getSecretCodes().getGpuk());
+
+        if (root.getRunSettings().getSecretCodes().getGpukRetries() != 0)
+            txtGpukRetries.setText(Integer.toString(root.getRunSettings().getSecretCodes().getGpukRetries()));
+
+        cmbLpuk.setItems(mappedVariables);
+        registerForComboUpdate(cmbLpuk);
+        if (root.getRunSettings().getSecretCodes().getLpuk() != null)
+            cmbLpuk.getSelectionModel().select(root.getRunSettings().getSecretCodes().getLpuk());
+
+        if (root.getRunSettings().getSecretCodes().getLpukRetries() != 0)
+            txtLpukRetries.setText(Integer.toString(root.getRunSettings().getSecretCodes().getLpukRetries()));
+
+        cmbChv1.setItems(mappedVariables);
+        registerForComboUpdate(cmbChv1);
+        if (root.getRunSettings().getSecretCodes().getChv1() != null)
+            cmbChv1.getSelectionModel().select(root.getRunSettings().getSecretCodes().getChv1());
+
+        if (root.getRunSettings().getSecretCodes().getChv1Retries() != 0)
+            txtChv1Retries.setText(Integer.toString(root.getRunSettings().getSecretCodes().getChv1Retries()));
+
+        cmbChv2.setItems(mappedVariables);
+        registerForComboUpdate(cmbChv2);
+        if (root.getRunSettings().getSecretCodes().getChv2() != null)
+            cmbChv2.getSelectionModel().select(root.getRunSettings().getSecretCodes().getChv2());
+
+        if (root.getRunSettings().getSecretCodes().getChv2Retries() != 0)
+            txtChv2Retries.setText(Integer.toString(root.getRunSettings().getSecretCodes().getChv2Retries()));
+
+        cmbPuk1.setItems(mappedVariables);
+        registerForComboUpdate(cmbPuk1);
+        if (root.getRunSettings().getSecretCodes().getPuk1() != null)
+            cmbPuk1.getSelectionModel().select(root.getRunSettings().getSecretCodes().getPuk1());
+
+        if (root.getRunSettings().getSecretCodes().getPuk1Retries() != 0)
+            txtPuk1Retries.setText(Integer.toString(root.getRunSettings().getSecretCodes().getPuk1Retries()));
+
+        cmbPuk2.setItems(mappedVariables);
+        registerForComboUpdate(cmbPuk2);
+        if (root.getRunSettings().getSecretCodes().getPuk2() != null)
+            cmbPuk2.getSelectionModel().select(root.getRunSettings().getSecretCodes().getPuk2());
+
+        if (root.getRunSettings().getSecretCodes().getPuk2Retries() != 0)
+            txtPuk2Retries.setText(Integer.toString(root.getRunSettings().getSecretCodes().getPuk2Retries()));
+
+        chkInclude3gScript.setSelected(root.getRunSettings().getSecretCodes().isInclude3gScript());
+        chkInclude2gScript.setSelected(root.getRunSettings().getSecretCodes().isInclude2gScript());
+        chkPin1Disabled.setSelected(root.getRunSettings().getSecretCodes().isPin1disabled());
+        chkPin2Disabled.setSelected(root.getRunSettings().getSecretCodes().isPin2disabled());
+
+        // authentication
+        chkIncludeDeltaTest.setSelected(root.getRunSettings().getAuthentication().isIncludeDeltaTest());
+        chkIncludeSqnMax.setSelected(root.getRunSettings().getAuthentication().isIncludeSqnMax());
+        txtResLength.setText(Integer.toString(root.getRunSettings().getAuthentication().getResLength()));
+        cmbAkaC1.setItems(mappedVariables);
+        registerForComboUpdate(cmbAkaC1);
+        cmbAkaC1.getSelectionModel().select(root.getRunSettings().getAuthentication().getAkaC1());
+        cmbAkaC2.setItems(mappedVariables);
+        registerForComboUpdate(cmbAkaC2);
+        cmbAkaC2.getSelectionModel().select(root.getRunSettings().getAuthentication().getAkaC2());
+        cmbAkaC3.setItems(mappedVariables);
+        registerForComboUpdate(cmbAkaC3);
+        cmbAkaC3.getSelectionModel().select(root.getRunSettings().getAuthentication().getAkaC3());
+        cmbAkaC4.setItems(mappedVariables);
+        registerForComboUpdate(cmbAkaC4);
+        cmbAkaC4.getSelectionModel().select(root.getRunSettings().getAuthentication().getAkaC4());
+        cmbAkaC5.setItems(mappedVariables);
+        registerForComboUpdate(cmbAkaC5);
+        cmbAkaC5.getSelectionModel().select(root.getRunSettings().getAuthentication().getAkaC5());
+        cmbAkaRi.setItems(mappedVariables);
+        registerForComboUpdate(cmbAkaRi);
+        cmbAkaRi.getSelectionModel().select(root.getRunSettings().getAuthentication().getAkaRi());
+        txtRand.setText(root.getRunSettings().getAuthentication().getRand());
+        txtSqn.setText(root.getRunSettings().getAuthentication().getSqn());
+        txtDelta.setText(root.getRunSettings().getAuthentication().getDelta());
+        txtAmf.setText(root.getRunSettings().getAuthentication().getAmf());
+        chkComp1282.setSelected(root.getRunSettings().getAuthentication().isComp1282());
+        chkComp1283.setSelected(root.getRunSettings().getAuthentication().isComp1283());
+        chkMilenage.setSelected(root.getRunSettings().getAuthentication().isMilenage());
+        chkIsimAuth.setSelected(root.getRunSettings().getAuthentication().isIsimAuth());
     }
 
     private void showMappings(VariableMapping mapping) {
@@ -227,6 +449,16 @@ public class CardiotestController {
         return txtInterpretedLog;
     }
 
+    private void registerForComboUpdate(ComboBox<String> comboBox) {
+        comboPool.add(comboBox);
+    }
+
+    private void updateListForComboBoxes() {
+        for (ComboBox<String> comboBox : comboPool) {
+            comboBox.setItems(mappedVariables);
+        }
+    }
+
     @FXML
     private void handleBtnUpdateMapping() {
         if (mappedVariableExist(txtMappedTo.getText())) {
@@ -244,6 +476,8 @@ public class CardiotestController {
                 logger.info(String.format("Update mapping: %s -> %s", selectedMapping.getMappedVariable(),
                         selectedMapping.getMccVariable()));
             }
+            tblMapping.getColumns().get(1).setVisible(false);
+            tblMapping.getColumns().get(1).setVisible(true);
         } else {
             // add new mapping
             String mappedVariable = txtMappedTo.getText();
@@ -257,6 +491,10 @@ public class CardiotestController {
             }
             VariableMapping mapping = new VariableMapping(mappedVariable, mccVariable, value, fixed);
             application.getMappings().add(mapping);
+
+            mappedVariables.add(mapping.getMappedVariable());
+            updateListForComboBoxes();
+
             if (mapping.isFixed())
                 logger.info(String.format("Add mapping: %s -> %s", mapping.getMappedVariable(),
                         mapping.getValue()));
@@ -271,6 +509,10 @@ public class CardiotestController {
         if (application.getMappings().size() > 0) {
             logger.info(String.format("Delete mapping: %s",
                     tblMapping.getSelectionModel().getSelectedItem().getMappedVariable()));
+
+            mappedVariables.remove(tblMapping.getSelectionModel().getSelectedItem().getMappedVariable());
+            updateListForComboBoxes();
+
             int selectedIndex = tblMapping.getSelectionModel().getSelectedIndex();
             tblMapping.getItems().remove(selectedIndex);
             showMappings(null);
@@ -355,6 +597,58 @@ public class CardiotestController {
         root.getRunSettings().setTesterName(txtTesterName.getText());
 
         root.getRunSettings().getAtr().setIncludeAtr(chkIncludeAtr.isSelected());
+
+        // card parameters
+        root.getRunSettings().getCardParameters().setCardManagerAid(txtCardManagerAid.getText());
+        root.getRunSettings().getCardParameters().setUsimAid(txtUsimAid.getText());
+        root.getRunSettings().getCardParameters().setDfUsim(txtDfUsim.getText());
+        root.getRunSettings().getCardParameters().setDfGsmAccess(txtDfGsmAccess.getText());
+        root.getRunSettings().getCardParameters().setDfTelecom(txtDfTelecom.getText());
+        root.getRunSettings().getCardParameters().setIsimAid(txtIsimAid.getText());
+        root.getRunSettings().getCardParameters().setDfIsim(txtDfIsim.getText());
+        root.getRunSettings().getCardParameters().setCsimAid(txtCsimAid.getText());
+        root.getRunSettings().getCardParameters().setDfIsim(txtDfCsim.getText());
+
+        // secret codes values
+        root.getRunSettings().getSecretCodes().setGpin(cmbGpin.getSelectionModel().getSelectedItem());
+        root.getRunSettings().getSecretCodes().setGpinRetries(Integer.parseInt(txtGpinRetries.getText()));
+        root.getRunSettings().getSecretCodes().setLpin(cmbLpin.getSelectionModel().getSelectedItem());
+        root.getRunSettings().getSecretCodes().setLpinRetries(Integer.parseInt(txtLpinRetries.getText()));
+        root.getRunSettings().getSecretCodes().setGpuk(cmbGpuk.getSelectionModel().getSelectedItem());
+        root.getRunSettings().getSecretCodes().setGpukRetries(Integer.parseInt(txtGpukRetries.getText()));
+        root.getRunSettings().getSecretCodes().setLpuk(cmbLpuk.getSelectionModel().getSelectedItem());
+        root.getRunSettings().getSecretCodes().setLpukRetries(Integer.parseInt(txtLpukRetries.getText()));
+        root.getRunSettings().getSecretCodes().setChv1(cmbChv1.getSelectionModel().getSelectedItem());
+        root.getRunSettings().getSecretCodes().setChv1Retries(Integer.parseInt(txtChv1Retries.getText()));
+        root.getRunSettings().getSecretCodes().setChv2(cmbChv2.getSelectionModel().getSelectedItem());
+        root.getRunSettings().getSecretCodes().setChv2Retries(Integer.parseInt(txtChv2Retries.getText()));
+        root.getRunSettings().getSecretCodes().setPuk1(cmbPuk1.getSelectionModel().getSelectedItem());
+        root.getRunSettings().getSecretCodes().setPuk1Retries(Integer.parseInt(txtPuk1Retries.getText()));
+        root.getRunSettings().getSecretCodes().setPuk2(cmbPuk2.getSelectionModel().getSelectedItem());
+        root.getRunSettings().getSecretCodes().setPuk2Retries(Integer.parseInt(txtPuk2Retries.getText()));
+        root.getRunSettings().getSecretCodes().setInclude3gScript(chkInclude3gScript.isSelected());
+        root.getRunSettings().getSecretCodes().setInclude2gScript(chkInclude2gScript.isSelected());
+        root.getRunSettings().getSecretCodes().setPin1disabled(chkPin1Disabled.isSelected());
+        root.getRunSettings().getSecretCodes().setPin2disabled(chkPin2Disabled.isSelected());
+
+        // authentication settings
+        root.getRunSettings().getAuthentication().setIncludeDeltaTest(chkIncludeDeltaTest.isSelected());
+        root.getRunSettings().getAuthentication().setIncludeSqnMax(chkIncludeSqnMax.isSelected());
+        root.getRunSettings().getAuthentication().setResLength(Integer.parseInt(txtResLength.getText()));
+        root.getRunSettings().getAuthentication().setAkaC1(cmbAkaC1.getSelectionModel().getSelectedItem());
+        root.getRunSettings().getAuthentication().setAkaC2(cmbAkaC2.getSelectionModel().getSelectedItem());
+        root.getRunSettings().getAuthentication().setAkaC3(cmbAkaC3.getSelectionModel().getSelectedItem());
+        root.getRunSettings().getAuthentication().setAkaC4(cmbAkaC4.getSelectionModel().getSelectedItem());
+        root.getRunSettings().getAuthentication().setAkaC5(cmbAkaC5.getSelectionModel().getSelectedItem());
+        root.getRunSettings().getAuthentication().setAkaRi(cmbAkaRi.getSelectionModel().getSelectedItem());
+        root.getRunSettings().getAuthentication().setRand(txtRand.getText());
+        root.getRunSettings().getAuthentication().setDelta(txtDelta.getText());
+        root.getRunSettings().getAuthentication().setSqn(txtSqn.getText());
+        root.getRunSettings().getAuthentication().setAmf(txtAmf.getText());
+        root.getRunSettings().getAuthentication().setComp1282(chkComp1282.isSelected());
+        root.getRunSettings().getAuthentication().setComp1283(chkComp1283.isSelected());
+        root.getRunSettings().getAuthentication().setMilenage(chkMilenage.isSelected());
+        root.getRunSettings().getAuthentication().setIsimAuth(chkIsimAuth.isSelected());
     }
 
 }

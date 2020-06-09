@@ -2,6 +2,7 @@ package com.idemia.tec.jkt.cardiotest.service;
 
 import com.idemia.tec.jkt.cardiotest.controller.RootLayoutController;
 import com.idemia.tec.jkt.cardiotest.model.ATR;
+import com.idemia.tec.jkt.cardiotest.model.Authentication;
 import com.idemia.tec.jkt.cardiotest.model.TestSuite;
 import com.idemia.tec.jkt.cardiotest.response.TestSuiteResponse;
 import org.apache.log4j.Logger;
@@ -18,10 +19,14 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class RunServiceImpl implements RunService {
@@ -72,7 +77,9 @@ public class RunServiceImpl implements RunService {
         if (root.getRunSettings().getAtr().isIncludeAtr())
             runAllBuffer.append(addAtr(root.getRunSettings().getAtr()));
 
-        // TODO: Authentication
+        // Authentication
+        if (root.getRunSettings().getAuthentication().isIncludeDeltaTest() || root.getRunSettings().getAuthentication().isIncludeSqnMax())
+            runAllBuffer.append(addAuthentication(root.getRunSettings().getAuthentication()));
 
         runAllBuffer.append(endRunAll());
 
@@ -107,6 +114,20 @@ public class RunServiceImpl implements RunService {
         File scriptDir = new File(scriptsDirectory);
         scriptDir.mkdir();
 
+        // copy DLLs
+        File dllDir = new File(scriptsDirectory + "dll\\");
+        dllDir.mkdir();
+        try (Stream<Path> walk = Files.walk(Paths.get("dll"))) {
+            List<String> dllFiles = walk.filter(Files::isRegularFile).map(Path::toString).collect(Collectors.toList());
+            for (String dll : dllFiles) {
+                File sourceDll = new File(dll);
+                File targetDll = new File(scriptsDirectory + dll);
+                Files.copy(sourceDll.toPath(), targetDll.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         // copy variable file to project directory
         File sourceVarFile = new File(root.getRunSettings().getAdvSaveVariablesPath());
         File targetVarFile = new File(root.getRunSettings().getProjectPath() + "\\variables.txt");
@@ -140,7 +161,16 @@ public class RunServiceImpl implements RunService {
         // add ATR to options
         String optionAtr = "; card parameters\n"
                 + ".DEFINE %ATR " + atr.getAtrString() + "\n"
-                + "; TCK: " + root.getRunSettings().getAtr().getTck() + "\n\n";
+                + "; TCK: " + root.getRunSettings().getAtr().getTck() + "\n\n"
+                + ".DEFINE %CARD_MANAGER_AID " + root.getRunSettings().getCardParameters().getCardManagerAid() + "\n\n"
+                + ".DEFINE %USIM_AID " + root.getRunSettings().getCardParameters().getUsimAid() + "\n"
+                + ".DEFINE %DF_USIM " + root.getRunSettings().getCardParameters().getDfUsim() + "\n\n"
+                + ".DEFINE %DF_GSM_AC " + root.getRunSettings().getCardParameters().getDfGsmAccess() + "\n"
+                + ".DEFINE %DF_TELECOM " + root.getRunSettings().getCardParameters().getDfTelecom() + "\n\n"
+                + ".DEFINE %ISIM_AID " + root.getRunSettings().getCardParameters().getIsimAid() + "\n"
+                + ".DEFINE %DF_ISIM " + root.getRunSettings().getCardParameters().getDfIsim() + "\n\n"
+                + ".DEFINE %CSIM_AID " + root.getRunSettings().getCardParameters().getCsimAid() + "\n"
+                + ".DEFINE %DF_CSIM " + root.getRunSettings().getCardParameters().getDfCsim() + "\n\n";
         optionsBuffer.append(optionAtr);
 
         // add ATR script to structure
@@ -153,6 +183,45 @@ public class RunServiceImpl implements RunService {
         return "; ATR\n"
                 + ".EXECUTE scripts\\ATR.txt /PATH logs\n"
                 + ".ALLUNDEFINE\n\n";
+    }
+
+    private String addAuthentication(Authentication authentication) {
+        // add Authentication to options
+        String optionAuth = "; authentication\n"
+                + "; algo parameters:\n"
+                + ".SET_BUFFER I %" + authentication.getAkaRi() + "\n"
+                + ".DEFINE %R1 I(1:1)\n"
+                + ".DEFINE %R2 I(2;1)\n"
+                + ".DEFINE %R3 I(3;1)\n"
+                + ".DEFINE %R4 I(4;1)\n"
+                + ".DEFINE %R5 I(5;1)\n";
+        optionsBuffer.append(optionAuth);
+
+        StringBuilder authRunAllString = new StringBuilder();
+        authRunAllString.append("; Authentication\n");
+
+        // add authentication script to structure
+        if (authentication.isIncludeDeltaTest()) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "Authentication_MILLENAGE_DELTA_TEST.txt"))) {
+                bw.append(scriptGenerator.generateMilenageDeltaTest(authentication));
+            } catch (IOException e) {
+                logger.error("Failed writing MILLENAGE_DELTA_TEST script");
+            }
+            authRunAllString.append(".EXECUTE scripts\\Authentication_MILLENAGE_DELTA_TEST.txt /PATH logs\n");
+            authRunAllString.append(".ALLUNDEFINE\n\n");
+        }
+
+        if (authentication.isIncludeSqnMax()) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "Authentication_MILLENAGE_SQN_MAX.txt"))) {
+                bw.append(scriptGenerator.generateMilenageSqnMax(authentication));
+            } catch (IOException e) {
+                logger.error("Failed writing MILLENAGE_SQN_MAX script");
+            }
+            authRunAllString.append(".EXECUTE scripts\\Authentication_MILLENAGE_SQN_MAX.txt /PATH logs\n");
+            authRunAllString.append(".ALLUNDEFINE\n\n");
+        }
+
+        return authRunAllString.toString();
     }
 
     private TestSuite parseRunAllXml() {
@@ -193,6 +262,8 @@ public class RunServiceImpl implements RunService {
         cmdArray.add(".");
         cmdArray.add("-reader");
         cmdArray.add(readerName);
+        cmdArray.add("-protocol");
+        cmdArray.add("TPDUMode");
         if (root.getRunSettings().isStopOnError())
             cmdArray.add("-stoponerror");
         try {

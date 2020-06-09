@@ -30,4 +30,8 @@ build/
 ### VS Code ###
 .vscode/
 
+### PCOM DLLs ###
+lib/
+dll/
+
 run-settings.json

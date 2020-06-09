@@ -218,6 +218,7 @@ public class RootLayoutController {
                                 appendTextFlow("Error: \n" + module.getError() + "\n", 1);
                             if (module.getFailure() != null)
                                 appendTextFlow("Failure: \n" + module.getFailure() + "\n", 1);
+                            appendTextFlow("\n");
                         }
                     }
                 }

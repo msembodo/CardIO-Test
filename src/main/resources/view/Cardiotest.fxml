@@ -310,7 +310,7 @@
                                                                     <content>
                                                                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                                            <children>
-                                                                              <GridPane layoutX="36.0" layoutY="26.0" prefHeight="135.0" prefWidth="450.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="2.0">
+                                                                              <GridPane layoutX="48.0" layoutY="38.0" prefHeight="198.0" prefWidth="426.0" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="2.0">
                                                                                 <columnConstraints>
                                                                                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="218.0" minWidth="10.0" prefWidth="60.0" />
                                                                                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="359.0" minWidth="10.0" prefWidth="359.0" />
@@ -320,29 +320,37 @@
                                                                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                                 </rowConstraints>
                                                                                  <children>
                                                                                     <Label text="RAND" />
-                                                                                    <Label text="SQN" GridPane.rowIndex="1" />
+                                                                                    <Label text="SQN init" GridPane.rowIndex="1" />
                                                                                     <Label text="DELTA" GridPane.rowIndex="2" />
                                                                                     <Label text="AMF" GridPane.rowIndex="3" />
+                                                                                    <Label text="Ki" GridPane.rowIndex="4" />
+                                                                                    <Label text="OPc" GridPane.rowIndex="5" />
                                                                                     <TextField fx:id="txtRand" GridPane.columnIndex="1" />
                                                                                     <TextField fx:id="txtSqn" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                                                     <TextField fx:id="txtDelta" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                                                     <TextField fx:id="txtAmf" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                                    <ComboBox fx:id="cmbKi" focusTraversable="false" prefHeight="31.0" prefWidth="359.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                                                    <ComboBox fx:id="cmbOpc" focusTraversable="false" prefHeight="31.0" prefWidth="359.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                                                                                  </children>
                                                                               </GridPane>
                                                                            </children>
                                                                         </AnchorPane>
                                                                     </content>
                                                                   </TitledPane>
-                                                                  <TitledPane animated="false" collapsible="false" focusTraversable="false" layoutX="12.0" layoutY="358.0" prefHeight="185.0" prefWidth="260.0" text="Authentication Options" AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="360.0">
+                                                                  <TitledPane animated="false" collapsible="false" focusTraversable="false" layoutX="12.0" layoutY="358.0" prefHeight="185.0" prefWidth="400.0" text="Authentication Options" AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="360.0">
                                                                     <content>
                                                                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                                            <children>
                                                                               <GridPane layoutX="14.0" layoutY="14.0" prefHeight="122.0" prefWidth="323.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="2.0">
                                                                                 <columnConstraints>
                                                                                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                                                                 </columnConstraints>
                                                                                 <rowConstraints>
                                                                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -355,6 +363,7 @@
                                                                                     <CheckBox fx:id="chkComp1283" mnemonicParsing="false" text="COMP128_3" GridPane.rowIndex="1" />
                                                                                     <CheckBox fx:id="chkMilenage" mnemonicParsing="false" text="MILENAGE" GridPane.rowIndex="2" />
                                                                                     <CheckBox fx:id="chkIsimAuth" mnemonicParsing="false" text="ISIM_AUTH" GridPane.rowIndex="3" />
+                                                                                    <CheckBox fx:id="chkGsmAlgo" mnemonicParsing="false" text="GSM Algo" GridPane.columnIndex="1" />
                                                                                  </children>
                                                                               </GridPane>
                                                                            </children>

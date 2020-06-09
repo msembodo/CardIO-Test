@@ -4,7 +4,7 @@ public class Authentication {
 
     private boolean includeDeltaTest;
     private boolean includeSqnMax;
-    private int resLength;
+    private String resLength;
     private String akaC1;
     private String akaC2;
     private String akaC3;
@@ -15,14 +15,17 @@ public class Authentication {
     private String sqn;
     private String delta;
     private String amf;
+    private String ki;
+    private String opc;
     private boolean comp1282;
     private boolean comp1283;
     private boolean milenage;
     private boolean isimAuth;
+    private boolean gsmAlgo;
 
     public Authentication() {}
 
-    public Authentication(boolean includeDeltaTest, boolean includeSqnMax, int resLength, String akaC1, String akaC2, String akaC3, String akaC4, String akaC5, String akaRi, String rand, String sqn, String delta, String amf, boolean comp1282, boolean comp1283, boolean milenage, boolean isimAuth) {
+    public Authentication(boolean includeDeltaTest, boolean includeSqnMax, String resLength, String akaC1, String akaC2, String akaC3, String akaC4, String akaC5, String akaRi, String rand, String sqn, String delta, String amf, String ki, String opc, boolean comp1282, boolean comp1283, boolean milenage, boolean isimAuth, boolean gsmAlgo) {
         this.includeDeltaTest = includeDeltaTest;
         this.includeSqnMax = includeSqnMax;
         this.resLength = resLength;
@@ -36,10 +39,13 @@ public class Authentication {
         this.sqn = sqn;
         this.delta = delta;
         this.amf = amf;
+        this.ki = ki;
+        this.opc = opc;
         this.comp1282 = comp1282;
         this.comp1283 = comp1283;
         this.milenage = milenage;
         this.isimAuth = isimAuth;
+        this.gsmAlgo = gsmAlgo;
     }
 
     public boolean isIncludeDeltaTest() {
@@ -58,11 +64,11 @@ public class Authentication {
         this.includeSqnMax = includeSqnMax;
     }
 
-    public int getResLength() {
+    public String getResLength() {
         return resLength;
     }
 
-    public void setResLength(int resLength) {
+    public void setResLength(String resLength) {
         this.resLength = resLength;
     }
 
@@ -146,6 +152,22 @@ public class Authentication {
         this.amf = amf;
     }
 
+    public String getKi() {
+        return ki;
+    }
+
+    public void setKi(String ki) {
+        this.ki = ki;
+    }
+
+    public String getOpc() {
+        return opc;
+    }
+
+    public void setOpc(String opc) {
+        this.opc = opc;
+    }
+
     public boolean isComp1282() {
         return comp1282;
     }
@@ -176,6 +198,14 @@ public class Authentication {
 
     public void setIsimAuth(boolean isimAuth) {
         this.isimAuth = isimAuth;
+    }
+
+    public boolean isGsmAlgo() {
+        return gsmAlgo;
+    }
+
+    public void setGsmAlgo(boolean gsmAlgo) {
+        this.gsmAlgo = gsmAlgo;
     }
 
 }

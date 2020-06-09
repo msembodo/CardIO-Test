@@ -73,7 +73,7 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             Authentication authentication = new Authentication();
             authentication.setIncludeDeltaTest(true);
             authentication.setIncludeSqnMax(true);
-            authentication.setResLength(8);
+            authentication.setResLength("08");
             authentication.setAkaC1("C1");
             authentication.setAkaC2("C2");
             authentication.setAkaC3("C3");
@@ -84,10 +84,13 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             authentication.setSqn("00 00 00 00 00 01");
             authentication.setDelta("FF FF FF FF FF E0");
             authentication.setAmf("0000");
+            authentication.setKi("K1");
+            authentication.setOpc("OPC");
             authentication.setComp1282(false);
             authentication.setComp1283(false);
             authentication.setMilenage(true);
             authentication.setIsimAuth(false);
+            authentication.setGsmAlgo(false);
             defaultSettings.setAuthentication(authentication);
 
             ObjectMapper mapper = new ObjectMapper();

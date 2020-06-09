@@ -327,16 +327,18 @@
                                                                                  <children>
                                                                                     <Label text="RAND" />
                                                                                     <Label text="SQN init" GridPane.rowIndex="1" />
-                                                                                    <Label text="DELTA" GridPane.rowIndex="2" />
-                                                                                    <Label text="AMF" GridPane.rowIndex="3" />
-                                                                                    <Label text="Ki" GridPane.rowIndex="4" />
-                                                                                    <Label text="OPc" GridPane.rowIndex="5" />
+                                                                                    <Label text="SQN max" GridPane.rowIndex="2" />
+                                                                                    <Label text="DELTA" GridPane.rowIndex="3" />
+                                                                                    <Label text="AMF" GridPane.rowIndex="4" />
+                                                                                    <Label text="Ki" GridPane.rowIndex="5" />
+                                                                                    <Label text="OPc" GridPane.rowIndex="6" />
                                                                                     <TextField fx:id="txtRand" GridPane.columnIndex="1" />
                                                                                     <TextField fx:id="txtSqn" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                                                    <TextField fx:id="txtDelta" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                                                    <TextField fx:id="txtAmf" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                                                    <ComboBox fx:id="cmbKi" focusTraversable="false" prefHeight="31.0" prefWidth="359.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                                                                    <ComboBox fx:id="cmbOpc" focusTraversable="false" prefHeight="31.0" prefWidth="359.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                                                    <TextField fx:id="txtSqnMax" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                                    <TextField fx:id="txtDelta" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                                    <TextField fx:id="txtAmf" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                                                    <ComboBox fx:id="cmbKi" focusTraversable="false" prefHeight="31.0" prefWidth="359.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                                                    <ComboBox fx:id="cmbOpc" focusTraversable="false" prefHeight="31.0" prefWidth="359.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                                                                                  </children>
                                                                               </GridPane>
                                                                            </children>

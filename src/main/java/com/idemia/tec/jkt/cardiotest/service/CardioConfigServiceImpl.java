@@ -82,6 +82,7 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             authentication.setAkaRi("RI");
             authentication.setRand("12345678 9ABCDEF0 12345678 9ABCDEF0");
             authentication.setSqn("00 00 00 00 00 01");
+            authentication.setSqnMax("00 02 00 00 00 00");
             authentication.setDelta("FF FF FF FF FF E0");
             authentication.setAmf("0000");
             authentication.setKi("K1");

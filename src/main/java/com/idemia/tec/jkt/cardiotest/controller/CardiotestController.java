@@ -172,6 +172,8 @@ public class CardiotestController {
     @FXML
     private TextField txtSqn;
     @FXML
+    private TextField txtSqnMax;
+    @FXML
     private TextField txtDelta;
     @FXML
     private TextField txtAmf;
@@ -419,6 +421,7 @@ public class CardiotestController {
         cmbAkaRi.getSelectionModel().select(root.getRunSettings().getAuthentication().getAkaRi());
         txtRand.setText(root.getRunSettings().getAuthentication().getRand());
         txtSqn.setText(root.getRunSettings().getAuthentication().getSqn());
+        txtSqnMax.setText(root.getRunSettings().getAuthentication().getSqnMax());
         txtDelta.setText(root.getRunSettings().getAuthentication().getDelta());
         txtAmf.setText(root.getRunSettings().getAuthentication().getAmf());
         cmbKi.setItems(mappedVariables);
@@ -659,6 +662,7 @@ public class CardiotestController {
         root.getRunSettings().getAuthentication().setRand(txtRand.getText());
         root.getRunSettings().getAuthentication().setDelta(txtDelta.getText());
         root.getRunSettings().getAuthentication().setSqn(txtSqn.getText());
+        root.getRunSettings().getAuthentication().setSqnMax(txtSqnMax.getText());
         root.getRunSettings().getAuthentication().setAmf(txtAmf.getText());
         root.getRunSettings().getAuthentication().setKi(cmbKi.getSelectionModel().getSelectedItem());
         root.getRunSettings().getAuthentication().setOpc(cmbOpc.getSelectionModel().getSelectedItem());

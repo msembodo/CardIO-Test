@@ -13,6 +13,7 @@ public class Authentication {
     private String akaRi;
     private String rand;
     private String sqn;
+    private String sqnMax;
     private String delta;
     private String amf;
     private String ki;
@@ -25,7 +26,7 @@ public class Authentication {
 
     public Authentication() {}
 
-    public Authentication(boolean includeDeltaTest, boolean includeSqnMax, String resLength, String akaC1, String akaC2, String akaC3, String akaC4, String akaC5, String akaRi, String rand, String sqn, String delta, String amf, String ki, String opc, boolean comp1282, boolean comp1283, boolean milenage, boolean isimAuth, boolean gsmAlgo) {
+    public Authentication(boolean includeDeltaTest, boolean includeSqnMax, String resLength, String akaC1, String akaC2, String akaC3, String akaC4, String akaC5, String akaRi, String rand, String sqn, String sqnMax, String delta, String amf, String ki, String opc, boolean comp1282, boolean comp1283, boolean milenage, boolean isimAuth, boolean gsmAlgo) {
         this.includeDeltaTest = includeDeltaTest;
         this.includeSqnMax = includeSqnMax;
         this.resLength = resLength;
@@ -37,6 +38,7 @@ public class Authentication {
         this.akaRi = akaRi;
         this.rand = rand;
         this.sqn = sqn;
+        this.sqnMax = sqnMax;
         this.delta = delta;
         this.amf = amf;
         this.ki = ki;
@@ -134,6 +136,14 @@ public class Authentication {
 
     public void setSqn(String sqn) {
         this.sqn = sqn;
+    }
+
+    public String getSqnMax() {
+        return sqnMax;
+    }
+
+    public void setSqnMax(String sqnMax) {
+        this.sqnMax = sqnMax;
     }
 
     public String getDelta() {

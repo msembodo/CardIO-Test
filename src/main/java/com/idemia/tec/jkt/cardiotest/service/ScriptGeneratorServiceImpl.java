@@ -48,8 +48,7 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
         );
         if (root.getRunSettings().getSecretCodes().isPin1disabled()) {
             deltaTestBuffer.append(
-                "; enable GPIN1\n"
-                + "00 28 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000)\n\n"
+                "00 28 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000) ; enable GPIN1\n\n"
             );
         }
         deltaTestBuffer.append(
@@ -125,8 +124,7 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
         );
         if (root.getRunSettings().getSecretCodes().isPin1disabled()) {
             deltaTestBuffer.append(
-                "\n; disable GPIN1\n"
-                + "00 26 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000)\n\n"
+                "\n00 26 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000) ; disable GPIN1\n\n"
             );
         }
         deltaTestBuffer.append(
@@ -137,8 +135,189 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
 
     @Override
     public StringBuilder generateMilenageSqnMax(Authentication authentication) {
-        String composeSqnMax = "";
-        return new StringBuilder().append(composeSqnMax); // TODO
+        StringBuilder sqnMaxBuffer = new StringBuilder();
+        sqnMaxBuffer.append(
+            ".CALL Mapping.txt /LIST_OFF\n"
+            + ".CALL Options.txt /LIST_OFF\n\n"
+            + ".DEFINE %RAND " + authentication.getRand() + "\n\n"
+            + ".POWER_ON\n"
+        );
+        if (root.getRunSettings().getSecretCodes().isPin1disabled()) {
+            sqnMaxBuffer.append(
+                "00 28 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000) ; enable GPIN1\n\n"
+            );
+        }
+        if (authentication.isMilenage()) {
+            sqnMaxBuffer.append(
+                "; Milenage Algo\n"
+                + ".LOAD dll\\Milenage_AKA.dll\n"
+                + ".LOAD dll\\Calcul.dll\n"
+                + ".DEFINE %SQN " + authentication.getSqnMax() + "\n"
+                + ".DEFINE %AMF " + authentication.getAmf() + "\n"
+                + ".POWER_ON\n"
+                + "00 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000) ; verify GPIN1\n"
+                + "; set variables for calculating AKA1 quintets\n"
+                + ".SET_BUFFER I %R1 %R2 %R3 %R4 %R5\n"
+                + ".SET_RI\n"
+                + String.format(".SET_BUFFER I %%%s %%%s %%%s %%%s %%%s\n", authentication.getAkaC1(),
+                authentication.getAkaC2(), authentication.getAkaC3(), authentication.getAkaC4(),
+                authentication.getAkaC5())
+                + ".SET_CI\n"
+                + ".SET_BUFFER I %" + authentication.getKi() + "\n"
+                + ".SET_K1\n"
+                + ".SET_BUFFER I %" + authentication.getOpc() + "\n"
+                + ".SET_OPC\n"
+                + ".SET_BUFFER I %RAND\n"
+                + ".SET_RAND\n"
+                + ".SET_BUFFER I %SQN\n"
+                + ".SET_SQN\n"
+                + ".SET_BUFFER I %AMF\n"
+                + ".SET_AMF\n"
+                + ".SET_RES_LENGTH " + authentication.getResLength() + " \n"
+                + ".INIT_AKA1 ; calculate AKA1 quintets\n"
+                + ".GET_MAC ; get quintets and triplets\n"
+                + ".DISPLAY O\n"
+                + ".GET_XRES ; same for 3G and 2G (XRES and SRES)\n"
+                + ".DISPLAY O\n"
+                + ".DEFINE %RES O\n"
+                + ".GET_SRES\n"
+                + ".DISPLAY O\n"
+                + ".DEFINE %SRES O\n"
+                + ".GET_CK\n"
+                + ".DISPLAY O\n"
+                + ".DEFINE %CK O\n"
+                + ".GET_IK\n"
+                + ".DISPLAY O\n"
+                + ".DEFINE %IK O\n"
+                + ".GET_AK\n"
+                + ".DISPLAY O\n"
+                + ".SET_KEY O(1;6) 0000\n"
+                + ".GET_AUTN\n"
+                + ".DISPLAY O\n"
+                + ".DEFINE %AUTN O\n"
+                + ".SET_DATA O(1;6) 0000\n"
+                + ".XOR I 00 /P\n"
+                + ".DISPLAY I (1;6)\n"
+                + ".GET_KC ; 2G Kc\n"
+                + ".DISPLAY O\n"
+                + ".DEFINE %Kc O\n"
+            );
+            if (authentication.isGsmAlgo()) {
+                sqnMaxBuffer.append(
+                    "; run GSM algo (2G)\n"
+                    + ".POWER_ON\n"
+                    + "A0 A4 00 00 02 7F20 (9FXX) ; select DF GSM\n"
+                    + "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000) ; verify CHV1\n"
+                    + "A0 88 00 00 10 %RAND (9FXX) ; run GSM algo\n"
+                    + "A0 C0 00 00 W(2;1) [ %SRES %Kc ] (9000) ; check result\n"
+                    + ".POWER_ON\n"
+                );
+            }
+            sqnMaxBuffer.append(
+                "; authenticate in 3G mode with 2G context\n"
+                + "00 A4 04 0C <?> %USIM_AID (9000) ; select USIM AID\n"
+                + "00 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000) ; verify global pin\n"
+                + "00 88 00 80 11 10 %RAND (61XX) ; authenticate\n"
+                + "00 C0 0000 0E [ 04 %SRES 08 %Kc ] (9000) ; check result\n"
+                + "; authenticate with 3G context\n"
+                + "00 A4 04 0C <?> %USIM_AID (9000) ; select USIM AID\n"
+                + "00 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000) ; verify global pin\n"
+                + "00 88 00 81 22 10 %RAND 10 %AUTN (61XX) ; authenticate\n"
+                + "00 C0 0000 W(2;1) [ DB 08 %RES 10 %CK 10 %IK 08 %Kc ] (9000) ; check result\n"
+                + ".SET_BUFFER I R(3;14)\n"
+                + ".GET_SQN_MAX\n"
+                + ".DISPLAY O\n"
+                + ".UNDEFINE %RES\n"
+                + ".UNDEFINE %SRES\n"
+                + ".UNDEFINE %CK\n"
+                + ".UNDEFINE %IK\n"
+                + ".UNDEFINE %AUTN\n"
+                + ".UNDEFINE %Kc\n"
+                + ".UNDEFINE %SQN\n"
+                + ".UNDEFINE %AMF\n"
+                + ".UNLOAD Milenage_AKA.dll\n"
+                + ".UNLOAD Calcul.dll\n"
+            );
+        }
+        if (authentication.isIsimAuth()) {
+            sqnMaxBuffer.append(
+                "; ISIM auth\n"
+                + ".LOAD dll\\Milenage_AKA.dll\n"
+                + ".LOAD dll\\Calcul.dll\n"
+                + ".DEFINE %SQN " + authentication.getSqnMax() + "\n"
+                + ".DEFINE %AMF " + authentication.getAmf() + "\n"
+                + ".POWER_ON\n"
+                + "00 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000) ; verify GPIN1\n"
+                + "; set variables for calculating AKA1 quintets\n"
+                + ".SET_BUFFER I %R1 %R2 %R3 %R4 %R5\n"
+                + ".SET_RI\n"
+                + String.format(".SET_BUFFER I %%%s %%%s %%%s %%%s %%%s\n", authentication.getAkaC1(),
+                authentication.getAkaC2(), authentication.getAkaC3(), authentication.getAkaC4(),
+                authentication.getAkaC5())
+                + ".SET_CI\n"
+                + ".SET_BUFFER I %" + authentication.getKi() + "\n"
+                + ".SET_K1\n"
+                + ".SET_BUFFER I %" + authentication.getOpc() + "\n"
+                + ".SET_OPC\n"
+                + ".SET_BUFFER I %RAND\n"
+                + ".SET_RAND\n"
+                + ".SET_BUFFER I %SQN\n"
+                + ".SET_SQN\n"
+                + ".SET_BUFFER I %AMF\n"
+                + ".SET_AMF\n"
+                + ".SET_RES_LENGTH " + authentication.getResLength() + " \n"
+                + ".INIT_AKA1 ; calculate AKA1 quintets\n"
+                + ".GET_MAC ; get quintets and triplets\n"
+                + ".DISPLAY O\n"
+                + ".GET_XRES ; same for 3G and 2G (XRES and SRES)\n"
+                + ".DISPLAY O\n"
+                + ".DEFINE %RES O\n"
+                + ".GET_SRES\n"
+                + ".DISPLAY O\n"
+                + ".DEFINE %SRES O\n"
+                + ".GET_CK\n"
+                + ".DISPLAY O\n"
+                + ".DEFINE %CK O\n"
+                + ".GET_IK\n"
+                + ".DISPLAY O\n"
+                + ".DEFINE %IK O\n"
+                + ".GET_AK\n"
+                + ".DISPLAY O\n"
+                + ".SET_KEY O(1;6) 0000\n"
+                + ".GET_AUTN\n"
+                + ".DISPLAY O\n"
+                + ".DEFINE %AUTN O\n"
+                + ".SET_DATA O(1;6) 0000\n"
+                + ".XOR I 00 /P\n"
+                + ".DISPLAY I (1;6)\n"
+                + "; authenticate with 3G context\n"
+                + "00 A4 04 0C <?> %ISIM_AID (9000) ; select ISIM AID\n"
+                + "00 88 00 81 22 10 %RAND 10 %AUTN (61XX) ; authenticate\n"
+                + "00 C0 00 00 W(2;1) [DB 08 %RES 10 %CK 10 %IK] (9000) ; return result\n"
+                + ".SET_BUFFER I R(3;14)\n"
+                + ".GET_SQN_MAX\n"
+                + ".DISPLAY O\n"
+                + ".UNDEFINE %RES\n"
+                + ".UNDEFINE %SRES\n"
+                + ".UNDEFINE %CK\n"
+                + ".UNDEFINE %IK\n"
+                + ".UNDEFINE %AUTN\n"
+                + ".UNDEFINE %Kc\n"
+                + ".UNDEFINE %SQN\n"
+                + ".UNDEFINE %AMF\n"
+                + ".UNLOAD Milenage_AKA.dll\n"
+                + ".UNLOAD Calcul.dll\n"
+            );
+        }
+        if (root.getRunSettings().getSecretCodes().isPin1disabled()) {
+            sqnMaxBuffer.append(
+                "\n00 26 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000) ; disable GPIN1\n\n"
+            );
+        }
+        sqnMaxBuffer.append(
+            ".POWER_OFF\n"
+        );
+        return sqnMaxBuffer;
     }
 
     private String runAlgo3gAgainCurrSqn(Authentication authentication) {

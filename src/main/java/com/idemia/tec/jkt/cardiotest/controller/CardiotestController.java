@@ -5,6 +5,7 @@ import com.idemia.tec.jkt.cardiotest.model.AdvSaveVariable;
 import com.idemia.tec.jkt.cardiotest.model.VariableMapping;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
@@ -23,6 +24,7 @@ import javax.smartcardio.CardTerminal;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.EventListener;
 import java.util.List;
 import java.util.Scanner;
 
@@ -132,6 +134,10 @@ public class CardiotestController {
     @FXML
     private TextField txtLpukRetries;
     @FXML
+    private CheckBox chkBlockGpuk;
+    @FXML
+    private CheckBox chkBlockLpuk;
+    @FXML
     private ComboBox<String> cmbChv1;
     @FXML
     private ComboBox<String> cmbChv2;
@@ -147,6 +153,44 @@ public class CardiotestController {
     private TextField txtPuk1Retries;
     @FXML
     private TextField txtPuk2Retries;
+    @FXML
+    private CheckBox chkBlockPuk1;
+    @FXML
+    private CheckBox chkBlockPuk2;
+    @FXML
+    private Label lblIsc2;
+    @FXML
+    private Label lblIsc3;
+    @FXML
+    private Label lblIsc4;
+    @FXML
+    private ComboBox<String> cmbIsc1;
+    @FXML
+    private ComboBox<String> cmbIsc2;
+    @FXML
+    private ComboBox<String> cmbIsc3;
+    @FXML
+    private ComboBox<String> cmbIsc4;
+    @FXML
+    private Label lblIsc2Retries;
+    @FXML
+    private Label lblIsc3Retries;
+    @FXML
+    private Label lblIsc4Retries;
+    @FXML
+    private TextField txtIsc1Retries;
+    @FXML
+    private TextField txtIsc2Retries;
+    @FXML
+    private TextField txtIsc3Retries;
+    @FXML
+    private TextField txtIsc4Retries;
+    @FXML
+    private CheckBox chkUseIsc2;
+    @FXML
+    private CheckBox chkUseIsc3;
+    @FXML
+    private CheckBox chkUseIsc4;
 
     // authentication tab
     @FXML
@@ -392,10 +436,118 @@ public class CardiotestController {
         if (root.getRunSettings().getSecretCodes().getPuk2Retries() != 0)
             txtPuk2Retries.setText(Integer.toString(root.getRunSettings().getSecretCodes().getPuk2Retries()));
 
+        chkBlockGpuk.setSelected(root.getRunSettings().getSecretCodes().isBlockGpuk());
+        chkBlockLpuk.setSelected(root.getRunSettings().getSecretCodes().isBlockLpuk());
+        chkBlockPuk1.setSelected(root.getRunSettings().getSecretCodes().isBlockPuk1());
+        chkBlockPuk2.setSelected(root.getRunSettings().getSecretCodes().isBlockPuk2());
+
         chkInclude3gScript.setSelected(root.getRunSettings().getSecretCodes().isInclude3gScript());
         chkInclude2gScript.setSelected(root.getRunSettings().getSecretCodes().isInclude2gScript());
         chkPin1Disabled.setSelected(root.getRunSettings().getSecretCodes().isPin1disabled());
         chkPin2Disabled.setSelected(root.getRunSettings().getSecretCodes().isPin2disabled());
+
+        cmbIsc1.setItems(mappedVariables);
+        registerForComboUpdate(cmbIsc1);
+        if (root.getRunSettings().getSecretCodes().getIsc1() != null)
+            cmbIsc1.getSelectionModel().select(root.getRunSettings().getSecretCodes().getIsc1());
+        if (root.getRunSettings().getSecretCodes().getIsc1Retries() != 0)
+            txtIsc1Retries.setText(Integer.toString(root.getRunSettings().getSecretCodes().getIsc1Retries()));
+
+        cmbIsc2.setItems(mappedVariables);
+        registerForComboUpdate(cmbIsc2);
+        if (root.getRunSettings().getSecretCodes().getIsc2() != null)
+            cmbIsc2.getSelectionModel().select(root.getRunSettings().getSecretCodes().getIsc2());
+        if (root.getRunSettings().getSecretCodes().getIsc2Retries() != 0)
+            txtIsc2Retries.setText(Integer.toString(root.getRunSettings().getSecretCodes().getIsc2Retries()));
+        chkUseIsc2.setSelected(root.getRunSettings().getSecretCodes().isUseIsc2());
+        if (chkUseIsc2.isSelected()) {
+            lblIsc2.setDisable(false);
+            cmbIsc2.setDisable(false);
+            lblIsc2Retries.setDisable(false);
+            txtIsc2Retries.setDisable(false);
+        } else {
+            lblIsc2.setDisable(true);
+            cmbIsc2.setDisable(true);
+            lblIsc2Retries.setDisable(true);
+            txtIsc2Retries.setDisable(true);
+        }
+        chkUseIsc2.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (chkUseIsc2.isSelected()) {
+                lblIsc2.setDisable(false);
+                cmbIsc2.setDisable(false);
+                lblIsc2Retries.setDisable(false);
+                txtIsc2Retries.setDisable(false);
+            } else {
+                lblIsc2.setDisable(true);
+                cmbIsc2.setDisable(true);
+                lblIsc2Retries.setDisable(true);
+                txtIsc2Retries.setDisable(true);
+            }
+        });
+
+        cmbIsc3.setItems(mappedVariables);
+        registerForComboUpdate(cmbIsc3);
+        if (root.getRunSettings().getSecretCodes().getIsc3() != null)
+            cmbIsc3.getSelectionModel().select(root.getRunSettings().getSecretCodes().getIsc3());
+        if (root.getRunSettings().getSecretCodes().getIsc3Retries() != 0)
+            txtIsc3Retries.setText(Integer.toString(root.getRunSettings().getSecretCodes().getIsc3Retries()));
+        chkUseIsc3.setSelected(root.getRunSettings().getSecretCodes().isUseIsc3());
+        if (chkUseIsc3.isSelected()) {
+            lblIsc3.setDisable(false);
+            cmbIsc3.setDisable(false);
+            lblIsc3Retries.setDisable(false);
+            txtIsc3Retries.setDisable(false);
+        } else {
+            lblIsc3.setDisable(true);
+            cmbIsc3.setDisable(true);
+            lblIsc3Retries.setDisable(true);
+            txtIsc3Retries.setDisable(true);
+        }
+        chkUseIsc3.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (chkUseIsc3.isSelected()) {
+                lblIsc3.setDisable(false);
+                cmbIsc3.setDisable(false);
+                lblIsc3Retries.setDisable(false);
+                txtIsc3Retries.setDisable(false);
+            } else {
+                lblIsc3.setDisable(true);
+                cmbIsc3.setDisable(true);
+                lblIsc3Retries.setDisable(true);
+                txtIsc3Retries.setDisable(true);
+            }
+        });
+
+        cmbIsc4.setItems(mappedVariables);
+        registerForComboUpdate(cmbIsc4);
+        if (root.getRunSettings().getSecretCodes().getIsc4() != null)
+            cmbIsc4.getSelectionModel().select(root.getRunSettings().getSecretCodes().getIsc4());
+        if (root.getRunSettings().getSecretCodes().getIsc4Retries() != 0)
+            txtIsc4Retries.setText(Integer.toString(root.getRunSettings().getSecretCodes().getIsc4Retries()));
+        chkUseIsc4.setSelected(root.getRunSettings().getSecretCodes().isUseIsc4());
+        if (chkUseIsc4.isSelected()) {
+            lblIsc4.setDisable(false);
+            cmbIsc4.setDisable(false);
+            lblIsc4Retries.setDisable(false);
+            txtIsc4Retries.setDisable(false);
+        } else {
+            lblIsc4.setDisable(true);
+            cmbIsc4.setDisable(true);
+            lblIsc4Retries.setDisable(true);
+            txtIsc4Retries.setDisable(true);
+        }
+        chkUseIsc4.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (chkUseIsc4.isSelected()) {
+                lblIsc4.setDisable(false);
+                cmbIsc4.setDisable(false);
+                lblIsc4Retries.setDisable(false);
+                txtIsc4Retries.setDisable(false);
+            } else {
+                lblIsc4.setDisable(true);
+                cmbIsc4.setDisable(true);
+                lblIsc4Retries.setDisable(true);
+                txtIsc4Retries.setDisable(true);
+            }
+        });
 
         // authentication
         chkIncludeDeltaTest.setSelected(root.getRunSettings().getAuthentication().isIncludeDeltaTest());
@@ -648,6 +800,21 @@ public class CardiotestController {
         root.getRunSettings().getSecretCodes().setInclude2gScript(chkInclude2gScript.isSelected());
         root.getRunSettings().getSecretCodes().setPin1disabled(chkPin1Disabled.isSelected());
         root.getRunSettings().getSecretCodes().setPin2disabled(chkPin2Disabled.isSelected());
+        root.getRunSettings().getSecretCodes().setIsc1(cmbIsc1.getSelectionModel().getSelectedItem());
+        root.getRunSettings().getSecretCodes().setIsc1Retries(Integer.parseInt(txtIsc1Retries.getText()));
+        root.getRunSettings().getSecretCodes().setIsc2(cmbIsc2.getSelectionModel().getSelectedItem());
+        root.getRunSettings().getSecretCodes().setIsc2Retries(Integer.parseInt(txtIsc2Retries.getText()));
+        root.getRunSettings().getSecretCodes().setUseIsc2(chkUseIsc2.isSelected());
+        root.getRunSettings().getSecretCodes().setIsc3(cmbIsc3.getSelectionModel().getSelectedItem());
+        root.getRunSettings().getSecretCodes().setIsc3Retries(Integer.parseInt(txtIsc3Retries.getText()));
+        root.getRunSettings().getSecretCodes().setUseIsc3(chkUseIsc3.isSelected());
+        root.getRunSettings().getSecretCodes().setIsc4(cmbIsc4.getSelectionModel().getSelectedItem());
+        root.getRunSettings().getSecretCodes().setIsc4Retries(Integer.parseInt(txtIsc4Retries.getText()));
+        root.getRunSettings().getSecretCodes().setUseIsc4(chkUseIsc4.isSelected());
+        root.getRunSettings().getSecretCodes().setBlockGpuk(chkBlockGpuk.isSelected());
+        root.getRunSettings().getSecretCodes().setBlockLpuk(chkBlockLpuk.isSelected());
+        root.getRunSettings().getSecretCodes().setBlockPuk1(chkBlockPuk1.isSelected());
+        root.getRunSettings().getSecretCodes().setBlockPuk2(chkBlockPuk2.isSelected());
 
         // authentication settings
         root.getRunSettings().getAuthentication().setIncludeDeltaTest(chkIncludeDeltaTest.isSelected());

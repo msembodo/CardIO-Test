@@ -3,6 +3,7 @@ package com.idemia.tec.jkt.cardiotest.service;
 import com.idemia.tec.jkt.cardiotest.controller.RootLayoutController;
 import com.idemia.tec.jkt.cardiotest.model.ATR;
 import com.idemia.tec.jkt.cardiotest.model.Authentication;
+import com.idemia.tec.jkt.cardiotest.model.SecretCodes;
 import com.idemia.tec.jkt.cardiotest.model.TestSuite;
 import com.idemia.tec.jkt.cardiotest.response.TestSuiteResponse;
 import org.apache.log4j.Logger;
@@ -77,9 +78,13 @@ public class RunServiceImpl implements RunService {
         if (root.getRunSettings().getAtr().isIncludeAtr())
             runAllBuffer.append(addAtr(root.getRunSettings().getAtr()));
 
-        // Authentication
+        // authentication
         if (root.getRunSettings().getAuthentication().isIncludeDeltaTest() || root.getRunSettings().getAuthentication().isIncludeSqnMax())
             runAllBuffer.append(addAuthentication(root.getRunSettings().getAuthentication()));
+
+        // secret codes
+        if (root.getRunSettings().getSecretCodes().isInclude3gScript() || root.getRunSettings().getSecretCodes().isInclude2gScript())
+            runAllBuffer.append(addSecretCodes(root.getRunSettings().getSecretCodes()));
 
         runAllBuffer.append(endRunAll());
 
@@ -222,6 +227,34 @@ public class RunServiceImpl implements RunService {
         }
 
         return authRunAllString.toString();
+    }
+
+    private String addSecretCodes(SecretCodes secretCodes) {
+        StringBuilder secretCodesRunAll = new StringBuilder();
+        secretCodesRunAll.append("; Secret Codes\n");
+
+        // add secret codes scripts to structure
+        if (secretCodes.isInclude3gScript()) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "SecretCodes_3G.txt"))) {
+                bw.append(scriptGenerator.generateSecretCodes3g(secretCodes));
+            } catch (IOException e) {
+                logger.error("Failed writing SecretCodes_3G script");
+            }
+            secretCodesRunAll.append(".EXECUTE scripts\\SecretCodes_3G.txt /PATH logs\n");
+            secretCodesRunAll.append(".ALLUNDEFINE\n\n");
+        }
+
+        if (secretCodes.isInclude2gScript()) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "SecretCodes_2G.txt"))) {
+                bw.append(scriptGenerator.generateSecretCodes2g(secretCodes));
+            } catch (IOException e) {
+                logger.error("Failed writing SecretCodes_2G script");
+            }
+            secretCodesRunAll.append(".EXECUTE scripts\\SecretCodes_2G.txt /PATH logs\n");
+            secretCodesRunAll.append(".ALLUNDEFINE\n\n");
+        }
+
+        return secretCodesRunAll.toString();
     }
 
     private TestSuite parseRunAllXml() {

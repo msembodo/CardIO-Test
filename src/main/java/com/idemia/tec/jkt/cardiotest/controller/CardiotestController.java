@@ -9,6 +9,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Font;
 import javafx.scene.text.TextFlow;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
@@ -238,7 +239,11 @@ public class CardiotestController {
 
     // bottom tab pane
     @FXML
+    private TabPane tabBottom;
+    @FXML
     private TextFlow txtInterpretedLog;
+    @FXML
+    private TextArea txtCommandResponse;
 
     static Logger logger = Logger.getLogger(CardiotestController.class);
 
@@ -337,6 +342,17 @@ public class CardiotestController {
         maskerPane.setVisible(false);
         stackPane.getChildren().add(maskerPane);
 
+        tabBottom.getSelectionModel().select(0);
+
+        Font fixedWidthFont;
+        if (Font.getFamilies().contains("Consolas"))
+            fixedWidthFont = Font.font("Consolas");
+        else
+            fixedWidthFont = Font.font("Monospaced");
+        txtCommandResponse.setFont(fixedWidthFont);
+        txtCommandResponse.setEditable(false);
+        txtCommandResponse.setDisable(true);
+
         // restore values of controls
 
         // project details
@@ -352,6 +368,16 @@ public class CardiotestController {
 
         // ATR box
         chkIncludeAtr.setSelected(root.getRunSettings().getAtr().isIncludeAtr());
+        if (chkIncludeAtr.isSelected())
+            root.getMenuAtr().setDisable(false);
+        else
+            root.getMenuAtr().setDisable(true);
+        chkIncludeAtr.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (chkIncludeAtr.isSelected())
+                root.getMenuAtr().setDisable(false);
+            else
+                root.getMenuAtr().setDisable(true);
+        });
         txtAtr.setText(root.getRunSettings().getAtr().getAtrString());
 
         mappedVariables = FXCollections.observableArrayList();
@@ -442,7 +468,27 @@ public class CardiotestController {
         chkBlockPuk2.setSelected(root.getRunSettings().getSecretCodes().isBlockPuk2());
 
         chkInclude3gScript.setSelected(root.getRunSettings().getSecretCodes().isInclude3gScript());
+        if (chkInclude3gScript.isSelected())
+            root.getMenuCodes3g().setDisable(false);
+        else
+            root.getMenuCodes3g().setDisable(true);
+        chkInclude3gScript.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (chkInclude3gScript.isSelected())
+                root.getMenuCodes3g().setDisable(false);
+            else
+                root.getMenuCodes3g().setDisable(true);
+        });
         chkInclude2gScript.setSelected(root.getRunSettings().getSecretCodes().isInclude2gScript());
+        if (chkInclude2gScript.isSelected())
+            root.getMenuCodes2g().setDisable(false);
+        else
+            root.getMenuCodes2g().setDisable(true);
+        chkInclude2gScript.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (chkInclude2gScript.isSelected())
+                root.getMenuCodes2g().setDisable(false);
+            else
+                root.getMenuCodes2g().setDisable(true);
+        });
         chkPin1Disabled.setSelected(root.getRunSettings().getSecretCodes().isPin1disabled());
         chkPin2Disabled.setSelected(root.getRunSettings().getSecretCodes().isPin2disabled());
 
@@ -551,7 +597,27 @@ public class CardiotestController {
 
         // authentication
         chkIncludeDeltaTest.setSelected(root.getRunSettings().getAuthentication().isIncludeDeltaTest());
+        if (chkIncludeDeltaTest.isSelected())
+            root.getMenuDeltaTest().setDisable(false);
+        else
+            root.getMenuDeltaTest().setDisable(true);
+        chkIncludeDeltaTest.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (chkIncludeDeltaTest.isSelected())
+                root.getMenuDeltaTest().setDisable(false);
+            else
+                root.getMenuDeltaTest().setDisable(true);
+        });
         chkIncludeSqnMax.setSelected(root.getRunSettings().getAuthentication().isIncludeSqnMax());
+        if (chkIncludeSqnMax.isSelected())
+            root.getMenuSqnMax().setDisable(false);
+        else
+            root.getMenuSqnMax().setDisable(true);
+        chkIncludeSqnMax.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (chkIncludeSqnMax.isSelected())
+                root.getMenuSqnMax().setDisable(false);
+            else
+                root.getMenuSqnMax().setDisable(true);
+        });
         txtResLength.setText(root.getRunSettings().getAuthentication().getResLength());
         cmbAkaC1.setItems(mappedVariables);
         registerForComboUpdate(cmbAkaC1);
@@ -615,8 +681,16 @@ public class CardiotestController {
         return maskerPane;
     }
 
+    public TabPane getTabBottom() {
+        return tabBottom;
+    }
+
     public TextFlow getTxtInterpretedLog() {
         return txtInterpretedLog;
+    }
+
+    public TextArea getTxtCommandResponse() {
+        return txtCommandResponse;
     }
 
     private void registerForComboUpdate(ComboBox<String> comboBox) {

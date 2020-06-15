@@ -49,7 +49,7 @@ public class CardiotestApplication extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		BasicConfigurator.configure();
 		this.primaryStage = primaryStage;
-		this.primaryStage.setTitle("CardIO Tool");
+		this.primaryStage.setTitle("CardIO 2020.06.15-SNAPSHOT");
 
 		initRootLayout();
 		showCardioTest();

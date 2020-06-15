@@ -20,10 +20,13 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Modules">
                     <items>
-                  <Menu disable="true" mnemonicParsing="false" text="Run Module">
+                  <Menu mnemonicParsing="false" text="Run Module">
                     <items>
-                      <MenuItem mnemonicParsing="false" text="ATR" />
-                        <MenuItem mnemonicParsing="false" text="Authentication" />
+                      <MenuItem fx:id="menuAtr" mnemonicParsing="false" onAction="#handleMenuAtr" text="ATR" />
+                        <MenuItem fx:id="menuDeltaTest" mnemonicParsing="false" onAction="#handleMenuDeltaTest" text="Milenage Delta Test" />
+                        <MenuItem fx:id="menuSqnMax" mnemonicParsing="false" onAction="#handleMenuSqnMax" text="Milenage SQN Max" />
+                        <MenuItem fx:id="menuCodes3g" mnemonicParsing="false" onAction="#handleMenuCodes3g" text="Secret Codes 3G" />
+                        <MenuItem fx:id="menuCodes2g" mnemonicParsing="false" onAction="#handleMenuCodes2g" text="Secret Codes 2G" />
                     </items>
                   </Menu>
                         <SeparatorMenuItem mnemonicParsing="false" />
@@ -38,7 +41,7 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Help">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="About" />
+                        <MenuItem disable="true" mnemonicParsing="false" text="About" />
                     </items>
                 </Menu>
             </menus>

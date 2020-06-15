@@ -11,10 +11,7 @@ import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.geometry.Orientation;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.Separator;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -30,8 +27,7 @@ import org.springframework.stereotype.Component;
 import javax.smartcardio.CardException;
 import javax.smartcardio.CardTerminal;
 import javax.smartcardio.TerminalFactory;
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -46,6 +42,11 @@ public class RootLayoutController {
     private CardiotestApplication application;
     private TerminalFactory terminalFactory;
     private TestSuiteResponse tsResponse;
+    private boolean runAtrOk;
+    private boolean runDeltaTestOk;
+    private boolean runSqnMaxOk;
+    private boolean runCodes3gOk;
+    private boolean runCodes2gOk;
 
     @Autowired
     private CardiotestController cardiotest;
@@ -58,6 +59,17 @@ public class RootLayoutController {
     private BorderPane rootBorderPane;
     @FXML
     private MenuBar menuBar;
+
+    @FXML
+    private MenuItem menuAtr;
+    @FXML
+    private MenuItem menuDeltaTest;
+    @FXML
+    private MenuItem menuSqnMax;
+    @FXML
+    private MenuItem menuCodes3g;
+    @FXML
+    private MenuItem menuCodes2g;
 
     private StatusBar appStatusBar;
     private Label lblTerminalInfo;
@@ -221,6 +233,8 @@ public class RootLayoutController {
                             appendTextFlow("\n");
                         }
                     }
+                    cardiotest.getTxtCommandResponse().clear();
+                    cardiotest.getTabBottom().getSelectionModel().select(0);
                 }
                 else {
                     appStatusBar.setText(tsResponse.getMessage());
@@ -241,6 +255,264 @@ public class RootLayoutController {
         Thread runAllThread = new Thread(task);
         runAllThread.start(); // run in background
 
+    }
+
+    @FXML
+    private void handleMenuAtr() {
+        handleMenuSaveSettings();
+        // make user wait as verification executes
+        cardiotest.getMaskerPane().setText("Executing ATR. Please wait..");
+        // display masker pane
+        cardiotest.getMaskerPane().setVisible(true);
+        menuBar.setDisable(true);
+        appStatusBar.setDisable(true);
+
+        cardiotest.getTxtInterpretedLog().getChildren().clear();
+        appendTextFlow("Executing ATR..\n\n");
+
+        // use threads to avoid application freeze
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                runAtrOk = runService.runAtr();
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                // dismiss masker pane
+                cardiotest.getMaskerPane().setVisible(false);
+                menuBar.setDisable(false);
+                appStatusBar.setDisable(false);
+                // update status bar
+                if (runAtrOk) {
+                    appStatusBar.setText("Executed ATR: OK");
+                    Notifications.create().title("CardIO").text("Executed ATR: OK").showInformation();
+                    appendTextFlow(">> OK\n\n", 0);
+                }
+                else {
+                    appStatusBar.setText("Executed ATR: NOK");
+                    Notifications.create().title("CardIO").text("Executed ATR: NOK").showError();
+                    appendTextFlow(">> NOT OK\n", 1);
+                }
+                // display commmand-response
+                cardiotest.getTxtCommandResponse().setDisable(false);
+                String logFileName = runSettings.getProjectPath() + "\\scripts\\ATR.L00";
+                showCommandResponseLog(logFileName);
+            }
+        };
+        Thread runAtrThread = new Thread(task);
+        runAtrThread.start();
+    }
+
+    @FXML
+    private void handleMenuDeltaTest() {
+        handleMenuSaveSettings();
+        // make user wait as verification executes
+        cardiotest.getMaskerPane().setText("Executing MILLENAGE_DELTA_TEST. Please wait..");
+        // display masker pane
+        cardiotest.getMaskerPane().setVisible(true);
+        menuBar.setDisable(true);
+        appStatusBar.setDisable(true);
+
+        cardiotest.getTxtInterpretedLog().getChildren().clear();
+        appendTextFlow("Executing MILLENAGE_DELTA_TEST..\n\n");
+
+        // use threads to avoid application freeze
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                runDeltaTestOk = runService.runDeltaTest();
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                // dismiss masker pane
+                cardiotest.getMaskerPane().setVisible(false);
+                menuBar.setDisable(false);
+                appStatusBar.setDisable(false);
+                // update status bar
+                if (runDeltaTestOk) {
+                    appStatusBar.setText("Executed MILLENAGE_DELTA_TEST: OK");
+                    Notifications.create().title("CardIO").text("Executed MILLENAGE_DELTA_TEST: OK").showInformation();
+                    appendTextFlow(">> OK\n\n", 0);
+                }
+                else {
+                    appStatusBar.setText("Executed MILLENAGE_DELTA_TEST: NOK");
+                    Notifications.create().title("CardIO").text("Executed MILLENAGE_DELTA_TEST: NOK").showError();
+                    appendTextFlow(">> NOT OK\n", 1);
+                }
+                // display commmand-response
+                cardiotest.getTxtCommandResponse().setDisable(false);
+                String logFileName = runSettings.getProjectPath() + "\\scripts\\Authentication_MILLENAGE_DELTA_TEST.L00";
+                showCommandResponseLog(logFileName);
+            }
+        };
+        Thread runDeltaTestThread = new Thread(task);
+        runDeltaTestThread.start();
+    }
+
+    @FXML
+    private void handleMenuSqnMax() {
+        handleMenuSaveSettings();
+        // make user wait as verification executes
+        cardiotest.getMaskerPane().setText("Executing MILLENAGE_SQN_MAX. Please wait..");
+        // display masker pane
+        cardiotest.getMaskerPane().setVisible(true);
+        menuBar.setDisable(true);
+        appStatusBar.setDisable(true);
+
+        cardiotest.getTxtInterpretedLog().getChildren().clear();
+        appendTextFlow("Executing MILLENAGE_SQN_MAX..\n\n");
+
+        // use threads to avoid application freeze
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                runSqnMaxOk = runService.runSqnMax();
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                // dismiss masker pane
+                cardiotest.getMaskerPane().setVisible(false);
+                menuBar.setDisable(false);
+                appStatusBar.setDisable(false);
+                // update status bar
+                if (runSqnMaxOk) {
+                    appStatusBar.setText("Executed MILLENAGE_SQN_MAX: OK");
+                    Notifications.create().title("CardIO").text("Executed MILLENAGE_SQN_MAX: OK").showInformation();
+                    appendTextFlow(">> OK\n\n", 0);
+                }
+                else {
+                    appStatusBar.setText("Executed MILLENAGE_SQN_MAX: NOK");
+                    Notifications.create().title("CardIO").text("Executed MILLENAGE_SQN_MAX: NOK").showError();
+                    appendTextFlow(">> NOT OK\n", 1);
+                }
+                // display commmand-response
+                cardiotest.getTxtCommandResponse().setDisable(false);
+                String logFileName = runSettings.getProjectPath() + "\\scripts\\Authentication_MILLENAGE_SQN_MAX.L00";
+                showCommandResponseLog(logFileName);
+            }
+        };
+        Thread runSqnMaxThread = new Thread(task);
+        runSqnMaxThread.start();
+    }
+
+    @FXML
+    private void handleMenuCodes3g() {
+        handleMenuSaveSettings();
+        // make user wait as verification executes
+        cardiotest.getMaskerPane().setText("Executing SecretCodes_3G. Please wait..");
+        // display masker pane
+        cardiotest.getMaskerPane().setVisible(true);
+        menuBar.setDisable(true);
+        appStatusBar.setDisable(true);
+
+        cardiotest.getTxtInterpretedLog().getChildren().clear();
+        appendTextFlow("Executing SecretCodes_3G..\n\n");
+
+        // use threads to avoid application freeze
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                runCodes3gOk = runService.runSecretCodes3g();
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                // dismiss masker pane
+                cardiotest.getMaskerPane().setVisible(false);
+                menuBar.setDisable(false);
+                appStatusBar.setDisable(false);
+                // update status bar
+                if (runCodes3gOk) {
+                    appStatusBar.setText("Executed SecretCodes_3G: OK");
+                    Notifications.create().title("CardIO").text("Executed SecretCodes_3G: OK").showInformation();
+                    appendTextFlow(">> OK\n\n", 0);
+                }
+                else {
+                    appStatusBar.setText("Executed SecretCodes_3G: NOK");
+                    Notifications.create().title("CardIO").text("Executed SecretCodes_3G: NOK").showError();
+                    appendTextFlow(">> NOT OK\n", 1);
+                }
+                // display commmand-response
+                cardiotest.getTxtCommandResponse().setDisable(false);
+                String logFileName = runSettings.getProjectPath() + "\\scripts\\SecretCodes_3G.L00";
+                showCommandResponseLog(logFileName);
+            }
+        };
+        Thread runCodes3gThread = new Thread(task);
+        runCodes3gThread.start();
+    }
+
+    @FXML
+    private void handleMenuCodes2g() {
+        handleMenuSaveSettings();
+        // make user wait as verification executes
+        cardiotest.getMaskerPane().setText("Executing SecretCodes_2G. Please wait..");
+        // display masker pane
+        cardiotest.getMaskerPane().setVisible(true);
+        menuBar.setDisable(true);
+        appStatusBar.setDisable(true);
+
+        cardiotest.getTxtInterpretedLog().getChildren().clear();
+        appendTextFlow("Executing SecretCodes_2G..\n\n");
+
+        // use threads to avoid application freeze
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                runCodes2gOk = runService.runSecretCodes2g();
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                // dismiss masker pane
+                cardiotest.getMaskerPane().setVisible(false);
+                menuBar.setDisable(false);
+                appStatusBar.setDisable(false);
+                // update status bar
+                if (runCodes2gOk) {
+                    appStatusBar.setText("Executed SecretCodes_2G: OK");
+                    Notifications.create().title("CardIO").text("Executed SecretCodes_2G: OK").showInformation();
+                    appendTextFlow(">> OK\n\n", 0);
+                }
+                else {
+                    appStatusBar.setText("Executed SecretCodes_2G: NOK");
+                    Notifications.create().title("CardIO").text("Executed SecretCodes_2G: NOK").showError();
+                    appendTextFlow(">> NOT OK\n", 1);
+                }
+                // display commmand-response
+                cardiotest.getTxtCommandResponse().setDisable(false);
+                String logFileName = runSettings.getProjectPath() + "\\scripts\\SecretCodes_2G.L00";
+                showCommandResponseLog(logFileName);
+            }
+        };
+        Thread runCodes2gThread = new Thread(task);
+        runCodes2gThread.start();
+    }
+
+    private void showCommandResponseLog(String logFileName) {
+        try (BufferedReader br = new BufferedReader(new FileReader(logFileName))) {
+            StringBuffer sb = new StringBuffer();
+            String currentLine;
+            while ((currentLine = br.readLine()) != null)
+                sb.append(currentLine + "\n");
+            cardiotest.getTxtCommandResponse().setText(sb.toString());
+            cardiotest.getTabBottom().getSelectionModel().select(0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void appendTextFlow(String text) {
@@ -268,4 +540,25 @@ public class RootLayoutController {
     public Label getLblTerminalInfo() {
         return lblTerminalInfo;
     }
+
+    public MenuItem getMenuAtr() {
+        return menuAtr;
+    }
+
+    public MenuItem getMenuDeltaTest() {
+        return menuDeltaTest;
+    }
+
+    public MenuItem getMenuSqnMax() {
+        return menuSqnMax;
+    }
+
+    public MenuItem getMenuCodes3g() {
+        return menuCodes3g;
+    }
+
+    public MenuItem getMenuCodes2g() {
+        return menuCodes2g;
+    }
+
 }

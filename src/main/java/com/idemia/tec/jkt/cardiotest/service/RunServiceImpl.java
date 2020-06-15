@@ -300,10 +300,46 @@ public class RunServiceImpl implements RunService {
         if (root.getRunSettings().isStopOnError())
             cmdArray.add("-stoponerror");
         try {
+            logger.info("Executing.. " + scriptName);
             launchProcess(cmdArray);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public boolean runAtr() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "ATR.txt");
+        return exitVal == 0;
+    }
+
+    @Override
+    public boolean runDeltaTest() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "Authentication_MILLENAGE_DELTA_TEST.txt");
+        return exitVal == 0;
+    }
+
+    @Override
+    public boolean runSqnMax() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "Authentication_MILLENAGE_SQN_MAX.txt");
+        return exitVal == 0;
+    }
+
+    @Override
+    public boolean runSecretCodes3g() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "SecretCodes_3G.txt");
+        return exitVal == 0;
+    }
+
+    @Override
+    public boolean runSecretCodes2g() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "SecretCodes_2G.txt");
+        return exitVal == 0;
     }
 
 }

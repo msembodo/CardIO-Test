@@ -59,6 +59,7 @@ public class RunServiceImpl implements RunService {
         }
         else {
             logger.error("Exit value: " + exitVal);
+            logger.error(runAllResult.toJson());
             return new TestSuiteResponse(true, "Some error in execution", runAllResult);
         }
     }
@@ -121,18 +122,19 @@ public class RunServiceImpl implements RunService {
 
         // copy DLLs
         File dllDir = new File(scriptsDirectory + "dll\\");
-        dllDir.mkdir();
-        try (Stream<Path> walk = Files.walk(Paths.get("dll"))) {
-            List<String> dllFiles = walk.filter(Files::isRegularFile).map(Path::toString).collect(Collectors.toList());
-            for (String dll : dllFiles) {
-                File sourceDll = new File(dll);
-                File targetDll = new File(scriptsDirectory + dll);
-                Files.copy(sourceDll.toPath(), targetDll.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        if (!dllDir.exists()) {
+            dllDir.mkdir();
+            try (Stream<Path> walk = Files.walk(Paths.get("dll"))) {
+                List<String> dllFiles = walk.filter(Files::isRegularFile).map(Path::toString).collect(Collectors.toList());
+                for (String dll : dllFiles) {
+                    File sourceDll = new File(dll);
+                    File targetDll = new File(scriptsDirectory + dll);
+                    Files.copy(sourceDll.toPath(), targetDll.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-
         // copy variable file to project directory
         File sourceVarFile = new File(root.getRunSettings().getAdvSaveVariablesPath());
         File targetVarFile = new File(root.getRunSettings().getProjectPath() + "\\variables.txt");

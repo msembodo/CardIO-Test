@@ -224,6 +224,7 @@ public class RootLayoutController {
                     appendTextFlow("Test modules: " + testModules + "\n\n");
                     if (testCases != null) {
                         for (TestCase module : testCases) {
+                            setTestStatus(module);
                             appendTextFlow("Name: " + module.getName() + "\n");
                             appendTextFlow("Execution time: " + Float.parseFloat(module.getTime()) + " s\n");
                             if (module.getError() != null)
@@ -255,6 +256,70 @@ public class RootLayoutController {
         Thread runAllThread = new Thread(task);
         runAllThread.start(); // run in background
 
+    }
+
+    private void setTestStatus(TestCase module) {
+        if (module.getName().equals("ATR")) {
+            runSettings.getAtr().setTestAtrOk(true);
+            runSettings.getAtr().setTestAtrMesssage("OK");
+            if (module.getError() != null) {
+                runSettings.getAtr().setTestAtrOk(false);
+                runSettings.getAtr().setTestAtrMesssage(module.getError());
+            }
+            if (module.getFailure() != null) {
+                runSettings.getAtr().setTestAtrOk(false);
+                runSettings.getAtr().setTestAtrMesssage(module.getFailure());
+            }
+        }
+        if (module.getName().equals("Authentication_MILLENAGE_DELTA_TEST")) {
+            runSettings.getAuthentication().setTestDeltaOk(true);
+            runSettings.getAuthentication().setTestDeltaMessage("OK");
+            if (module.getError() != null) {
+                runSettings.getAuthentication().setTestDeltaOk(false);
+                runSettings.getAuthentication().setTestDeltaMessage(module.getError());
+            }
+            if (module.getFailure() != null) {
+                runSettings.getAuthentication().setTestDeltaOk(false);
+                runSettings.getAuthentication().setTestDeltaMessage(module.getFailure());
+            }
+        }
+        if (module.getName().equals("Authentication_MILLENAGE_SQN_MAX")) {
+            runSettings.getAuthentication().setTestSqnMaxOk(true);
+            runSettings.getAuthentication().setTestSqnMaxMessage("OK");
+            if (module.getError() != null) {
+                runSettings.getAuthentication().setTestSqnMaxOk(false);
+                runSettings.getAuthentication().setTestSqnMaxMessage(module.getError());
+            }
+            if (module.getFailure() != null) {
+                runSettings.getAuthentication().setTestSqnMaxOk(false);
+                runSettings.getAuthentication().setTestSqnMaxMessage(module.getFailure());
+            }
+        }
+        if (module.getName().equals("SecretCodes_3G")) {
+            runSettings.getSecretCodes().setTestCodes3gOk(true);
+            runSettings.getSecretCodes().setTestCodes3gMessage("OK");
+            if (module.getError() != null) {
+                runSettings.getSecretCodes().setTestCodes3gOk(false);
+                runSettings.getSecretCodes().setTestCodes3gMessage(module.getError());
+            }
+            if (module.getFailure() != null) {
+                runSettings.getSecretCodes().setTestCodes3gOk(false);
+                runSettings.getSecretCodes().setTestCodes3gMessage(module.getFailure());
+            }
+        }
+        if (module.getName().equals("SecretCodes_2G")) {
+            runSettings.getSecretCodes().setTestCodes2gOk(true);
+            runSettings.getSecretCodes().setTestCodes2gMessage("OK");
+            if (module.getError() != null) {
+                runSettings.getSecretCodes().setTestCodes2gOk(false);
+                runSettings.getSecretCodes().setTestCodes2gMessage(module.getError());
+            }
+            if (module.getFailure() != null) {
+                runSettings.getSecretCodes().setTestCodes2gOk(false);
+                runSettings.getSecretCodes().setTestCodes2gMessage(module.getFailure());
+            }
+        }
+        cardioConfigService.saveConfig(runSettings);
     }
 
     @FXML

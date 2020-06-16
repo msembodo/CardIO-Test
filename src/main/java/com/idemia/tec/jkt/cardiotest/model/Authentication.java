@@ -23,6 +23,10 @@ public class Authentication {
     private boolean milenage;
     private boolean isimAuth;
     private boolean gsmAlgo;
+    private boolean testDeltaOk;
+    private String testDeltaMessage;
+    private boolean testSqnMaxOk;
+    private String testSqnMaxMessage;
 
     public Authentication() {}
 
@@ -216,6 +220,38 @@ public class Authentication {
 
     public void setGsmAlgo(boolean gsmAlgo) {
         this.gsmAlgo = gsmAlgo;
+    }
+
+    public boolean isTestDeltaOk() {
+        return testDeltaOk;
+    }
+
+    public void setTestDeltaOk(boolean testDeltaOk) {
+        this.testDeltaOk = testDeltaOk;
+    }
+
+    public String getTestDeltaMessage() {
+        return testDeltaMessage;
+    }
+
+    public void setTestDeltaMessage(String testDeltaMessage) {
+        this.testDeltaMessage = testDeltaMessage;
+    }
+
+    public boolean isTestSqnMaxOk() {
+        return testSqnMaxOk;
+    }
+
+    public void setTestSqnMaxOk(boolean testSqnMaxOk) {
+        this.testSqnMaxOk = testSqnMaxOk;
+    }
+
+    public String getTestSqnMaxMessage() {
+        return testSqnMaxMessage;
+    }
+
+    public void setTestSqnMaxMessage(String testSqnMaxMessage) {
+        this.testSqnMaxMessage = testSqnMaxMessage;
     }
 
 }

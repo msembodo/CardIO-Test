@@ -6,6 +6,8 @@ public class ATR {
     private String atrString;
     private String status;
     private String tck;
+    private boolean testAtrOk;
+    private String testAtrMesssage;
 
     public ATR() {}
 
@@ -46,6 +48,22 @@ public class ATR {
 
     public void setTck(String tck) {
         this.tck = tck;
+    }
+
+    public boolean isTestAtrOk() {
+        return testAtrOk;
+    }
+
+    public void setTestAtrOk(boolean testAtrOk) {
+        this.testAtrOk = testAtrOk;
+    }
+
+    public String getTestAtrMesssage() {
+        return testAtrMesssage;
+    }
+
+    public void setTestAtrMesssage(String testAtrMesssage) {
+        this.testAtrMesssage = testAtrMesssage;
     }
 
 }

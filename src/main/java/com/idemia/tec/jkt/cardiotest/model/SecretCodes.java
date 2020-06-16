@@ -43,6 +43,11 @@ public class SecretCodes {
     private boolean blockPuk1;
     private boolean blockPuk2;
 
+    private boolean testCodes3gOk;
+    private String testCodes3gMessage;
+    private boolean testCodes2gOk;
+    private String testCodes2gMessage;
+
     public SecretCodes() {}
 
     public SecretCodes(boolean include3gScript, boolean include2gScript, boolean pin1disabled, boolean pin2disabled,
@@ -373,6 +378,38 @@ public class SecretCodes {
 
     public void setBlockPuk2(boolean blockPuk2) {
         this.blockPuk2 = blockPuk2;
+    }
+
+    public boolean isTestCodes3gOk() {
+        return testCodes3gOk;
+    }
+
+    public void setTestCodes3gOk(boolean testCodes3gOk) {
+        this.testCodes3gOk = testCodes3gOk;
+    }
+
+    public String getTestCodes3gMessage() {
+        return testCodes3gMessage;
+    }
+
+    public void setTestCodes3gMessage(String testCodes3gMessage) {
+        this.testCodes3gMessage = testCodes3gMessage;
+    }
+
+    public boolean isTestCodes2gOk() {
+        return testCodes2gOk;
+    }
+
+    public void setTestCodes2gOk(boolean testCodes2gOk) {
+        this.testCodes2gOk = testCodes2gOk;
+    }
+
+    public String getTestCodes2gMessage() {
+        return testCodes2gMessage;
+    }
+
+    public void setTestCodes2gMessage(String testCodes2gMessage) {
+        this.testCodes2gMessage = testCodes2gMessage;
     }
 
 }

@@ -840,6 +840,7 @@ public class CardiotestController {
         root.getRunSettings().setDeveloperName(txtDeveloperName.getText());
         root.getRunSettings().setTesterName(txtTesterName.getText());
 
+        root.getRunSettings().getAtr().setAtrString(txtAtr.getText());
         root.getRunSettings().getAtr().setIncludeAtr(chkIncludeAtr.isSelected());
 
         // card parameters
@@ -851,7 +852,7 @@ public class CardiotestController {
         root.getRunSettings().getCardParameters().setIsimAid(txtIsimAid.getText());
         root.getRunSettings().getCardParameters().setDfIsim(txtDfIsim.getText());
         root.getRunSettings().getCardParameters().setCsimAid(txtCsimAid.getText());
-        root.getRunSettings().getCardParameters().setDfIsim(txtDfCsim.getText());
+        root.getRunSettings().getCardParameters().setDfCsim(txtDfCsim.getText());
 
         // secret codes values
         root.getRunSettings().getSecretCodes().setGpin(cmbGpin.getSelectionModel().getSelectedItem());

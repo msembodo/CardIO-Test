@@ -6,6 +6,7 @@ import com.idemia.tec.jkt.cardiotest.model.RunSettings;
 import com.idemia.tec.jkt.cardiotest.model.TestCase;
 import com.idemia.tec.jkt.cardiotest.response.TestSuiteResponse;
 import com.idemia.tec.jkt.cardiotest.service.CardioConfigService;
+import com.idemia.tec.jkt.cardiotest.service.ReportService;
 import com.idemia.tec.jkt.cardiotest.service.RunService;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -54,6 +55,8 @@ public class RootLayoutController {
     private CardioConfigService cardioConfigService;
     @Autowired
     private RunService runService;
+    @Autowired
+    private ReportService reportService;
 
     @FXML
     private BorderPane rootBorderPane;
@@ -234,6 +237,7 @@ public class RootLayoutController {
                             appendTextFlow("\n");
                         }
                     }
+                    reportService.createReportFromSettings(runSettings);
                     cardiotest.getTxtCommandResponse().clear();
                     cardiotest.getTabBottom().getSelectionModel().select(0);
                 }
@@ -262,61 +266,76 @@ public class RootLayoutController {
         if (module.getName().equals("ATR")) {
             runSettings.getAtr().setTestAtrOk(true);
             runSettings.getAtr().setTestAtrMesssage("OK");
+            String errFailure = "";
             if (module.getError() != null) {
                 runSettings.getAtr().setTestAtrOk(false);
-                runSettings.getAtr().setTestAtrMesssage(module.getError());
+                errFailure += module.getError().replace("\n", ";");
+                runSettings.getAtr().setTestAtrMesssage(errFailure);
             }
             if (module.getFailure() != null) {
                 runSettings.getAtr().setTestAtrOk(false);
-                runSettings.getAtr().setTestAtrMesssage(module.getFailure());
+                errFailure += module.getFailure().replace("\n", ";");
+                runSettings.getAtr().setTestAtrMesssage(errFailure);
             }
         }
         if (module.getName().equals("Authentication_MILLENAGE_DELTA_TEST")) {
             runSettings.getAuthentication().setTestDeltaOk(true);
             runSettings.getAuthentication().setTestDeltaMessage("OK");
+            String errFailure = "";
             if (module.getError() != null) {
                 runSettings.getAuthentication().setTestDeltaOk(false);
-                runSettings.getAuthentication().setTestDeltaMessage(module.getError());
+                errFailure += module.getError().replace("\n", ";");
+                runSettings.getAuthentication().setTestDeltaMessage(errFailure);
             }
             if (module.getFailure() != null) {
                 runSettings.getAuthentication().setTestDeltaOk(false);
-                runSettings.getAuthentication().setTestDeltaMessage(module.getFailure());
+                errFailure += module.getFailure().replace("\n", ";");
+                runSettings.getAuthentication().setTestDeltaMessage(errFailure);
             }
         }
         if (module.getName().equals("Authentication_MILLENAGE_SQN_MAX")) {
             runSettings.getAuthentication().setTestSqnMaxOk(true);
             runSettings.getAuthentication().setTestSqnMaxMessage("OK");
+            String errFailure = "";
             if (module.getError() != null) {
                 runSettings.getAuthentication().setTestSqnMaxOk(false);
-                runSettings.getAuthentication().setTestSqnMaxMessage(module.getError());
+                errFailure += module.getError().replace("\n", ";");
+                runSettings.getAuthentication().setTestSqnMaxMessage(errFailure);
             }
             if (module.getFailure() != null) {
                 runSettings.getAuthentication().setTestSqnMaxOk(false);
-                runSettings.getAuthentication().setTestSqnMaxMessage(module.getFailure());
+                errFailure += module.getFailure().replace("\n", ";");
+                runSettings.getAuthentication().setTestSqnMaxMessage(errFailure);
             }
         }
         if (module.getName().equals("SecretCodes_3G")) {
             runSettings.getSecretCodes().setTestCodes3gOk(true);
             runSettings.getSecretCodes().setTestCodes3gMessage("OK");
+            String errFailure = "";
             if (module.getError() != null) {
                 runSettings.getSecretCodes().setTestCodes3gOk(false);
-                runSettings.getSecretCodes().setTestCodes3gMessage(module.getError());
+                errFailure += module.getError().replace("\n", ";");
+                runSettings.getSecretCodes().setTestCodes3gMessage(errFailure);
             }
             if (module.getFailure() != null) {
                 runSettings.getSecretCodes().setTestCodes3gOk(false);
-                runSettings.getSecretCodes().setTestCodes3gMessage(module.getFailure());
+                errFailure += module.getFailure().replace("\n", ";");
+                runSettings.getSecretCodes().setTestCodes3gMessage(errFailure);
             }
         }
         if (module.getName().equals("SecretCodes_2G")) {
             runSettings.getSecretCodes().setTestCodes2gOk(true);
             runSettings.getSecretCodes().setTestCodes2gMessage("OK");
+            String errFailure = "";
             if (module.getError() != null) {
                 runSettings.getSecretCodes().setTestCodes2gOk(false);
-                runSettings.getSecretCodes().setTestCodes2gMessage(module.getError());
+                errFailure += module.getError().replace("\n", ";");
+                runSettings.getSecretCodes().setTestCodes2gMessage(errFailure);
             }
             if (module.getFailure() != null) {
                 runSettings.getSecretCodes().setTestCodes2gOk(false);
-                runSettings.getSecretCodes().setTestCodes2gMessage(module.getFailure());
+                errFailure += module.getFailure().replace("\n", ";");
+                runSettings.getSecretCodes().setTestCodes2gMessage(errFailure);
             }
         }
         cardioConfigService.saveConfig(runSettings);

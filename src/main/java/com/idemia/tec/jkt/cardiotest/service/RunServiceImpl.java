@@ -166,19 +166,29 @@ public class RunServiceImpl implements RunService {
 
     private String addAtr(ATR atr) {
         // add ATR to options
-        String optionAtr = "; card parameters\n"
-                + ".DEFINE %ATR " + atr.getAtrString() + "\n"
-                + "; TCK: " + root.getRunSettings().getAtr().getTck() + "\n\n"
-                + ".DEFINE %CARD_MANAGER_AID " + root.getRunSettings().getCardParameters().getCardManagerAid() + "\n\n"
-                + ".DEFINE %USIM_AID " + root.getRunSettings().getCardParameters().getUsimAid() + "\n"
-                + ".DEFINE %DF_USIM " + root.getRunSettings().getCardParameters().getDfUsim() + "\n\n"
-                + ".DEFINE %DF_GSM_AC " + root.getRunSettings().getCardParameters().getDfGsmAccess() + "\n"
-                + ".DEFINE %DF_TELECOM " + root.getRunSettings().getCardParameters().getDfTelecom() + "\n\n"
-                + ".DEFINE %ISIM_AID " + root.getRunSettings().getCardParameters().getIsimAid() + "\n"
-                + ".DEFINE %DF_ISIM " + root.getRunSettings().getCardParameters().getDfIsim() + "\n\n"
-                + ".DEFINE %CSIM_AID " + root.getRunSettings().getCardParameters().getCsimAid() + "\n"
-                + ".DEFINE %DF_CSIM " + root.getRunSettings().getCardParameters().getDfCsim() + "\n\n";
-        optionsBuffer.append(optionAtr);
+        optionsBuffer.append(
+            "; card parameters\n"
+            + ".DEFINE %ATR " + atr.getAtrString() + "\n"
+            + "; TCK: " + atr.getTck() + "\n\n"
+        );
+        if (!root.getRunSettings().getCardParameters().getCardManagerAid().equals(""))
+            optionsBuffer.append(".DEFINE %CARD_MANAGER_AID " + root.getRunSettings().getCardParameters().getCardManagerAid() + "\n\n");
+        if (!root.getRunSettings().getCardParameters().getUsimAid().equals(""))
+            optionsBuffer.append(".DEFINE %USIM_AID " + root.getRunSettings().getCardParameters().getUsimAid() + "\n");
+        if (!root.getRunSettings().getCardParameters().getDfUsim().equals(""))
+            optionsBuffer.append(".DEFINE %DF_USIM " + root.getRunSettings().getCardParameters().getDfUsim() + "\n\n");
+        if (!root.getRunSettings().getCardParameters().getDfGsmAccess().equals(""))
+            optionsBuffer.append(".DEFINE %DF_GSM_AC " + root.getRunSettings().getCardParameters().getDfGsmAccess() + "\n");
+        if (!root.getRunSettings().getCardParameters().getDfTelecom().equals(""))
+            optionsBuffer.append(".DEFINE %DF_TELECOM " + root.getRunSettings().getCardParameters().getDfTelecom() + "\n\n");
+        if (!root.getRunSettings().getCardParameters().getIsimAid().equals(""))
+            optionsBuffer.append(".DEFINE %ISIM_AID " + root.getRunSettings().getCardParameters().getIsimAid() + "\n");
+        if (!root.getRunSettings().getCardParameters().getDfIsim().equals(""))
+            optionsBuffer.append(".DEFINE %DF_ISIM " + root.getRunSettings().getCardParameters().getDfIsim() + "\n\n");
+        if (!root.getRunSettings().getCardParameters().getCsimAid().equals(""))
+            optionsBuffer.append(".DEFINE %CSIM_AID " + root.getRunSettings().getCardParameters().getCsimAid() + "\n");
+        if (!root.getRunSettings().getCardParameters().getDfCsim().equals(""))
+            optionsBuffer.append(".DEFINE %DF_CSIM " + root.getRunSettings().getCardParameters().getDfCsim() + "\n\n");
 
         // add ATR script to structure
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "ATR.txt"))) {

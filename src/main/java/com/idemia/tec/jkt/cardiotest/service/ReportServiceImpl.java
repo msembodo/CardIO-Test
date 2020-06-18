@@ -162,29 +162,29 @@ public class ReportServiceImpl implements ReportService {
             }
             html.append("\n<tr><td>COMP128-2</td>");
             if (runSettings.getAuthentication().isComp1282())
-                html.append("<td>Yes</td></tr>");
+                html.append("<td>YES</td></tr>");
             else
-                html.append("<td>No</td></tr>");
+                html.append("<td>NO</td></tr>");
             html.append("\n<tr><td>COMP128-3</td>");
             if (runSettings.getAuthentication().isComp1283())
-                html.append("<td>Yes</td></tr>");
+                html.append("<td>YES</td></tr>");
             else
-                html.append("<td>No</td></tr>");
+                html.append("<td>NO</td></tr>");
             html.append("\n<tr><td>Milenage</td>");
             if (runSettings.getAuthentication().isMilenage())
-                html.append("<td>Yes</td></tr>");
+                html.append("<td>YES</td></tr>");
             else
-                html.append("<td>No</td></tr>");
+                html.append("<td>NO</td></tr>");
             html.append("\n<tr><td>ISIM auth</td>");
             if (runSettings.getAuthentication().isIsimAuth())
-                html.append("<td>Yes</td></tr>");
+                html.append("<td>YES</td></tr>");
             else
-                html.append("<td>No</td></tr>");
+                html.append("<td>NO</td></tr>");
             html.append("\n<tr><td>GSM algo</td>");
             if (runSettings.getAuthentication().isGsmAlgo())
-                html.append("<td>Yes</td></tr>");
+                html.append("<td>YES</td></tr>");
             else
-                html.append("<td>No</td></tr>");
+                html.append("<td>NO</td></tr>");
             html.append(
                 "\n<tr><td>Authentication algorithm (AKA) - Ci Value 1</td>"
                 + "<td><a href=\"#" + runSettings.getAuthentication().getAkaC1() + "\">"
@@ -252,6 +252,165 @@ public class ReportServiceImpl implements ReportService {
             html.append(createTableFooter());
         }
 
+        // secret codes
+        if (runSettings.getSecretCodes().isInclude3gScript() || runSettings.getSecretCodes().isInclude2gScript()) {
+            html.append("\n<div><h2>Secret Codes</h2></div>");
+            html.append(createTableHeader());
+            if (runSettings.getSecretCodes().isInclude3gScript()) {
+                html.append("\n<tr><td>Secret codes 3G</td>");
+                if (runSettings.getSecretCodes().isTestCodes3gOk())
+                    html.append("<td class=\"ok\">PASSED</td></tr>");
+                else {
+                    String[] messages = runSettings.getSecretCodes().getTestCodes3gMessage().split(";");
+                    html.append("<td class=\"error\">" + String.join("<br>", messages) + "</td></tr>");
+                }
+            }
+            if (runSettings.getSecretCodes().isInclude2gScript()) {
+                html.append("\n<tr><td>Secret codes 2G</td>");
+                if (runSettings.getSecretCodes().isTestCodes2gOk())
+                    html.append("<td class=\"ok\">PASSED</td></tr>");
+                else {
+                    String[] messages = runSettings.getSecretCodes().getTestCodes2gMessage().split(";");
+                    html.append("<td class=\"error\">" + String.join("<br>", messages) + "</td></tr>");
+                }
+            }
+            html.append(
+                "\n<tr><td>Global PIN</td>"
+                + "<td><a href=\"#" + runSettings.getSecretCodes().getGpin() + "\">"
+                + runSettings.getSecretCodes().getGpin() + "</a></td></tr>"
+            );
+            html.append(
+                "\n<tr><td>Local PIN</td>"
+                + "<td><a href=\"#" + runSettings.getSecretCodes().getLpin() + "\">"
+                + runSettings.getSecretCodes().getLpin() + "</a></td></tr>"
+            );
+            html.append(
+                "\n<tr><td>Global PUK</td>"
+                + "<td><a href=\"#" + runSettings.getSecretCodes().getGpuk() + "\">"
+                + runSettings.getSecretCodes().getGpuk() + "</a></td></tr>"
+            );
+            html.append(
+                "\n<tr><td>Local PUK</td>"
+                + "<td><a href=\"#" + runSettings.getSecretCodes().getLpuk() + "\">"
+                + runSettings.getSecretCodes().getLpuk() + "</a></td></tr>"
+            );
+            html.append(
+                "\n<tr><td>Global PIN retries</td>"
+                + "<td>" + runSettings.getSecretCodes().getGpinRetries() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td>Local PIN retries</td>"
+                + "<td>" + runSettings.getSecretCodes().getLpinRetries() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td>Global PUK retries</td>"
+                + "<td>" + runSettings.getSecretCodes().getGpukRetries() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td>Local PUK retries</td>"
+                + "<td>" + runSettings.getSecretCodes().getLpukRetries() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td>CHV1</td>"
+                + "<td><a href=\"#" + runSettings.getSecretCodes().getChv1() + "\">"
+                + runSettings.getSecretCodes().getChv1() + "</a></td></tr>"
+            );
+            html.append(
+                "\n<tr><td>CHV2</td>"
+                + "<td><a href=\"#" + runSettings.getSecretCodes().getChv2() + "\">"
+                + runSettings.getSecretCodes().getChv2() + "</a></td></tr>"
+            );
+            html.append(
+                "\n<tr><td>PUK1</td>"
+                + "<td><a href=\"#" + runSettings.getSecretCodes().getPuk1() + "\">"
+                + runSettings.getSecretCodes().getPuk1() + "</a></td></tr>"
+            );
+            html.append(
+                "\n<tr><td>PUK2</td>"
+                + "<td><a href=\"#" + runSettings.getSecretCodes().getPuk2() + "\">"
+                + runSettings.getSecretCodes().getPuk2() + "</a></td></tr>"
+            );
+            html.append(
+                "\n<tr><td>CHV1 retries</td>"
+                + "<td>" + runSettings.getSecretCodes().getChv1Retries() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td>CHV2 retries</td>"
+                + "<td>" + runSettings.getSecretCodes().getChv2Retries() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td>PUK1 retries</td>"
+                + "<td>" + runSettings.getSecretCodes().getPuk1Retries() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td>PUK2 retries</td>"
+                + "<td>" + runSettings.getSecretCodes().getPuk2Retries() + "</td></tr>"
+            );
+            html.append("\n<tr><td>Block Global PUK</td>");
+            if (runSettings.getSecretCodes().isBlockGpuk())
+                html.append("<td>YES</td></tr>");
+            else
+                html.append("<td>NO</td></tr>");
+            html.append("\n<tr><td>Block Local PUK</td>");
+            if (runSettings.getSecretCodes().isBlockLpuk())
+                html.append("<td>YES</td></tr>");
+            else
+                html.append("<td>NO</td></tr>");
+            html.append("\n<tr><td>Block PUK1</td>");
+            if (runSettings.getSecretCodes().isBlockPuk1())
+                html.append("<td>YES</td></tr>");
+            else
+                html.append("<td>NO</td></tr>");
+            html.append("\n<tr><td>Block PUK2</td>");
+            if (runSettings.getSecretCodes().isBlockPuk2())
+                html.append("<td>YES</td></tr>");
+            else
+                html.append("<td>NO</td></tr>");
+            html.append(
+                "\n<tr><td>Issuer Secret Code 1</td>"
+                + "<td><a href=\"#" + runSettings.getSecretCodes().getIsc1() + "\">"
+                + runSettings.getSecretCodes().getIsc1() + "</a></td></tr>"
+            );
+            html.append(
+                "\n<tr><td>ISC1 retries</td>"
+                + "<td>" + runSettings.getSecretCodes().getIsc1Retries() + "</td></tr>"
+            );
+            if (runSettings.getSecretCodes().isUseIsc2()) {
+                html.append(
+                    "\n<tr><td>Issuer Secret Code 2</td>"
+                    + "<td><a href=\"#" + runSettings.getSecretCodes().getIsc2() + "\">"
+                    + runSettings.getSecretCodes().getIsc2() + "</a></td></tr>"
+                );
+                html.append(
+                    "\n<tr><td>ISC2 retries</td>"
+                    + "<td>" + runSettings.getSecretCodes().getIsc2Retries() + "</td></tr>"
+                );
+            }
+            if (runSettings.getSecretCodes().isUseIsc3()) {
+                html.append(
+                    "\n<tr><td>Issuer Secret Code 3</td>"
+                    + "<td><a href=\"#" + runSettings.getSecretCodes().getIsc3() + "\">"
+                    + runSettings.getSecretCodes().getIsc3() + "</a></td></tr>"
+                );
+                html.append(
+                    "\n<tr><td>ISC3 retries</td>"
+                    + "<td>" + runSettings.getSecretCodes().getIsc3Retries() + "</td></tr>"
+                );
+            }
+            if (runSettings.getSecretCodes().isUseIsc4()) {
+                html.append(
+                    "\n<tr><td>Issuer Secret Code 4</td>"
+                    + "<td><a href=\"#" + runSettings.getSecretCodes().getIsc4() + "\">"
+                    + runSettings.getSecretCodes().getIsc4() + "</a></td></tr>"
+                );
+                html.append(
+                    "\n<tr><td>ISC4 retries</td>"
+                    + "<td>" + runSettings.getSecretCodes().getIsc4Retries() + "</td></tr>"
+                );
+            }
+            html.append(createTableFooter());
+        }
+
         html.append(createDocumentFooter());
         return html;
     }
@@ -304,11 +463,13 @@ public class ReportServiceImpl implements ReportService {
             "}\n" +
             "table {\n" +
             "\tborder-collapse: collapse;\n" +
+            "\twidth: 60%;\n" +
             "}\n" +
             "th,\n" +
             "td {\n" +
-            "\tborder: 2px solid black;\n" +
+            "\ttext-align: left;\n" +
             "\tpadding: 4px;\n" +
+            "\tborder-bottom: 1px solid #ddd;\n" +
             "}\n" +
             "th.error {\n" +
             "\tbackground-color: firebrick;\n" +
@@ -318,6 +479,7 @@ public class ReportServiceImpl implements ReportService {
             "\tbackground-color: darkorange;\n" +
             "\tcolor: #F9F9F9;\n" +
             "}\n" +
+            "tr:hover {background-color: #f5f5f5;}\n" +
             "td.error {\n" +
             "\tbackground-color: #FDEDEC;\n" +
             "\tcolor: #17202A;\n" +

@@ -2,11 +2,14 @@ package com.idemia.tec.jkt.cardiotest.service;
 
 import com.idemia.tec.jkt.cardiotest.model.RunSettings;
 import com.idemia.tec.jkt.cardiotest.model.VariableMapping;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.tool.xml.XMLWorkerHelper;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
 import java.sql.Timestamp;
 
 @Service
@@ -17,10 +20,23 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public void createReportFromSettings(RunSettings runSettings) {
         this.runSettings = runSettings;
+        boolean reportAsPdf = true;
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(runSettings.getProjectPath() + "\\RunAll.html"))) {
             bw.append(composeHtml());
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        if (reportAsPdf) {
+            try {
+                Document document = new Document();
+                PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(runSettings.getProjectPath() + "\\RunAll.pdf"));
+                document.open();
+                XMLWorkerHelper.getInstance().parseXHtml(writer, document, new FileInputStream(runSettings.getProjectPath() + "\\RunAll.html"));
+                document.close();
+                Files.deleteIfExists(new File(runSettings.getProjectPath() + "\\RunAll.html").toPath());
+            } catch (DocumentException | IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -30,7 +46,7 @@ public class ReportServiceImpl implements ReportService {
         html.append("\n<div><h1>TEC Testing Report</h1></div>");
         // project details
         html.append(
-            "\n<div><h2>Project Details</h2></div>"
+            "\n<div><h2><b>Project Details</b></h2></div>"
             + createTableHeader()
             + "\n<tr><td>Request ID</td>"
             + "<td>" + runSettings.getRequestId() + "</td></tr>"
@@ -52,8 +68,8 @@ public class ReportServiceImpl implements ReportService {
         );
 
         // variable mappings
-        html.append("\n<div><h2>Variable Mappings</h2></div>");
-        html.append(createTableHeader());
+        html.append("\n<div><h2><b>Variable Mappings</b></h2></div>");
+        html.append(createTableHeaderModule());
         html.append(
             "\n<tr><th>Mapped variable</th>"
             + "<th>Value / MCC variable</th></tr>"
@@ -67,8 +83,8 @@ public class ReportServiceImpl implements ReportService {
         }
         html.append(createTableFooter());
         // card parameters
-        html.append("\n<div><h2>Card Parameters</h2></div>");
-        html.append(createTableHeader());
+        html.append("\n<div><h2><b>Card Parameters</b></h2></div>");
+        html.append(createTableHeaderModule());
         if (!runSettings.getCardParameters().getCardManagerAid().equals(""))
             html.append(
                 "\n<tr><td>Card manager AID</td>"
@@ -118,9 +134,9 @@ public class ReportServiceImpl implements ReportService {
 
         // ATR
         if (runSettings.getAtr().isIncludeAtr()) {
-            html.append("\n<div><h2>Answer To Reset</h2></div>");
-            html.append(createTableHeader());
-            html.append("\n<tr><td>ATR test</td>");
+            html.append("\n<div><h2><b>Answer To Reset</b></h2></div>");
+            html.append(createTableHeaderModule());
+            html.append("\n<tr><td>ATR check</td>");
             if (runSettings.getAtr().isTestAtrOk())
                 html.append("<td class=\"ok\">PASSED</td></tr>");
             else {
@@ -128,7 +144,7 @@ public class ReportServiceImpl implements ReportService {
                 html.append("<td class=\"error\">" + String.join("<br>", messages) + "</td></tr>");
             }
             html.append(
-                "\n<tr><td>ATR value</td>"
+                "\n<tr><td>ATR</td>"
                 + "<td>" + runSettings.getAtr().getAtrString() + "</td></tr>"
                 + "\n<tr><td>Status</td>"
                 + "<td>" + runSettings.getAtr().getStatus() + "</td></tr>"
@@ -140,8 +156,8 @@ public class ReportServiceImpl implements ReportService {
 
         // authentication
         if (runSettings.getAuthentication().isIncludeDeltaTest() || runSettings.getAuthentication().isIncludeSqnMax()) {
-            html.append("\n<div><h2>Authentication</h2></div>");
-            html.append(createTableHeader());
+            html.append("\n<div><h2><b>Authentication</b></h2></div>");
+            html.append(createTableHeaderModule());
             if (runSettings.getAuthentication().isIncludeDeltaTest()) {
                 html.append("\n<tr><td>Milenage delta test</td>");
                 if (runSettings.getAuthentication().isTestDeltaOk())
@@ -186,44 +202,36 @@ public class ReportServiceImpl implements ReportService {
             else
                 html.append("<td>NO</td></tr>");
             html.append(
-                "\n<tr><td>Authentication algorithm (AKA) - Ci Value 1</td>"
-                + "<td><a href=\"#" + runSettings.getAuthentication().getAkaC1() + "\">"
-                + runSettings.getAuthentication().getAkaC1() + "</a></td></tr>"
+                "\n<tr><td>Authentication AKA - Ci Value 1</td>"
+                + "<td>" + getValue(runSettings.getAuthentication().getAkaC1()) + "</td></tr>"
             );
             html.append(
-                "\n<tr><td>Authentication algorithm (AKA) - Ci Value 2</td>"
-                + "<td><a href=\"#" + runSettings.getAuthentication().getAkaC2() + "\">"
-                + runSettings.getAuthentication().getAkaC2() + "</a></td></tr>"
+                "\n<tr><td>Authentication AKA - Ci Value 2</td>"
+                + "<td>" + getValue(runSettings.getAuthentication().getAkaC2()) + "</td></tr>"
             );
             html.append(
-                "\n<tr><td>Authentication algorithm (AKA) - Ci Value 3</td>"
-                + "<td><a href=\"#" + runSettings.getAuthentication().getAkaC3() + "\">"
-                + runSettings.getAuthentication().getAkaC3() + "</a></td></tr>"
+                "\n<tr><td>Authentication AKA - Ci Value 3</td>"
+                + "<td>" + getValue(runSettings.getAuthentication().getAkaC3()) + "</td></tr>"
             );
             html.append(
-                "\n<tr><td>Authentication algorithm (AKA) - Ci Value 4</td>"
-                + "<td><a href=\"#" + runSettings.getAuthentication().getAkaC4() + "\">"
-                + runSettings.getAuthentication().getAkaC4() + "</a></td></tr>"
+                "\n<tr><td>Authentication AKA - Ci Value 4</td>"
+                + "<td>" + getValue(runSettings.getAuthentication().getAkaC4()) + "</td></tr>"
             );
             html.append(
-                "\n<tr><td>Authentication algorithm (AKA) - Ci Value 5</td>"
-                + "<td><a href=\"#" + runSettings.getAuthentication().getAkaC5() + "\">"
-                + runSettings.getAuthentication().getAkaC5() + "</a></td></tr>"
+                "\n<tr><td>Authentication AKA - Ci Value 5</td>"
+                + "<td>" + getValue(runSettings.getAuthentication().getAkaC5()) + "</td></tr>"
             );
             html.append(
                 "\n<tr><td>Rotation constants (Ri)</td>"
-                + "<td><a href=\"#" + runSettings.getAuthentication().getAkaRi() + "\">"
-                + runSettings.getAuthentication().getAkaRi() + "</a></td></tr>"
+                + "<td>" + getValue(runSettings.getAuthentication().getAkaRi()) + "</td></tr>"
             );
             html.append(
                 "\n<tr><td>Subscriber key (K)</td>"
-                + "<td><a href=\"#" + runSettings.getAuthentication().getKi() + "\">"
-                + runSettings.getAuthentication().getKi() + "</a></td></tr>"
+                + "<td>" + getValue(runSettings.getAuthentication().getKi()) + "</td></tr>"
             );
             html.append(
                 "\n<tr><td>OPc</td>"
-                + "<td><a href=\"#" + runSettings.getAuthentication().getOpc() + "\">"
-                + runSettings.getAuthentication().getOpc() + "</a></td></tr>"
+                + "<td>" + getValue(runSettings.getAuthentication().getOpc()) + "</td></tr>"
             );
             html.append(
                 "\n<tr><td>Random challenge (RAND)</td>"
@@ -254,8 +262,8 @@ public class ReportServiceImpl implements ReportService {
 
         // secret codes
         if (runSettings.getSecretCodes().isInclude3gScript() || runSettings.getSecretCodes().isInclude2gScript()) {
-            html.append("\n<div><h2>Secret Codes</h2></div>");
-            html.append(createTableHeader());
+            html.append("\n<div><h2><b>Secret Codes</b></h2></div>");
+            html.append(createTableHeaderModule());
             if (runSettings.getSecretCodes().isInclude3gScript()) {
                 html.append("\n<tr><td>Secret codes 3G</td>");
                 if (runSettings.getSecretCodes().isTestCodes3gOk())
@@ -276,23 +284,19 @@ public class ReportServiceImpl implements ReportService {
             }
             html.append(
                 "\n<tr><td>Global PIN</td>"
-                + "<td><a href=\"#" + runSettings.getSecretCodes().getGpin() + "\">"
-                + runSettings.getSecretCodes().getGpin() + "</a></td></tr>"
+                + "<td>" + getValue(runSettings.getSecretCodes().getGpin()) + "</td></tr>"
             );
             html.append(
                 "\n<tr><td>Local PIN</td>"
-                + "<td><a href=\"#" + runSettings.getSecretCodes().getLpin() + "\">"
-                + runSettings.getSecretCodes().getLpin() + "</a></td></tr>"
+                + "<td>" + getValue(runSettings.getSecretCodes().getLpin()) + "</td></tr>"
             );
             html.append(
                 "\n<tr><td>Global PUK</td>"
-                + "<td><a href=\"#" + runSettings.getSecretCodes().getGpuk() + "\">"
-                + runSettings.getSecretCodes().getGpuk() + "</a></td></tr>"
+                + "<td>" + getValue(runSettings.getSecretCodes().getGpuk()) + "</td></tr>"
             );
             html.append(
                 "\n<tr><td>Local PUK</td>"
-                + "<td><a href=\"#" + runSettings.getSecretCodes().getLpuk() + "\">"
-                + runSettings.getSecretCodes().getLpuk() + "</a></td></tr>"
+                + "<td>" + getValue(runSettings.getSecretCodes().getLpuk()) + "</td></tr>"
             );
             html.append(
                 "\n<tr><td>Global PIN retries</td>"
@@ -312,23 +316,19 @@ public class ReportServiceImpl implements ReportService {
             );
             html.append(
                 "\n<tr><td>CHV1</td>"
-                + "<td><a href=\"#" + runSettings.getSecretCodes().getChv1() + "\">"
-                + runSettings.getSecretCodes().getChv1() + "</a></td></tr>"
+                + "<td>" + getValue(runSettings.getSecretCodes().getChv1()) + "</td></tr>"
             );
             html.append(
                 "\n<tr><td>CHV2</td>"
-                + "<td><a href=\"#" + runSettings.getSecretCodes().getChv2() + "\">"
-                + runSettings.getSecretCodes().getChv2() + "</a></td></tr>"
+                + "<td>" + getValue(runSettings.getSecretCodes().getChv2()) + "</td></tr>"
             );
             html.append(
                 "\n<tr><td>PUK1</td>"
-                + "<td><a href=\"#" + runSettings.getSecretCodes().getPuk1() + "\">"
-                + runSettings.getSecretCodes().getPuk1() + "</a></td></tr>"
+                + "<td>" + getValue(runSettings.getSecretCodes().getPuk1()) + "</td></tr>"
             );
             html.append(
                 "\n<tr><td>PUK2</td>"
-                + "<td><a href=\"#" + runSettings.getSecretCodes().getPuk2() + "\">"
-                + runSettings.getSecretCodes().getPuk2() + "</a></td></tr>"
+                + "<td>" + getValue(runSettings.getSecretCodes().getPuk2()) + "</td></tr>"
             );
             html.append(
                 "\n<tr><td>CHV1 retries</td>"
@@ -368,8 +368,7 @@ public class ReportServiceImpl implements ReportService {
                 html.append("<td>NO</td></tr>");
             html.append(
                 "\n<tr><td>Issuer Secret Code 1</td>"
-                + "<td><a href=\"#" + runSettings.getSecretCodes().getIsc1() + "\">"
-                + runSettings.getSecretCodes().getIsc1() + "</a></td></tr>"
+                + "<td>" + getValue(runSettings.getSecretCodes().getIsc1()) + "</td></tr>"
             );
             html.append(
                 "\n<tr><td>ISC1 retries</td>"
@@ -378,8 +377,7 @@ public class ReportServiceImpl implements ReportService {
             if (runSettings.getSecretCodes().isUseIsc2()) {
                 html.append(
                     "\n<tr><td>Issuer Secret Code 2</td>"
-                    + "<td><a href=\"#" + runSettings.getSecretCodes().getIsc2() + "\">"
-                    + runSettings.getSecretCodes().getIsc2() + "</a></td></tr>"
+                    + "<td>" + getValue(runSettings.getSecretCodes().getIsc2()) + "</td></tr>"
                 );
                 html.append(
                     "\n<tr><td>ISC2 retries</td>"
@@ -389,8 +387,7 @@ public class ReportServiceImpl implements ReportService {
             if (runSettings.getSecretCodes().isUseIsc3()) {
                 html.append(
                     "\n<tr><td>Issuer Secret Code 3</td>"
-                    + "<td><a href=\"#" + runSettings.getSecretCodes().getIsc3() + "\">"
-                    + runSettings.getSecretCodes().getIsc3() + "</a></td></tr>"
+                    + "<td>" + getValue(runSettings.getSecretCodes().getIsc3()) + "</td></tr>"
                 );
                 html.append(
                     "\n<tr><td>ISC3 retries</td>"
@@ -400,8 +397,7 @@ public class ReportServiceImpl implements ReportService {
             if (runSettings.getSecretCodes().isUseIsc4()) {
                 html.append(
                     "\n<tr><td>Issuer Secret Code 4</td>"
-                    + "<td><a href=\"#" + runSettings.getSecretCodes().getIsc4() + "\">"
-                    + runSettings.getSecretCodes().getIsc4() + "</a></td></tr>"
+                    + "<td>" + getValue(runSettings.getSecretCodes().getIsc4()) + "</td></tr>"
                 );
                 html.append(
                     "\n<tr><td>ISC4 retries</td>"
@@ -421,9 +417,9 @@ public class ReportServiceImpl implements ReportService {
             "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n" +
             "<html>\n" +
             "<head>\n" +
-            "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n" +
+            "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n" +
             "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\" />\n" +
-            "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0\">\n" +
+            "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0\" />\n" +
             "<title>Run All Report</title>\n" +
             "<style type=\"text/css\">\n" +
             "html,\n" +
@@ -438,7 +434,6 @@ public class ReportServiceImpl implements ReportService {
             "\tpadding: 0px;\n" +
             "\toverflow-x: hidden;\n" +
             "\tmin-width: 320px;\n" +
-            "\tbackground: #F9F9F9;\n" +
             "\tfont-family: Arial, Helvetica, sans-serif;\n" +
             "\tfont-size: 13px;\n" +
             "\tline-height: 1.33;\n" +
@@ -463,7 +458,10 @@ public class ReportServiceImpl implements ReportService {
             "}\n" +
             "table {\n" +
             "\tborder-collapse: collapse;\n" +
-            "\twidth: 60%;\n" +
+//            "\twidth: 100%;\n" +
+            "}\n" +
+            "table.module {\n" +
+            "\twidth: 100%;\n" +
             "}\n" +
             "th,\n" +
             "td {\n" +
@@ -479,7 +477,7 @@ public class ReportServiceImpl implements ReportService {
             "\tbackground-color: darkorange;\n" +
             "\tcolor: #F9F9F9;\n" +
             "}\n" +
-            "tr:hover {background-color: #f5f5f5;}\n" +
+//            "tr:hover {background-color: #f5f5f5;}\n" +
             "td.error {\n" +
             "\tbackground-color: #FDEDEC;\n" +
             "\tcolor: #17202A;\n" +
@@ -515,8 +513,26 @@ public class ReportServiceImpl implements ReportService {
         return "\n<div>\n" + "<table>\n" + "<tbody>";
     }
 
+    private String createTableHeaderModule() {
+        return "\n<div>\n" + "<table class=\"module\">\n" + "<tbody>";
+    }
+
     private String createTableFooter() {
         return "\n</tbody>\n" + "</table>\n" + "</div>";
+    }
+
+    private String getValue(String mappedVar) {
+        String value = "";
+        for (VariableMapping mapping : runSettings.getVariableMappings()) {
+            if (mapping.getMappedVariable().equals(mappedVar)) {
+                if (mapping.isFixed())
+                    value = mapping.getValue();
+                else
+                    value = "%" + mapping.getMccVariable();
+                break;
+            }
+        }
+        return value;
     }
 
 }

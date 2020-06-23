@@ -9,7 +9,6 @@ import com.itextpdf.tool.xml.XMLWorkerHelper;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.sql.Timestamp;
 
 @Service
@@ -20,23 +19,15 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public void createReportFromSettings(RunSettings runSettings) {
         this.runSettings = runSettings;
-        boolean reportAsPdf = true;
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(runSettings.getProjectPath() + "\\RunAll.html"))) {
-            bw.append(composeHtml());
-        } catch (IOException e) {
+        try {
+            Document document = new Document();
+            PdfWriter writer = PdfWriter.getInstance(document,
+                    new FileOutputStream(runSettings.getProjectPath() + "\\RunAll.pdf"));
+            document.open();
+            XMLWorkerHelper.getInstance().parseXHtml(writer, document, new StringReader(composeHtml().toString()));
+            document.close();
+        } catch (DocumentException | IOException e) {
             e.printStackTrace();
-        }
-        if (reportAsPdf) {
-            try {
-                Document document = new Document();
-                PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(runSettings.getProjectPath() + "\\RunAll.pdf"));
-                document.open();
-                XMLWorkerHelper.getInstance().parseXHtml(writer, document, new FileInputStream(runSettings.getProjectPath() + "\\RunAll.html"));
-                document.close();
-                Files.deleteIfExists(new File(runSettings.getProjectPath() + "\\RunAll.html").toPath());
-            } catch (DocumentException | IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 

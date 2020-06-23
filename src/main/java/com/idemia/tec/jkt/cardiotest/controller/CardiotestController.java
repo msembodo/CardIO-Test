@@ -5,7 +5,6 @@ import com.idemia.tec.jkt.cardiotest.model.AdvSaveVariable;
 import com.idemia.tec.jkt.cardiotest.model.VariableMapping;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
@@ -25,7 +24,6 @@ import javax.smartcardio.CardTerminal;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.EventListener;
 import java.util.List;
 import java.util.Scanner;
 
@@ -237,6 +235,26 @@ public class CardiotestController {
     @FXML
     private CheckBox chkGsmAlgo;
 
+    // SCP80 OTA tab
+    @FXML
+    private TextField txtMslByte;
+    @FXML
+    private CheckBox chkOverrideMsl;
+    @FXML
+    private ComboBox<String> cmbCipherAlgo;
+    @FXML
+    private CheckBox chkUseCipher;
+    @FXML
+    private ComboBox<String> cmbAuthVerif;
+    @FXML
+    private ComboBox<String> cmbSigningAlgo;
+    @FXML
+    private ComboBox<String> cmbPorSecurity;
+    @FXML
+    private CheckBox chkPorRequired;
+    @FXML
+    private ComboBox<String> cmbCounterCheck;
+
     // bottom tab pane
     @FXML
     private TabPane tabBottom;
@@ -291,7 +309,7 @@ public class CardiotestController {
             }
         }
 
-//        // load mappings from saved settings
+        // load mappings from saved settings
         for (VariableMapping mapping : root.getRunSettings().getVariableMappings())
             application.getMappings().add(mapping);
 

@@ -21,6 +21,7 @@ public class RunSettings {
     private SecretCodes secretCodes;
     private CardParameters cardParameters;
     private Authentication authentication;
+    private List<SCP80Keyset> scp80Keysets;
 
     public RunSettings() {}
 
@@ -28,7 +29,7 @@ public class RunSettings {
                        String requestId, String requestName, String profileName, int profileVersion,
                        String cardImageItemId, String customer, String developerName, String testerName,
                        List<VariableMapping> variableMappings, ATR atr, SecretCodes secretCodes,
-                       CardParameters cardParameters, Authentication authentication) {
+                       CardParameters cardParameters, Authentication authentication, List<SCP80Keyset> scp80Keysets) {
         this.projectPath = projectPath;
         this.advSaveVariablesPath = advSaveVariablesPath;
         this.readerNumber = readerNumber;
@@ -46,6 +47,7 @@ public class RunSettings {
         this.secretCodes = secretCodes;
         this.cardParameters = cardParameters;
         this.authentication = authentication;
+        this.scp80Keysets = scp80Keysets;
     }
 
     public String getProjectPath() {
@@ -182,6 +184,14 @@ public class RunSettings {
 
     public void setAuthentication(Authentication authentication) {
         this.authentication = authentication;
+    }
+
+    public List<SCP80Keyset> getScp80Keysets() {
+        return scp80Keysets;
+    }
+
+    public void setScp80Keysets(List<SCP80Keyset> scp80Keysets) {
+        this.scp80Keysets = scp80Keysets;
     }
 
 }

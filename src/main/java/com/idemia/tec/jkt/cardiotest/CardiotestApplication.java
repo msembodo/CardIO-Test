@@ -1,10 +1,8 @@
 package com.idemia.tec.jkt.cardiotest;
 
-import com.idemia.tec.jkt.cardiotest.controller.CardiotestController;
-import com.idemia.tec.jkt.cardiotest.controller.RootLayoutController;
-import com.idemia.tec.jkt.cardiotest.controller.SelectReaderController;
-import com.idemia.tec.jkt.cardiotest.controller.ToolOptionsController;
+import com.idemia.tec.jkt.cardiotest.controller.*;
 import com.idemia.tec.jkt.cardiotest.model.AdvSaveVariable;
+import com.idemia.tec.jkt.cardiotest.model.SCP80Keyset;
 import com.idemia.tec.jkt.cardiotest.model.VariableMapping;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -36,6 +34,8 @@ public class CardiotestApplication extends Application {
 	private ObservableList<AdvSaveVariable> advSaveVariables = FXCollections.observableArrayList();
 	private ObservableList<VariableMapping> mappings = FXCollections.observableArrayList();
 
+	private ObservableList<SCP80Keyset> scp80Keysets = FXCollections.observableArrayList();
+
 	@Autowired
 	private RootLayoutController root;
 
@@ -61,6 +61,10 @@ public class CardiotestApplication extends Application {
 
 	public ObservableList<VariableMapping> getMappings() {
 		return mappings;
+	}
+
+	public ObservableList<SCP80Keyset> getScp80Keysets() {
+		return scp80Keysets;
 	}
 
 	@Override
@@ -160,7 +164,6 @@ public class CardiotestApplication extends Application {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	public Stage getPrimaryStage() {
@@ -174,4 +177,5 @@ public class CardiotestApplication extends Application {
 	public Stage getToolOptionsDialogStage() {
 		return toolOptionsDialogStage;
 	}
+
 }

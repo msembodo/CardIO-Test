@@ -2,6 +2,7 @@ package com.idemia.tec.jkt.cardiotest.controller;
 
 import com.idemia.tec.jkt.cardiotest.CardiotestApplication;
 import com.idemia.tec.jkt.cardiotest.model.AdvSaveVariable;
+import com.idemia.tec.jkt.cardiotest.model.SCP80Keyset;
 import com.idemia.tec.jkt.cardiotest.model.VariableMapping;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -235,7 +236,29 @@ public class CardiotestController {
     @FXML
     private CheckBox chkGsmAlgo;
 
-    // SCP80 OTA tab
+    // OTA keysets tab
+    @FXML
+    private TableView<SCP80Keyset> tblScp80Keyset;
+    @FXML
+    private TableColumn<SCP80Keyset, String> clmnKeysetName;
+    @FXML
+    private TextField txtKeysetName;
+    @FXML
+    private ComboBox<String> cmbKeysetVersion;
+    @FXML
+    private ComboBox<String> cmbKeysetType;
+    @FXML
+    private ComboBox<String> cmbKicValuation;
+    @FXML
+    private ComboBox<String> cmbKicMode;
+    @FXML
+    private ComboBox<String> cmbKidValuation;
+    @FXML
+    private ComboBox<String> cmbKidMode;
+    @FXML
+    private Label lblAddKeysetErrMsg;
+
+    // RFM USIM tab
     @FXML
     private TextField txtMslByte;
     @FXML
@@ -312,6 +335,13 @@ public class CardiotestController {
         // load mappings from saved settings
         for (VariableMapping mapping : root.getRunSettings().getVariableMappings())
             application.getMappings().add(mapping);
+
+        tblScp80Keyset.setItems(application.getScp80Keysets());
+        // load keysets from saved settings
+        for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets())
+            application.getScp80Keysets().add(keyset);
+        // select first row initially
+        tblScp80Keyset.getSelectionModel().select(0);
 
         // add authentication RiCi default values
         if (application.getMappings().size() == 0) {
@@ -671,6 +701,37 @@ public class CardiotestController {
         chkMilenage.setSelected(root.getRunSettings().getAuthentication().isMilenage());
         chkIsimAuth.setSelected(root.getRunSettings().getAuthentication().isIsimAuth());
         chkGsmAlgo.setSelected(root.getRunSettings().getAuthentication().isGsmAlgo());
+
+        // OTA keysets
+        clmnKeysetName.setCellValueFactory(celldata -> celldata.getValue().keysetNameProperty());
+        // clear keyset fields
+        showKeyset(null);
+        // listen for selection changes and show keyset detail when changed
+        tblScp80Keyset.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> showKeyset(newValue)
+        );
+        // initialize list of versions
+        for (int i = 0; i < 15; i++)
+            cmbKeysetVersion.getItems().add(Integer.toString(i + 1));
+        // initialize list of types
+        List<String> keysetTypes = new ArrayList<>();
+        keysetTypes.add("Algorithm known implicitly by both entities");
+        keysetTypes.add("DES");
+        keysetTypes.add("Proprietary Implementations");
+        cmbKeysetType.getItems().addAll(keysetTypes);
+        // initialize list of modes
+        List<String> blockModes = new ArrayList<>();
+        blockModes.add("DES - CBC");
+        blockModes.add("3DES - CBC 2 keys");
+        blockModes.add("3DES - CBC 3 keys");
+        blockModes.add("DES - ECB");
+
+        cmbKicValuation.setItems(mappedVariables);
+        registerForComboUpdate(cmbKicValuation);
+        cmbKicMode.getItems().addAll(blockModes);
+        cmbKidValuation.setItems(mappedVariables);
+        registerForComboUpdate(cmbKidValuation);
+        cmbKidMode.getItems().addAll(blockModes);
     }
 
     private void showMappings(VariableMapping mapping) {
@@ -680,14 +741,37 @@ public class CardiotestController {
             if (mapping.isFixed()) {
                 chkFixedVal.setSelected(true);
                 txtMccVar.setText(mapping.getValue());
+                cmbMccVar.setValue(null);
             } else {
                 chkFixedVal.setSelected(false);
                 cmbMccVar.setValue(mapping.getMccVariable());
+                txtMccVar.setText("");
             }
         } else {
             txtMappedTo.setText("");
             txtMccVar.setText("");
             cmbMccVar.setValue(null);
+        }
+    }
+
+    private void showKeyset(SCP80Keyset keyset) {
+        if (keyset != null) {
+            txtKeysetName.setText(keyset.getKeysetName());
+            cmbKeysetVersion.setValue(Integer.toString(keyset.getKeysetVersion()));
+            cmbKeysetType.setValue(keyset.getKeysetType());
+            cmbKicValuation.setValue(keyset.getKicValuation());
+            cmbKicMode.setValue(keyset.getKicMode());
+            cmbKidValuation.setValue(keyset.getKidValuation());
+            cmbKidMode.setValue(keyset.getKidMode());
+        }
+        else {
+            txtKeysetName.setText("");
+            cmbKeysetVersion.setValue(null);
+            cmbKeysetType.setValue(null);
+            cmbKicValuation.setValue(null);
+            cmbKicMode.setValue(null);
+            cmbKidValuation.setValue(null);
+            cmbKidMode.setValue(null);
         }
     }
 
@@ -841,6 +925,46 @@ public class CardiotestController {
     private boolean mappedVariableExist(String testMappedVariable) {
         for (VariableMapping mapping : application.getMappings()) {
             if (mapping.getMappedVariable().equals(testMappedVariable))
+                return true;
+        }
+        return false;
+    }
+
+    @FXML
+    private void handleButtonAddScp80Keyset() {
+        if (keysetExists(txtKeysetName.getText())) {
+            lblAddKeysetErrMsg.setVisible(true);
+            lblAddKeysetErrMsg.setText("Keyset with same name already exists.");
+        } else {
+            // add new keyset
+            String name = txtKeysetName.getText();
+            int version = Integer.parseInt(cmbKeysetVersion.getValue());
+            String type = cmbKeysetType.getValue();
+            String kicVal = cmbKicValuation.getValue();
+            String kicMode = cmbKicMode.getValue();
+            String kidVal = cmbKidValuation.getValue();
+            String kidMode = cmbKidMode.getValue();
+            SCP80Keyset scp80Keyset = new SCP80Keyset(name, version, type, kicVal, kicMode, kidVal, kidMode);
+            application.getScp80Keysets().add(scp80Keyset);
+            lblAddKeysetErrMsg.setVisible(false);
+            logger.info("Added SCP-80 keyset: " + scp80Keyset.toJson());
+        }
+    }
+
+    @FXML
+    private void handleButtonDeleteScp80Keyset() {
+        if (application.getScp80Keysets().size() > 0) {
+            logger.info("Delete SCP-80 keyset: " + tblScp80Keyset.getSelectionModel().getSelectedItem().getKeysetName());
+            int selectedIndex = tblScp80Keyset.getSelectionModel().getSelectedIndex();
+            tblScp80Keyset.getItems().remove(selectedIndex);
+            showKeyset(null);
+            tblScp80Keyset.getSelectionModel().clearSelection();
+        }
+    }
+
+    private boolean keysetExists(String checkKeysetName) {
+        for (SCP80Keyset keyset : application.getScp80Keysets()) {
+            if (keyset.getKeysetName().equals(checkKeysetName))
                 return true;
         }
         return false;

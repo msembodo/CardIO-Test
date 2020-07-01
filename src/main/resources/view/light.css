@@ -1,13 +1,19 @@
 .titled-pane {
     -fx-animated: true;
+    /*
     -fx-text-fill: #f4f5f7;
+    */
+    -fx-text-fill: #1A2335;
 }
 
 .titled-pane > .title  {
     -fx-background-radius: 0, 0, 0;
     -fx-font: bold 14px System;
-
+    /*
     -fx-background-color: #576B82;
+    */
+    -fx-background-color: -fx-box-border, -fx-inner-border, -fx-body-color;
+    -fx-border-color: darkgray;
 }
 
 .titled-pane:focused > .title > .arrow-button .arrow {

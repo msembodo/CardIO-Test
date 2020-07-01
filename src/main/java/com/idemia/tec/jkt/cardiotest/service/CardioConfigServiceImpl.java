@@ -97,6 +97,8 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             authentication.setGsmAlgo(false);
             defaultSettings.setAuthentication(authentication);
 
+            defaultSettings.setScp80Keysets(new ArrayList<>());
+
             ObjectMapper mapper = new ObjectMapper();
             try {
                 mapper.writerWithDefaultPrettyPrinter().writeValue(runSettingsFile, defaultSettings);

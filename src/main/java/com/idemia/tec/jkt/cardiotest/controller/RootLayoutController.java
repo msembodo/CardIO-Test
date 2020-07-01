@@ -159,6 +159,7 @@ public class RootLayoutController {
     private void handleMenuSaveSettings() {
         cardiotest.saveControlState();
         runSettings.setVariableMappings(application.getMappings());
+        runSettings.setScp80Keysets(application.getScp80Keysets());
         cardioConfigService.saveConfig(runSettings);
     }
 

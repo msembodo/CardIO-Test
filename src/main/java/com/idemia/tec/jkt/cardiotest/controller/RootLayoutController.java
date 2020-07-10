@@ -70,6 +70,12 @@ public class RootLayoutController {
     @FXML
     private MenuItem menuSqnMax;
     @FXML
+    private MenuItem menuRfmUsim;
+    @FXML
+    private MenuItem menuRfmUsimUpdateRecord;
+    @FXML
+    private MenuItem menuRfmUsimExpandedMode;
+    @FXML
     private MenuItem menuCodes3g;
     @FXML
     private MenuItem menuCodes2g;
@@ -490,6 +496,21 @@ public class RootLayoutController {
     }
 
     @FXML
+    private void handleMenuRfmUsim() {
+        // TODO
+    }
+
+    @FXML
+    private void handleMenuRfmUsimUpdateRecord() {
+        // TODO
+    }
+
+    @FXML
+    private void handleMenuRfmUsimExpandedMode() {
+        // TODO
+    }
+
+    @FXML
     private void handleMenuCodes3g() {
         handleMenuSaveSettings();
         // make user wait as verification executes
@@ -636,6 +657,18 @@ public class RootLayoutController {
 
     public MenuItem getMenuSqnMax() {
         return menuSqnMax;
+    }
+
+    public MenuItem getMenuRfmUsim() {
+        return menuRfmUsim;
+    }
+
+    public MenuItem getMenuRfmUsimUpdateRecord() {
+        return menuRfmUsimUpdateRecord;
+    }
+
+    public MenuItem getMenuRfmUsimExpandedMode() {
+        return menuRfmUsimExpandedMode;
     }
 
     public MenuItem getMenuCodes3g() {

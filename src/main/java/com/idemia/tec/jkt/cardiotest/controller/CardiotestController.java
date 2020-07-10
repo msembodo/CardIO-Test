@@ -236,7 +236,7 @@ public class CardiotestController {
     @FXML
     private CheckBox chkGsmAlgo;
 
-    // OTA keysets tab
+    // OTA settings tab
     @FXML
     private TableView<SCP80Keyset> tblScp80Keyset;
     @FXML
@@ -257,26 +257,72 @@ public class CardiotestController {
     private ComboBox<String> cmbKidMode;
     @FXML
     private Label lblAddKeysetErrMsg;
+    @FXML
+    private TextField txtUdhiFirstByte;
+    @FXML
+    private TextField txtScAddress;
+    @FXML
+    private TextField txtTpPid;
+    @FXML
+    private ComboBox<String> cmbPorFormat;
 
     // RFM USIM tab
     @FXML
-    private TextField txtMslByte;
+    private CheckBox chkIncludeRfmUsim;
     @FXML
-    private CheckBox chkOverrideMsl;
+    private CheckBox chkIncludeRfmUsimUpdateRecord;
     @FXML
-    private ComboBox<String> cmbCipherAlgo;
+    private CheckBox chkIncludeRfmUsimExpandedMode;
     @FXML
-    private CheckBox chkUseCipher;
+    private TextField txtRfmUsimMslByte;
     @FXML
-    private ComboBox<String> cmbAuthVerif;
+    private CheckBox chkRfmUsimCustomMsl;
     @FXML
-    private ComboBox<String> cmbSigningAlgo;
+    private ComboBox<String> cmbRfmUsimCipherAlgo;
     @FXML
-    private ComboBox<String> cmbPorSecurity;
+    private CheckBox chkRfmUsimUseCipher;
     @FXML
-    private CheckBox chkPorRequired;
+    private ComboBox<String> cmbRfmUsimAuthVerif;
     @FXML
-    private ComboBox<String> cmbCounterCheck;
+    private ComboBox<String> cmbRfmUsimSigningAlgo;
+    @FXML
+    private ComboBox<String> cmbRfmUsimPorRequirement;
+    @FXML
+    private ComboBox<String> cmbRfmUsimPorSecurity;
+    @FXML
+    private CheckBox chkRfmUsimCipherPor;
+    @FXML
+    private ComboBox<String> cmbRfmUsimCounterCheck;
+    @FXML
+    private TextField txtRfmUsimTar;
+    @FXML
+    private TextField txtRfmUsimTargetEf;
+    @FXML
+    private TextField txtRfmUsimTargetEfBadCase;
+    @FXML
+    private CheckBox chkRfmUsimFullAccess;
+    @FXML
+    private TextField txtRfmUsimTargetEfAlw;
+    @FXML
+    private TextField txtRfmUsimTargetEfPin1;
+    @FXML
+    private TextField txtRfmUsimTargetEfAdm1;
+    @FXML
+    private ComboBox<String> cmbRfmUsimCipheringKeyset;
+    @FXML
+    private Label lblRfmUsimKic;
+    @FXML
+    private CheckBox chkRfmUsimCustomKic;
+    @FXML
+    private TextField txtRfmUsimCustomKic;
+    @FXML
+    private ComboBox<String> cmbRfmUsimAuthKeyset;
+    @FXML
+    private Label lblRfmUsimKid;
+    @FXML
+    private CheckBox chkRfmUsimCustomKid;
+    @FXML
+    private TextField txtRfmUsimCustomKid;
 
     // bottom tab pane
     @FXML
@@ -702,7 +748,8 @@ public class CardiotestController {
         chkIsimAuth.setSelected(root.getRunSettings().getAuthentication().isIsimAuth());
         chkGsmAlgo.setSelected(root.getRunSettings().getAuthentication().isGsmAlgo());
 
-        // OTA keysets
+        // OTA settings
+
         clmnKeysetName.setCellValueFactory(celldata -> celldata.getValue().keysetNameProperty());
         // clear keyset fields
         showKeyset(null);
@@ -732,6 +779,146 @@ public class CardiotestController {
         cmbKidValuation.setItems(mappedVariables);
         registerForComboUpdate(cmbKidValuation);
         cmbKidMode.getItems().addAll(blockModes);
+
+        txtUdhiFirstByte.setText(root.getRunSettings().getSmsUpdate().getUdhiFirstByte());
+        txtScAddress.setText(root.getRunSettings().getSmsUpdate().getScAddress());
+        txtTpPid.setText(root.getRunSettings().getSmsUpdate().getTpPid());
+        // initialize list of PoR format
+        List<String> porFormats = new ArrayList<>();
+        porFormats.add("PoR as SMS-DELIVER-REPORT");
+        porFormats.add("PoR as SMS-SUBMIT");
+        cmbPorFormat.getItems().addAll(porFormats);
+        cmbPorFormat.setValue(root.getRunSettings().getSmsUpdate().getPorFormat());
+
+        // RFM USIM
+
+        chkIncludeRfmUsim.setSelected(root.getRunSettings().getRfmUsim().isIncludeRfmUsim());
+        if (chkIncludeRfmUsim.isSelected())
+            root.getMenuRfmUsim().setDisable(false);
+        else
+            root.getMenuRfmUsim().setDisable(true);
+        chkIncludeRfmUsim.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (chkIncludeRfmUsim.isSelected())
+                root.getMenuRfmUsim().setDisable(false);
+            else
+                root.getMenuRfmUsim().setDisable(true);
+        });
+
+        chkIncludeRfmUsimUpdateRecord.setSelected(root.getRunSettings().getRfmUsim().isIncludeRfmUsimUpdateRecord());
+        if (chkIncludeRfmUsimUpdateRecord.isSelected())
+            root.getMenuRfmUsimUpdateRecord().setDisable(false);
+        else
+            root.getMenuRfmUsimUpdateRecord().setDisable(true);
+        chkIncludeRfmUsimUpdateRecord.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (chkIncludeRfmUsimUpdateRecord.isSelected())
+                root.getMenuRfmUsimUpdateRecord().setDisable(false);
+            else
+                root.getMenuRfmUsimUpdateRecord().setDisable(true);
+        });
+
+        chkIncludeRfmUsimExpandedMode.setSelected(root.getRunSettings().getRfmUsim().isIncludeRfmUsimExpandedMode());
+        if (chkIncludeRfmUsimExpandedMode.isSelected())
+            root.getMenuRfmUsimExpandedMode().setDisable(false);
+        else
+            root.getMenuRfmUsimExpandedMode().setDisable(true);
+        chkIncludeRfmUsimExpandedMode.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (chkIncludeRfmUsimExpandedMode.isSelected())
+                root.getMenuRfmUsimExpandedMode().setDisable(false);
+            else
+                root.getMenuRfmUsimExpandedMode().setDisable(true);
+        });
+
+        txtRfmUsimMslByte.setText(root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().getComputedMsl());
+        chkRfmUsimCustomMsl.setSelected(root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().isCustomMsl());
+        if (chkRfmUsimCustomMsl.isSelected())
+            txtRfmUsimMslByte.setDisable(false);
+        else
+            txtRfmUsimMslByte.setDisable(true);
+        chkRfmUsimCustomMsl.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (chkRfmUsimCustomMsl.isSelected())
+                txtRfmUsimMslByte.setDisable(false);
+            else
+                txtRfmUsimMslByte.setDisable(true);
+        });
+
+        chkRfmUsimUseCipher.setSelected(root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().isUseCipher());
+        chkRfmUsimUseCipher.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (chkRfmUsimUseCipher.isSelected())
+                root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setUseCipher(true);
+            else
+                root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setUseCipher(false);
+            root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().computeMsl();
+            txtRfmUsimMslByte.setText(root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().getComputedMsl());
+        });
+
+        // initialize list of cipher algorithm
+        List<String> cipherAlgos = new ArrayList<>();
+        cipherAlgos.add("no cipher");
+        cipherAlgos.add("DES - CBC");
+        cipherAlgos.add("AES - CBC");
+        cipherAlgos.add("XOR");
+        cipherAlgos.add("3DES - CBC 2 keys");
+        cipherAlgos.add("3DES - CBC 3 keys");
+        cipherAlgos.add("DES - ECB");
+        cmbRfmUsimCipherAlgo.getItems().addAll(cipherAlgos);
+        cmbRfmUsimCipherAlgo.setValue(root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().getCipherAlgo());
+
+        // initialize list of auth verification
+        List<String> authVerifs = new ArrayList<>();
+        authVerifs.add("No verification");
+        authVerifs.add("Redundancy Check");
+        authVerifs.add("Cryptographic Checksum");
+        authVerifs.add("Digital Signature");
+        cmbRfmUsimAuthVerif.getItems().addAll(authVerifs);
+        cmbRfmUsimAuthVerif.setValue(root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().getAuthVerification());
+
+        // initialize list of signing algorithm
+        List<String> signingAlgos = new ArrayList<>();
+        signingAlgos.add("no algorithm");
+        signingAlgos.add("DES - CBC");
+        signingAlgos.add("AES - CMAC");
+        signingAlgos.add("XOR");
+        signingAlgos.add("3DES - CBC 2 keys");
+        signingAlgos.add("3DES - CBC 3 keys");
+        signingAlgos.add("DES - ECB");
+        signingAlgos.add("CRC32 (may be X5h)");
+        signingAlgos.add("CRC32 (may be X0h)");
+        signingAlgos.add("ISO9797 Algo 3 (auth value 8 byte)");
+        signingAlgos.add("ISO9797 Algo 3 (auth value 4 byte)");
+        signingAlgos.add("ISO9797 Algo 4 (auth value 4 byte)");
+        signingAlgos.add("ISO9797 Algo 4 (auth value 8 byte)");
+        signingAlgos.add("CRC16");
+        cmbRfmUsimSigningAlgo.getItems().addAll(signingAlgos);
+        cmbRfmUsimSigningAlgo.setValue(root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().getSigningAlgo());
+
+        // initialize list of counter checking
+        List<String> counterCheckings = new ArrayList<>();
+        counterCheckings.add("No counter available");
+        counterCheckings.add("Counter available no checking");
+        counterCheckings.add("Counter must be higher");
+        counterCheckings.add("Counter must be one higher");
+        cmbRfmUsimCounterCheck.getItems().addAll(counterCheckings);
+        cmbRfmUsimCounterCheck.setValue(root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().getCounterChecking());
+
+        // initialize list of PoR requirement
+        List<String> porRequirements = new ArrayList<>();
+        porRequirements.add("No PoR");
+        porRequirements.add("PoR required");
+        porRequirements.add("PoR only if error");
+        cmbRfmUsimPorRequirement.getItems().addAll(porRequirements);
+        cmbRfmUsimPorRequirement.setValue(root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().getPorRequirement());
+
+        chkRfmUsimCipherPor.setSelected(root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().isCipherPor());
+
+        // initialize list of PoR security
+        List<String> porSecurities = new ArrayList<>();
+        porSecurities.add("response with no security");
+        porSecurities.add("response with RC");
+        porSecurities.add("response with CC");
+        porSecurities.add("response with DS");
+        cmbRfmUsimPorSecurity.getItems().addAll(porSecurities);
+        cmbRfmUsimPorSecurity.setValue(root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().getPorSecurity());
+
     }
 
     private void showMappings(VariableMapping mapping) {
@@ -919,7 +1106,6 @@ public class CardiotestController {
             cardAlert.setContentText(e.getMessage());
             cardAlert.showAndWait();
         }
-
     }
 
     private boolean mappedVariableExist(String testMappedVariable) {
@@ -968,6 +1154,20 @@ public class CardiotestController {
                 return true;
         }
         return false;
+    }
+
+    @FXML
+    private void handleRfmUsimAuthVerifSelection() {
+        root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setAuthVerification(cmbRfmUsimAuthVerif.getSelectionModel().getSelectedItem());
+        root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().computeMsl();
+        txtRfmUsimMslByte.setText(root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().getComputedMsl());
+    }
+
+    @FXML
+    private void handleRfmUsimCounterCheckingSelection() {
+        root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setCounterChecking(cmbRfmUsimCounterCheck.getSelectionModel().getSelectedItem());
+        root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().computeMsl();
+        txtRfmUsimMslByte.setText(root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().getComputedMsl());
     }
 
     public void saveControlState() {
@@ -1055,6 +1255,25 @@ public class CardiotestController {
         root.getRunSettings().getAuthentication().setMilenage(chkMilenage.isSelected());
         root.getRunSettings().getAuthentication().setIsimAuth(chkIsimAuth.isSelected());
         root.getRunSettings().getAuthentication().setGsmAlgo(chkGsmAlgo.isSelected());
+
+        // SMS update settings
+        root.getRunSettings().getSmsUpdate().setUdhiFirstByte(txtUdhiFirstByte.getText());
+        root.getRunSettings().getSmsUpdate().setScAddress(txtScAddress.getText());
+        root.getRunSettings().getSmsUpdate().setTpPid(txtTpPid.getText());
+        root.getRunSettings().getSmsUpdate().setPorFormat(cmbPorFormat.getSelectionModel().getSelectedItem());
+
+        // RFM USIM
+        root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setCustomMsl(chkRfmUsimCustomMsl.isSelected());
+        if (root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().isCustomMsl())
+            root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setComputedMsl(txtRfmUsimMslByte.getText());
+//        root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setUseCipher(chkRfmUsimUseCipher.isSelected());
+        root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setCipherAlgo(cmbRfmUsimCipherAlgo.getSelectionModel().getSelectedItem());
+//        root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setAuthVerification(cmbRfmUsimAuthVerif.getSelectionModel().getSelectedItem());
+        root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setSigningAlgo(cmbRfmUsimSigningAlgo.getSelectionModel().getSelectedItem());
+//        root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setCounterChecking(cmbRfmUsimCounterCheck.getSelectionModel().getSelectedItem());
+        root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setPorRequirement(cmbRfmUsimPorRequirement.getSelectionModel().getSelectedItem());
+        root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setCipherPor(chkRfmUsimCipherPor.isSelected());
+        root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setPorSecurity(cmbRfmUsimPorSecurity.getSelectionModel().getSelectedItem());
     }
 
 }

@@ -22,6 +22,8 @@ public class RunSettings {
     private CardParameters cardParameters;
     private Authentication authentication;
     private List<SCP80Keyset> scp80Keysets;
+    private SmsUpdate smsUpdate;
+    private RfmUsim rfmUsim;
 
     public RunSettings() {}
 
@@ -29,7 +31,8 @@ public class RunSettings {
                        String requestId, String requestName, String profileName, int profileVersion,
                        String cardImageItemId, String customer, String developerName, String testerName,
                        List<VariableMapping> variableMappings, ATR atr, SecretCodes secretCodes,
-                       CardParameters cardParameters, Authentication authentication, List<SCP80Keyset> scp80Keysets) {
+                       CardParameters cardParameters, Authentication authentication, List<SCP80Keyset> scp80Keysets,
+                       SmsUpdate smsUpdate, RfmUsim rfmUsim) {
         this.projectPath = projectPath;
         this.advSaveVariablesPath = advSaveVariablesPath;
         this.readerNumber = readerNumber;
@@ -48,6 +51,8 @@ public class RunSettings {
         this.cardParameters = cardParameters;
         this.authentication = authentication;
         this.scp80Keysets = scp80Keysets;
+        this.smsUpdate = smsUpdate;
+        this.rfmUsim = rfmUsim;
     }
 
     public String getProjectPath() {
@@ -192,6 +197,22 @@ public class RunSettings {
 
     public void setScp80Keysets(List<SCP80Keyset> scp80Keysets) {
         this.scp80Keysets = scp80Keysets;
+    }
+
+    public SmsUpdate getSmsUpdate() {
+        return smsUpdate;
+    }
+
+    public void setSmsUpdate(SmsUpdate smsUpdate) {
+        this.smsUpdate = smsUpdate;
+    }
+
+    public RfmUsim getRfmUsim() {
+        return rfmUsim;
+    }
+
+    public void setRfmUsim(RfmUsim rfmUsim) {
+        this.rfmUsim = rfmUsim;
     }
 
 }

@@ -266,6 +266,8 @@ public class CardiotestController {
     @FXML
     private ComboBox<String> cmbPorFormat;
 
+    private ObservableList<String> scp80KeysetLabels;
+
     // RFM USIM tab
     @FXML
     private CheckBox chkIncludeRfmUsim;
@@ -438,6 +440,12 @@ public class CardiotestController {
             }
         });
 
+        mappedVariables = FXCollections.observableArrayList();
+        for (VariableMapping mapping : root.getRunSettings().getVariableMappings())
+            mappedVariables.add(mapping.getMappedVariable());
+
+        comboPool = new ArrayList<>();
+
         // for masking main window while verification is executing
         maskerPane = new MaskerPane();
         maskerPane.setVisible(false);
@@ -474,10 +482,6 @@ public class CardiotestController {
 
         txtAtr.setText(root.getRunSettings().getAtr().getAtrString());
 
-        mappedVariables = FXCollections.observableArrayList();
-        for (VariableMapping mapping : root.getRunSettings().getVariableMappings())
-            mappedVariables.add(mapping.getMappedVariable());
-
         // card parameters
 
         txtCardManagerAid.setText(root.getRunSettings().getCardParameters().getCardManagerAid());
@@ -489,8 +493,6 @@ public class CardiotestController {
         txtDfIsim.setText(root.getRunSettings().getCardParameters().getDfIsim());
         txtCsimAid.setText(root.getRunSettings().getCardParameters().getCsimAid());
         txtDfCsim.setText(root.getRunSettings().getCardParameters().getDfCsim());
-
-        comboPool = new ArrayList<>();
 
         // secret codes
 
@@ -681,11 +683,17 @@ public class CardiotestController {
 
         cmbKicValuation.setItems(mappedVariables);
         registerForComboUpdate(cmbKicValuation);
+
         cmbKicMode.getItems().addAll(blockModes);
 
         cmbKidValuation.setItems(mappedVariables);
         registerForComboUpdate(cmbKidValuation);
+
         cmbKidMode.getItems().addAll(blockModes);
+
+        scp80KeysetLabels = FXCollections.observableArrayList();
+        for (SCP80Keyset scp80Keyset : root.getRunSettings().getScp80Keysets())
+            scp80KeysetLabels.add(scp80Keyset.getKeysetName());
 
         txtUdhiFirstByte.setText(root.getRunSettings().getSmsUpdate().getUdhiFirstByte());
         txtScAddress.setText(root.getRunSettings().getSmsUpdate().getScAddress());
@@ -796,6 +804,11 @@ public class CardiotestController {
         txtRfmUsimTargetEfAdm1.setText(root.getRunSettings().getRfmUsim().getTargetEfAdm1());
         chkRfmUsimFullAccess.setSelected(root.getRunSettings().getRfmUsim().isFullAccess());
         handleRfmUsimFullAccessCheck();
+
+        // initialize list of available keysets for RFM USIM
+        cmbRfmUsimCipheringKeyset.setItems(scp80KeysetLabels);
+        cmbRfmUsimAuthKeyset.setItems(scp80KeysetLabels);
+
     }
 
     private void showMappings(VariableMapping mapping) {
@@ -1017,6 +1030,11 @@ public class CardiotestController {
             root.getMenuSqnMax().setDisable(true);
     }
 
+    private void updateListForScp80ComboBoxes() {
+        cmbRfmUsimCipheringKeyset.setItems(scp80KeysetLabels);
+        cmbRfmUsimAuthKeyset.setItems(scp80KeysetLabels);
+    }
+
     @FXML
     private void handleButtonAddScp80Keyset() {
         if (keysetExists(txtKeysetName.getText())) {
@@ -1033,6 +1051,10 @@ public class CardiotestController {
             String kidMode = cmbKidMode.getValue();
             SCP80Keyset scp80Keyset = new SCP80Keyset(name, version, type, kicVal, kicMode, kidVal, kidMode);
             application.getScp80Keysets().add(scp80Keyset);
+
+            scp80KeysetLabels.add(scp80Keyset.getKeysetName());
+            updateListForScp80ComboBoxes();
+
             lblAddKeysetErrMsg.setVisible(false);
             logger.info("Added SCP-80 keyset: " + scp80Keyset.toJson());
         }
@@ -1042,6 +1064,10 @@ public class CardiotestController {
     private void handleButtonDeleteScp80Keyset() {
         if (application.getScp80Keysets().size() > 0) {
             logger.info("Delete SCP-80 keyset: " + tblScp80Keyset.getSelectionModel().getSelectedItem().getKeysetName());
+
+            scp80KeysetLabels.remove(tblScp80Keyset.getSelectionModel().getSelectedItem().getKeysetName());
+            updateListForScp80ComboBoxes();
+
             int selectedIndex = tblScp80Keyset.getSelectionModel().getSelectedIndex();
             tblScp80Keyset.getItems().remove(selectedIndex);
             showKeyset(null);
@@ -1315,7 +1341,13 @@ public class CardiotestController {
         root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setCipherPor(chkRfmUsimCipherPor.isSelected());
         root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setPorSecurity(cmbRfmUsimPorSecurity.getSelectionModel().getSelectedItem());
 
-
+        root.getRunSettings().getRfmUsim().setTar(txtRfmUsimTar.getText());
+        root.getRunSettings().getRfmUsim().setTargetEf(txtRfmUsimTargetEf.getText());
+        root.getRunSettings().getRfmUsim().setTargetEfBadCase(txtRfmUsimTargetEfBadCase.getText());
+        root.getRunSettings().getRfmUsim().setFullAccess(chkRfmUsimFullAccess.isSelected());
+        root.getRunSettings().getRfmUsim().setTargetEfAlw(txtRfmUsimTargetEfAlw.getText());
+        root.getRunSettings().getRfmUsim().setTargetEfPin1(txtRfmUsimTargetEfPin1.getText());
+        root.getRunSettings().getRfmUsim().setTargetEfAdm1(txtRfmUsimTargetEfAdm1.getText());
     }
 
 }

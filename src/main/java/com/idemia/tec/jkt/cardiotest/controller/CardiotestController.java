@@ -302,9 +302,15 @@ public class CardiotestController {
     @FXML
     private CheckBox chkRfmUsimFullAccess;
     @FXML
+    private Label lblRfmUsimTargetEfAlw;
+    @FXML
     private TextField txtRfmUsimTargetEfAlw;
     @FXML
+    private Label lblRfmUsimTargetEfPin1;
+    @FXML
     private TextField txtRfmUsimTargetEfPin1;
+    @FXML
+    private Label lblRfmUsimTargetEfAdm1;
     @FXML
     private TextField txtRfmUsimTargetEfAdm1;
     @FXML
@@ -346,7 +352,7 @@ public class CardiotestController {
     }
 
     public void setObservableList() {
-        // add observable list data to table
+        // add observable list data to adv save & mapping tables
         tblAdvSave.setItems(application.getAdvSaveVariables());
         tblMapping.setItems(application.getMappings());
 
@@ -382,6 +388,7 @@ public class CardiotestController {
         for (VariableMapping mapping : root.getRunSettings().getVariableMappings())
             application.getMappings().add(mapping);
 
+        // SCP80 keyset table
         tblScp80Keyset.setItems(application.getScp80Keysets());
         // load keysets from saved settings
         for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets())
@@ -461,17 +468,10 @@ public class CardiotestController {
         txtTesterName.setText(root.getRunSettings().getTesterName());
 
         // ATR box
+
         chkIncludeAtr.setSelected(root.getRunSettings().getAtr().isIncludeAtr());
-        if (chkIncludeAtr.isSelected())
-            root.getMenuAtr().setDisable(false);
-        else
-            root.getMenuAtr().setDisable(true);
-        chkIncludeAtr.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            if (chkIncludeAtr.isSelected())
-                root.getMenuAtr().setDisable(false);
-            else
-                root.getMenuAtr().setDisable(true);
-        });
+        handleIncludeAtrCheck();
+
         txtAtr.setText(root.getRunSettings().getAtr().getAtrString());
 
         mappedVariables = FXCollections.observableArrayList();
@@ -479,6 +479,7 @@ public class CardiotestController {
             mappedVariables.add(mapping.getMappedVariable());
 
         // card parameters
+
         txtCardManagerAid.setText(root.getRunSettings().getCardParameters().getCardManagerAid());
         txtUsimAid.setText(root.getRunSettings().getCardParameters().getUsimAid());
         txtDfUsim.setText(root.getRunSettings().getCardParameters().getDfUsim());
@@ -492,11 +493,20 @@ public class CardiotestController {
         comboPool = new ArrayList<>();
 
         // secret codes
+
+        chkPin1Disabled.setSelected(root.getRunSettings().getSecretCodes().isPin1disabled());
+        chkPin2Disabled.setSelected(root.getRunSettings().getSecretCodes().isPin2disabled());
+
+        chkInclude3gScript.setSelected(root.getRunSettings().getSecretCodes().isInclude3gScript());
+        handleInclude3gScriptCheck();
+
+        chkInclude2gScript.setSelected(root.getRunSettings().getSecretCodes().isInclude2gScript());
+        handleInclude2gScriptCheck();
+
         cmbGpin.setItems(mappedVariables);
         registerForComboUpdate(cmbGpin);
         if (root.getRunSettings().getSecretCodes().getGpin() != null)
             cmbGpin.getSelectionModel().select(root.getRunSettings().getSecretCodes().getGpin());
-
         if (root.getRunSettings().getSecretCodes().getGpinRetries() != 0)
             txtGpinRetries.setText(Integer.toString(root.getRunSettings().getSecretCodes().getGpinRetries()));
 
@@ -504,7 +514,6 @@ public class CardiotestController {
         registerForComboUpdate(cmbLpin);
         if (root.getRunSettings().getSecretCodes().getLpin() != null)
             cmbLpin.getSelectionModel().select(root.getRunSettings().getSecretCodes().getLpin());
-
         if (root.getRunSettings().getSecretCodes().getLpinRetries() != 0)
             txtLpinRetries.setText(Integer.toString(root.getRunSettings().getSecretCodes().getLpinRetries()));
 
@@ -512,7 +521,6 @@ public class CardiotestController {
         registerForComboUpdate(cmbGpuk);
         if (root.getRunSettings().getSecretCodes().getGpuk() != null)
             cmbGpuk.getSelectionModel().select(root.getRunSettings().getSecretCodes().getGpuk());
-
         if (root.getRunSettings().getSecretCodes().getGpukRetries() != 0)
             txtGpukRetries.setText(Integer.toString(root.getRunSettings().getSecretCodes().getGpukRetries()));
 
@@ -520,7 +528,6 @@ public class CardiotestController {
         registerForComboUpdate(cmbLpuk);
         if (root.getRunSettings().getSecretCodes().getLpuk() != null)
             cmbLpuk.getSelectionModel().select(root.getRunSettings().getSecretCodes().getLpuk());
-
         if (root.getRunSettings().getSecretCodes().getLpukRetries() != 0)
             txtLpukRetries.setText(Integer.toString(root.getRunSettings().getSecretCodes().getLpukRetries()));
 
@@ -528,7 +535,6 @@ public class CardiotestController {
         registerForComboUpdate(cmbChv1);
         if (root.getRunSettings().getSecretCodes().getChv1() != null)
             cmbChv1.getSelectionModel().select(root.getRunSettings().getSecretCodes().getChv1());
-
         if (root.getRunSettings().getSecretCodes().getChv1Retries() != 0)
             txtChv1Retries.setText(Integer.toString(root.getRunSettings().getSecretCodes().getChv1Retries()));
 
@@ -536,7 +542,6 @@ public class CardiotestController {
         registerForComboUpdate(cmbChv2);
         if (root.getRunSettings().getSecretCodes().getChv2() != null)
             cmbChv2.getSelectionModel().select(root.getRunSettings().getSecretCodes().getChv2());
-
         if (root.getRunSettings().getSecretCodes().getChv2Retries() != 0)
             txtChv2Retries.setText(Integer.toString(root.getRunSettings().getSecretCodes().getChv2Retries()));
 
@@ -544,7 +549,6 @@ public class CardiotestController {
         registerForComboUpdate(cmbPuk1);
         if (root.getRunSettings().getSecretCodes().getPuk1() != null)
             cmbPuk1.getSelectionModel().select(root.getRunSettings().getSecretCodes().getPuk1());
-
         if (root.getRunSettings().getSecretCodes().getPuk1Retries() != 0)
             txtPuk1Retries.setText(Integer.toString(root.getRunSettings().getSecretCodes().getPuk1Retries()));
 
@@ -552,7 +556,6 @@ public class CardiotestController {
         registerForComboUpdate(cmbPuk2);
         if (root.getRunSettings().getSecretCodes().getPuk2() != null)
             cmbPuk2.getSelectionModel().select(root.getRunSettings().getSecretCodes().getPuk2());
-
         if (root.getRunSettings().getSecretCodes().getPuk2Retries() != 0)
             txtPuk2Retries.setText(Integer.toString(root.getRunSettings().getSecretCodes().getPuk2Retries()));
 
@@ -560,31 +563,6 @@ public class CardiotestController {
         chkBlockLpuk.setSelected(root.getRunSettings().getSecretCodes().isBlockLpuk());
         chkBlockPuk1.setSelected(root.getRunSettings().getSecretCodes().isBlockPuk1());
         chkBlockPuk2.setSelected(root.getRunSettings().getSecretCodes().isBlockPuk2());
-
-        chkInclude3gScript.setSelected(root.getRunSettings().getSecretCodes().isInclude3gScript());
-        if (chkInclude3gScript.isSelected())
-            root.getMenuCodes3g().setDisable(false);
-        else
-            root.getMenuCodes3g().setDisable(true);
-        chkInclude3gScript.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            if (chkInclude3gScript.isSelected())
-                root.getMenuCodes3g().setDisable(false);
-            else
-                root.getMenuCodes3g().setDisable(true);
-        });
-        chkInclude2gScript.setSelected(root.getRunSettings().getSecretCodes().isInclude2gScript());
-        if (chkInclude2gScript.isSelected())
-            root.getMenuCodes2g().setDisable(false);
-        else
-            root.getMenuCodes2g().setDisable(true);
-        chkInclude2gScript.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            if (chkInclude2gScript.isSelected())
-                root.getMenuCodes2g().setDisable(false);
-            else
-                root.getMenuCodes2g().setDisable(true);
-        });
-        chkPin1Disabled.setSelected(root.getRunSettings().getSecretCodes().isPin1disabled());
-        chkPin2Disabled.setSelected(root.getRunSettings().getSecretCodes().isPin2disabled());
 
         cmbIsc1.setItems(mappedVariables);
         registerForComboUpdate(cmbIsc1);
@@ -600,30 +578,7 @@ public class CardiotestController {
         if (root.getRunSettings().getSecretCodes().getIsc2Retries() != 0)
             txtIsc2Retries.setText(Integer.toString(root.getRunSettings().getSecretCodes().getIsc2Retries()));
         chkUseIsc2.setSelected(root.getRunSettings().getSecretCodes().isUseIsc2());
-        if (chkUseIsc2.isSelected()) {
-            lblIsc2.setDisable(false);
-            cmbIsc2.setDisable(false);
-            lblIsc2Retries.setDisable(false);
-            txtIsc2Retries.setDisable(false);
-        } else {
-            lblIsc2.setDisable(true);
-            cmbIsc2.setDisable(true);
-            lblIsc2Retries.setDisable(true);
-            txtIsc2Retries.setDisable(true);
-        }
-        chkUseIsc2.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            if (chkUseIsc2.isSelected()) {
-                lblIsc2.setDisable(false);
-                cmbIsc2.setDisable(false);
-                lblIsc2Retries.setDisable(false);
-                txtIsc2Retries.setDisable(false);
-            } else {
-                lblIsc2.setDisable(true);
-                cmbIsc2.setDisable(true);
-                lblIsc2Retries.setDisable(true);
-                txtIsc2Retries.setDisable(true);
-            }
-        });
+        handleUseIsc2Check();
 
         cmbIsc3.setItems(mappedVariables);
         registerForComboUpdate(cmbIsc3);
@@ -632,30 +587,7 @@ public class CardiotestController {
         if (root.getRunSettings().getSecretCodes().getIsc3Retries() != 0)
             txtIsc3Retries.setText(Integer.toString(root.getRunSettings().getSecretCodes().getIsc3Retries()));
         chkUseIsc3.setSelected(root.getRunSettings().getSecretCodes().isUseIsc3());
-        if (chkUseIsc3.isSelected()) {
-            lblIsc3.setDisable(false);
-            cmbIsc3.setDisable(false);
-            lblIsc3Retries.setDisable(false);
-            txtIsc3Retries.setDisable(false);
-        } else {
-            lblIsc3.setDisable(true);
-            cmbIsc3.setDisable(true);
-            lblIsc3Retries.setDisable(true);
-            txtIsc3Retries.setDisable(true);
-        }
-        chkUseIsc3.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            if (chkUseIsc3.isSelected()) {
-                lblIsc3.setDisable(false);
-                cmbIsc3.setDisable(false);
-                lblIsc3Retries.setDisable(false);
-                txtIsc3Retries.setDisable(false);
-            } else {
-                lblIsc3.setDisable(true);
-                cmbIsc3.setDisable(true);
-                lblIsc3Retries.setDisable(true);
-                txtIsc3Retries.setDisable(true);
-            }
-        });
+        handleUseIsc3Check();
 
         cmbIsc4.setItems(mappedVariables);
         registerForComboUpdate(cmbIsc4);
@@ -664,84 +596,56 @@ public class CardiotestController {
         if (root.getRunSettings().getSecretCodes().getIsc4Retries() != 0)
             txtIsc4Retries.setText(Integer.toString(root.getRunSettings().getSecretCodes().getIsc4Retries()));
         chkUseIsc4.setSelected(root.getRunSettings().getSecretCodes().isUseIsc4());
-        if (chkUseIsc4.isSelected()) {
-            lblIsc4.setDisable(false);
-            cmbIsc4.setDisable(false);
-            lblIsc4Retries.setDisable(false);
-            txtIsc4Retries.setDisable(false);
-        } else {
-            lblIsc4.setDisable(true);
-            cmbIsc4.setDisable(true);
-            lblIsc4Retries.setDisable(true);
-            txtIsc4Retries.setDisable(true);
-        }
-        chkUseIsc4.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            if (chkUseIsc4.isSelected()) {
-                lblIsc4.setDisable(false);
-                cmbIsc4.setDisable(false);
-                lblIsc4Retries.setDisable(false);
-                txtIsc4Retries.setDisable(false);
-            } else {
-                lblIsc4.setDisable(true);
-                cmbIsc4.setDisable(true);
-                lblIsc4Retries.setDisable(true);
-                txtIsc4Retries.setDisable(true);
-            }
-        });
+        handleUseIsc4Check();
 
         // authentication
+
         chkIncludeDeltaTest.setSelected(root.getRunSettings().getAuthentication().isIncludeDeltaTest());
-        if (chkIncludeDeltaTest.isSelected())
-            root.getMenuDeltaTest().setDisable(false);
-        else
-            root.getMenuDeltaTest().setDisable(true);
-        chkIncludeDeltaTest.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            if (chkIncludeDeltaTest.isSelected())
-                root.getMenuDeltaTest().setDisable(false);
-            else
-                root.getMenuDeltaTest().setDisable(true);
-        });
+        handleIncludeDeltaTestCheck();
+
         chkIncludeSqnMax.setSelected(root.getRunSettings().getAuthentication().isIncludeSqnMax());
-        if (chkIncludeSqnMax.isSelected())
-            root.getMenuSqnMax().setDisable(false);
-        else
-            root.getMenuSqnMax().setDisable(true);
-        chkIncludeSqnMax.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            if (chkIncludeSqnMax.isSelected())
-                root.getMenuSqnMax().setDisable(false);
-            else
-                root.getMenuSqnMax().setDisable(true);
-        });
+        handleIncludeSqnMaxCheck();
+
         txtResLength.setText(root.getRunSettings().getAuthentication().getResLength());
+
         cmbAkaC1.setItems(mappedVariables);
         registerForComboUpdate(cmbAkaC1);
         cmbAkaC1.getSelectionModel().select(root.getRunSettings().getAuthentication().getAkaC1());
+
         cmbAkaC2.setItems(mappedVariables);
         registerForComboUpdate(cmbAkaC2);
         cmbAkaC2.getSelectionModel().select(root.getRunSettings().getAuthentication().getAkaC2());
+
         cmbAkaC3.setItems(mappedVariables);
         registerForComboUpdate(cmbAkaC3);
         cmbAkaC3.getSelectionModel().select(root.getRunSettings().getAuthentication().getAkaC3());
+
         cmbAkaC4.setItems(mappedVariables);
         registerForComboUpdate(cmbAkaC4);
         cmbAkaC4.getSelectionModel().select(root.getRunSettings().getAuthentication().getAkaC4());
+
         cmbAkaC5.setItems(mappedVariables);
         registerForComboUpdate(cmbAkaC5);
         cmbAkaC5.getSelectionModel().select(root.getRunSettings().getAuthentication().getAkaC5());
+
         cmbAkaRi.setItems(mappedVariables);
         registerForComboUpdate(cmbAkaRi);
         cmbAkaRi.getSelectionModel().select(root.getRunSettings().getAuthentication().getAkaRi());
+
         txtRand.setText(root.getRunSettings().getAuthentication().getRand());
         txtSqn.setText(root.getRunSettings().getAuthentication().getSqn());
         txtSqnMax.setText(root.getRunSettings().getAuthentication().getSqnMax());
         txtDelta.setText(root.getRunSettings().getAuthentication().getDelta());
         txtAmf.setText(root.getRunSettings().getAuthentication().getAmf());
+
         cmbKi.setItems(mappedVariables);
         registerForComboUpdate(cmbKi);
         cmbKi.getSelectionModel().select(root.getRunSettings().getAuthentication().getKi());
+
         cmbOpc.setItems(mappedVariables);
         registerForComboUpdate(cmbOpc);
         cmbOpc.getSelectionModel().select(root.getRunSettings().getAuthentication().getOpc());
+
         chkComp1282.setSelected(root.getRunSettings().getAuthentication().isComp1282());
         chkComp1283.setSelected(root.getRunSettings().getAuthentication().isComp1283());
         chkMilenage.setSelected(root.getRunSettings().getAuthentication().isMilenage());
@@ -760,12 +664,14 @@ public class CardiotestController {
         // initialize list of versions
         for (int i = 0; i < 15; i++)
             cmbKeysetVersion.getItems().add(Integer.toString(i + 1));
+
         // initialize list of types
         List<String> keysetTypes = new ArrayList<>();
         keysetTypes.add("Algorithm known implicitly by both entities");
         keysetTypes.add("DES");
         keysetTypes.add("Proprietary Implementations");
         cmbKeysetType.getItems().addAll(keysetTypes);
+
         // initialize list of modes
         List<String> blockModes = new ArrayList<>();
         blockModes.add("DES - CBC");
@@ -776,6 +682,7 @@ public class CardiotestController {
         cmbKicValuation.setItems(mappedVariables);
         registerForComboUpdate(cmbKicValuation);
         cmbKicMode.getItems().addAll(blockModes);
+
         cmbKidValuation.setItems(mappedVariables);
         registerForComboUpdate(cmbKidValuation);
         cmbKidMode.getItems().addAll(blockModes);
@@ -783,6 +690,7 @@ public class CardiotestController {
         txtUdhiFirstByte.setText(root.getRunSettings().getSmsUpdate().getUdhiFirstByte());
         txtScAddress.setText(root.getRunSettings().getSmsUpdate().getScAddress());
         txtTpPid.setText(root.getRunSettings().getSmsUpdate().getTpPid());
+
         // initialize list of PoR format
         List<String> porFormats = new ArrayList<>();
         porFormats.add("PoR as SMS-DELIVER-REPORT");
@@ -793,63 +701,22 @@ public class CardiotestController {
         // RFM USIM
 
         chkIncludeRfmUsim.setSelected(root.getRunSettings().getRfmUsim().isIncludeRfmUsim());
-        if (chkIncludeRfmUsim.isSelected())
-            root.getMenuRfmUsim().setDisable(false);
-        else
-            root.getMenuRfmUsim().setDisable(true);
-        chkIncludeRfmUsim.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            if (chkIncludeRfmUsim.isSelected())
-                root.getMenuRfmUsim().setDisable(false);
-            else
-                root.getMenuRfmUsim().setDisable(true);
-        });
+        handleIncludeRfmUsimCheck();
 
         chkIncludeRfmUsimUpdateRecord.setSelected(root.getRunSettings().getRfmUsim().isIncludeRfmUsimUpdateRecord());
-        if (chkIncludeRfmUsimUpdateRecord.isSelected())
-            root.getMenuRfmUsimUpdateRecord().setDisable(false);
-        else
-            root.getMenuRfmUsimUpdateRecord().setDisable(true);
-        chkIncludeRfmUsimUpdateRecord.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            if (chkIncludeRfmUsimUpdateRecord.isSelected())
-                root.getMenuRfmUsimUpdateRecord().setDisable(false);
-            else
-                root.getMenuRfmUsimUpdateRecord().setDisable(true);
-        });
+        handleIncludeRfmUsimUpdateRecordCheck();
 
         chkIncludeRfmUsimExpandedMode.setSelected(root.getRunSettings().getRfmUsim().isIncludeRfmUsimExpandedMode());
-        if (chkIncludeRfmUsimExpandedMode.isSelected())
-            root.getMenuRfmUsimExpandedMode().setDisable(false);
-        else
-            root.getMenuRfmUsimExpandedMode().setDisable(true);
-        chkIncludeRfmUsimExpandedMode.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            if (chkIncludeRfmUsimExpandedMode.isSelected())
-                root.getMenuRfmUsimExpandedMode().setDisable(false);
-            else
-                root.getMenuRfmUsimExpandedMode().setDisable(true);
-        });
+        handleIncludeRfmUsimExpandedModeCheck();
+
+        // RFM USIM MSL
 
         txtRfmUsimMslByte.setText(root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().getComputedMsl());
+
         chkRfmUsimCustomMsl.setSelected(root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().isCustomMsl());
-        if (chkRfmUsimCustomMsl.isSelected())
-            txtRfmUsimMslByte.setDisable(false);
-        else
-            txtRfmUsimMslByte.setDisable(true);
-        chkRfmUsimCustomMsl.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            if (chkRfmUsimCustomMsl.isSelected())
-                txtRfmUsimMslByte.setDisable(false);
-            else
-                txtRfmUsimMslByte.setDisable(true);
-        });
+        handleRfmUsimCustomMslCheck();
 
         chkRfmUsimUseCipher.setSelected(root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().isUseCipher());
-        chkRfmUsimUseCipher.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            if (chkRfmUsimUseCipher.isSelected())
-                root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setUseCipher(true);
-            else
-                root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setUseCipher(false);
-            root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().computeMsl();
-            txtRfmUsimMslByte.setText(root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().getComputedMsl());
-        });
 
         // initialize list of cipher algorithm
         List<String> cipherAlgos = new ArrayList<>();
@@ -919,6 +786,16 @@ public class CardiotestController {
         cmbRfmUsimPorSecurity.getItems().addAll(porSecurities);
         cmbRfmUsimPorSecurity.setValue(root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().getPorSecurity());
 
+        // RFM USIM parameters
+
+        txtRfmUsimTar.setText(root.getRunSettings().getRfmUsim().getTar());
+        txtRfmUsimTargetEf.setText(root.getRunSettings().getRfmUsim().getTargetEf());
+        txtRfmUsimTargetEfBadCase.setText(root.getRunSettings().getRfmUsim().getTargetEfBadCase());
+        txtRfmUsimTargetEfAlw.setText(root.getRunSettings().getRfmUsim().getTargetEfAlw());
+        txtRfmUsimTargetEfPin1.setText(root.getRunSettings().getRfmUsim().getTargetEfPin1());
+        txtRfmUsimTargetEfAdm1.setText(root.getRunSettings().getRfmUsim().getTargetEfAdm1());
+        chkRfmUsimFullAccess.setSelected(root.getRunSettings().getRfmUsim().isFullAccess());
+        handleRfmUsimFullAccessCheck();
     }
 
     private void showMappings(VariableMapping mapping) {
@@ -1108,12 +985,36 @@ public class CardiotestController {
         }
     }
 
+    @FXML
+    private void handleIncludeAtrCheck() {
+        if (chkIncludeAtr.isSelected())
+            root.getMenuAtr().setDisable(false);
+        else
+            root.getMenuAtr().setDisable(true);
+    }
+
     private boolean mappedVariableExist(String testMappedVariable) {
         for (VariableMapping mapping : application.getMappings()) {
             if (mapping.getMappedVariable().equals(testMappedVariable))
                 return true;
         }
         return false;
+    }
+
+    @FXML
+    private void handleIncludeDeltaTestCheck() {
+        if (chkIncludeDeltaTest.isSelected())
+            root.getMenuDeltaTest().setDisable(false);
+        else
+            root.getMenuDeltaTest().setDisable(true);
+    }
+
+    @FXML
+    private void handleIncludeSqnMaxCheck() {
+        if (chkIncludeSqnMax.isSelected())
+            root.getMenuSqnMax().setDisable(false);
+        else
+            root.getMenuSqnMax().setDisable(true);
     }
 
     @FXML
@@ -1157,6 +1058,67 @@ public class CardiotestController {
     }
 
     @FXML
+    private void handleIncludeRfmUsimCheck() {
+        if (chkIncludeRfmUsim.isSelected())
+            root.getMenuRfmUsim().setDisable(false);
+        else
+            root.getMenuRfmUsim().setDisable(true);
+    }
+
+    @FXML
+    private void handleIncludeRfmUsimUpdateRecordCheck() {
+        if (chkIncludeRfmUsimUpdateRecord.isSelected())
+            root.getMenuRfmUsimUpdateRecord().setDisable(false);
+        else
+            root.getMenuRfmUsimUpdateRecord().setDisable(true);
+    }
+
+    @FXML
+    private void handleIncludeRfmUsimExpandedModeCheck() {
+        if (chkIncludeRfmUsimExpandedMode.isSelected())
+            root.getMenuRfmUsimExpandedMode().setDisable(false);
+        else
+            root.getMenuRfmUsimExpandedMode().setDisable(true);
+    }
+
+    @FXML
+    private void handleRfmUsimFullAccessCheck() {
+        if (chkRfmUsimFullAccess.isSelected()) {
+            lblRfmUsimTargetEfAlw.setDisable(true);
+            lblRfmUsimTargetEfPin1.setDisable(true);
+            lblRfmUsimTargetEfAdm1.setDisable(true);
+            txtRfmUsimTargetEfAlw.setDisable(true);
+            txtRfmUsimTargetEfPin1.setDisable(true);
+            txtRfmUsimTargetEfAdm1.setDisable(true);
+        } else {
+            lblRfmUsimTargetEfAlw.setDisable(false);
+            lblRfmUsimTargetEfPin1.setDisable(false);
+            lblRfmUsimTargetEfAdm1.setDisable(false);
+            txtRfmUsimTargetEfAlw.setDisable(false);
+            txtRfmUsimTargetEfPin1.setDisable(false);
+            txtRfmUsimTargetEfAdm1.setDisable(false);
+        }
+    }
+
+    @FXML
+    private void handleRfmUsimCustomMslCheck() {
+        if (chkRfmUsimCustomMsl.isSelected())
+            txtRfmUsimMslByte.setDisable(false);
+        else
+            txtRfmUsimMslByte.setDisable(true);
+    }
+
+    @FXML
+    private void handleRfmUsimUseCipherCheck() {
+        if (chkRfmUsimUseCipher.isSelected())
+            root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setUseCipher(true);
+        else
+            root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setUseCipher(false);
+        root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().computeMsl();
+        txtRfmUsimMslByte.setText(root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().getComputedMsl());
+    }
+
+    @FXML
     private void handleRfmUsimAuthVerifSelection() {
         root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setAuthVerification(cmbRfmUsimAuthVerif.getSelectionModel().getSelectedItem());
         root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().computeMsl();
@@ -1170,8 +1132,70 @@ public class CardiotestController {
         txtRfmUsimMslByte.setText(root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().getComputedMsl());
     }
 
+    @FXML
+    private void handleInclude3gScriptCheck() {
+        if (chkInclude3gScript.isSelected())
+            root.getMenuCodes3g().setDisable(false);
+        else
+            root.getMenuCodes3g().setDisable(true);
+    }
+
+    @FXML
+    private void handleInclude2gScriptCheck() {
+        if (chkInclude2gScript.isSelected())
+            root.getMenuCodes2g().setDisable(false);
+        else
+            root.getMenuCodes2g().setDisable(true);
+    }
+
+    @FXML
+    private void handleUseIsc2Check() {
+        if (chkUseIsc2.isSelected()) {
+            lblIsc2.setDisable(false);
+            cmbIsc2.setDisable(false);
+            lblIsc2Retries.setDisable(false);
+            txtIsc2Retries.setDisable(false);
+        } else {
+            lblIsc2.setDisable(true);
+            cmbIsc2.setDisable(true);
+            lblIsc2Retries.setDisable(true);
+            txtIsc2Retries.setDisable(true);
+        }
+    }
+
+    @FXML
+    private void handleUseIsc3Check() {
+        if (chkUseIsc3.isSelected()) {
+            lblIsc3.setDisable(false);
+            cmbIsc3.setDisable(false);
+            lblIsc3Retries.setDisable(false);
+            txtIsc3Retries.setDisable(false);
+        } else {
+            lblIsc3.setDisable(true);
+            cmbIsc3.setDisable(true);
+            lblIsc3Retries.setDisable(true);
+            txtIsc3Retries.setDisable(true);
+        }
+    }
+
+    @FXML
+    private void handleUseIsc4Check() {
+        if (chkUseIsc4.isSelected()) {
+            lblIsc4.setDisable(false);
+            cmbIsc4.setDisable(false);
+            lblIsc4Retries.setDisable(false);
+            txtIsc4Retries.setDisable(false);
+        } else {
+            lblIsc4.setDisable(true);
+            cmbIsc4.setDisable(true);
+            lblIsc4Retries.setDisable(true);
+            txtIsc4Retries.setDisable(true);
+        }
+    }
+
     public void saveControlState() {
         // project details
+
         root.getRunSettings().setProjectPath(txtProjectFolder.getText());
         root.getRunSettings().setRequestId(txtRequestId.getText());
         root.getRunSettings().setRequestName(txtRequestName.getText());
@@ -1182,10 +1206,13 @@ public class CardiotestController {
         root.getRunSettings().setDeveloperName(txtDeveloperName.getText());
         root.getRunSettings().setTesterName(txtTesterName.getText());
 
+        // ATR
+
         root.getRunSettings().getAtr().setAtrString(txtAtr.getText());
         root.getRunSettings().getAtr().setIncludeAtr(chkIncludeAtr.isSelected());
 
         // card parameters
+
         root.getRunSettings().getCardParameters().setCardManagerAid(txtCardManagerAid.getText());
         root.getRunSettings().getCardParameters().setUsimAid(txtUsimAid.getText());
         root.getRunSettings().getCardParameters().setDfUsim(txtDfUsim.getText());
@@ -1197,6 +1224,13 @@ public class CardiotestController {
         root.getRunSettings().getCardParameters().setDfCsim(txtDfCsim.getText());
 
         // secret codes values
+
+        root.getRunSettings().getSecretCodes().setInclude3gScript(chkInclude3gScript.isSelected());
+        root.getRunSettings().getSecretCodes().setInclude2gScript(chkInclude2gScript.isSelected());
+
+        root.getRunSettings().getSecretCodes().setPin1disabled(chkPin1Disabled.isSelected());
+        root.getRunSettings().getSecretCodes().setPin2disabled(chkPin2Disabled.isSelected());
+
         root.getRunSettings().getSecretCodes().setGpin(cmbGpin.getSelectionModel().getSelectedItem());
         root.getRunSettings().getSecretCodes().setGpinRetries(Integer.parseInt(txtGpinRetries.getText()));
         root.getRunSettings().getSecretCodes().setLpin(cmbLpin.getSelectionModel().getSelectedItem());
@@ -1213,10 +1247,7 @@ public class CardiotestController {
         root.getRunSettings().getSecretCodes().setPuk1Retries(Integer.parseInt(txtPuk1Retries.getText()));
         root.getRunSettings().getSecretCodes().setPuk2(cmbPuk2.getSelectionModel().getSelectedItem());
         root.getRunSettings().getSecretCodes().setPuk2Retries(Integer.parseInt(txtPuk2Retries.getText()));
-        root.getRunSettings().getSecretCodes().setInclude3gScript(chkInclude3gScript.isSelected());
-        root.getRunSettings().getSecretCodes().setInclude2gScript(chkInclude2gScript.isSelected());
-        root.getRunSettings().getSecretCodes().setPin1disabled(chkPin1Disabled.isSelected());
-        root.getRunSettings().getSecretCodes().setPin2disabled(chkPin2Disabled.isSelected());
+
         root.getRunSettings().getSecretCodes().setIsc1(cmbIsc1.getSelectionModel().getSelectedItem());
         root.getRunSettings().getSecretCodes().setIsc1Retries(Integer.parseInt(txtIsc1Retries.getText()));
         root.getRunSettings().getSecretCodes().setIsc2(cmbIsc2.getSelectionModel().getSelectedItem());
@@ -1234,8 +1265,10 @@ public class CardiotestController {
         root.getRunSettings().getSecretCodes().setBlockPuk2(chkBlockPuk2.isSelected());
 
         // authentication settings
+
         root.getRunSettings().getAuthentication().setIncludeDeltaTest(chkIncludeDeltaTest.isSelected());
         root.getRunSettings().getAuthentication().setIncludeSqnMax(chkIncludeSqnMax.isSelected());
+
         root.getRunSettings().getAuthentication().setResLength(txtResLength.getText());
         root.getRunSettings().getAuthentication().setAkaC1(cmbAkaC1.getSelectionModel().getSelectedItem());
         root.getRunSettings().getAuthentication().setAkaC2(cmbAkaC2.getSelectionModel().getSelectedItem());
@@ -1257,12 +1290,19 @@ public class CardiotestController {
         root.getRunSettings().getAuthentication().setGsmAlgo(chkGsmAlgo.isSelected());
 
         // SMS update settings
+
         root.getRunSettings().getSmsUpdate().setUdhiFirstByte(txtUdhiFirstByte.getText());
         root.getRunSettings().getSmsUpdate().setScAddress(txtScAddress.getText());
         root.getRunSettings().getSmsUpdate().setTpPid(txtTpPid.getText());
         root.getRunSettings().getSmsUpdate().setPorFormat(cmbPorFormat.getSelectionModel().getSelectedItem());
 
         // RFM USIM
+
+        root.getRunSettings().getRfmUsim().setIncludeRfmUsim(chkIncludeRfmUsim.isSelected());
+        root.getRunSettings().getRfmUsim().setIncludeRfmUsimUpdateRecord(chkIncludeRfmUsimUpdateRecord.isSelected());
+        root.getRunSettings().getRfmUsim().setIncludeRfmUsimExpandedMode(chkIncludeRfmUsimExpandedMode.isSelected());
+
+        // RFM USIM MSL
         root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setCustomMsl(chkRfmUsimCustomMsl.isSelected());
         if (root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().isCustomMsl())
             root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setComputedMsl(txtRfmUsimMslByte.getText());
@@ -1274,6 +1314,8 @@ public class CardiotestController {
         root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setPorRequirement(cmbRfmUsimPorRequirement.getSelectionModel().getSelectedItem());
         root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setCipherPor(chkRfmUsimCipherPor.isSelected());
         root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setPorSecurity(cmbRfmUsimPorSecurity.getSelectionModel().getSelectedItem());
+
+
     }
 
 }

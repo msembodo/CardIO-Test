@@ -278,8 +278,6 @@ public class CardiotestController {
     @FXML
     private TextField txtRfmUsimMslByte;
     @FXML
-    private CheckBox chkRfmUsimCustomMsl;
-    @FXML
     private ComboBox<String> cmbRfmUsimCipherAlgo;
     @FXML
     private CheckBox chkRfmUsimUseCipher;
@@ -304,17 +302,21 @@ public class CardiotestController {
     @FXML
     private CheckBox chkRfmUsimFullAccess;
     @FXML
-    private Label lblRfmUsimTargetEfAlw;
+    private Label lblRfmUsimCustomTarget;
     @FXML
-    private TextField txtRfmUsimTargetEfAlw;
+    private ComboBox<String> cmbRfmUsimCustomTargetAcc;
     @FXML
-    private Label lblRfmUsimTargetEfPin1;
+    private TextField txtRfmUsimCustomTargetEf;
     @FXML
-    private TextField txtRfmUsimTargetEfPin1;
+    private Label lblRfmUsimCustomTargetBadCase;
     @FXML
-    private Label lblRfmUsimTargetEfAdm1;
+    private ComboBox<String> cmbRfmUsimCustomTargetAccBadCase;
     @FXML
-    private TextField txtRfmUsimTargetEfAdm1;
+    private TextField txtRfmUsimCustomTargetEfBadCase;
+    @FXML
+    private CheckBox chkUseSpecificKeyset;
+    @FXML
+    private Label lblRfmUsimCipheringKeyset;
     @FXML
     private ComboBox<String> cmbRfmUsimCipheringKeyset;
     @FXML
@@ -323,6 +325,8 @@ public class CardiotestController {
     private CheckBox chkRfmUsimCustomKic;
     @FXML
     private TextField txtRfmUsimCustomKic;
+    @FXML
+    private Label lblRfmUsimAuthKeyset;
     @FXML
     private ComboBox<String> cmbRfmUsimAuthKeyset;
     @FXML
@@ -721,9 +725,6 @@ public class CardiotestController {
 
         txtRfmUsimMslByte.setText(root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().getComputedMsl());
 
-        chkRfmUsimCustomMsl.setSelected(root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().isCustomMsl());
-        handleRfmUsimCustomMslCheck();
-
         chkRfmUsimUseCipher.setSelected(root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().isUseCipher());
 
         // initialize list of cipher algorithm
@@ -799,16 +800,54 @@ public class CardiotestController {
         txtRfmUsimTar.setText(root.getRunSettings().getRfmUsim().getTar());
         txtRfmUsimTargetEf.setText(root.getRunSettings().getRfmUsim().getTargetEf());
         txtRfmUsimTargetEfBadCase.setText(root.getRunSettings().getRfmUsim().getTargetEfBadCase());
-        txtRfmUsimTargetEfAlw.setText(root.getRunSettings().getRfmUsim().getTargetEfAlw());
-        txtRfmUsimTargetEfPin1.setText(root.getRunSettings().getRfmUsim().getTargetEfPin1());
-        txtRfmUsimTargetEfAdm1.setText(root.getRunSettings().getRfmUsim().getTargetEfAdm1());
+
+        cmbRfmUsimCustomTargetAcc.setItems(mappedVariables);
+        registerForComboUpdate(cmbRfmUsimCustomTargetAcc);
+        if (root.getRunSettings().getRfmUsim().getCustomTargetAcc() != null)
+            cmbRfmUsimCustomTargetAcc.getSelectionModel().select(root.getRunSettings().getRfmUsim().getCustomTargetAcc());
+        if (root.getRunSettings().getRfmUsim().getCustomTargetEf() != null)
+            txtRfmUsimCustomTargetEf.setText(root.getRunSettings().getRfmUsim().getCustomTargetEf());
+
+        cmbRfmUsimCustomTargetAccBadCase.setItems(mappedVariables);
+        registerForComboUpdate(cmbRfmUsimCustomTargetAccBadCase);
+        if (root.getRunSettings().getRfmUsim().getCustomTargetAccBadCase() != null)
+            cmbRfmUsimCustomTargetAccBadCase.getSelectionModel().select(root.getRunSettings().getRfmUsim().getCustomTargetAccBadCase());
+        if (root.getRunSettings().getRfmUsim().getCustomTargetEfBadCase() != null)
+            txtRfmUsimCustomTargetEfBadCase.setText(root.getRunSettings().getRfmUsim().getCustomTargetEfBadCase());
+
         chkRfmUsimFullAccess.setSelected(root.getRunSettings().getRfmUsim().isFullAccess());
         handleRfmUsimFullAccessCheck();
 
         // initialize list of available keysets for RFM USIM
-        cmbRfmUsimCipheringKeyset.setItems(scp80KeysetLabels);
-        cmbRfmUsimAuthKeyset.setItems(scp80KeysetLabels);
 
+        cmbRfmUsimCipheringKeyset.setItems(scp80KeysetLabels);
+        if (root.getRunSettings().getRfmUsim().getCipheringKeyset() != null) {
+            cmbRfmUsimCipheringKeyset.setValue(root.getRunSettings().getRfmUsim().getCipheringKeyset().getKeysetName());
+            for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets()) {
+                if (keyset.getKeysetName().equals(root.getRunSettings().getRfmUsim().getCipheringKeyset().getKeysetName()))
+                    lblRfmUsimKic.setText("Kic (hex): " + keyset.getComputedKic());
+                break;
+            }
+            chkRfmUsimCustomKic.setSelected(root.getRunSettings().getRfmUsim().getCipheringKeyset().isCustomKic());
+            handleRfmUsimCustomKicCheck();
+            txtRfmUsimCustomKic.setText(root.getRunSettings().getRfmUsim().getCipheringKeyset().getComputedKic());
+        }
+
+        cmbRfmUsimAuthKeyset.setItems(scp80KeysetLabels);
+        if (root.getRunSettings().getRfmUsim().getAuthKeyset() != null) {
+            cmbRfmUsimAuthKeyset.setValue(root.getRunSettings().getRfmUsim().getAuthKeyset().getKeysetName());
+            for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets()) {
+                if (keyset.getKeysetName().equals(root.getRunSettings().getRfmUsim().getAuthKeyset().getKeysetName()))
+                    lblRfmUsimKid.setText("Kid (hex): " + keyset.getComputedKid());
+                break;
+            }
+            chkRfmUsimCustomKid.setSelected(root.getRunSettings().getRfmUsim().getAuthKeyset().isCustomKid());
+            handleRfmUsimCustomKidCheck();
+            txtRfmUsimCustomKid.setText(root.getRunSettings().getRfmUsim().getAuthKeyset().getComputedKid());
+        }
+
+        chkUseSpecificKeyset.setSelected(root.getRunSettings().getRfmUsim().isUseSpecificKeyset());
+        handleUseSpecificKeysetCheck();
     }
 
     private void showMappings(VariableMapping mapping) {
@@ -1110,28 +1149,262 @@ public class CardiotestController {
     @FXML
     private void handleRfmUsimFullAccessCheck() {
         if (chkRfmUsimFullAccess.isSelected()) {
-            lblRfmUsimTargetEfAlw.setDisable(true);
-            lblRfmUsimTargetEfPin1.setDisable(true);
-            lblRfmUsimTargetEfAdm1.setDisable(true);
-            txtRfmUsimTargetEfAlw.setDisable(true);
-            txtRfmUsimTargetEfPin1.setDisable(true);
-            txtRfmUsimTargetEfAdm1.setDisable(true);
+            lblRfmUsimCustomTarget.setDisable(true);
+            cmbRfmUsimCustomTargetAcc.setDisable(true);
+            txtRfmUsimCustomTargetEf.setDisable(true);
+            lblRfmUsimCustomTargetBadCase.setDisable(true);
+            cmbRfmUsimCustomTargetAccBadCase.setDisable(true);
+            txtRfmUsimCustomTargetEfBadCase.setDisable(true);
         } else {
-            lblRfmUsimTargetEfAlw.setDisable(false);
-            lblRfmUsimTargetEfPin1.setDisable(false);
-            lblRfmUsimTargetEfAdm1.setDisable(false);
-            txtRfmUsimTargetEfAlw.setDisable(false);
-            txtRfmUsimTargetEfPin1.setDisable(false);
-            txtRfmUsimTargetEfAdm1.setDisable(false);
+            lblRfmUsimCustomTarget.setDisable(false);
+            cmbRfmUsimCustomTargetAcc.setDisable(false);
+            txtRfmUsimCustomTargetEf.setDisable(false);
+            lblRfmUsimCustomTargetBadCase.setDisable(false);
+            cmbRfmUsimCustomTargetAccBadCase.setDisable(false);
+            txtRfmUsimCustomTargetEfBadCase.setDisable(false);
         }
     }
 
     @FXML
-    private void handleRfmUsimCustomMslCheck() {
-        if (chkRfmUsimCustomMsl.isSelected())
-            txtRfmUsimMslByte.setDisable(false);
+    private void handleUseSpecificKeysetCheck() {
+        if (chkUseSpecificKeyset.isSelected()) {
+            lblRfmUsimCipheringKeyset.setDisable(false);
+            cmbRfmUsimCipheringKeyset.setDisable(false);
+            lblRfmUsimKic.setDisable(false);
+            chkRfmUsimCustomKic.setDisable(false);
+            txtRfmUsimCustomKic.setDisable(false);
+            lblRfmUsimAuthKeyset.setDisable(false);
+            cmbRfmUsimAuthKeyset.setDisable(false);
+            lblRfmUsimKid.setDisable(false);
+            chkRfmUsimCustomKid.setDisable(false);
+            txtRfmUsimCustomKid.setDisable(false);
+        }
+        else {
+            lblRfmUsimCipheringKeyset.setDisable(true);
+            cmbRfmUsimCipheringKeyset.setDisable(true);
+            lblRfmUsimKic.setDisable(true);
+            chkRfmUsimCustomKic.setDisable(true);
+            txtRfmUsimCustomKic.setDisable(true);
+            lblRfmUsimAuthKeyset.setDisable(true);
+            cmbRfmUsimAuthKeyset.setDisable(true);
+            lblRfmUsimKid.setDisable(true);
+            chkRfmUsimCustomKid.setDisable(true);
+            txtRfmUsimCustomKid.setDisable(true);
+        }
+    }
+
+    @FXML
+    private void handleRfmUsimCipheringKeysetSelection() {
+        for (SCP80Keyset keyset : application.getScp80Keysets()) {
+            if (keyset.getKeysetName().equals(cmbRfmUsimCipheringKeyset.getSelectionModel().getSelectedItem())) {
+                lblRfmUsimKic.setText("Kic (hex): " + keyset.getComputedKic());
+                break;
+            }
+        }
+    }
+
+    @FXML
+    private void handleRfmUsimAuthKeysetSelection() {
+        for (SCP80Keyset keyset : application.getScp80Keysets()) {
+            if (keyset.getKeysetName().equals(cmbRfmUsimAuthKeyset.getSelectionModel().getSelectedItem())) {
+                lblRfmUsimKid.setText("Kid (hex): " + keyset.getComputedKid());
+                break;
+            }
+        }
+    }
+
+    @FXML
+    private void handleRfmUsimCustomKicCheck() {
+        if (chkRfmUsimCustomKic.isSelected())
+            txtRfmUsimCustomKic.setDisable(false);
         else
-            txtRfmUsimMslByte.setDisable(true);
+            txtRfmUsimCustomKic.setDisable(true);
+    }
+
+    @FXML
+    private void handleRfmUsimCustomKidCheck() {
+        if (chkRfmUsimCustomKid.isSelected())
+            txtRfmUsimCustomKid.setDisable(false);
+        else
+            txtRfmUsimCustomKid.setDisable(true);
+    }
+
+    @FXML
+    private void handleButtonSetRfmUsimMsl() {
+        int mslInteger = Integer.parseInt(txtRfmUsimMslByte.getText(), 16);
+        logger.info("MSL integer: " + mslInteger);
+        if (mslInteger > 31) {
+            // MSL integer shoould not be higher than 31 (0x1F)
+            Alert mslAlert = new Alert(Alert.AlertType.ERROR);
+            mslAlert.initModality(Modality.APPLICATION_MODAL);
+            mslAlert.initOwner(application.getPrimaryStage());
+            mslAlert.setTitle("Minimum Security Level");
+            mslAlert.setHeaderText("Invalid MSL");
+            mslAlert.setContentText("MSL value should not exceed '1F'");
+            mslAlert.showAndWait();
+        } else {
+            // set components accordingly
+            if (mslInteger == 0) {
+                chkRfmUsimUseCipher.setSelected(false);
+                cmbRfmUsimAuthVerif.getSelectionModel().select("No verification");
+                cmbRfmUsimCounterCheck.getSelectionModel().select("No counter available");
+            }
+            if (mslInteger == 1) {
+                chkRfmUsimUseCipher.setSelected(false);
+                cmbRfmUsimAuthVerif.getSelectionModel().select("Redundancy Check");
+                cmbRfmUsimCounterCheck.getSelectionModel().select("No counter available");
+            }
+            if (mslInteger == 2) {
+                chkRfmUsimUseCipher.setSelected(false);
+                cmbRfmUsimAuthVerif.getSelectionModel().select("Cryptographic Checksum");
+                cmbRfmUsimCounterCheck.getSelectionModel().select("No counter available");
+            }
+            if (mslInteger == 3) {
+                chkRfmUsimUseCipher.setSelected(false);
+                cmbRfmUsimAuthVerif.getSelectionModel().select("Digital Signature");
+                cmbRfmUsimCounterCheck.getSelectionModel().select("No counter available");
+            }
+            if (mslInteger == 4) {
+                chkRfmUsimUseCipher.setSelected(true);
+                cmbRfmUsimAuthVerif.getSelectionModel().select("No verification");
+                cmbRfmUsimCounterCheck.getSelectionModel().select("No counter available");
+            }
+            if (mslInteger == 5) {
+                chkRfmUsimUseCipher.setSelected(true);
+                cmbRfmUsimAuthVerif.getSelectionModel().select("Redundancy Check");
+                cmbRfmUsimCounterCheck.getSelectionModel().select("No counter available");
+            }
+            if (mslInteger == 6) {
+                chkRfmUsimUseCipher.setSelected(true);
+                cmbRfmUsimAuthVerif.getSelectionModel().select("Cryptographic Checksum");
+                cmbRfmUsimCounterCheck.getSelectionModel().select("No counter available");
+            }
+            if (mslInteger == 7) {
+                chkRfmUsimUseCipher.setSelected(true);
+                cmbRfmUsimAuthVerif.getSelectionModel().select("Digital Signature");
+                cmbRfmUsimCounterCheck.getSelectionModel().select("No counter available");
+            }
+            if (mslInteger == 8) {
+                chkRfmUsimUseCipher.setSelected(false);
+                cmbRfmUsimAuthVerif.getSelectionModel().select("No verification");
+                cmbRfmUsimCounterCheck.getSelectionModel().select("Counter available no checking");
+            }
+            if (mslInteger == 9) {
+                chkRfmUsimUseCipher.setSelected(false);
+                cmbRfmUsimAuthVerif.getSelectionModel().select("Redundancy Check");
+                cmbRfmUsimCounterCheck.getSelectionModel().select("Counter available no checking");
+            }
+            if (mslInteger == 10) {
+                chkRfmUsimUseCipher.setSelected(false);
+                cmbRfmUsimAuthVerif.getSelectionModel().select("Cryptographic Checksum");
+                cmbRfmUsimCounterCheck.getSelectionModel().select("Counter available no checking");
+            }
+            if (mslInteger == 11) {
+                chkRfmUsimUseCipher.setSelected(false);
+                cmbRfmUsimAuthVerif.getSelectionModel().select("Digital Signature");
+                cmbRfmUsimCounterCheck.getSelectionModel().select("Counter available no checking");
+            }
+            if (mslInteger == 12) {
+                chkRfmUsimUseCipher.setSelected(true);
+                cmbRfmUsimAuthVerif.getSelectionModel().select("No verification");
+                cmbRfmUsimCounterCheck.getSelectionModel().select("Counter available no checking");
+            }
+            if (mslInteger == 13) {
+                chkRfmUsimUseCipher.setSelected(true);
+                cmbRfmUsimAuthVerif.getSelectionModel().select("Redundancy Check");
+                cmbRfmUsimCounterCheck.getSelectionModel().select("Counter available no checking");
+            }
+            if (mslInteger == 14) {
+                chkRfmUsimUseCipher.setSelected(true);
+                cmbRfmUsimAuthVerif.getSelectionModel().select("Cryptographic Checksum");
+                cmbRfmUsimCounterCheck.getSelectionModel().select("Counter available no checking");
+            }
+            if (mslInteger == 15) {
+                chkRfmUsimUseCipher.setSelected(true);
+                cmbRfmUsimAuthVerif.getSelectionModel().select("Digital Signature");
+                cmbRfmUsimCounterCheck.getSelectionModel().select("Counter available no checking");
+            }
+            if (mslInteger == 16) {
+                chkRfmUsimUseCipher.setSelected(false);
+                cmbRfmUsimAuthVerif.getSelectionModel().select("No verification");
+                cmbRfmUsimCounterCheck.getSelectionModel().select("Counter must be higher");
+            }
+            if (mslInteger == 17) {
+                chkRfmUsimUseCipher.setSelected(false);
+                cmbRfmUsimAuthVerif.getSelectionModel().select("Redundancy Check");
+                cmbRfmUsimCounterCheck.getSelectionModel().select("Counter must be higher");
+            }
+            if (mslInteger == 18) {
+                chkRfmUsimUseCipher.setSelected(false);
+                cmbRfmUsimAuthVerif.getSelectionModel().select("Cryptographic Checksum");
+                cmbRfmUsimCounterCheck.getSelectionModel().select("Counter must be higher");
+            }
+            if (mslInteger == 19) {
+                chkRfmUsimUseCipher.setSelected(false);
+                cmbRfmUsimAuthVerif.getSelectionModel().select("Digital Signature");
+                cmbRfmUsimCounterCheck.getSelectionModel().select("Counter must be higher");
+            }
+            if (mslInteger == 20) {
+                chkRfmUsimUseCipher.setSelected(true);
+                cmbRfmUsimAuthVerif.getSelectionModel().select("No verification");
+                cmbRfmUsimCounterCheck.getSelectionModel().select("Counter must be higher");
+            }
+            if (mslInteger == 21) {
+                chkRfmUsimUseCipher.setSelected(true);
+                cmbRfmUsimAuthVerif.getSelectionModel().select("Redundancy Check");
+                cmbRfmUsimCounterCheck.getSelectionModel().select("Counter must be higher");
+            }
+            if (mslInteger == 22) {
+                chkRfmUsimUseCipher.setSelected(true);
+                cmbRfmUsimAuthVerif.getSelectionModel().select("Cryptographic Checksum");
+                cmbRfmUsimCounterCheck.getSelectionModel().select("Counter must be higher");
+            }
+            if (mslInteger == 23) {
+                chkRfmUsimUseCipher.setSelected(true);
+                cmbRfmUsimAuthVerif.getSelectionModel().select("Digital Signature");
+                cmbRfmUsimCounterCheck.getSelectionModel().select("Counter must be higher");
+            }
+            if (mslInteger == 24) {
+                chkRfmUsimUseCipher.setSelected(false);
+                cmbRfmUsimAuthVerif.getSelectionModel().select("No verification");
+                cmbRfmUsimCounterCheck.getSelectionModel().select("Counter must be one higher");
+            }
+            if (mslInteger == 25) {
+                chkRfmUsimUseCipher.setSelected(false);
+                cmbRfmUsimAuthVerif.getSelectionModel().select("Redundancy Check");
+                cmbRfmUsimCounterCheck.getSelectionModel().select("Counter must be one higher");
+            }
+            if (mslInteger == 26) {
+                chkRfmUsimUseCipher.setSelected(false);
+                cmbRfmUsimAuthVerif.getSelectionModel().select("Cryptographic Checksum");
+                cmbRfmUsimCounterCheck.getSelectionModel().select("Counter must be one higher");
+            }
+            if (mslInteger == 27) {
+                chkRfmUsimUseCipher.setSelected(false);
+                cmbRfmUsimAuthVerif.getSelectionModel().select("Digital Signature");
+                cmbRfmUsimCounterCheck.getSelectionModel().select("Counter must be one higher");
+            }
+            if (mslInteger == 28) {
+                chkRfmUsimUseCipher.setSelected(true);
+                cmbRfmUsimAuthVerif.getSelectionModel().select("No verification");
+                cmbRfmUsimCounterCheck.getSelectionModel().select("Counter must be one higher");
+            }
+            if (mslInteger == 29) {
+                chkRfmUsimUseCipher.setSelected(true);
+                cmbRfmUsimAuthVerif.getSelectionModel().select("Redundancy Check");
+                cmbRfmUsimCounterCheck.getSelectionModel().select("Counter must be one higher");
+            }
+            if (mslInteger == 30) {
+                chkRfmUsimUseCipher.setSelected(true);
+                cmbRfmUsimAuthVerif.getSelectionModel().select("Cryptographic Checksum");
+                cmbRfmUsimCounterCheck.getSelectionModel().select("Counter must be one higher");
+            }
+            if (mslInteger == 31) {
+                chkRfmUsimUseCipher.setSelected(true);
+                cmbRfmUsimAuthVerif.getSelectionModel().select("Digital Signature");
+                cmbRfmUsimCounterCheck.getSelectionModel().select("Counter must be one higher");
+            }
+        }
     }
 
     @FXML
@@ -1329,14 +1602,13 @@ public class CardiotestController {
         root.getRunSettings().getRfmUsim().setIncludeRfmUsimExpandedMode(chkIncludeRfmUsimExpandedMode.isSelected());
 
         // RFM USIM MSL
-        root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setCustomMsl(chkRfmUsimCustomMsl.isSelected());
-        if (root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().isCustomMsl())
-            root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setComputedMsl(txtRfmUsimMslByte.getText());
-//        root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setUseCipher(chkRfmUsimUseCipher.isSelected());
+        root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setComputedMsl(txtRfmUsimMslByte.getText());
+        root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setUseCipher(chkRfmUsimUseCipher.isSelected());
         root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setCipherAlgo(cmbRfmUsimCipherAlgo.getSelectionModel().getSelectedItem());
-//        root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setAuthVerification(cmbRfmUsimAuthVerif.getSelectionModel().getSelectedItem());
+        root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setAuthVerification(cmbRfmUsimAuthVerif.getSelectionModel().getSelectedItem());
         root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setSigningAlgo(cmbRfmUsimSigningAlgo.getSelectionModel().getSelectedItem());
-//        root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setCounterChecking(cmbRfmUsimCounterCheck.getSelectionModel().getSelectedItem());
+        root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setCounterChecking(cmbRfmUsimCounterCheck.getSelectionModel().getSelectedItem());
+
         root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setPorRequirement(cmbRfmUsimPorRequirement.getSelectionModel().getSelectedItem());
         root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setCipherPor(chkRfmUsimCipherPor.isSelected());
         root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setPorSecurity(cmbRfmUsimPorSecurity.getSelectionModel().getSelectedItem());
@@ -1345,9 +1617,61 @@ public class CardiotestController {
         root.getRunSettings().getRfmUsim().setTargetEf(txtRfmUsimTargetEf.getText());
         root.getRunSettings().getRfmUsim().setTargetEfBadCase(txtRfmUsimTargetEfBadCase.getText());
         root.getRunSettings().getRfmUsim().setFullAccess(chkRfmUsimFullAccess.isSelected());
-        root.getRunSettings().getRfmUsim().setTargetEfAlw(txtRfmUsimTargetEfAlw.getText());
-        root.getRunSettings().getRfmUsim().setTargetEfPin1(txtRfmUsimTargetEfPin1.getText());
-        root.getRunSettings().getRfmUsim().setTargetEfAdm1(txtRfmUsimTargetEfAdm1.getText());
+        if (!root.getRunSettings().getRfmUsim().isFullAccess()) {
+            root.getRunSettings().getRfmUsim().setCustomTargetAcc(cmbRfmUsimCustomTargetAcc.getSelectionModel().getSelectedItem());
+            root.getRunSettings().getRfmUsim().setCustomTargetEf(txtRfmUsimCustomTargetEf.getText());
+            root.getRunSettings().getRfmUsim().setCustomTargetAccBadCase(cmbRfmUsimCustomTargetAccBadCase.getSelectionModel().getSelectedItem());
+            root.getRunSettings().getRfmUsim().setCustomTargetEfBadCase(txtRfmUsimCustomTargetEfBadCase.getText());
+        }
+
+        root.getRunSettings().getRfmUsim().setUseSpecificKeyset(chkUseSpecificKeyset.isSelected());
+        SCP80Keyset rfmUsimCipheringKeyset = new SCP80Keyset();
+        rfmUsimCipheringKeyset.setKeysetName(cmbRfmUsimCipheringKeyset.getSelectionModel().getSelectedItem());
+        for (SCP80Keyset registeredKeyset : application.getScp80Keysets()) {
+            if (registeredKeyset.getKeysetName().equals(rfmUsimCipheringKeyset.getKeysetName())) {
+                rfmUsimCipheringKeyset.setKeysetVersion(registeredKeyset.getKeysetVersion());
+                rfmUsimCipheringKeyset.setKeysetType(registeredKeyset.getKeysetType());
+                rfmUsimCipheringKeyset.setKicValuation(registeredKeyset.getKicValuation());
+                rfmUsimCipheringKeyset.setKicMode(registeredKeyset.getKicMode());
+                rfmUsimCipheringKeyset.setKidValuation(registeredKeyset.getKidValuation());
+                rfmUsimCipheringKeyset.setKidMode(registeredKeyset.getKidMode());
+
+                rfmUsimCipheringKeyset.setCustomKic(chkRfmUsimCustomKic.isSelected());
+                if (rfmUsimCipheringKeyset.isCustomKic())
+                    rfmUsimCipheringKeyset.setComputedKic(txtRfmUsimCustomKic.getText());
+                else
+                    rfmUsimCipheringKeyset.setComputedKic(registeredKeyset.getComputedKic());
+
+                rfmUsimCipheringKeyset.setComputedKid(registeredKeyset.getComputedKid());
+
+                break;
+            }
+        }
+        root.getRunSettings().getRfmUsim().setCipheringKeyset(rfmUsimCipheringKeyset);
+
+        SCP80Keyset rfmUsimAuthKeyset = new SCP80Keyset();
+        rfmUsimAuthKeyset.setKeysetName(cmbRfmUsimAuthKeyset.getSelectionModel().getSelectedItem());
+        for (SCP80Keyset registeredKeyset : application.getScp80Keysets()) {
+            if (registeredKeyset.getKeysetName().equals(rfmUsimAuthKeyset.getKeysetName())) {
+                rfmUsimAuthKeyset.setKeysetVersion(registeredKeyset.getKeysetVersion());
+                rfmUsimAuthKeyset.setKeysetType(registeredKeyset.getKeysetType());
+                rfmUsimAuthKeyset.setKicValuation(registeredKeyset.getKicValuation());
+                rfmUsimAuthKeyset.setKicMode(registeredKeyset.getKicMode());
+                rfmUsimAuthKeyset.setKidValuation(registeredKeyset.getKidValuation());
+                rfmUsimAuthKeyset.setKidMode(registeredKeyset.getKidMode());
+
+                rfmUsimAuthKeyset.setComputedKic(registeredKeyset.getComputedKic());
+
+                rfmUsimAuthKeyset.setCustomKid(chkRfmUsimCustomKid.isSelected());
+                if (rfmUsimAuthKeyset.isCustomKid())
+                    rfmUsimAuthKeyset.setComputedKid(txtRfmUsimCustomKid.getText());
+                else
+                    rfmUsimAuthKeyset.setComputedKid(registeredKeyset.getComputedKid());
+
+                break;
+            }
+        }
+        root.getRunSettings().getRfmUsim().setAuthKeyset(rfmUsimAuthKeyset);
     }
 
 }

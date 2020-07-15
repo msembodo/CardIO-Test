@@ -102,7 +102,7 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             SmsUpdate smsUpdate = new SmsUpdate("44", "07913366003000F0", "41", "PoR as SMS-SUBMIT");
             defaultSettings.setSmsUpdate(smsUpdate);
 
-            MinimumSecurityLevel rfmUsimMsl = new MinimumSecurityLevel(false, true, "Cryptographic Checksum", "Counter must be higher");
+            MinimumSecurityLevel rfmUsimMsl = new MinimumSecurityLevel(true, "Cryptographic Checksum", "Counter must be higher");
             rfmUsimMsl.setCipherAlgo("3DES - CBC 2 keys");
             rfmUsimMsl.setSigningAlgo("3DES - CBC 2 keys");
             rfmUsimMsl.setPorRequirement("PoR required");
@@ -114,9 +114,6 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             rfmUsim.setTargetEf("6F7B");
             rfmUsim.setTargetEfBadCase("6F05");
             rfmUsim.setFullAccess(true);
-            rfmUsim.setTargetEfAlw("6F46");
-            rfmUsim.setTargetEfPin1("6F07");
-            rfmUsim.setTargetEfAdm1("6F37");
             rfmUsim.setMinimumSecurityLevel(rfmUsimMsl);
             defaultSettings.setRfmUsim(rfmUsim);
 

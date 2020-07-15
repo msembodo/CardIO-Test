@@ -523,18 +523,18 @@
                                                       </rowConstraints>
                                                       <children>
                                                         <Label text="TAR" />
-                                                        <Label text="Target EF" GridPane.rowIndex="1" />
-                                                        <Label text="Target EF (bad case)" GridPane.rowIndex="2" />
+                                                        <Label text="EF" GridPane.rowIndex="1" />
+                                                        <Label text="EF (bad case)" GridPane.rowIndex="2" />
                                                         <TextField fx:id="txtRfmUsimTar" GridPane.columnIndex="1" />
                                                         <TextField fx:id="txtRfmUsimTargetEf" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                         <TextField fx:id="txtRfmUsimTargetEfBadCase" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                       </children>
                                                     </GridPane>
-                                                    <GridPane hgap="8.0" layoutX="324.0" layoutY="32.0" prefHeight="132.0" prefWidth="289.0" AnchorPane.leftAnchor="312.0" AnchorPane.topAnchor="8.0">
+                                                    <GridPane hgap="4.0" layoutX="324.0" layoutY="32.0" prefHeight="132.0" prefWidth="289.0" AnchorPane.leftAnchor="312.0" AnchorPane.topAnchor="8.0">
                                                       <columnConstraints>
-                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="136.0" minWidth="10.0" prefWidth="52.0" />
-                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="213.0" minWidth="10.0" prefWidth="115.0" />
-                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="213.0" minWidth="10.0" prefWidth="97.0" />
+                                                                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="213.0" minWidth="10.0" prefWidth="109.0" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="213.0" minWidth="10.0" prefWidth="105.0" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="213.0" minWidth="10.0" prefWidth="67.0" />
                                                       </columnConstraints>
                                                       <rowConstraints>
                                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -543,16 +543,17 @@
                                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                       </rowConstraints>
                                                       <children>
-                                                        <Label fx:id="lblRfmUsimTargetEfAlw" disable="true" text="ALW" />
-                                                        <Label fx:id="lblRfmUsimTargetEfPin1" disable="true" text="PIN1" GridPane.rowIndex="1" />
-                                                        <Label fx:id="lblRfmUsimTargetEfAdm1" disable="true" text="ADM1" GridPane.rowIndex="2" />
-                                                        <CheckBox fx:id="chkRfmUsimFullAccess" mnemonicParsing="false" onAction="#handleRfmUsimFullAccessCheck" text="Full access" GridPane.columnIndex="2" />
-                                                        <TextField fx:id="txtRfmUsimTargetEfAlw" disable="true" GridPane.columnIndex="1" />
-                                                        <TextField fx:id="txtRfmUsimTargetEfPin1" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                        <TextField fx:id="txtRfmUsimTargetEfAdm1" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                        <CheckBox fx:id="chkRfmUsimFullAccess" mnemonicParsing="false" onAction="#handleRfmUsimFullAccessCheck" text="Full access" />
+                                                                                    <ComboBox fx:id="cmbRfmUsimCustomTargetAcc" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                                    <TextField fx:id="txtRfmUsimCustomTargetEf" prefHeight="31.0" prefWidth="144.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                                    <ComboBox fx:id="cmbRfmUsimCustomTargetAccBadCase" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                                    <TextField fx:id="txtRfmUsimCustomTargetEfBadCase" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                                    <Label fx:id="lblRfmUsimCustomTarget" text="EF" GridPane.rowIndex="1" />
+                                                                                    <Label fx:id="lblRfmUsimCustomTargetBadCase" text="EF (bad case)" GridPane.rowIndex="2" />
                                                       </children>
                                                     </GridPane>
-                                                    <GridPane hgap="8.0" layoutX="32.0" layoutY="133.0" prefHeight="67.0" prefWidth="589.0" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0">
+                                                    <CheckBox fx:id="chkUseSpecificKeyset" layoutX="20.0" layoutY="169.0" mnemonicParsing="false" onAction="#handleUseSpecificKeysetCheck" text="Use specific keyset:" AnchorPane.bottomAnchor="84.0" AnchorPane.leftAnchor="8.0" />
+                                                    <GridPane hgap="8.0" layoutX="32.0" layoutY="133.0" prefHeight="68.0" prefWidth="589.0" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0">
                                                       <columnConstraints>
                                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="151.0" minWidth="10.0" prefWidth="143.0" />
                                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="163.0" minWidth="10.0" prefWidth="142.0" />
@@ -565,15 +566,15 @@
                                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                       </rowConstraints>
                                                        <children>
-                                                          <Label text="Ciphering keyset" />
-                                                          <Label text="Auth keyset" GridPane.rowIndex="1" />
-                                                          <ComboBox fx:id="cmbRfmUsimCipheringKeyset" prefWidth="150.0" GridPane.columnIndex="1" />
+                                                          <Label fx:id="lblRfmUsimCipheringKeyset" text="Ciphering keyset" />
+                                                          <Label fx:id="lblRfmUsimAuthKeyset" text="Auth keyset" GridPane.rowIndex="1" />
+                                                          <ComboBox fx:id="cmbRfmUsimCipheringKeyset" onAction="#handleRfmUsimCipheringKeysetSelection" prefWidth="150.0" GridPane.columnIndex="1" />
                                                           <Label fx:id="lblRfmUsimKic" text="Kic (hex): " GridPane.columnIndex="2" />
                                                           <Label fx:id="lblRfmUsimKid" text="Kid (hex): " GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                          <CheckBox fx:id="chkRfmUsimCustomKic" mnemonicParsing="false" text="Custom" GridPane.columnIndex="3" />
+                                                          <CheckBox fx:id="chkRfmUsimCustomKic" mnemonicParsing="false" onAction="#handleRfmUsimCustomKicCheck" text="Custom" GridPane.columnIndex="3" />
                                                           <TextField fx:id="txtRfmUsimCustomKic" disable="true" GridPane.columnIndex="4" />
-                                                          <ComboBox fx:id="cmbRfmUsimAuthKeyset" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                          <CheckBox fx:id="chkRfmUsimCustomKid" mnemonicParsing="false" text="Custom" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                                          <ComboBox fx:id="cmbRfmUsimAuthKeyset" onAction="#handleRfmUsimAuthKeysetSelection" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                          <CheckBox fx:id="chkRfmUsimCustomKid" mnemonicParsing="false" onAction="#handleRfmUsimCustomKidCheck" text="Custom" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                                                           <TextField fx:id="txtRfmUsimCustomKid" disable="true" GridPane.columnIndex="4" GridPane.rowIndex="1" />
                                                        </children>
                                                     </GridPane>
@@ -602,8 +603,8 @@
                                                       </rowConstraints>
                                                       <children>
                                                         <Label text="MSL" />
-                                                        <TextField fx:id="txtRfmUsimMslByte" disable="true" GridPane.columnIndex="1" />
-                                                        <CheckBox fx:id="chkRfmUsimCustomMsl" mnemonicParsing="false" onAction="#handleRfmUsimCustomMslCheck" text="Custom" GridPane.columnIndex="2" />
+                                                        <TextField fx:id="txtRfmUsimMslByte" prefHeight="31.0" prefWidth="176.0" GridPane.columnIndex="1" />
+                                                        <Button mnemonicParsing="false" onAction="#handleButtonSetRfmUsimMsl" prefHeight="31.0" prefWidth="80.0" text="Set" GridPane.columnIndex="2" />
                                                         <Label text="Cipher algorithm" GridPane.rowIndex="1" />
                                                         <ComboBox fx:id="cmbRfmUsimCipherAlgo" prefHeight="31.0" prefWidth="254.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                         <CheckBox fx:id="chkRfmUsimUseCipher" mnemonicParsing="false" onAction="#handleRfmUsimUseCipherCheck" text="Use cipher" GridPane.columnIndex="2" GridPane.rowIndex="1" />

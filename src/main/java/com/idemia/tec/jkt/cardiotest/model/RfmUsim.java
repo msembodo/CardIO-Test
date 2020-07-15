@@ -9,9 +9,11 @@ public class RfmUsim {
     private String targetEf;
     private String targetEfBadCase;
     private boolean fullAccess;
-    private String targetEfAlw;
-    private String targetEfPin1;
-    private String targetEfAdm1;
+    private String customTargetAcc;
+    private String customTargetEf;
+    private String customTargetAccBadCase;
+    private String customTargetEfBadCase;
+    private boolean useSpecificKeyset;
     private SCP80Keyset cipheringKeyset;
     private SCP80Keyset authKeyset;
     private MinimumSecurityLevel minimumSecurityLevel;
@@ -19,8 +21,9 @@ public class RfmUsim {
     public RfmUsim() {}
 
     public RfmUsim(boolean includeRfmUsim, boolean includeRfmUsimUpdateRecord, boolean includeRfmUsimExpandedMode,
-                   String tar, String targetEf, String targetEfBadCase, boolean fullAccess, String targetEfAlw,
-                   String targetEfPin1, String targetEfAdm1, SCP80Keyset cipheringKeyset, SCP80Keyset authKeyset,
+                   String tar, String targetEf, String targetEfBadCase, boolean fullAccess, String customTargetAcc,
+                   String customTargetEf, String customTargetAccBadCase, String customTargetEfBadCase,
+                   boolean useSpecificKeyset, SCP80Keyset cipheringKeyset, SCP80Keyset authKeyset,
                    MinimumSecurityLevel minimumSecurityLevel) {
         this.includeRfmUsim = includeRfmUsim;
         this.includeRfmUsimUpdateRecord = includeRfmUsimUpdateRecord;
@@ -29,9 +32,11 @@ public class RfmUsim {
         this.targetEf = targetEf;
         this.targetEfBadCase = targetEfBadCase;
         this.fullAccess = fullAccess;
-        this.targetEfAlw = targetEfAlw;
-        this.targetEfPin1 = targetEfPin1;
-        this.targetEfAdm1 = targetEfAdm1;
+        this.customTargetAcc = customTargetAcc;
+        this.customTargetEf = customTargetEf;
+        this.customTargetAccBadCase = customTargetAccBadCase;
+        this.customTargetEfBadCase = customTargetEfBadCase;
+        this.useSpecificKeyset = useSpecificKeyset;
         this.cipheringKeyset = cipheringKeyset;
         this.authKeyset = authKeyset;
         this.minimumSecurityLevel = minimumSecurityLevel;
@@ -93,28 +98,44 @@ public class RfmUsim {
         this.fullAccess = fullAccess;
     }
 
-    public String getTargetEfAlw() {
-        return targetEfAlw;
+    public String getCustomTargetAcc() {
+        return customTargetAcc;
     }
 
-    public void setTargetEfAlw(String targetEfAlw) {
-        this.targetEfAlw = targetEfAlw;
+    public void setCustomTargetAcc(String customTargetAcc) {
+        this.customTargetAcc = customTargetAcc;
     }
 
-    public String getTargetEfPin1() {
-        return targetEfPin1;
+    public String getCustomTargetEf() {
+        return customTargetEf;
     }
 
-    public void setTargetEfPin1(String targetEfPin1) {
-        this.targetEfPin1 = targetEfPin1;
+    public void setCustomTargetEf(String customTargetEf) {
+        this.customTargetEf = customTargetEf;
     }
 
-    public String getTargetEfAdm1() {
-        return targetEfAdm1;
+    public String getCustomTargetAccBadCase() {
+        return customTargetAccBadCase;
     }
 
-    public void setTargetEfAdm1(String targetEfAdm1) {
-        this.targetEfAdm1 = targetEfAdm1;
+    public void setCustomTargetAccBadCase(String customTargetAccBadCase) {
+        this.customTargetAccBadCase = customTargetAccBadCase;
+    }
+
+    public String getCustomTargetEfBadCase() {
+        return customTargetEfBadCase;
+    }
+
+    public void setCustomTargetEfBadCase(String customTargetEfBadCase) {
+        this.customTargetEfBadCase = customTargetEfBadCase;
+    }
+
+    public boolean isUseSpecificKeyset() {
+        return useSpecificKeyset;
+    }
+
+    public void setUseSpecificKeyset(boolean useSpecificKeyset) {
+        this.useSpecificKeyset = useSpecificKeyset;
     }
 
     public SCP80Keyset getCipheringKeyset() {

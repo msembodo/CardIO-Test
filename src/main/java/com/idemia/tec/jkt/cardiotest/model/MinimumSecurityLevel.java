@@ -2,7 +2,6 @@ package com.idemia.tec.jkt.cardiotest.model;
 
 public class MinimumSecurityLevel {
 
-    private boolean customMsl;
     private String computedMsl;
     private boolean useCipher;
     private String cipherAlgo;
@@ -15,8 +14,7 @@ public class MinimumSecurityLevel {
 
     public MinimumSecurityLevel() {}
 
-    public MinimumSecurityLevel(boolean customMsl, boolean useCipher, String authVerification, String counterChecking) {
-        this.customMsl = customMsl;
+    public MinimumSecurityLevel(boolean useCipher, String authVerification, String counterChecking) {
         this.useCipher = useCipher;
         this.authVerification = authVerification;
         this.counterChecking = counterChecking;
@@ -34,14 +32,6 @@ public class MinimumSecurityLevel {
         if (authVerification.equals("Digital Signature")) msl += 3;
 //        return String.format("%02X", msl);
         computedMsl = String.format("%02X", msl);
-    }
-
-    public boolean isCustomMsl() {
-        return customMsl;
-    }
-
-    public void setCustomMsl(boolean customMsl) {
-        this.customMsl = customMsl;
     }
 
     public String getComputedMsl() {

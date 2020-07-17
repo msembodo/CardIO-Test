@@ -1231,8 +1231,9 @@ public class CardiotestController {
 
     @FXML
     private void handleButtonSetRfmUsimMsl() {
-        int mslInteger = Integer.parseInt(txtRfmUsimMslByte.getText(), 16);
-        logger.info("MSL integer: " + mslInteger);
+        String mslHexStr = txtRfmUsimMslByte.getText();
+        int mslInteger = Integer.parseInt(mslHexStr, 16);
+//        logger.info("MSL integer: " + mslInteger);
         if (mslInteger > 31) {
             // MSL integer shoould not be higher than 31 (0x1F)
             Alert mslAlert = new Alert(Alert.AlertType.ERROR);
@@ -1404,6 +1405,8 @@ public class CardiotestController {
                 cmbRfmUsimAuthVerif.getSelectionModel().select("Digital Signature");
                 cmbRfmUsimCounterCheck.getSelectionModel().select("Counter must be one higher");
             }
+            // set back MSL text field as it may change due to race condition
+            txtRfmUsimMslByte.setText(mslHexStr);
         }
     }
 

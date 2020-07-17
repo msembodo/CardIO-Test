@@ -1,10 +1,7 @@
 package com.idemia.tec.jkt.cardiotest.service;
 
 import com.idemia.tec.jkt.cardiotest.controller.RootLayoutController;
-import com.idemia.tec.jkt.cardiotest.model.ATR;
-import com.idemia.tec.jkt.cardiotest.model.Authentication;
-import com.idemia.tec.jkt.cardiotest.model.SecretCodes;
-import com.idemia.tec.jkt.cardiotest.model.TestSuite;
+import com.idemia.tec.jkt.cardiotest.model.*;
 import com.idemia.tec.jkt.cardiotest.response.TestSuiteResponse;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,6 +79,13 @@ public class RunServiceImpl implements RunService {
         // authentication
         if (root.getRunSettings().getAuthentication().isIncludeDeltaTest() || root.getRunSettings().getAuthentication().isIncludeSqnMax())
             runAllBuffer.append(addAuthentication(root.getRunSettings().getAuthentication()));
+
+        // RFM USIM
+        if (root.getRunSettings().getRfmUsim().isIncludeRfmUsim() ||
+                root.getRunSettings().getRfmUsim().isIncludeRfmUsimUpdateRecord() ||
+                root.getRunSettings().getRfmUsim().isIncludeRfmUsimExpandedMode()) {
+            runAllBuffer.append(addRfmUsim(root.getRunSettings().getRfmUsim()));
+        }
 
         // secret codes
         if (root.getRunSettings().getSecretCodes().isInclude3gScript() || root.getRunSettings().getSecretCodes().isInclude2gScript())
@@ -241,6 +245,47 @@ public class RunServiceImpl implements RunService {
         return authRunAllString.toString();
     }
 
+    private String addRfmUsim(RfmUsim rfmUsim) {
+        // TODO: options buffer (if required)
+
+        StringBuilder rfmUsimRunAllString = new StringBuilder();
+        rfmUsimRunAllString.append("; RFM USIM\n");
+
+        // add RFM USIM script to structure
+
+        if (rfmUsim.isIncludeRfmUsim()) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RFM_USIM.txt"))) {
+                bw.append(scriptGenerator.generateRfmUsim(rfmUsim));
+            } catch (IOException e) {
+                logger.error("Failed writing RFM_USIM script");
+            }
+            rfmUsimRunAllString.append(".EXECUTE scripts\\RFM_USIM.txt /PATH logs\n");
+            rfmUsimRunAllString.append(".ALLUNDEFINE\n\n");
+        }
+
+        if (rfmUsim.isIncludeRfmUsimUpdateRecord()) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RFM_USIM_UpdateRecord.txt"))) {
+                bw.append(scriptGenerator.generateRfmUsimUpdateRecord(rfmUsim));
+            } catch (IOException e) {
+                logger.error("Failed writing RFM_USIM_UpdateRecord script");
+            }
+            rfmUsimRunAllString.append(".EXECUTE scripts\\RFM_USIM_UpdateRecord.txt /PATH logs\n");
+            rfmUsimRunAllString.append(".ALLUNDEFINE\n\n");
+        }
+
+        if (rfmUsim.isIncludeRfmUsimExpandedMode()) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RFM_USIM_3G_ExpandedMode.txt"))) {
+                bw.append(scriptGenerator.generateRfmUsimExpandedMode(rfmUsim));
+            } catch (IOException e) {
+                logger.error("Failed writing RFM_USIM_3G_ExpandedMode script");
+            }
+            rfmUsimRunAllString.append(".EXECUTE scripts\\RFM_USIM_3G_ExpandedMode.txt /PATH logs\n");
+            rfmUsimRunAllString.append(".ALLUNDEFINE\n\n");
+        }
+
+        return rfmUsimRunAllString.toString();
+    }
+
     private String addSecretCodes(SecretCodes secretCodes) {
         StringBuilder secretCodesRunAll = new StringBuilder();
         secretCodesRunAll.append("; Secret Codes\n");
@@ -337,6 +382,27 @@ public class RunServiceImpl implements RunService {
     public boolean runSqnMax() {
         composeScripts();
         runShellCommand("pcomconsole", scriptsDirectory + "Authentication_MILLENAGE_SQN_MAX.txt");
+        return exitVal == 0;
+    }
+
+    @Override
+    public boolean runRfmUsim() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "RFM_USIM.txt");
+        return exitVal == 0;
+    }
+
+    @Override
+    public boolean runRfmUsimUpdateRecord() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "RFM_USIM_UpdateRecord.txt");
+        return exitVal == 0;
+    }
+
+    @Override
+    public boolean runRfmUsimExpandedMode() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "RFM_USIM_3G_ExpandedMode.txt");
         return exitVal == 0;
     }
 

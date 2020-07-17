@@ -8,6 +8,9 @@ public interface RunService {
     boolean runAtr();
     boolean runDeltaTest();
     boolean runSqnMax();
+    boolean runRfmUsim();
+    boolean runRfmUsimUpdateRecord();
+    boolean runRfmUsimExpandedMode();
     boolean runSecretCodes3g();
     boolean runSecretCodes2g();
 

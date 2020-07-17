@@ -45,6 +45,9 @@ public class RootLayoutController {
     private boolean runAtrOk;
     private boolean runDeltaTestOk;
     private boolean runSqnMaxOk;
+    private boolean runRfmUsimOk;
+    private boolean runRfmUsimUpdateRecordOk;
+    private boolean runRfmUsimExpandedModeOk;
     private boolean runCodes3gOk;
     private boolean runCodes2gOk;
 
@@ -496,17 +499,146 @@ public class RootLayoutController {
 
     @FXML
     private void handleMenuRfmUsim() {
-        // TODO
+        handleMenuSaveSettings();
+        // make user wait as verification executes
+        cardiotest.getMaskerPane().setText("Executing RFM_USIM. Please wait..");
+        // display masker pane
+        cardiotest.getMaskerPane().setVisible(true);
+        menuBar.setDisable(true);
+        appStatusBar.setDisable(true);
+
+        cardiotest.getTxtInterpretedLog().getChildren().clear();
+        appendTextFlow("Executing RFM_USIM..\n\n");
+
+        // use threads to avoid application freeze
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                runRfmUsimOk = runService.runRfmUsim();
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                cardiotest.getMaskerPane().setVisible(false);
+                menuBar.setDisable(false);
+                appStatusBar.setDisable(false);
+                // update status bar
+                if (runRfmUsimOk) {
+                    appStatusBar.setText("Executed RFM_USIM: OK");
+                    Notifications.create().title("CardIO").text("Executed RFM_USIM: OK").showInformation();
+                    appendTextFlow(">> OK\n\n", 0);
+                }
+                else {
+                    appStatusBar.setText("Executed RFM_USIM: NOK");
+                    Notifications.create().title("CardIO").text("Executed RFM_USIM: NOK").showError();
+                    appendTextFlow(">> NOT OK\n", 1);
+                }
+                // display commmand-response
+                cardiotest.getTxtCommandResponse().setDisable(false);
+                String logFileName = runSettings.getProjectPath() + "\\scripts\\RFM_USIM.L00";
+                showCommandResponseLog(logFileName);
+            }
+        };
+        Thread runRfmUsimThread = new Thread(task);
+        runRfmUsimThread.start();
     }
 
     @FXML
     private void handleMenuRfmUsimUpdateRecord() {
-        // TODO
+        handleMenuSaveSettings();
+        // make user wait as verification executes
+        cardiotest.getMaskerPane().setText("Executing RFM_USIM_UpdateRecord. Please wait..");
+        // display masker pane
+        cardiotest.getMaskerPane().setVisible(true);
+        menuBar.setDisable(true);
+        appStatusBar.setDisable(true);
+
+        cardiotest.getTxtInterpretedLog().getChildren().clear();
+        appendTextFlow("Executing RFM_USIM_UpdateRecord..\n\n");
+
+        // use threads to avoid application freeze
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                runRfmUsimUpdateRecordOk = runService.runRfmUsimUpdateRecord();
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                cardiotest.getMaskerPane().setVisible(false);
+                menuBar.setDisable(false);
+                appStatusBar.setDisable(false);
+                // update status bar
+                if (runRfmUsimUpdateRecordOk) {
+                    appStatusBar.setText("Executed RFM_USIM_UpdateRecord: OK");
+                    Notifications.create().title("CardIO").text("Executed RFM_USIM_UpdateRecord: OK").showInformation();
+                    appendTextFlow(">> OK\n\n", 0);
+                }
+                else {
+                    appStatusBar.setText("Executed RFM_USIM_UpdateRecord: NOK");
+                    Notifications.create().title("CardIO").text("Executed RFM_USIM_UpdateRecord: NOK").showError();
+                    appendTextFlow(">> NOT OK\n", 1);
+                }
+                // display commmand-response
+                cardiotest.getTxtCommandResponse().setDisable(false);
+                String logFileName = runSettings.getProjectPath() + "\\scripts\\RFM_USIM_UpdateRecord.L00";
+                showCommandResponseLog(logFileName);
+            }
+        };
+        Thread runRfmUsimUpdateRecordThread = new Thread(task);
+        runRfmUsimUpdateRecordThread.start();
     }
 
     @FXML
     private void handleMenuRfmUsimExpandedMode() {
-        // TODO
+        handleMenuSaveSettings();
+        // make user wait as verification executes
+        cardiotest.getMaskerPane().setText("Executing RFM_USIM_3G_ExpandedMode. Please wait..");
+        // display masker pane
+        cardiotest.getMaskerPane().setVisible(true);
+        menuBar.setDisable(true);
+        appStatusBar.setDisable(true);
+
+        cardiotest.getTxtInterpretedLog().getChildren().clear();
+        appendTextFlow("Executing RFM_USIM_3G_ExpandedMode..\n\n");
+
+        // use threads to avoid application freeze
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                runRfmUsimExpandedModeOk = runService.runRfmUsimExpandedMode();
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                cardiotest.getMaskerPane().setVisible(false);
+                menuBar.setDisable(false);
+                appStatusBar.setDisable(false);
+                // update status bar
+                if (runRfmUsimExpandedModeOk) {
+                    appStatusBar.setText("Executed RFM_USIM_3G_ExpandedMode: OK");
+                    Notifications.create().title("CardIO").text("Executed RFM_USIM_3G_ExpandedMode: OK").showInformation();
+                    appendTextFlow(">> OK\n\n", 0);
+                }
+                else {
+                    appStatusBar.setText("Executed RFM_USIM_3G_ExpandedMode: NOK");
+                    Notifications.create().title("CardIO").text("Executed RFM_USIM_3G_ExpandedMode: NOK").showError();
+                    appendTextFlow(">> NOT OK\n", 1);
+                }
+                // display commmand-response
+                cardiotest.getTxtCommandResponse().setDisable(false);
+                String logFileName = runSettings.getProjectPath() + "\\scripts\\RFM_USIM_3G_ExpandedMode.L00";
+                showCommandResponseLog(logFileName);
+            }
+        };
+        Thread runRfmUsimExpandedModeThread = new Thread(task);
+        runRfmUsimExpandedModeThread.start();
     }
 
     @FXML

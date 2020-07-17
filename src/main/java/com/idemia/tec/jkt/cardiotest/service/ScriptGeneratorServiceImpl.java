@@ -2,10 +2,13 @@ package com.idemia.tec.jkt.cardiotest.service;
 
 import com.idemia.tec.jkt.cardiotest.controller.RootLayoutController;
 import com.idemia.tec.jkt.cardiotest.model.Authentication;
+import com.idemia.tec.jkt.cardiotest.model.RfmUsim;
 import com.idemia.tec.jkt.cardiotest.model.SecretCodes;
 import com.idemia.tec.jkt.cardiotest.model.VariableMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.io.File;
 
 @Service
 public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
@@ -128,9 +131,7 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
                 "\n00 26 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000) ; disable GPIN1\n\n"
             );
         }
-        deltaTestBuffer.append(
-            ".POWER_OFF\n"
-        );
+        deltaTestBuffer.append(".POWER_OFF\n");
         return deltaTestBuffer;
     }
 
@@ -315,10 +316,104 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
                 "\n00 26 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000) ; disable GPIN1\n\n"
             );
         }
-        sqnMaxBuffer.append(
-            ".POWER_OFF\n"
-        );
+        sqnMaxBuffer.append(".POWER_OFF\n");
         return sqnMaxBuffer;
+    }
+
+    @Override
+    public StringBuilder generateRfmUsim(RfmUsim rfmUsim) {
+        StringBuilder rfmUsimBuffer = new StringBuilder();
+        rfmUsimBuffer.append(
+            ".CALL Mapping.txt /LIST_OFF\n"
+            + ".CALL Options.txt /LIST_OFF\n\n"
+            + ".POWER_ON\n"
+            + ".LOAD dll\\Calcul.dll\n"
+            + ".LOAD dll\\OTA2.dll\n"
+            + ".LOAD dll\\Var_Reader.dll\n"
+        );
+        // anti-replay counter
+        File counterBin = new File(root.getRunSettings().getProjectPath() + "\\scripts\\COUNTER.bin");
+        if (!counterBin.exists()) {
+            rfmUsimBuffer.append(
+                "\n; initialize counter\n"
+                + ".SET_BUFFER L 00 00 00 00 00\n"
+                + ".EXPORT_BUFFER L COUNTER.bin\n"
+            );
+        }
+        rfmUsimBuffer.append(
+            "\n; buffer L contains the anti-replay counter for OTA message\n"
+            + ".SET_BUFFER L\n"
+            + ".IMPORT_BUFFER L COUNTER.bin\n"
+            + ".INCREASE_BUFFER L(04:05) 0001\n"
+            + ".DISPLAY L\n"
+            + "\n; setup TAR and MSL\n"
+            + ".DEFINE %TAR " + rfmUsim.getTar() + "\n"
+            + ".SET_BUFFER I " + rfmUsim.getMinimumSecurityLevel().getComputedMsl() + "\n"
+        );
+
+        // TODO: OTA POR settings
+        rfmUsimBuffer.append(
+            "\n; PoR settings\n"
+        );
+
+        if (root.getRunSettings().getSecretCodes().isPin1disabled()) {
+            rfmUsimBuffer.append(
+                "\nA0 28 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000) ; enable GPIN1\n"
+            );
+        }
+        rfmUsimBuffer.append(
+                "\n.DEFINE %EF_ID " + rfmUsim.getTargetEf() + "\n"
+                + ".DEFINE %EF_ID_ERR " + rfmUsim.getTargetEfBadCase() + "\n"
+                + ".DEFINE %DF_ID " + root.getRunSettings().getCardParameters().getDfUsim() + "\n"
+        );
+
+        // TODO: rest of the things
+
+        rfmUsimBuffer.append("\n.EXPORT_BUFFER L COUNTER.bin\n");
+        if (root.getRunSettings().getSecretCodes().isPin1disabled()) {
+            rfmUsimBuffer.append(
+                "\nA0 26 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000) ; disable GPIN1\n"
+            );
+        }
+        rfmUsimBuffer.append(
+            "\n.UNLOAD Calcul.dll\n"
+            + ".UNLOAD OTA2.dll\n"
+            + ".UNLOAD Var_Reader.dll\n"
+            + "\n.POWER_OFF\n"
+        );
+        return rfmUsimBuffer;
+    }
+
+    @Override
+    public StringBuilder generateRfmUsimUpdateRecord(RfmUsim rfmUsim) {
+        StringBuilder rfmUsimUpdateRecordBuffer = new StringBuilder();
+        rfmUsimUpdateRecordBuffer.append(
+            ".CALL Mapping.txt /LIST_OFF\n"
+            + ".CALL Options.txt /LIST_OFF\n\n"
+            + ".POWER_ON\n"
+        );
+
+        // TODO
+        rfmUsimUpdateRecordBuffer.append("; TODO\n\n");
+
+        rfmUsimUpdateRecordBuffer.append(".POWER_OFF\n");
+        return rfmUsimUpdateRecordBuffer;
+    }
+
+    @Override
+    public StringBuilder generateRfmUsimExpandedMode(RfmUsim rfmUsim) {
+        StringBuilder rfmUsimExpandedModeBuffer = new StringBuilder();
+        rfmUsimExpandedModeBuffer.append(
+            ".CALL Mapping.txt /LIST_OFF\n"
+            + ".CALL Options.txt /LIST_OFF\n\n"
+            + ".POWER_ON\n"
+        );
+
+        // TODO
+        rfmUsimExpandedModeBuffer.append("; TODO\n\n");
+
+        rfmUsimExpandedModeBuffer.append(".POWER_OFF\n");
+        return rfmUsimExpandedModeBuffer;
     }
 
     @Override

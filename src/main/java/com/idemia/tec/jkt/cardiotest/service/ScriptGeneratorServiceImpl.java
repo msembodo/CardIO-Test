@@ -1,14 +1,13 @@
 package com.idemia.tec.jkt.cardiotest.service;
 
 import com.idemia.tec.jkt.cardiotest.controller.RootLayoutController;
-import com.idemia.tec.jkt.cardiotest.model.Authentication;
-import com.idemia.tec.jkt.cardiotest.model.RfmUsim;
-import com.idemia.tec.jkt.cardiotest.model.SecretCodes;
-import com.idemia.tec.jkt.cardiotest.model.VariableMapping;
+import com.idemia.tec.jkt.cardiotest.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
@@ -323,6 +322,7 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
     @Override
     public StringBuilder generateRfmUsim(RfmUsim rfmUsim) {
         StringBuilder rfmUsimBuffer = new StringBuilder();
+        // call mappings and load DLLs
         rfmUsimBuffer.append(
             ".CALL Mapping.txt /LIST_OFF\n"
             + ".CALL Options.txt /LIST_OFF\n\n"
@@ -331,7 +331,7 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
             + ".LOAD dll\\OTA2.dll\n"
             + ".LOAD dll\\Var_Reader.dll\n"
         );
-        // anti-replay counter
+        // create counter and initialize for first-time run
         File counterBin = new File(root.getRunSettings().getProjectPath() + "\\scripts\\COUNTER.bin");
         if (!counterBin.exists()) {
             rfmUsimBuffer.append(
@@ -340,41 +340,71 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
                 + ".EXPORT_BUFFER L COUNTER.bin\n"
             );
         }
+        // load anti-replay counter
         rfmUsimBuffer.append(
             "\n; buffer L contains the anti-replay counter for OTA message\n"
             + ".SET_BUFFER L\n"
             + ".IMPORT_BUFFER L COUNTER.bin\n"
             + ".INCREASE_BUFFER L(04:05) 0001\n"
             + ".DISPLAY L\n"
-            + "\n; setup TAR and MSL\n"
+            + "\n; setup TAR\n"
             + ".DEFINE %TAR " + rfmUsim.getTar() + "\n"
-            + ".SET_BUFFER I " + rfmUsim.getMinimumSecurityLevel().getComputedMsl() + "\n"
         );
-
         // TODO: OTA POR settings
-        rfmUsimBuffer.append(
-            "\n; PoR settings\n"
-        );
-
+//        rfmUsimBuffer.append(
+//            "\n; PoR settings\n"
+//        );
+        // enable pin if required
         if (root.getRunSettings().getSecretCodes().isPin1disabled()) {
             rfmUsimBuffer.append(
                 "\nA0 28 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000) ; enable GPIN1\n"
             );
         }
+        // define target files
         rfmUsimBuffer.append(
-                "\n.DEFINE %EF_ID " + rfmUsim.getTargetEf() + "\n"
-                + ".DEFINE %EF_ID_ERR " + rfmUsim.getTargetEfBadCase() + "\n"
-                + ".DEFINE %DF_ID " + root.getRunSettings().getCardParameters().getDfUsim() + "\n"
+            "\n.DEFINE %EF_ID " + rfmUsim.getTargetEf() + "\n"
+            + ".DEFINE %EF_ID_ERR " + rfmUsim.getTargetEfBadCase() + "\n"
+            + ".DEFINE %DF_ID " + root.getRunSettings().getCardParameters().getDfUsim() + "\n"
         );
+        // case 1
+        rfmUsimBuffer.append(
+            "\n; CASE 1: RFM USIM with correct security settings\n"
+            + "\n.POWER_ON\n"
+            + "; check initial content of EF\n"
+            + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+            + "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+            + "A0 A4 00 00 02 %DF_ID (9F22)\n"
+            + "A0 A4 00 00 02 %EF_ID (9F0F)\n"
+            + "A0 B0 00 00 01 (9000)\n"
+            + ".DEFINE %EF_CONTENT R\n"
+        );
+
+        // TODO: if not full access; define target files as in access domain
+
+        if (rfmUsim.isUseSpecificKeyset())
+            rfmUsimBuffer.append(caseOneOperation(rfmUsim.getCipheringKeyset(), rfmUsim.getAuthKeyset(), rfmUsim.getMinimumSecurityLevel()));
+        else {
+            for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets()) {
+                rfmUsimBuffer.append("\n; using keyset: " + keyset.getKeysetName() + "\n");
+                rfmUsimBuffer.append(caseOneOperation(keyset, keyset, rfmUsim.getMinimumSecurityLevel()));
+            }
+        }
 
         // TODO: rest of the things
 
-        rfmUsimBuffer.append("\n.EXPORT_BUFFER L COUNTER.bin\n");
+        // save counter
+        rfmUsimBuffer.append(
+            "\n.UNDEFINE %EF_CONTENT\n"
+            + "\n; save counter state\n"
+            + ".EXPORT_BUFFER L COUNTER.bin\n"
+        );
+        // disable pin if required
         if (root.getRunSettings().getSecretCodes().isPin1disabled()) {
             rfmUsimBuffer.append(
                 "\nA0 26 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000) ; disable GPIN1\n"
             );
         }
+        // unload DLLs
         rfmUsimBuffer.append(
             "\n.UNLOAD Calcul.dll\n"
             + ".UNLOAD OTA2.dll\n"
@@ -382,6 +412,152 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
             + "\n.POWER_OFF\n"
         );
         return rfmUsimBuffer;
+    }
+
+    private String caseOneOperation(SCP80Keyset cipherKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel msl) {
+        StringBuilder routine = new StringBuilder();
+
+        routine.append(
+            "\n.POWER_ON\n"
+            + proactiveInitialization()
+            + "\n; SPI settings\n"
+            + ".SET_BUFFER O %" + cipherKeyset.getKicValuation() + "\n"
+            + ".SET_BUFFER Q %" + authKeyset.getKidValuation() + "\n"
+            + ".SET_BUFFER M " + cipherKeyset.getComputedKic() + "\n"
+            + ".SET_BUFFER N " + authKeyset.getComputedKid() + "\n"
+            + ".INIT_ENV_0348\n"
+            + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
+            + ".CHANGE_TAR %TAR\n"
+            + ".CHANGE_COUNTER L\n"
+            + ".INCREASE_BUFFER L(04:05) 0001\n"
+            + "\n; MSL = " + msl.getComputedMsl() + "\n"
+            + ".SET_DLKEY_KIC O\n"
+            + ".SET_DLKEY_KID Q\n"
+            + ".CHANGE_KIC M\n"
+            + ".CHANGE_KID N\n"
+        );
+
+        if (msl.getAuthVerification().equals("No verification"))
+            routine.append(".CHANGE_CRYPTO_VERIF 00 ; No verification\n");
+        if (msl.getAuthVerification().equals("Redundancy Check"))
+            routine.append(".CHANGE_CRYPTO_VERIF 01 ; Redundancy Check\n");
+        if (msl.getAuthVerification().equals("Cryptographic Checksum"))
+            routine.append(".CHANGE_CRYPTO_VERIF 02 ; Cryptographic Checksum\n");
+        if (msl.getAuthVerification().equals("Digital Signature"))
+            routine.append(".CHANGE_CRYPTO_VERIF 03 ; Digital Signature\n");
+
+        if (msl.getSigningAlgo().equals("no algorithm"))
+            routine.append(".CHANGE_ALGO_CRYPTO_VERIF 00 ; no algorithm\n");
+        if (msl.getSigningAlgo().equals("DES - CBC"))
+            routine.append(".CHANGE_ALGO_CRYPTO_VERIF 01 ; DES - CBC\n");
+        if (msl.getSigningAlgo().equals("AES - CMAC"))
+            routine.append(".CHANGE_ALGO_CRYPTO_VERIF 02 ; AES - CMAC\n");
+        if (msl.getSigningAlgo().equals("XOR"))
+            routine.append(".CHANGE_ALGO_CRYPTO_VERIF 03 ; XOR\n");
+        if (msl.getSigningAlgo().equals("3DES - CBC 2 keys"))
+            routine.append(".CHANGE_ALGO_CRYPTO_VERIF 05 ; 3DES - CBC 2 keys\n");
+        if (msl.getSigningAlgo().equals("3DES - CBC 3 keys"))
+            routine.append(".CHANGE_ALGO_CRYPTO_VERIF 09 ; 3DES - CBC 3 keys\n");
+        if (msl.getSigningAlgo().equals("DES - ECB"))
+            routine.append(".CHANGE_ALGO_CRYPTO_VERIF 0D ; DES - ECB\n");
+        if (msl.getSigningAlgo().equals("CRC32 (may be X5h)"))
+            routine.append(".CHANGE_ALGO_CRYPTO_VERIF 0B ; CRC32 (may be X5h)\n");
+        if (msl.getSigningAlgo().equals("CRC32 (may be X0h)"))
+            routine.append(".CHANGE_ALGO_CRYPTO_VERIF 0C ; CRC32 (may be X0h)\n");
+        if (msl.getSigningAlgo().equals("ISO9797 Algo 3 (auth value 8 byte)"))
+            routine.append(".CHANGE_ALGO_CRYPTO_VERIF 0F ; ISO9797 Algo 3 (auth value 8 byte)\n");
+        if (msl.getSigningAlgo().equals("ISO9797 Algo 3 (auth value 4 byte)"))
+            routine.append(".CHANGE_ALGO_CRYPTO_VERIF 10 ; ISO9797 Algo 3 (auth value 4 byte)\n");
+        if (msl.getSigningAlgo().equals("ISO9797 Algo 4 (auth value 4 byte)"))
+            routine.append(".CHANGE_ALGO_CRYPTO_VERIF 11 ; ISO9797 Algo 4 (auth value 4 byte)\n");
+        if (msl.getSigningAlgo().equals("ISO9797 Algo 4 (auth value 8 byte)"))
+            routine.append(".CHANGE_ALGO_CRYPTO_VERIF 12 ; ISO9797 Algo 4 (auth value 8 byte)\n");
+        if (msl.getSigningAlgo().equals("CRC16"))
+            routine.append(".CHANGE_ALGO_CRYPTO_VERIF 13 ; CRC16\n");
+
+        if (msl.isUseCipher())
+            routine.append(".CHANGE_CIPHER 01 ; use cipher\n");
+        else
+            routine.append(".CHANGE_CIPHER 00 ; no cipher\n");
+
+        if (msl.getCipherAlgo().equals("no cipher"))
+            routine.append(".CHANGE_ALGO_CIPHER 00 ; no cipher\n");
+        if (msl.getCipherAlgo().equals("DES - CBC"))
+            routine.append(".CHANGE_ALGO_CIPHER 01 ; DES - CBC\n");
+        if (msl.getCipherAlgo().equals("AES - CBC"))
+            routine.append(".CHANGE_ALGO_CIPHER 02 ; AES - CBC\n");
+        if (msl.getCipherAlgo().equals("XOR"))
+            routine.append(".CHANGE_ALGO_CIPHER 03 ; XOR\n");
+        if (msl.getCipherAlgo().equals("3DES - CBC 2 keys"))
+            routine.append(".CHANGE_ALGO_CIPHER 05 ; 3DES - CBC 2 keys\n");
+        if (msl.getCipherAlgo().equals("3DES - CBC 3 keys"))
+            routine.append(".CHANGE_ALGO_CIPHER 09 ; 3DES - CBC 3 keys\n");
+        if (msl.getCipherAlgo().equals("DES - ECB"))
+            routine.append(".CHANGE_ALGO_CIPHER 0D ; DES - ECB\n");
+
+        if (msl.getCounterChecking().equals("No counter available"))
+            routine.append(".CHANGE_CNT_CHK 00 ; No counter available\n");
+        if (msl.getCounterChecking().equals("Counter available no checking"))
+            routine.append(".CHANGE_CNT_CHK 01 ; Counter available no checking\n");
+        if (msl.getCounterChecking().equals("Counter must be higher"))
+            routine.append(".CHANGE_CNT_CHK 02 ; Counter must be higher\n");
+        if (msl.getCounterChecking().equals("Counter must be one higher"))
+            routine.append(".CHANGE_CNT_CHK 03 ; Counter must be one higher\n");
+
+        if (msl.getPorRequirement().equals("No PoR"))
+            routine.append(".CHANGE_POR 00 ; No PoR\n");
+        if (msl.getPorRequirement().equals("PoR required"))
+            routine.append(".CHANGE_POR 01 ; PoR required\n");
+        if (msl.getPorRequirement().equals("PoR only if error"))
+            routine.append(".CHANGE_POR 02 ; PoR only if error\n");
+
+        if (msl.getPorSecurity().equals("response with no security"))
+            routine.append(".CHANGE_POR_SECURITY 00 ; response with no security\n");
+        if (msl.getPorSecurity().equals("response with RC"))
+            routine.append(".CHANGE_POR_SECURITY 01 ; response with RC\n");
+        if (msl.getPorSecurity().equals("response with CC"))
+            routine.append(".CHANGE_POR_SECURITY 02 ; response with CC\n");
+        if (msl.getPorSecurity().equals("response with DS"))
+            routine.append(".CHANGE_POR_SECURITY 03 ; response with DS\n");
+
+        if (msl.isCipherPor())
+            routine.append(".CHANGE_POR_CIPHER 01\n");
+        else
+            routine.append(".CHANGE_POR_CIPHER 00\n");
+
+        routine.append(
+            "\n; command(s) sent via OTA\n"
+            + ".SET_BUFFER J 00 A4 00 00 02 %EF_ID ; select EF\n"
+            + ".APPEND_SCRIPT J\n"
+            + ".SET_BUFFER J 00 D6 00 00 <?> AA ; update binary\n"
+            + ".APPEND_SCRIPT J\n"
+            // TODO: if not full access
+            + ".END_MESSAGE G J\n"
+            + "; show OTA message details\n"
+            + ".DISPLAY_MESSAGE J\n"
+            + "; send envelope\n"
+            + "A0 C2 00 00 G J (9FXX)\n"
+            + ".CLEAR_SCRIPT\n"
+            + "; check PoR\n"
+            + "A0 C0 00 00 W(2;1) [] (9000)\n" // TODO define expected PoR
+            + "\n; check update has been done on EF\n"
+            + ".POWER_ON\n"
+            + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+            + "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+            + "A0 A4 00 00 02 %DF_ID (9F22)\n"
+            + "A0 A4 00 00 02 %EF_ID (9F0F)\n"
+            + "A0 B0 00 00 01 [AA] (9000)\n"
+            + "\n; restore initial content of EF\n"
+            + ".POWER_ON\n"
+            + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+            + "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+            + "A0 A4 00 00 02 %DF_ID (9F22)\n"
+            + "A0 A4 00 00 02 %EF_ID (9F0F)\n"
+            + "A0 D6 00 00 01 %EF_CONTENT (9000)\n"
+            + ".INCREASE_BUFFER L(04:05) 0001\n"
+        );
+
+        return routine.toString();
     }
 
     @Override
@@ -1256,6 +1432,26 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
             + ".UNDEFINE %Kc\n"
             + ".UNDEFINE %SQN\n"
             + ".UNDEFINE %AMF\n"
+        );
+        return routine.toString();
+    }
+
+    private String proactiveInitialization() {
+        StringBuilder routine = new StringBuilder();
+        routine.append(
+            "\n; proactive initialization\n"
+            + "A010000013 FFFFFFFF7F3F00DFFF00001FE28A0D02030900 (9XXX)\n"
+            + ".BEGIN_LOOP\n"
+            + "\t.SWITCH W(1:1)\n"
+            + "\t.CASE 91\n"
+            + "\t\tA0 12 00 00 W(2:2) ; fetch\n"
+            + "\t\tA0 14 00 00 0C 010301 R(6;1) 00 02028281 030100 ; terminal response\n"
+            + "\t\t.BREAK\n"
+            + "\t.DEFAULT\n"
+            + "\t\t.QUITLOOP\n"
+            + "\t\t.BREAK\n"
+            + "\t.ENDSWITCH\n"
+            + ".LOOP 100\n"
         );
         return routine.toString();
     }

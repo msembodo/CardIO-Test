@@ -2,15 +2,16 @@ package com.idemia.tec.jkt.cardiotest.service;
 
 import com.idemia.tec.jkt.cardiotest.controller.RootLayoutController;
 import com.idemia.tec.jkt.cardiotest.model.*;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
+
+    Logger logger = Logger.getLogger(ScriptGeneratorServiceImpl.class);
 
     @Autowired
     private RootLayoutController root;
@@ -350,10 +351,6 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
             + "\n; setup TAR\n"
             + ".DEFINE %TAR " + rfmUsim.getTar() + "\n"
         );
-        // TODO: OTA POR settings
-//        rfmUsimBuffer.append(
-//            "\n; PoR settings\n"
-//        );
         // enable pin if required
         if (root.getRunSettings().getSecretCodes().isPin1disabled()) {
             rfmUsimBuffer.append(
@@ -381,21 +378,38 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
 
         // TODO: if not full access; define target files as in access domain
 
+        // some TAR may be configured with specific keyset or use all available keysets
         if (rfmUsim.isUseSpecificKeyset())
-            rfmUsimBuffer.append(caseOneOperation(rfmUsim.getCipheringKeyset(), rfmUsim.getAuthKeyset(), rfmUsim.getMinimumSecurityLevel()));
+            rfmUsimBuffer.append(rfmUsimCase1(rfmUsim.getCipheringKeyset(), rfmUsim.getAuthKeyset(), rfmUsim.getMinimumSecurityLevel()));
         else {
             for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets()) {
                 rfmUsimBuffer.append("\n; using keyset: " + keyset.getKeysetName() + "\n");
-                rfmUsimBuffer.append(caseOneOperation(keyset, keyset, rfmUsim.getMinimumSecurityLevel()));
+                rfmUsimBuffer.append(rfmUsimCase1(keyset, keyset, rfmUsim.getMinimumSecurityLevel()));
             }
         }
-
-        // TODO: rest of the things
+        rfmUsimBuffer.append("\n.UNDEFINE %EF_CONTENT\n");
+        // case 2
+        rfmUsimBuffer.append("\n; CASE 2: (Bad Case) RFM with keyset which is not allowed in USIM TAR\n");
+        if (rfmUsim.isUseSpecificKeyset())
+            rfmUsimBuffer.append(rfmUsimCase2(rfmUsim.getCipheringKeyset(), rfmUsim.getAuthKeyset(), rfmUsim.getMinimumSecurityLevel()));
+        else
+            // only use first keyset
+            rfmUsimBuffer.append(rfmUsimCase2(root.getRunSettings().getScp80Keysets().get(0), root.getRunSettings().getScp80Keysets().get(0), rfmUsim.getMinimumSecurityLevel()));
+        // case 3
+        rfmUsimBuffer.append("\n; CASE 3: (Bad Case) send 2G command to USIM TAR\n");
+        if (rfmUsim.isUseSpecificKeyset())
+            rfmUsimBuffer.append(rfmUsimCase3(rfmUsim.getCipheringKeyset(), rfmUsim.getAuthKeyset(), rfmUsim.getMinimumSecurityLevel()));
+        else
+            // only use first keyset
+            rfmUsimBuffer.append(rfmUsimCase3(root.getRunSettings().getScp80Keysets().get(0), root.getRunSettings().getScp80Keysets().get(0), rfmUsim.getMinimumSecurityLevel()));
+        // TODO: case 4
+        // TODO: case 5
+        // TODO: case 6
+        // TODO: case 7
 
         // save counter
         rfmUsimBuffer.append(
-            "\n.UNDEFINE %EF_CONTENT\n"
-            + "\n; save counter state\n"
+            "\n; save counter state\n"
             + ".EXPORT_BUFFER L COUNTER.bin\n"
         );
         // disable pin if required
@@ -414,9 +428,8 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
         return rfmUsimBuffer;
     }
 
-    private String caseOneOperation(SCP80Keyset cipherKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel msl) {
+    private String rfmUsimCase1(SCP80Keyset cipherKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel msl) {
         StringBuilder routine = new StringBuilder();
-
         routine.append(
             "\n.POWER_ON\n"
             + proactiveInitialization()
@@ -435,98 +448,8 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
             + ".SET_DLKEY_KID Q\n"
             + ".CHANGE_KIC M\n"
             + ".CHANGE_KID N\n"
-        );
-
-        if (msl.getAuthVerification().equals("No verification"))
-            routine.append(".CHANGE_CRYPTO_VERIF 00 ; No verification\n");
-        if (msl.getAuthVerification().equals("Redundancy Check"))
-            routine.append(".CHANGE_CRYPTO_VERIF 01 ; Redundancy Check\n");
-        if (msl.getAuthVerification().equals("Cryptographic Checksum"))
-            routine.append(".CHANGE_CRYPTO_VERIF 02 ; Cryptographic Checksum\n");
-        if (msl.getAuthVerification().equals("Digital Signature"))
-            routine.append(".CHANGE_CRYPTO_VERIF 03 ; Digital Signature\n");
-
-        if (msl.getSigningAlgo().equals("no algorithm"))
-            routine.append(".CHANGE_ALGO_CRYPTO_VERIF 00 ; no algorithm\n");
-        if (msl.getSigningAlgo().equals("DES - CBC"))
-            routine.append(".CHANGE_ALGO_CRYPTO_VERIF 01 ; DES - CBC\n");
-        if (msl.getSigningAlgo().equals("AES - CMAC"))
-            routine.append(".CHANGE_ALGO_CRYPTO_VERIF 02 ; AES - CMAC\n");
-        if (msl.getSigningAlgo().equals("XOR"))
-            routine.append(".CHANGE_ALGO_CRYPTO_VERIF 03 ; XOR\n");
-        if (msl.getSigningAlgo().equals("3DES - CBC 2 keys"))
-            routine.append(".CHANGE_ALGO_CRYPTO_VERIF 05 ; 3DES - CBC 2 keys\n");
-        if (msl.getSigningAlgo().equals("3DES - CBC 3 keys"))
-            routine.append(".CHANGE_ALGO_CRYPTO_VERIF 09 ; 3DES - CBC 3 keys\n");
-        if (msl.getSigningAlgo().equals("DES - ECB"))
-            routine.append(".CHANGE_ALGO_CRYPTO_VERIF 0D ; DES - ECB\n");
-        if (msl.getSigningAlgo().equals("CRC32 (may be X5h)"))
-            routine.append(".CHANGE_ALGO_CRYPTO_VERIF 0B ; CRC32 (may be X5h)\n");
-        if (msl.getSigningAlgo().equals("CRC32 (may be X0h)"))
-            routine.append(".CHANGE_ALGO_CRYPTO_VERIF 0C ; CRC32 (may be X0h)\n");
-        if (msl.getSigningAlgo().equals("ISO9797 Algo 3 (auth value 8 byte)"))
-            routine.append(".CHANGE_ALGO_CRYPTO_VERIF 0F ; ISO9797 Algo 3 (auth value 8 byte)\n");
-        if (msl.getSigningAlgo().equals("ISO9797 Algo 3 (auth value 4 byte)"))
-            routine.append(".CHANGE_ALGO_CRYPTO_VERIF 10 ; ISO9797 Algo 3 (auth value 4 byte)\n");
-        if (msl.getSigningAlgo().equals("ISO9797 Algo 4 (auth value 4 byte)"))
-            routine.append(".CHANGE_ALGO_CRYPTO_VERIF 11 ; ISO9797 Algo 4 (auth value 4 byte)\n");
-        if (msl.getSigningAlgo().equals("ISO9797 Algo 4 (auth value 8 byte)"))
-            routine.append(".CHANGE_ALGO_CRYPTO_VERIF 12 ; ISO9797 Algo 4 (auth value 8 byte)\n");
-        if (msl.getSigningAlgo().equals("CRC16"))
-            routine.append(".CHANGE_ALGO_CRYPTO_VERIF 13 ; CRC16\n");
-
-        if (msl.isUseCipher())
-            routine.append(".CHANGE_CIPHER 01 ; use cipher\n");
-        else
-            routine.append(".CHANGE_CIPHER 00 ; no cipher\n");
-
-        if (msl.getCipherAlgo().equals("no cipher"))
-            routine.append(".CHANGE_ALGO_CIPHER 00 ; no cipher\n");
-        if (msl.getCipherAlgo().equals("DES - CBC"))
-            routine.append(".CHANGE_ALGO_CIPHER 01 ; DES - CBC\n");
-        if (msl.getCipherAlgo().equals("AES - CBC"))
-            routine.append(".CHANGE_ALGO_CIPHER 02 ; AES - CBC\n");
-        if (msl.getCipherAlgo().equals("XOR"))
-            routine.append(".CHANGE_ALGO_CIPHER 03 ; XOR\n");
-        if (msl.getCipherAlgo().equals("3DES - CBC 2 keys"))
-            routine.append(".CHANGE_ALGO_CIPHER 05 ; 3DES - CBC 2 keys\n");
-        if (msl.getCipherAlgo().equals("3DES - CBC 3 keys"))
-            routine.append(".CHANGE_ALGO_CIPHER 09 ; 3DES - CBC 3 keys\n");
-        if (msl.getCipherAlgo().equals("DES - ECB"))
-            routine.append(".CHANGE_ALGO_CIPHER 0D ; DES - ECB\n");
-
-        if (msl.getCounterChecking().equals("No counter available"))
-            routine.append(".CHANGE_CNT_CHK 00 ; No counter available\n");
-        if (msl.getCounterChecking().equals("Counter available no checking"))
-            routine.append(".CHANGE_CNT_CHK 01 ; Counter available no checking\n");
-        if (msl.getCounterChecking().equals("Counter must be higher"))
-            routine.append(".CHANGE_CNT_CHK 02 ; Counter must be higher\n");
-        if (msl.getCounterChecking().equals("Counter must be one higher"))
-            routine.append(".CHANGE_CNT_CHK 03 ; Counter must be one higher\n");
-
-        if (msl.getPorRequirement().equals("No PoR"))
-            routine.append(".CHANGE_POR 00 ; No PoR\n");
-        if (msl.getPorRequirement().equals("PoR required"))
-            routine.append(".CHANGE_POR 01 ; PoR required\n");
-        if (msl.getPorRequirement().equals("PoR only if error"))
-            routine.append(".CHANGE_POR 02 ; PoR only if error\n");
-
-        if (msl.getPorSecurity().equals("response with no security"))
-            routine.append(".CHANGE_POR_SECURITY 00 ; response with no security\n");
-        if (msl.getPorSecurity().equals("response with RC"))
-            routine.append(".CHANGE_POR_SECURITY 01 ; response with RC\n");
-        if (msl.getPorSecurity().equals("response with CC"))
-            routine.append(".CHANGE_POR_SECURITY 02 ; response with CC\n");
-        if (msl.getPorSecurity().equals("response with DS"))
-            routine.append(".CHANGE_POR_SECURITY 03 ; response with DS\n");
-
-        if (msl.isCipherPor())
-            routine.append(".CHANGE_POR_CIPHER 01\n");
-        else
-            routine.append(".CHANGE_POR_CIPHER 00\n");
-
-        routine.append(
-            "\n; command(s) sent via OTA\n"
+            + spiConfigurator(msl)
+            + "\n; command(s) sent via OTA\n"
             + ".SET_BUFFER J 00 A4 00 00 02 %EF_ID ; select EF\n"
             + ".APPEND_SCRIPT J\n"
             + ".SET_BUFFER J 00 D6 00 00 <?> AA ; update binary\n"
@@ -539,7 +462,7 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
             + "A0 C2 00 00 G J (9FXX)\n"
             + ".CLEAR_SCRIPT\n"
             + "; check PoR\n"
-            + "A0 C0 00 00 W(2;1) [] (9000)\n" // TODO define expected PoR
+            + "A0 C0 00 00 W(2;1) [XX XX XX XX XX XX %TAR XX XX XX XX XX XX 00 XX 90 00] (9000) ; PoR OK\n"
             + "\n; check update has been done on EF\n"
             + ".POWER_ON\n"
             + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
@@ -554,10 +477,194 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
             + "A0 A4 00 00 02 %DF_ID (9F22)\n"
             + "A0 A4 00 00 02 %EF_ID (9F0F)\n"
             + "A0 D6 00 00 01 %EF_CONTENT (9000)\n"
+            + "\n; increment counter by one\n"
             + ".INCREASE_BUFFER L(04:05) 0001\n"
         );
-
         return routine.toString();
+    }
+
+    private String rfmUsimCase2(SCP80Keyset cipherKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel msl) {
+        StringBuilder routine = new StringBuilder();
+        routine.append(
+            "\n.POWER_ON\n"
+            + proactiveInitialization()
+            + "\n; SPI settings\n"
+            + ".SET_BUFFER O " + createFakeCipherKey(cipherKeyset) + " ; bad key\n"
+            + ".SET_BUFFER Q " + createFakeAuthKey(authKeyset) + " ; bad key\n"
+            + ".SET_BUFFER M 99 ; bad keyset\n"
+            + ".SET_BUFFER N 99 ; bad keyset\n"
+            + ".INIT_ENV_0348\n"
+            + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
+            + ".CHANGE_TAR %TAR\n"
+            + ".CHANGE_COUNTER L\n"
+            + ".INCREASE_BUFFER L(04:05) 0001\n"
+            + "\n; MSL = " + msl.getComputedMsl() + "\n"
+            + ".SET_DLKEY_KIC O\n"
+            + ".SET_DLKEY_KID Q\n"
+            + ".CHANGE_KIC M\n"
+            + ".CHANGE_KID N\n"
+            + spiConfigurator(msl)
+            + "\n; command(s) sent via OTA\n"
+            + ".SET_BUFFER J 00 A4 00 00 02 3F00\n"
+            + ".APPEND_SCRIPT J\n"
+            + ".END_MESSAGE G J\n"
+            + "; send envelope\n"
+            + "A0 C2 00 00 G J (9XXX)\n"
+            + ".CLEAR_SCRIPT\n"
+            + "; check PoR\n"
+            + "A0 C0 00 00 W(2;1) [XX XX XX XX XX XX %TAR XX XX XX XX XX XX 06] (9000) ; unidentified security error\n"
+            + "\n; increment counter by one\n"
+            + ".INCREASE_BUFFER L(04:05) 0001\n"
+        );
+        return routine.toString();
+    }
+
+    private String rfmUsimCase3(SCP80Keyset cipherKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel msl) {
+        StringBuilder routine = new StringBuilder();
+        routine.append(
+            "\n.POWER_ON\n"
+            + proactiveInitialization()
+            + "\n; SPI settings\n"
+            + ".SET_BUFFER O %" + cipherKeyset.getKicValuation() + "\n"
+            + ".SET_BUFFER Q %" + authKeyset.getKidValuation() + "\n"
+            + ".SET_BUFFER M " + cipherKeyset.getComputedKic() + "\n"
+            + ".SET_BUFFER N " + authKeyset.getComputedKid() + "\n"
+            + ".INIT_ENV_0348\n"
+            + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
+            + ".CHANGE_TAR %TAR\n"
+            + ".CHANGE_COUNTER L\n"
+            + ".INCREASE_BUFFER L(04:05) 0001\n"
+            + "\n; MSL = " + msl.getComputedMsl() + "\n"
+            + ".SET_DLKEY_KIC O\n"
+            + ".SET_DLKEY_KID Q\n"
+            + ".CHANGE_KIC M\n"
+            + ".CHANGE_KID N\n"
+            + spiConfigurator(msl)
+            + "\n; command(s) sent via OTA\n"
+            + ".SET_BUFFER J A0 A4 00 00 02 3F00 ; this command isn't supported by USIM\n"
+            + ".APPEND_SCRIPT J\n"
+            + ".END_MESSAGE G J\n"
+            + "; send envelope\n"
+            + "A0 C2 00 00 G J (9XXX)\n"
+            + ".CLEAR_SCRIPT\n"
+            + "; check PoR\n"
+            + "A0 C0 00 00 W(2;1) [XX XX XX XX XX XX %TAR XX XX XX XX XX XX 00 XX 6E 00] (9000) ; PoR returns '6E00' (class not supported)\n"
+            + "\n; increment counter by one\n"
+            + ".INCREASE_BUFFER L(04:05) 0001\n"
+        );
+        return routine.toString();
+    }
+
+    private String createFakeCipherKey(SCP80Keyset keyset) {
+        if (keyset.getKicMode().equals("3DES - CBC 2 keys"))
+            return "0102030405060708090A0B0C0D0E0F10";
+        if (keyset.getKicMode().equals("3DES - CBC 3 keys"))
+            return "0102030405060708090A0B0C0D0E0F101112131415161718";
+        else
+            return "0102030405060708";
+    }
+
+    private String createFakeAuthKey(SCP80Keyset keyset) {
+        if (keyset.getKidMode().equals("3DES - CBC 2 keys"))
+            return "0102030405060708090A0B0C0D0E0F10";
+        if (keyset.getKidMode().equals("3DES - CBC 3 keys"))
+            return "0102030405060708090A0B0C0D0E0F101112131415161718";
+        else
+            return "0102030405060708";
+    }
+
+    private String spiConfigurator(MinimumSecurityLevel msl) {
+        StringBuilder spiConf = new StringBuilder();
+
+        if (msl.getAuthVerification().equals("No verification"))
+            spiConf.append(".CHANGE_CRYPTO_VERIF 00 ; No verification\n");
+        if (msl.getAuthVerification().equals("Redundancy Check"))
+            spiConf.append(".CHANGE_CRYPTO_VERIF 01 ; Redundancy Check\n");
+        if (msl.getAuthVerification().equals("Cryptographic Checksum"))
+            spiConf.append(".CHANGE_CRYPTO_VERIF 02 ; Cryptographic Checksum\n");
+        if (msl.getAuthVerification().equals("Digital Signature"))
+            spiConf.append(".CHANGE_CRYPTO_VERIF 03 ; Digital Signature\n");
+
+        if (msl.getSigningAlgo().equals("no algorithm"))
+            spiConf.append(".CHANGE_ALGO_CRYPTO_VERIF 00 ; no algorithm\n");
+        if (msl.getSigningAlgo().equals("DES - CBC"))
+            spiConf.append(".CHANGE_ALGO_CRYPTO_VERIF 01 ; DES - CBC\n");
+        if (msl.getSigningAlgo().equals("AES - CMAC"))
+            spiConf.append(".CHANGE_ALGO_CRYPTO_VERIF 02 ; AES - CMAC\n");
+        if (msl.getSigningAlgo().equals("XOR"))
+            spiConf.append(".CHANGE_ALGO_CRYPTO_VERIF 03 ; XOR\n");
+        if (msl.getSigningAlgo().equals("3DES - CBC 2 keys"))
+            spiConf.append(".CHANGE_ALGO_CRYPTO_VERIF 05 ; 3DES - CBC 2 keys\n");
+        if (msl.getSigningAlgo().equals("3DES - CBC 3 keys"))
+            spiConf.append(".CHANGE_ALGO_CRYPTO_VERIF 09 ; 3DES - CBC 3 keys\n");
+        if (msl.getSigningAlgo().equals("DES - ECB"))
+            spiConf.append(".CHANGE_ALGO_CRYPTO_VERIF 0D ; DES - ECB\n");
+        if (msl.getSigningAlgo().equals("CRC32 (may be X5h)"))
+            spiConf.append(".CHANGE_ALGO_CRYPTO_VERIF 0B ; CRC32 (may be X5h)\n");
+        if (msl.getSigningAlgo().equals("CRC32 (may be X0h)"))
+            spiConf.append(".CHANGE_ALGO_CRYPTO_VERIF 0C ; CRC32 (may be X0h)\n");
+        if (msl.getSigningAlgo().equals("ISO9797 Algo 3 (auth value 8 byte)"))
+            spiConf.append(".CHANGE_ALGO_CRYPTO_VERIF 0F ; ISO9797 Algo 3 (auth value 8 byte)\n");
+        if (msl.getSigningAlgo().equals("ISO9797 Algo 3 (auth value 4 byte)"))
+            spiConf.append(".CHANGE_ALGO_CRYPTO_VERIF 10 ; ISO9797 Algo 3 (auth value 4 byte)\n");
+        if (msl.getSigningAlgo().equals("ISO9797 Algo 4 (auth value 4 byte)"))
+            spiConf.append(".CHANGE_ALGO_CRYPTO_VERIF 11 ; ISO9797 Algo 4 (auth value 4 byte)\n");
+        if (msl.getSigningAlgo().equals("ISO9797 Algo 4 (auth value 8 byte)"))
+            spiConf.append(".CHANGE_ALGO_CRYPTO_VERIF 12 ; ISO9797 Algo 4 (auth value 8 byte)\n");
+        if (msl.getSigningAlgo().equals("CRC16"))
+            spiConf.append(".CHANGE_ALGO_CRYPTO_VERIF 13 ; CRC16\n");
+
+        if (msl.isUseCipher())
+            spiConf.append(".CHANGE_CIPHER 01 ; use cipher\n");
+        else
+            spiConf.append(".CHANGE_CIPHER 00 ; no cipher\n");
+
+        if (msl.getCipherAlgo().equals("no cipher"))
+            spiConf.append(".CHANGE_ALGO_CIPHER 00 ; no cipher\n");
+        if (msl.getCipherAlgo().equals("DES - CBC"))
+            spiConf.append(".CHANGE_ALGO_CIPHER 01 ; DES - CBC\n");
+        if (msl.getCipherAlgo().equals("AES - CBC"))
+            spiConf.append(".CHANGE_ALGO_CIPHER 02 ; AES - CBC\n");
+        if (msl.getCipherAlgo().equals("XOR"))
+            spiConf.append(".CHANGE_ALGO_CIPHER 03 ; XOR\n");
+        if (msl.getCipherAlgo().equals("3DES - CBC 2 keys"))
+            spiConf.append(".CHANGE_ALGO_CIPHER 05 ; 3DES - CBC 2 keys\n");
+        if (msl.getCipherAlgo().equals("3DES - CBC 3 keys"))
+            spiConf.append(".CHANGE_ALGO_CIPHER 09 ; 3DES - CBC 3 keys\n");
+        if (msl.getCipherAlgo().equals("DES - ECB"))
+            spiConf.append(".CHANGE_ALGO_CIPHER 0D ; DES - ECB\n");
+
+        if (msl.getCounterChecking().equals("No counter available"))
+            spiConf.append(".CHANGE_CNT_CHK 00 ; No counter available\n");
+        if (msl.getCounterChecking().equals("Counter available no checking"))
+            spiConf.append(".CHANGE_CNT_CHK 01 ; Counter available no checking\n");
+        if (msl.getCounterChecking().equals("Counter must be higher"))
+            spiConf.append(".CHANGE_CNT_CHK 02 ; Counter must be higher\n");
+        if (msl.getCounterChecking().equals("Counter must be one higher"))
+            spiConf.append(".CHANGE_CNT_CHK 03 ; Counter must be one higher\n");
+
+        if (msl.getPorRequirement().equals("No PoR"))
+            spiConf.append(".CHANGE_POR 00 ; No PoR\n");
+        if (msl.getPorRequirement().equals("PoR required"))
+            spiConf.append(".CHANGE_POR 01 ; PoR required\n");
+        if (msl.getPorRequirement().equals("PoR only if error"))
+            spiConf.append(".CHANGE_POR 02 ; PoR only if error\n");
+
+        if (msl.getPorSecurity().equals("response with no security"))
+            spiConf.append(".CHANGE_POR_SECURITY 00 ; response with no security\n");
+        if (msl.getPorSecurity().equals("response with RC"))
+            spiConf.append(".CHANGE_POR_SECURITY 01 ; response with RC\n");
+        if (msl.getPorSecurity().equals("response with CC"))
+            spiConf.append(".CHANGE_POR_SECURITY 02 ; response with CC\n");
+        if (msl.getPorSecurity().equals("response with DS"))
+            spiConf.append(".CHANGE_POR_SECURITY 03 ; response with DS\n");
+
+        if (msl.isCipherPor())
+            spiConf.append(".CHANGE_POR_CIPHER 01\n");
+        else
+            spiConf.append(".CHANGE_POR_CIPHER 00\n");
+
+        return spiConf.toString();
     }
 
     @Override

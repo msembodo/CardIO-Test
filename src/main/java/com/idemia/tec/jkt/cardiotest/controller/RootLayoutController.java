@@ -139,6 +139,8 @@ public class RootLayoutController {
         );
         File selectedVarFile = variableFileChooser.showOpenDialog(application.getPrimaryStage());
         if (selectedVarFile != null) {
+            application.getAdvSaveVariables().clear();
+            cardiotest.getCmbMccVar().getItems().clear();
             try {
                 Scanner scanner = new Scanner(selectedVarFile);
                 List<String> definedVariables = new ArrayList<>();

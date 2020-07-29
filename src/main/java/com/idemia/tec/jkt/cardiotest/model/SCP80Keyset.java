@@ -17,11 +17,12 @@ public class SCP80Keyset {
     private String computedKid;
     private boolean customKic;
     private boolean customKid;
+    private int cmacLength;
 
     public SCP80Keyset() {}
 
     public SCP80Keyset(String keysetName, int keysetVersion, String keysetType, String kicValuation, String kicMode,
-                       String kidValuation, String kidMode) {
+                       String kidValuation, String kidMode, int cmacLength) {
         this.keysetName = new SimpleStringProperty(keysetName);
         this.keysetVersion = keysetVersion;
         this.keysetType = keysetType;
@@ -29,6 +30,7 @@ public class SCP80Keyset {
         this.kicMode = kicMode;
         this.kidValuation = kidValuation;
         this.kidMode = kidMode;
+        this.cmacLength = cmacLength;
         this.computedKic = computeKic();
         this.computedKid = computeKid();
     }
@@ -40,6 +42,7 @@ public class SCP80Keyset {
         if (kicMode.equals("3DES - CBC 3 keys")) kicValue += 2 << 2;
         if (kicMode.equals("DES - ECB")) kicValue += 3 << 2;
         if (keysetType.equals("DES")) kicValue += 1;
+        if (keysetType.equals("AES")) kicValue += 2;
         if (keysetType.equals("Proprietary Implementations")) kicValue += 3;
         return String.format("%02X", kicValue);
     }
@@ -51,6 +54,7 @@ public class SCP80Keyset {
         if (kidMode.equals("3DES - CBC 3 keys")) kidValue += 2 << 2;
         if (kidMode.equals("DES - ECB")) kidValue += 3 << 2;
         if (keysetType.equals("DES")) kidValue += 1;
+        if (keysetType.equals("AES")) kidValue += 2;
         if (keysetType.equals("Proprietary Implementations")) kidValue += 3;
         return String.format("%02X", kidValue);
     }
@@ -145,6 +149,14 @@ public class SCP80Keyset {
 
     public void setCustomKid(boolean customKid) {
         this.customKid = customKid;
+    }
+
+    public int getCmacLength() {
+        return cmacLength;
+    }
+
+    public void setCmacLength(int cmacLength) {
+        this.cmacLength = cmacLength;
     }
 
     // for debug

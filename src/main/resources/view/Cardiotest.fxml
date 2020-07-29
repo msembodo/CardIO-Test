@@ -411,8 +411,8 @@
                                                               <columnConstraints>
                                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="165.0" minWidth="10.0" prefWidth="74.0" />
                                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="285.0" minWidth="10.0" prefWidth="244.0" />
-                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="141.0" minWidth="10.0" prefWidth="62.0" />
-                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="298.0" minWidth="10.0" prefWidth="266.0" />
+                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="141.0" minWidth="10.0" prefWidth="107.0" />
+                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="298.0" minWidth="10.0" prefWidth="217.0" />
                                                               </columnConstraints>
                                                               <rowConstraints>
                                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -425,17 +425,21 @@
                                                                 <Label text="Name" />
                                                                 <Label text="Version" GridPane.rowIndex="1" />
                                                                 <Label text="Type" GridPane.rowIndex="2" />
+                                                                <Label fx:id="lblCmacLength" text="CMAC length" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                                                 <Label text="Kic" GridPane.rowIndex="3" />
                                                                 <Label text="Kid" GridPane.rowIndex="4" />
                                                                 <Label text="Mode" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                                                 <Label text="Mode" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                                                 <TextField fx:id="txtKeysetName" GridPane.columnIndex="1" />
                                                                 <ComboBox fx:id="cmbKeysetVersion" prefHeight="31.0" prefWidth="284.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                                <ComboBox fx:id="cmbKeysetType" prefHeight="31.0" prefWidth="266.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                <ComboBox fx:id="cmbKeysetType" onAction="#handleKeysetTypeSelection" prefHeight="31.0" prefWidth="266.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                <ComboBox fx:id="cmbCmacLength" prefHeight="31.0" prefWidth="258.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
                                                                 <ComboBox fx:id="cmbKicValuation" prefHeight="31.0" prefWidth="266.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                                                 <ComboBox fx:id="cmbKicMode" prefHeight="31.0" prefWidth="258.0" GridPane.columnIndex="3" GridPane.rowIndex="3" />
                                                                 <ComboBox fx:id="cmbKidValuation" prefHeight="31.0" prefWidth="266.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                                                 <ComboBox fx:id="cmbKidMode" prefHeight="31.0" prefWidth="258.0" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+
+
                                                               </children>
                                                             </GridPane>
                                                             <ButtonBar layoutX="468.0" layoutY="189.0" prefHeight="40.0" prefWidth="257.0" AnchorPane.rightAnchor="18.0">
@@ -457,30 +461,35 @@
                                                 </AnchorPane>
                                               </content>
                                             </TitledPane>
-                                            <TitledPane animated="false" collapsible="false" focusTraversable="false" layoutX="962.0" layoutY="12.0" prefHeight="296.0" prefWidth="370.0" text="SMS update record" AnchorPane.topAnchor="12.0">
+                                            <TitledPane animated="false" collapsible="false" focusTraversable="false" layoutX="962.0" layoutY="12.0" prefHeight="296.0" prefWidth="410.0" text="Envelope &amp; SMS update parameter" AnchorPane.topAnchor="12.0">
                                                <content>
                                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                      <children>
-                                                        <GridPane layoutX="32.0" layoutY="32.0" prefHeight="135.0" prefWidth="323.0" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="8.0">
+                                                        <GridPane layoutX="32.0" layoutY="38.0" prefHeight="170.0" prefWidth="358.0" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="12.0">
                                                            <columnConstraints>
-                                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="157.0" minWidth="10.0" prefWidth="121.0" />
-                                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="228.0" minWidth="10.0" prefWidth="202.0" />
+                                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="157.0" minWidth="10.0" prefWidth="26.0" />
+                                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="160.0" minWidth="10.0" prefWidth="138.0" />
+                                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="228.0" minWidth="10.0" prefWidth="194.0" />
                                                            </columnConstraints>
                                                            <rowConstraints>
                                                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                            </rowConstraints>
                                                            <children>
-                                                              <Label text="UDHI first byte" />
-                                                              <Label text="SC address" GridPane.rowIndex="1" />
-                                                              <Label text="TP_PID" GridPane.rowIndex="2" />
-                                                              <Label text="PoR format" GridPane.rowIndex="3" />
-                                                              <TextField fx:id="txtUdhiFirstByte" GridPane.columnIndex="1" />
-                                                              <TextField fx:id="txtScAddress" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                              <TextField fx:id="txtTpPid" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                              <ComboBox fx:id="cmbPorFormat" prefHeight="31.0" prefWidth="218.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                              <Label text="UDHI first byte" GridPane.columnIndex="1" />
+                                                              <Label text="SC address" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                              <Label text="TP-PID" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                              <Label fx:id="lblTpOa" text="TP-OA" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                              <Label text="PoR format" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                              <TextField fx:id="txtUdhiFirstByte" GridPane.columnIndex="2" />
+                                                              <TextField fx:id="txtScAddress" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                              <TextField fx:id="txtTpPid" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                              <CheckBox fx:id="chkTpOa" mnemonicParsing="false" onAction="#handleTpOaCheck" GridPane.rowIndex="3" />
+                                                              <TextField fx:id="txtTpOa" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                              <ComboBox fx:id="cmbPorFormat" prefHeight="31.0" prefWidth="218.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                                            </children>
                                                         </GridPane>
                                                      </children>
@@ -532,7 +541,7 @@
                                                     </GridPane>
                                                     <GridPane hgap="4.0" layoutX="324.0" layoutY="32.0" prefHeight="132.0" prefWidth="289.0" AnchorPane.leftAnchor="312.0" AnchorPane.topAnchor="8.0">
                                                       <columnConstraints>
-                                                                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="213.0" minWidth="10.0" prefWidth="109.0" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="213.0" minWidth="10.0" prefWidth="109.0" />
                                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="213.0" minWidth="10.0" prefWidth="105.0" />
                                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="213.0" minWidth="10.0" prefWidth="67.0" />
                                                       </columnConstraints>
@@ -544,12 +553,12 @@
                                                       </rowConstraints>
                                                       <children>
                                                         <CheckBox fx:id="chkRfmUsimFullAccess" mnemonicParsing="false" onAction="#handleRfmUsimFullAccessCheck" text="Full access" />
-                                                                                    <ComboBox fx:id="cmbRfmUsimCustomTargetAcc" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                                                    <TextField fx:id="txtRfmUsimCustomTargetEf" prefHeight="31.0" prefWidth="144.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                                                    <ComboBox fx:id="cmbRfmUsimCustomTargetAccBadCase" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                                                    <TextField fx:id="txtRfmUsimCustomTargetEfBadCase" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                                                    <Label fx:id="lblRfmUsimCustomTarget" text="EF" GridPane.rowIndex="1" />
-                                                                                    <Label fx:id="lblRfmUsimCustomTargetBadCase" text="EF (bad case)" GridPane.rowIndex="2" />
+                                                        <ComboBox fx:id="cmbRfmUsimCustomTargetAcc" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                        <TextField fx:id="txtRfmUsimCustomTargetEf" prefHeight="31.0" prefWidth="144.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                        <ComboBox fx:id="cmbRfmUsimCustomTargetAccBadCase" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                        <TextField fx:id="txtRfmUsimCustomTargetEfBadCase" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                        <Label fx:id="lblRfmUsimCustomTarget" text="EF" GridPane.rowIndex="1" />
+                                                        <Label fx:id="lblRfmUsimCustomTargetBadCase" text="EF (bad case)" GridPane.rowIndex="2" />
                                                       </children>
                                                     </GridPane>
                                                     <CheckBox fx:id="chkUseSpecificKeyset" layoutX="20.0" layoutY="169.0" mnemonicParsing="false" onAction="#handleUseSpecificKeysetCheck" text="Use specific keyset:" AnchorPane.bottomAnchor="84.0" AnchorPane.leftAnchor="8.0" />

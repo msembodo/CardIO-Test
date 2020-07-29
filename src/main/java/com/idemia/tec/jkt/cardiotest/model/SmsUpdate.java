@@ -5,14 +5,18 @@ public class SmsUpdate {
     private String udhiFirstByte;
     private String scAddress;
     private String tpPid;
+    private boolean useWhiteList;
+    private String tpOa;
     private String porFormat;
 
     public SmsUpdate() {}
 
-    public SmsUpdate(String udhiFirstByte, String scAddress, String tpPid, String porFormat) {
+    public SmsUpdate(String udhiFirstByte, String scAddress, String tpPid, boolean useWhiteList, String tpOa, String porFormat) {
         this.udhiFirstByte = udhiFirstByte;
         this.scAddress = scAddress;
         this.tpPid = tpPid;
+        this.useWhiteList = useWhiteList;
+        this.tpOa = tpOa;
         this.porFormat = porFormat;
     }
 
@@ -38,6 +42,22 @@ public class SmsUpdate {
 
     public void setTpPid(String tpPid) {
         this.tpPid = tpPid;
+    }
+
+    public boolean isUseWhiteList() {
+        return useWhiteList;
+    }
+
+    public void setUseWhiteList(boolean useWhiteList) {
+        this.useWhiteList = useWhiteList;
+    }
+
+    public String getTpOa() {
+        return tpOa;
+    }
+
+    public void setTpOa(String tpOa) {
+        this.tpOa = tpOa;
     }
 
     public String getPorFormat() {

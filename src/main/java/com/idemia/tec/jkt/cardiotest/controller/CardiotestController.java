@@ -248,6 +248,10 @@ public class CardiotestController {
     @FXML
     private ComboBox<String> cmbKeysetType;
     @FXML
+    private Label lblCmacLength;
+    @FXML
+    private ComboBox<String> cmbCmacLength;
+    @FXML
     private ComboBox<String> cmbKicValuation;
     @FXML
     private ComboBox<String> cmbKicMode;
@@ -263,6 +267,12 @@ public class CardiotestController {
     private TextField txtScAddress;
     @FXML
     private TextField txtTpPid;
+    @FXML
+    private CheckBox chkTpOa;
+    @FXML
+    private Label lblTpOa;
+    @FXML
+    private TextField txtTpOa;
     @FXML
     private ComboBox<String> cmbPorFormat;
 
@@ -675,8 +685,17 @@ public class CardiotestController {
         List<String> keysetTypes = new ArrayList<>();
         keysetTypes.add("Algorithm known implicitly by both entities");
         keysetTypes.add("DES");
+        keysetTypes.add("AES");
         keysetTypes.add("Proprietary Implementations");
         cmbKeysetType.getItems().addAll(keysetTypes);
+
+        // initialize CMAC lengths
+        List<String> cmacLengths = new ArrayList<>();
+        cmacLengths.add("8");
+        cmacLengths.add("16");
+        cmacLengths.add("24");
+        cmacLengths.add("32");
+        cmbCmacLength.getItems().addAll(cmacLengths);
 
         // initialize list of modes
         List<String> blockModes = new ArrayList<>();
@@ -684,6 +703,7 @@ public class CardiotestController {
         blockModes.add("3DES - CBC 2 keys");
         blockModes.add("3DES - CBC 3 keys");
         blockModes.add("DES - ECB");
+        blockModes.add("AES - CBC");
 
         cmbKicValuation.setItems(mappedVariables);
         registerForComboUpdate(cmbKicValuation);
@@ -702,6 +722,9 @@ public class CardiotestController {
         txtUdhiFirstByte.setText(root.getRunSettings().getSmsUpdate().getUdhiFirstByte());
         txtScAddress.setText(root.getRunSettings().getSmsUpdate().getScAddress());
         txtTpPid.setText(root.getRunSettings().getSmsUpdate().getTpPid());
+        chkTpOa.setSelected(root.getRunSettings().getSmsUpdate().isUseWhiteList());
+        handleTpOaCheck();
+        txtTpOa.setText(root.getRunSettings().getSmsUpdate().getTpOa());
 
         // initialize list of PoR format
         List<String> porFormats = new ArrayList<>();
@@ -875,6 +898,8 @@ public class CardiotestController {
             txtKeysetName.setText(keyset.getKeysetName());
             cmbKeysetVersion.setValue(Integer.toString(keyset.getKeysetVersion()));
             cmbKeysetType.setValue(keyset.getKeysetType());
+            handleKeysetTypeSelection();
+            cmbCmacLength.setValue(String.valueOf(keyset.getCmacLength()));
             cmbKicValuation.setValue(keyset.getKicValuation());
             cmbKicMode.setValue(keyset.getKicMode());
             cmbKidValuation.setValue(keyset.getKidValuation());
@@ -884,6 +909,7 @@ public class CardiotestController {
             txtKeysetName.setText("");
             cmbKeysetVersion.setValue(null);
             cmbKeysetType.setValue(null);
+            cmbCmacLength.setValue(null);
             cmbKicValuation.setValue(null);
             cmbKicMode.setValue(null);
             cmbKidValuation.setValue(null);
@@ -1075,6 +1101,19 @@ public class CardiotestController {
     }
 
     @FXML
+    private void handleKeysetTypeSelection() {
+        if (cmbKeysetType.getSelectionModel().getSelectedItem().equals("AES")) {
+            lblCmacLength.setDisable(false);
+            cmbCmacLength.setDisable(false);
+            cmbKicMode.setValue("AES - CBC");
+            cmbKidMode.setValue("AES - CBC");
+        } else {
+            lblCmacLength.setDisable(true);
+            cmbCmacLength.setDisable(true);
+        }
+    }
+
+    @FXML
     private void handleButtonAddScp80Keyset() {
         if (keysetExists(txtKeysetName.getText())) {
             lblAddKeysetErrMsg.setVisible(true);
@@ -1084,11 +1123,12 @@ public class CardiotestController {
             String name = txtKeysetName.getText();
             int version = Integer.parseInt(cmbKeysetVersion.getValue());
             String type = cmbKeysetType.getValue();
+            int cmacLength = Integer.parseInt(cmbCmacLength.getValue());
             String kicVal = cmbKicValuation.getValue();
             String kicMode = cmbKicMode.getValue();
             String kidVal = cmbKidValuation.getValue();
             String kidMode = cmbKidMode.getValue();
-            SCP80Keyset scp80Keyset = new SCP80Keyset(name, version, type, kicVal, kicMode, kidVal, kidMode);
+            SCP80Keyset scp80Keyset = new SCP80Keyset(name, version, type, kicVal, kicMode, kidVal, kidMode, cmacLength);
             application.getScp80Keysets().add(scp80Keyset);
 
             scp80KeysetLabels.add(scp80Keyset.getKeysetName());
@@ -1120,6 +1160,17 @@ public class CardiotestController {
                 return true;
         }
         return false;
+    }
+
+    @FXML
+    private void handleTpOaCheck() {
+        if (chkTpOa.isSelected()) {
+            lblTpOa.setDisable(false);
+            txtTpOa.setDisable(false);
+        } else {
+            lblTpOa.setDisable(true);
+            txtTpOa.setDisable(true);
+        }
     }
 
     @FXML
@@ -1596,6 +1647,8 @@ public class CardiotestController {
         root.getRunSettings().getSmsUpdate().setUdhiFirstByte(txtUdhiFirstByte.getText());
         root.getRunSettings().getSmsUpdate().setScAddress(txtScAddress.getText());
         root.getRunSettings().getSmsUpdate().setTpPid(txtTpPid.getText());
+        root.getRunSettings().getSmsUpdate().setUseWhiteList(chkTpOa.isSelected());
+        root.getRunSettings().getSmsUpdate().setTpOa(txtTpOa.getText());
         root.getRunSettings().getSmsUpdate().setPorFormat(cmbPorFormat.getSelectionModel().getSelectedItem());
 
         // RFM USIM
@@ -1638,6 +1691,7 @@ public class CardiotestController {
                 rfmUsimCipheringKeyset.setKicMode(registeredKeyset.getKicMode());
                 rfmUsimCipheringKeyset.setKidValuation(registeredKeyset.getKidValuation());
                 rfmUsimCipheringKeyset.setKidMode(registeredKeyset.getKidMode());
+                rfmUsimCipheringKeyset.setCmacLength(registeredKeyset.getCmacLength());
 
                 rfmUsimCipheringKeyset.setCustomKic(chkRfmUsimCustomKic.isSelected());
                 if (rfmUsimCipheringKeyset.isCustomKic())
@@ -1662,6 +1716,7 @@ public class CardiotestController {
                 rfmUsimAuthKeyset.setKicMode(registeredKeyset.getKicMode());
                 rfmUsimAuthKeyset.setKidValuation(registeredKeyset.getKidValuation());
                 rfmUsimAuthKeyset.setKidMode(registeredKeyset.getKidMode());
+                rfmUsimAuthKeyset.setCmacLength(registeredKeyset.getCmacLength());
 
                 rfmUsimAuthKeyset.setComputedKic(registeredKeyset.getComputedKic());
 

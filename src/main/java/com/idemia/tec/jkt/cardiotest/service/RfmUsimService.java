@@ -151,6 +151,20 @@ public class RfmUsimService {
                 }
             }
         }
+        // case 8
+        rfmUsimBuffer.append("\n*********\n; CASE 8: Bad TP-OA value\n*********\n");
+        if (!root.getRunSettings().getSmsUpdate().isUseWhiteList())
+            rfmUsimBuffer.append("\n; profile does not have white list configuration -- case 8 is not executed\n");
+        else {
+            if (rfmUsim.isUseSpecificKeyset())
+                rfmUsimBuffer.append(rfmUsimCase8(rfmUsim.getCipheringKeyset(), rfmUsim.getAuthKeyset(), rfmUsim.getMinimumSecurityLevel()));
+            else {
+                for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets()) {
+                    rfmUsimBuffer.append("\n; using keyset: " + keyset.getKeysetName() + "\n");
+                    rfmUsimBuffer.append(rfmUsimCase8(keyset, keyset, rfmUsim.getMinimumSecurityLevel()));
+                }
+            }
+        }
         // save counter
         rfmUsimBuffer.append(
             "\n; save counter state\n"
@@ -181,7 +195,11 @@ public class RfmUsimService {
             + ".SET_BUFFER N " + authKeyset.getComputedKid() + "\n"
             + ".INIT_ENV_0348\n"
             + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
-            + ".CHANGE_TAR %TAR\n"
+        );
+        if (root.getRunSettings().getSmsUpdate().isUseWhiteList())
+            routine.append(".CHANGE_TP_OA " + root.getRunSettings().getSmsUpdate().getTpOa() + "\n");
+        routine.append(
+            ".CHANGE_TAR %TAR\n"
             + ".CHANGE_COUNTER L\n"
             + ".INCREASE_BUFFER L(04:05) 0001\n"
             + "\n; MSL = " + msl.getComputedMsl() + "\n"
@@ -236,7 +254,11 @@ public class RfmUsimService {
             + ".SET_BUFFER N 99 ; bad keyset\n"
             + ".INIT_ENV_0348\n"
             + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
-            + ".CHANGE_TAR %TAR\n"
+        );
+        if (root.getRunSettings().getSmsUpdate().isUseWhiteList())
+            routine.append(".CHANGE_TP_OA " + root.getRunSettings().getSmsUpdate().getTpOa() + "\n");
+        routine.append(
+            ".CHANGE_TAR %TAR\n"
             + ".CHANGE_COUNTER L\n"
             + ".INCREASE_BUFFER L(04:05) 0001\n"
             + "\n; MSL = " + msl.getComputedMsl() + "\n"
@@ -272,7 +294,11 @@ public class RfmUsimService {
             + ".SET_BUFFER N " + authKeyset.getComputedKid() + "\n"
             + ".INIT_ENV_0348\n"
             + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
-            + ".CHANGE_TAR %TAR\n"
+        );
+        if (root.getRunSettings().getSmsUpdate().isUseWhiteList())
+            routine.append(".CHANGE_TP_OA " + root.getRunSettings().getSmsUpdate().getTpOa() + "\n");
+        routine.append(
+            ".CHANGE_TAR %TAR\n"
             + ".CHANGE_COUNTER L\n"
             + ".INCREASE_BUFFER L(04:05) 0001\n"
             + "\n; MSL = " + msl.getComputedMsl() + "\n"
@@ -308,7 +334,11 @@ public class RfmUsimService {
             + ".SET_BUFFER N " + authKeyset.getComputedKid() + "\n"
             + ".INIT_ENV_0348\n"
             + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
-            + ".CHANGE_TAR B0FFFF ; this TAR isn't registered in profile\n"
+        );
+        if (root.getRunSettings().getSmsUpdate().isUseWhiteList())
+            routine.append(".CHANGE_TP_OA " + root.getRunSettings().getSmsUpdate().getTpOa() + "\n");
+        routine.append(
+            ".CHANGE_TAR B0FFFF ; this TAR isn't registered in profile\n"
             + ".CHANGE_COUNTER L\n"
             + ".INCREASE_BUFFER L(04:05) 0001\n"
             + "\n; MSL = " + msl.getComputedMsl() + "\n"
@@ -344,7 +374,11 @@ public class RfmUsimService {
             + ".SET_BUFFER N " + authKeyset.getComputedKid() + "\n"
             + ".INIT_ENV_0348\n"
             + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
-            + ".CHANGE_TAR %TAR\n"
+        );
+        if (root.getRunSettings().getSmsUpdate().isUseWhiteList())
+            routine.append(".CHANGE_TP_OA " + root.getRunSettings().getSmsUpdate().getTpOa() + "\n");
+        routine.append(
+            ".CHANGE_TAR %TAR\n"
             + ".CHANGE_COUNTER 0000000001 ; this value is lower than previous case\n"
             + ".INCREASE_BUFFER L(04:05) 0001\n"
             + "\n; MSL = " + msl.getComputedMsl() + "\n"
@@ -380,7 +414,11 @@ public class RfmUsimService {
             + ".SET_BUFFER N " + authKeyset.getComputedKid() + "\n"
             + ".INIT_ENV_0348\n"
             + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
-            + ".CHANGE_TAR %TAR\n"
+        );
+        if (root.getRunSettings().getSmsUpdate().isUseWhiteList())
+            routine.append(".CHANGE_TP_OA " + root.getRunSettings().getSmsUpdate().getTpOa() + "\n");
+        routine.append(
+            ".CHANGE_TAR %TAR\n"
             + ".CHANGE_COUNTER L\n"
             + ".INCREASE_BUFFER L(04:05) 0001\n"
             + "\n; MSL = " + msl.getComputedMsl() + "\n"
@@ -416,7 +454,11 @@ public class RfmUsimService {
             + ".SET_BUFFER N " + authKeyset.getComputedKid() + "\n"
             + ".INIT_ENV_0348\n"
             + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
-            + ".CHANGE_TAR %TAR\n"
+        );
+        if (root.getRunSettings().getSmsUpdate().isUseWhiteList())
+            routine.append(".CHANGE_TP_OA " + root.getRunSettings().getSmsUpdate().getTpOa() + "\n");
+        routine.append(
+            ".CHANGE_TAR %TAR\n"
             + ".CHANGE_COUNTER L\n"
             + ".INCREASE_BUFFER L(04:05) 0001\n"
             + "\n; MSL = " + msl.getComputedMsl() + "\n"
@@ -434,6 +476,44 @@ public class RfmUsimService {
             + ".CLEAR_SCRIPT\n"
             + "; check PoR\n"
             + "A0 C0 00 00 W(2;1) [XX XX XX XX XX XX %TAR XX XX XX XX XX XX 0A] (9000) ; insufficient MSL\n"
+            + "\n; increment counter by one\n"
+            + ".INCREASE_BUFFER L(04:05) 0001\n"
+        );
+        return routine.toString();
+    }
+
+    private String rfmUsimCase8(SCP80Keyset cipherKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel msl) {
+        StringBuilder routine = new StringBuilder();
+        routine.append(
+            "\n.POWER_ON\n"
+            + proactiveInitialization()
+            + "\n; SPI settings\n"
+            + ".SET_BUFFER O %" + cipherKeyset.getKicValuation() + "\n"
+            + ".SET_BUFFER Q %" + authKeyset.getKidValuation() + "\n"
+            + ".SET_BUFFER M " + cipherKeyset.getComputedKic() + "\n"
+            + ".SET_BUFFER N " + authKeyset.getComputedKid() + "\n"
+            + ".INIT_ENV_0348\n"
+            + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
+        );
+        if (root.getRunSettings().getSmsUpdate().isUseWhiteList())
+            routine.append(".CHANGE_TP_OA FFFFFFFFFF ; bad TP-OA value\n");
+        routine.append(
+            ".CHANGE_TAR %TAR\n"
+            + ".CHANGE_COUNTER L\n"
+            + ".INCREASE_BUFFER L(04:05) 0001\n"
+            + "\n; MSL = " + msl.getComputedMsl() + "\n"
+            + ".SET_DLKEY_KIC O\n"
+            + ".SET_DLKEY_KID Q\n"
+            + ".CHANGE_KIC M\n"
+            + ".CHANGE_KID N\n"
+            + spiConfigurator(msl)
+            + "\n; command(s) sent via OTA\n"
+            + ".SET_BUFFER J 00 A4 00 00 02 3F00\n"
+            + ".APPEND_SCRIPT J\n"
+            + ".END_MESSAGE G J\n"
+            + "; send envelope\n"
+            + "A0 C2 00 00 G J (9000) ; no PoR returned\n"
+            + ".CLEAR_SCRIPT\n"
             + "\n; increment counter by one\n"
             + ".INCREASE_BUFFER L(04:05) 0001\n"
         );
@@ -555,27 +635,39 @@ public class RfmUsimService {
     }
 
     private String createFakeCipherKey(SCP80Keyset keyset) {
-        if (keyset.getKicMode().equals("DES - CBC"))
+        if (keyset.getKicMode().equals("DES - CBC") || keyset.getKicMode().equals("DES - ECB"))
             return "0102030405060708";
         if (keyset.getKicMode().equals("3DES - CBC 2 keys"))
             return "0102030405060708090A0B0C0D0E0F10";
         if (keyset.getKicMode().equals("3DES - CBC 3 keys"))
             return "0102030405060708090A0B0C0D0E0F101112131415161718";
-        if (keyset.getKicMode().equals("DES - ECB"))
-            return "0102030405060708";
-        return null;
+        if (keyset.getKicMode().equals("AES - CBC")) {
+            if (keyset.getCmacLength() == 8)
+                return "0102030405060708";
+            if (keyset.getCmacLength() == 16)
+                return "0102030405060708090A0B0C0D0E0F10";
+            if (keyset.getCmacLength() == 24)
+                return "0102030405060708090A0B0C0D0E0F101112131415161718";
+        }
+        return null; // intentionally raise syntax error in pcom
     }
 
     private String createFakeAuthKey(SCP80Keyset keyset) {
-        if (keyset.getKidMode().equals("DES - CBC"))
+        if (keyset.getKidMode().equals("DES - CBC") || keyset.getKidMode().equals("DES - ECB"))
             return "0102030405060708";
         if (keyset.getKidMode().equals("3DES - CBC 2 keys"))
             return "0102030405060708090A0B0C0D0E0F10";
         if (keyset.getKidMode().equals("3DES - CBC 3 keys"))
             return "0102030405060708090A0B0C0D0E0F101112131415161718";
-        if (keyset.getKidMode().equals("DES - ECB"))
-            return "0102030405060708";
-        return null;
+        if (keyset.getKidMode().equals("AES - CBC")) {
+            if (keyset.getCmacLength() == 8)
+                return "0102030405060708";
+            if (keyset.getCmacLength() == 16)
+                return "0102030405060708090A0B0C0D0E0F10";
+            if (keyset.getCmacLength() == 24)
+                return "0102030405060708090A0B0C0D0E0F101112131415161718";
+        }
+        return null; // intentionally raise syntax error in pcom
     }
 
 }

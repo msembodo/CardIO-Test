@@ -248,17 +248,21 @@ public class CardiotestController {
     @FXML
     private ComboBox<String> cmbKeysetType;
     @FXML
-    private Label lblCmacLength;
-    @FXML
-    private ComboBox<String> cmbCmacLength;
-    @FXML
     private ComboBox<String> cmbKicValuation;
+    @FXML
+    private ComboBox<String> cmbKicLength;
     @FXML
     private ComboBox<String> cmbKicMode;
     @FXML
     private ComboBox<String> cmbKidValuation;
     @FXML
+    private ComboBox<String> cmbKidLength;
+    @FXML
     private ComboBox<String> cmbKidMode;
+    @FXML
+    private Label lblCmacLength;
+    @FXML
+    private ComboBox<String> cmbCmacLength;
     @FXML
     private Label lblAddKeysetErrMsg;
     @FXML
@@ -689,31 +693,48 @@ public class CardiotestController {
         keysetTypes.add("Proprietary Implementations");
         cmbKeysetType.getItems().addAll(keysetTypes);
 
-        // initialize CMAC lengths
-        List<String> cmacLengths = new ArrayList<>();
-        cmacLengths.add("8");
-        cmacLengths.add("16");
-        cmacLengths.add("24");
-        cmacLengths.add("32");
-        cmbCmacLength.getItems().addAll(cmacLengths);
-
-        // initialize list of modes
-        List<String> blockModes = new ArrayList<>();
-        blockModes.add("DES - CBC");
-        blockModes.add("3DES - CBC 2 keys");
-        blockModes.add("3DES - CBC 3 keys");
-        blockModes.add("DES - ECB");
-        blockModes.add("AES - CBC");
+        // initialize list of cipher modes
+        List<String> cipherBlockModes = new ArrayList<>();
+        cipherBlockModes.add("DES - CBC");
+        cipherBlockModes.add("3DES - CBC 2 keys");
+        cipherBlockModes.add("3DES - CBC 3 keys");
+        cipherBlockModes.add("DES - ECB");
+        cipherBlockModes.add("AES - CBC");
 
         cmbKicValuation.setItems(mappedVariables);
         registerForComboUpdate(cmbKicValuation);
 
-        cmbKicMode.getItems().addAll(blockModes);
+        // initialize available key space
+        List<String> scp80KeyLengths = new ArrayList<>();
+        scp80KeyLengths.add("8");
+        scp80KeyLengths.add("16");
+        scp80KeyLengths.add("24");
+        scp80KeyLengths.add("32");
+
+        cmbKicLength.getItems().addAll(scp80KeyLengths);
+
+        cmbKicMode.getItems().addAll(cipherBlockModes);
+
+        // initialize list of crypto checksum modes
+        List<String> ccBlockModes = new ArrayList<>();
+        ccBlockModes.add("DES - CBC");
+        ccBlockModes.add("3DES - CBC 2 keys");
+        ccBlockModes.add("3DES - CBC 3 keys");
+        ccBlockModes.add("DES - ECB");
+        ccBlockModes.add("AES - CMAC");
 
         cmbKidValuation.setItems(mappedVariables);
         registerForComboUpdate(cmbKidValuation);
 
-        cmbKidMode.getItems().addAll(blockModes);
+        cmbKidLength.getItems().addAll(scp80KeyLengths);
+
+        cmbKidMode.getItems().addAll(ccBlockModes);
+
+        // initialize CMAC lengths
+        List<String> cmacLengths = new ArrayList<>();
+        cmacLengths.add("4");
+        cmacLengths.add("8");
+        cmbCmacLength.getItems().addAll(cmacLengths);
 
         scp80KeysetLabels = FXCollections.observableArrayList();
         for (SCP80Keyset scp80Keyset : root.getRunSettings().getScp80Keysets())
@@ -899,21 +920,25 @@ public class CardiotestController {
             cmbKeysetVersion.setValue(Integer.toString(keyset.getKeysetVersion()));
             cmbKeysetType.setValue(keyset.getKeysetType());
             handleKeysetTypeSelection();
-            cmbCmacLength.setValue(String.valueOf(keyset.getCmacLength()));
             cmbKicValuation.setValue(keyset.getKicValuation());
+            cmbKicLength.setValue(String.valueOf(keyset.getKicKeyLength()));
             cmbKicMode.setValue(keyset.getKicMode());
             cmbKidValuation.setValue(keyset.getKidValuation());
+            cmbKidLength.setValue(String.valueOf(keyset.getKidKeyLength()));
             cmbKidMode.setValue(keyset.getKidMode());
+            cmbCmacLength.setValue(String.valueOf(keyset.getCmacLength()));
         }
         else {
             txtKeysetName.setText("");
             cmbKeysetVersion.setValue(null);
             cmbKeysetType.setValue(null);
-            cmbCmacLength.setValue(null);
             cmbKicValuation.setValue(null);
+            cmbKicLength.setValue(null);
             cmbKicMode.setValue(null);
             cmbKidValuation.setValue(null);
+            cmbKidLength.setValue(null);
             cmbKidMode.setValue(null);
+            cmbCmacLength.setValue(null);
         }
     }
 
@@ -1106,7 +1131,7 @@ public class CardiotestController {
             lblCmacLength.setDisable(false);
             cmbCmacLength.setDisable(false);
             cmbKicMode.setValue("AES - CBC");
-            cmbKidMode.setValue("AES - CBC");
+            cmbKidMode.setValue("AES - CMAC");
         } else {
             lblCmacLength.setDisable(true);
             cmbCmacLength.setDisable(true);
@@ -1123,12 +1148,16 @@ public class CardiotestController {
             String name = txtKeysetName.getText();
             int version = Integer.parseInt(cmbKeysetVersion.getValue());
             String type = cmbKeysetType.getValue();
-            int cmacLength = Integer.parseInt(cmbCmacLength.getValue());
+            int cmacLength = 0;
+            if (type.equals("AES"))
+                cmacLength = Integer.parseInt(cmbCmacLength.getValue());
             String kicVal = cmbKicValuation.getValue();
+            int kicLength = Integer.parseInt(cmbKicLength.getValue());
             String kicMode = cmbKicMode.getValue();
             String kidVal = cmbKidValuation.getValue();
+            int kidLength = Integer.parseInt(cmbKidLength.getValue());
             String kidMode = cmbKidMode.getValue();
-            SCP80Keyset scp80Keyset = new SCP80Keyset(name, version, type, kicVal, kicMode, kidVal, kidMode, cmacLength);
+            SCP80Keyset scp80Keyset = new SCP80Keyset(name, version, type, kicVal, kicLength, kicMode, kidVal, kidLength, kidMode, cmacLength);
             application.getScp80Keysets().add(scp80Keyset);
 
             scp80KeysetLabels.add(scp80Keyset.getKeysetName());
@@ -1688,8 +1717,10 @@ public class CardiotestController {
                 rfmUsimCipheringKeyset.setKeysetVersion(registeredKeyset.getKeysetVersion());
                 rfmUsimCipheringKeyset.setKeysetType(registeredKeyset.getKeysetType());
                 rfmUsimCipheringKeyset.setKicValuation(registeredKeyset.getKicValuation());
+                rfmUsimCipheringKeyset.setKicKeyLength(registeredKeyset.getKicKeyLength());
                 rfmUsimCipheringKeyset.setKicMode(registeredKeyset.getKicMode());
                 rfmUsimCipheringKeyset.setKidValuation(registeredKeyset.getKidValuation());
+                rfmUsimCipheringKeyset.setKidKeyLength(registeredKeyset.getKidKeyLength());
                 rfmUsimCipheringKeyset.setKidMode(registeredKeyset.getKidMode());
                 rfmUsimCipheringKeyset.setCmacLength(registeredKeyset.getCmacLength());
 
@@ -1713,8 +1744,10 @@ public class CardiotestController {
                 rfmUsimAuthKeyset.setKeysetVersion(registeredKeyset.getKeysetVersion());
                 rfmUsimAuthKeyset.setKeysetType(registeredKeyset.getKeysetType());
                 rfmUsimAuthKeyset.setKicValuation(registeredKeyset.getKicValuation());
+                rfmUsimAuthKeyset.setKicKeyLength(registeredKeyset.getKicKeyLength());
                 rfmUsimAuthKeyset.setKicMode(registeredKeyset.getKicMode());
                 rfmUsimAuthKeyset.setKidValuation(registeredKeyset.getKidValuation());
+                rfmUsimAuthKeyset.setKidKeyLength(registeredKeyset.getKidKeyLength());
                 rfmUsimAuthKeyset.setKidMode(registeredKeyset.getKidMode());
                 rfmUsimAuthKeyset.setCmacLength(registeredKeyset.getCmacLength());
 

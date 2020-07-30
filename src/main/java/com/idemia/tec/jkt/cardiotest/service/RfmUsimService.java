@@ -208,7 +208,11 @@ public class RfmUsimService {
             + ".CHANGE_KIC M\n"
             + ".CHANGE_KID N\n"
             + spiConfigurator(msl)
-            + "\n; command(s) sent via OTA\n"
+        );
+        if (authKeyset.getKidMode().equals("AES - CMAC"))
+            routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
+        routine.append(
+            "\n; command(s) sent via OTA\n"
             + ".SET_BUFFER J 00 A4 00 00 02 %EF_ID ; select EF\n"
             + ".APPEND_SCRIPT J\n"
             + ".SET_BUFFER J 00 D6 00 00 <?> AA ; update binary\n"
@@ -267,7 +271,11 @@ public class RfmUsimService {
             + ".CHANGE_KIC M\n"
             + ".CHANGE_KID N\n"
             + spiConfigurator(msl)
-            + "\n; command(s) sent via OTA\n"
+        );
+        if (authKeyset.getKidMode().equals("AES - CMAC"))
+            routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
+        routine.append(
+            "\n; command(s) sent via OTA\n"
             + ".SET_BUFFER J 00 A4 00 00 02 3F00\n"
             + ".APPEND_SCRIPT J\n"
             + ".END_MESSAGE G J\n"
@@ -307,7 +315,11 @@ public class RfmUsimService {
             + ".CHANGE_KIC M\n"
             + ".CHANGE_KID N\n"
             + spiConfigurator(msl)
-            + "\n; command(s) sent via OTA\n"
+        );
+        if (authKeyset.getKidMode().equals("AES - CMAC"))
+            routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
+        routine.append(
+            "\n; command(s) sent via OTA\n"
             + ".SET_BUFFER J A0 A4 00 00 02 3F00 ; this command isn't supported by USIM\n"
             + ".APPEND_SCRIPT J\n"
             + ".END_MESSAGE G J\n"
@@ -347,7 +359,11 @@ public class RfmUsimService {
             + ".CHANGE_KIC M\n"
             + ".CHANGE_KID N\n"
             + spiConfigurator(msl)
-            + "\n; command(s) sent via OTA\n"
+        );
+        if (authKeyset.getKidMode().equals("AES - CMAC"))
+            routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
+        routine.append(
+            "\n; command(s) sent via OTA\n"
             + ".SET_BUFFER J 00 A4 00 00 02 3F00\n"
             + ".APPEND_SCRIPT J\n"
             + ".END_MESSAGE G J\n"
@@ -387,7 +403,11 @@ public class RfmUsimService {
             + ".CHANGE_KIC M\n"
             + ".CHANGE_KID N\n"
             + spiConfigurator(msl)
-            + "\n; command(s) sent via OTA\n"
+        );
+        if (authKeyset.getKidMode().equals("AES - CMAC"))
+            routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
+        routine.append(
+            "\n; command(s) sent via OTA\n"
             + ".SET_BUFFER J 00 A4 00 00 02 3F00\n"
             + ".APPEND_SCRIPT J\n"
             + ".END_MESSAGE G J\n"
@@ -427,7 +447,11 @@ public class RfmUsimService {
             + ".CHANGE_KIC M\n"
             + ".CHANGE_KID N\n"
             + spiConfigurator(msl)
-            + "\n; command(s) sent via OTA\n"
+        );
+        if (authKeyset.getKidMode().equals("AES - CMAC"))
+            routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
+        routine.append(
+            "\n; command(s) sent via OTA\n"
             + ".SET_BUFFER J 00 A4 00 00 02 3F00\n"
             + ".APPEND_SCRIPT J\n"
             + ".END_MESSAGE G J\n"
@@ -467,7 +491,11 @@ public class RfmUsimService {
             + ".CHANGE_KIC M\n"
             + ".CHANGE_KID N\n"
             + spiConfigurator(msl)
-            + "\n; command(s) sent via OTA\n"
+        );
+        if (authKeyset.getKidMode().equals("AES - CMAC"))
+            routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
+        routine.append(
+            "\n; command(s) sent via OTA\n"
             + ".SET_BUFFER J 00 A4 00 00 02 3F00\n"
             + ".APPEND_SCRIPT J\n"
             + ".END_MESSAGE G J\n"
@@ -507,7 +535,11 @@ public class RfmUsimService {
             + ".CHANGE_KIC M\n"
             + ".CHANGE_KID N\n"
             + spiConfigurator(msl)
-            + "\n; command(s) sent via OTA\n"
+        );
+        if (authKeyset.getKidMode().equals("AES - CMAC"))
+            routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
+        routine.append(
+            "\n; command(s) sent via OTA\n"
             + ".SET_BUFFER J 00 A4 00 00 02 3F00\n"
             + ".APPEND_SCRIPT J\n"
             + ".END_MESSAGE G J\n"
@@ -635,38 +667,26 @@ public class RfmUsimService {
     }
 
     private String createFakeCipherKey(SCP80Keyset keyset) {
-        if (keyset.getKicMode().equals("DES - CBC") || keyset.getKicMode().equals("DES - ECB"))
+        if (keyset.getKicKeyLength() == 8)
             return "0102030405060708";
-        if (keyset.getKicMode().equals("3DES - CBC 2 keys"))
+        if (keyset.getKicKeyLength() == 16)
             return "0102030405060708090A0B0C0D0E0F10";
-        if (keyset.getKicMode().equals("3DES - CBC 3 keys"))
+        if (keyset.getKicKeyLength() == 24)
             return "0102030405060708090A0B0C0D0E0F101112131415161718";
-        if (keyset.getKicMode().equals("AES - CBC")) {
-            if (keyset.getCmacLength() == 8)
-                return "0102030405060708";
-            if (keyset.getCmacLength() == 16)
-                return "0102030405060708090A0B0C0D0E0F10";
-            if (keyset.getCmacLength() == 24)
-                return "0102030405060708090A0B0C0D0E0F101112131415161718";
-        }
+        if (keyset.getKicKeyLength() == 32)
+            return "0102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F20";
         return null; // intentionally raise syntax error in pcom
     }
 
     private String createFakeAuthKey(SCP80Keyset keyset) {
-        if (keyset.getKidMode().equals("DES - CBC") || keyset.getKidMode().equals("DES - ECB"))
+        if (keyset.getKidKeyLength() == 8)
             return "0102030405060708";
-        if (keyset.getKidMode().equals("3DES - CBC 2 keys"))
+        if (keyset.getKidKeyLength() == 16)
             return "0102030405060708090A0B0C0D0E0F10";
-        if (keyset.getKidMode().equals("3DES - CBC 3 keys"))
+        if (keyset.getKidKeyLength() == 24)
             return "0102030405060708090A0B0C0D0E0F101112131415161718";
-        if (keyset.getKidMode().equals("AES - CBC")) {
-            if (keyset.getCmacLength() == 8)
-                return "0102030405060708";
-            if (keyset.getCmacLength() == 16)
-                return "0102030405060708090A0B0C0D0E0F10";
-            if (keyset.getCmacLength() == 24)
-                return "0102030405060708090A0B0C0D0E0F101112131415161718";
-        }
+        if (keyset.getKidKeyLength() == 32)
+            return "0102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F20";
         return null; // intentionally raise syntax error in pcom
     }
 

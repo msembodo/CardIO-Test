@@ -10,8 +10,10 @@ public class SCP80Keyset {
     private int keysetVersion;
     private String keysetType;
     private String kicValuation;
+    private int kicKeyLength;
     private String kicMode;
     private String kidValuation;
+    private int kidKeyLength;
     private String kidMode;
     private String computedKic;
     private String computedKid;
@@ -21,14 +23,16 @@ public class SCP80Keyset {
 
     public SCP80Keyset() {}
 
-    public SCP80Keyset(String keysetName, int keysetVersion, String keysetType, String kicValuation, String kicMode,
-                       String kidValuation, String kidMode, int cmacLength) {
+    public SCP80Keyset(String keysetName, int keysetVersion, String keysetType, String kicValuation, int kicKeyLength,
+                       String kicMode, String kidValuation, int kidKeyLength, String kidMode, int cmacLength) {
         this.keysetName = new SimpleStringProperty(keysetName);
         this.keysetVersion = keysetVersion;
         this.keysetType = keysetType;
         this.kicValuation = kicValuation;
+        this.kicKeyLength = kicKeyLength;
         this.kicMode = kicMode;
         this.kidValuation = kidValuation;
+        this.kidKeyLength = kidKeyLength;
         this.kidMode = kidMode;
         this.cmacLength = cmacLength;
         this.computedKic = computeKic();
@@ -95,6 +99,14 @@ public class SCP80Keyset {
         this.kicValuation = kicValuation;
     }
 
+    public int getKicKeyLength() {
+        return kicKeyLength;
+    }
+
+    public void setKicKeyLength(int kicKeyLength) {
+        this.kicKeyLength = kicKeyLength;
+    }
+
     public String getKicMode() {
         return kicMode;
     }
@@ -109,6 +121,14 @@ public class SCP80Keyset {
 
     public void setKidValuation(String kidValuation) {
         this.kidValuation = kidValuation;
+    }
+
+    public int getKidKeyLength() {
+        return kidKeyLength;
+    }
+
+    public void setKidKeyLength(int kidKeyLength) {
+        this.kidKeyLength = kidKeyLength;
     }
 
     public String getKidMode() {

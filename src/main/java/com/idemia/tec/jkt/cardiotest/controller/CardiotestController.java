@@ -868,26 +868,34 @@ public class CardiotestController {
         if (root.getRunSettings().getRfmUsim().getCipheringKeyset() != null) {
             cmbRfmUsimCipheringKeyset.setValue(root.getRunSettings().getRfmUsim().getCipheringKeyset().getKeysetName());
             for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets()) {
-                if (keyset.getKeysetName().equals(root.getRunSettings().getRfmUsim().getCipheringKeyset().getKeysetName()))
+                if (keyset.getKeysetName().equals(root.getRunSettings().getRfmUsim().getCipheringKeyset().getKeysetName())) {
                     lblRfmUsimKic.setText("Kic (hex): " + keyset.getComputedKic());
-                break;
+                    break;
+                }
             }
             chkRfmUsimCustomKic.setSelected(root.getRunSettings().getRfmUsim().getCipheringKeyset().isCustomKic());
             handleRfmUsimCustomKicCheck();
-            txtRfmUsimCustomKic.setText(root.getRunSettings().getRfmUsim().getCipheringKeyset().getComputedKic());
+            if (chkRfmUsimCustomKic.isSelected())
+                txtRfmUsimCustomKic.setText(root.getRunSettings().getRfmUsim().getCipheringKeyset().getComputedKic());
+            else
+                txtRfmUsimCustomKic.setText("");
         }
 
         cmbRfmUsimAuthKeyset.setItems(scp80KeysetLabels);
         if (root.getRunSettings().getRfmUsim().getAuthKeyset() != null) {
             cmbRfmUsimAuthKeyset.setValue(root.getRunSettings().getRfmUsim().getAuthKeyset().getKeysetName());
             for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets()) {
-                if (keyset.getKeysetName().equals(root.getRunSettings().getRfmUsim().getAuthKeyset().getKeysetName()))
+                if (keyset.getKeysetName().equals(root.getRunSettings().getRfmUsim().getAuthKeyset().getKeysetName())) {
                     lblRfmUsimKid.setText("Kid (hex): " + keyset.getComputedKid());
-                break;
+                    break;
+                }
             }
             chkRfmUsimCustomKid.setSelected(root.getRunSettings().getRfmUsim().getAuthKeyset().isCustomKid());
             handleRfmUsimCustomKidCheck();
-            txtRfmUsimCustomKid.setText(root.getRunSettings().getRfmUsim().getAuthKeyset().getComputedKid());
+            if (chkRfmUsimCustomKid.isSelected())
+                txtRfmUsimCustomKid.setText(root.getRunSettings().getRfmUsim().getAuthKeyset().getComputedKid());
+            else
+                txtRfmUsimCustomKid.setText("");
         }
 
         chkUseSpecificKeyset.setSelected(root.getRunSettings().getRfmUsim().isUseSpecificKeyset());

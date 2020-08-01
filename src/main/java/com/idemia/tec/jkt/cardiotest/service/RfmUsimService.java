@@ -95,6 +95,37 @@ public class RfmUsimService {
             }
         }
         rfmUsimBuffer.append("\n.UNDEFINE %EF_CONTENT\n");
+        // perform negative test if not full access
+        if (!rfmUsim.isFullAccess()) {
+            rfmUsimBuffer.append(
+                "\n; perform negative test: updating " + rfmUsim.getCustomTargetEfBadCase() + " (" + rfmUsim.getCustomTargetAccBadCase() + ")\n"
+                + "\n.POWER_ON\n"
+                + "; check initial content of EF\n"
+                + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+            );
+            if (root.getRunSettings().getSecretCodes().isUseIsc2())
+                rfmUsimBuffer.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+            if (root.getRunSettings().getSecretCodes().isUseIsc3())
+                rfmUsimBuffer.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+            if (root.getRunSettings().getSecretCodes().isUseIsc4())
+                rfmUsimBuffer.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+            rfmUsimBuffer.append(
+                "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+                + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+                + select2gWithAbsolutePath(rfmUsim.getCustomTargetEfBadCase())
+                + "A0 B0 00 00 01 (9000)\n"
+                + ".DEFINE %EF_CONTENT R\n"
+            );
+            if (rfmUsim.isUseSpecificKeyset())
+                rfmUsimBuffer.append(rfmUsimCase1NegativeTest(rfmUsim.getCipheringKeyset(), rfmUsim.getAuthKeyset(), rfmUsim.getMinimumSecurityLevel()));
+            else {
+                for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets()) {
+                    rfmUsimBuffer.append("\n; using keyset: " + keyset.getKeysetName() + "\n");
+                    rfmUsimBuffer.append(rfmUsimCase1NegativeTest(keyset, keyset, rfmUsim.getMinimumSecurityLevel()));
+                }
+            }
+            rfmUsimBuffer.append("\n.UNDEFINE %EF_CONTENT\n");
+        }
         // case 2
         rfmUsimBuffer.append("\n*********\n; CASE 2: (Bad Case) RFM with keyset which is not allowed in USIM TAR\n*********\n");
         if (rfmUsim.isUseSpecificKeyset())
@@ -275,6 +306,69 @@ public class RfmUsimService {
             + "A0 A4 00 00 02 %DF_ID (9F22)\n"
             + "A0 A4 00 00 02 %EF_ID (9F0F)\n"
             + "A0 D6 00 00 01 %EF_CONTENT (9000)\n"
+            + "\n; increment counter by one\n"
+            + ".INCREASE_BUFFER L(04:05) 0001\n"
+        );
+        return routine.toString();
+    }
+
+    private String rfmUsimCase1NegativeTest(SCP80Keyset cipherKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel msl) {
+        StringBuilder routine = new StringBuilder();
+        routine.append(
+            "\n.POWER_ON\n"
+            + proactiveInitialization()
+            + "\n; SPI settings\n"
+            + ".SET_BUFFER O %" + cipherKeyset.getKicValuation() + "\n"
+            + ".SET_BUFFER Q %" + authKeyset.getKidValuation() + "\n"
+            + ".SET_BUFFER M " + cipherKeyset.getComputedKic() + "\n"
+            + ".SET_BUFFER N " + authKeyset.getComputedKid() + "\n"
+            + ".INIT_ENV_0348\n"
+            + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
+        );
+        if (root.getRunSettings().getSmsUpdate().isUseWhiteList())
+            routine.append(".CHANGE_TP_OA " + root.getRunSettings().getSmsUpdate().getTpOa() + "\n");
+        routine.append(
+            ".CHANGE_TAR %TAR\n"
+            + ".CHANGE_COUNTER L\n"
+            + ".INCREASE_BUFFER L(04:05) 0001\n"
+            + "\n; MSL = " + msl.getComputedMsl() + "\n"
+            + ".SET_DLKEY_KIC O\n"
+            + ".SET_DLKEY_KID Q\n"
+            + ".CHANGE_KIC M\n"
+            + ".CHANGE_KID N\n"
+            + spiConfigurator(msl)
+        );
+        if (authKeyset.getKidMode().equals("AES - CMAC"))
+            routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
+        routine.append(
+            "\n; command(s) sent via OTA\n"
+            + appendScriptSelect3g(root.getRunSettings().getRfmUsim().getCustomTargetEfBadCase())
+            + ".SET_BUFFER J 00 D6 00 00 <?> AA ; update binary\n"
+            + ".APPEND_SCRIPT J\n"
+            + ".END_MESSAGE G J\n"
+            + "; show OTA message details\n"
+            + ".DISPLAY_MESSAGE J\n"
+            + "; send envelope\n"
+            + "A0 C2 00 00 G J (9FXX)\n"
+            + ".CLEAR_SCRIPT\n"
+            + "; check PoR\n"
+            + "A0 C0 00 00 W(2;1) [XX XX XX XX XX XX %TAR XX XX XX XX XX XX 00 XX 69 82] (9000) ; PoR OK, but failed to update\n"
+            + "\n; check update has failed\n"
+            + ".POWER_ON\n"
+            + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+        );
+        if (root.getRunSettings().getSecretCodes().isUseIsc2())
+            routine.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+        if (root.getRunSettings().getSecretCodes().isUseIsc3())
+            routine.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+        if (root.getRunSettings().getSecretCodes().isUseIsc4())
+            routine.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+        routine.append(
+            "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+            + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+            + "A0 A4 00 00 02 %DF_ID (9F22)\n"
+            + "A0 A4 00 00 02 %EF_ID (9F0F)\n"
+            + "A0 B0 00 00 01 [%EF_CONTENT] (9000)\n"
             + "\n; increment counter by one\n"
             + ".INCREASE_BUFFER L(04:05) 0001\n"
         );
@@ -723,6 +817,31 @@ public class RfmUsimService {
         if (keyset.getKidKeyLength() == 32)
             return "0102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F20";
         return null; // intentionally raise syntax error in pcom
+    }
+
+    private String select2gWithAbsolutePath(String fid) {
+        StringBuilder routine = new StringBuilder();
+        int step = fid.length() / 4;
+        int index = 0;
+        for (int i = 0; i < step; i++) {
+            routine.append("A0A40000 02 " + fid.substring(index, index + 4) + " (9FXX)\n");
+            index += 4;
+        }
+        return routine.toString();
+    }
+
+    private String appendScriptSelect3g(String fid) {
+        StringBuilder routine = new StringBuilder();
+        int step = fid.length() / 4;
+        int index = 0;
+        for (int i = 0; i < step; i++) {
+            routine.append(
+                ".SET_BUFFER J 00 A4 00 00 02 " + fid.substring(index, index + 4) + "\n"
+                + ".APPEND_SCRIPT J\n"
+            );
+            index += 4;
+        }
+        return routine.toString();
     }
 
 }

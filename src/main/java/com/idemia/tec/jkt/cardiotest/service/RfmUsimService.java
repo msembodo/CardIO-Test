@@ -48,25 +48,43 @@ public class RfmUsimService {
         // enable pin if required
         if (root.getRunSettings().getSecretCodes().isPin1disabled())
             rfmUsimBuffer.append("\nA0 28 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000) ; enable GPIN1\n");
-        // define target files
-        rfmUsimBuffer.append(
-            "\n.DEFINE %EF_ID " + rfmUsim.getTargetEf() + "\n"
-            + ".DEFINE %EF_ID_ERR " + rfmUsim.getTargetEfBadCase() + "\n"
-            + ".DEFINE %DF_ID " + root.getRunSettings().getCardParameters().getDfUsim() + "\n"
-        );
         // case 1
+        rfmUsimBuffer.append("\n*********\n; CASE 1: RFM USIM with correct security settings\n*********\n");
+        // define target files
+        if (rfmUsim.isFullAccess()) {
+            rfmUsimBuffer.append(
+                "\n; TAR is configured for full access\n"
+                + ".DEFINE %DF_ID " + root.getRunSettings().getCardParameters().getDfUsim() + "\n"
+                + ".DEFINE %EF_ID " + rfmUsim.getTargetEf() + "\n"
+                + ".DEFINE %EF_ID_ERR " + rfmUsim.getTargetEfBadCase() + "\n"
+            );
+        } else {
+            rfmUsimBuffer.append(
+                "\n; TAR is configured with access domain\n"
+                + ".DEFINE %DF_ID " + root.getRunSettings().getCardParameters().getDfUsim() + "\n"
+                + ".DEFINE %EF_ID " + rfmUsim.getCustomTargetEf() + "; EF protected by " + rfmUsim.getCustomTargetAcc() +  "\n"
+                + ".DEFINE %EF_ID_ERR " + rfmUsim.getCustomTargetEfBadCase() + "; (negative test) EF protected by " + rfmUsim.getCustomTargetAccBadCase() +  "\n"
+            );
+        }
         rfmUsimBuffer.append(
-            "\n*********\n; CASE 1: RFM USIM with correct security settings\n*********\n"
-            + "\n.POWER_ON\n"
+            "\n.POWER_ON\n"
             + "; check initial content of EF\n"
             + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
-            + "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+        );
+        if (root.getRunSettings().getSecretCodes().isUseIsc2())
+            rfmUsimBuffer.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+        if (root.getRunSettings().getSecretCodes().isUseIsc3())
+            rfmUsimBuffer.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+        if (root.getRunSettings().getSecretCodes().isUseIsc4())
+            rfmUsimBuffer.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+        rfmUsimBuffer.append(
+            "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+            + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
             + "A0 A4 00 00 02 %DF_ID (9F22)\n"
             + "A0 A4 00 00 02 %EF_ID (9F0F)\n"
             + "A0 B0 00 00 01 (9000)\n"
             + ".DEFINE %EF_CONTENT R\n"
         );
-        // TODO: if not full access; define target files as in access domain
         // some TAR may be configured with specific keyset or use all available keysets
         if (rfmUsim.isUseSpecificKeyset())
             rfmUsimBuffer.append(rfmUsimCase1(rfmUsim.getCipheringKeyset(), rfmUsim.getAuthKeyset(), rfmUsim.getMinimumSecurityLevel()));
@@ -217,7 +235,6 @@ public class RfmUsimService {
             + ".APPEND_SCRIPT J\n"
             + ".SET_BUFFER J 00 D6 00 00 <?> AA ; update binary\n"
             + ".APPEND_SCRIPT J\n"
-            // TODO: if not full access
             + ".END_MESSAGE G J\n"
             + "; show OTA message details\n"
             + ".DISPLAY_MESSAGE J\n"
@@ -229,14 +246,32 @@ public class RfmUsimService {
             + "\n; check update has been done on EF\n"
             + ".POWER_ON\n"
             + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
-            + "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+        );
+        if (root.getRunSettings().getSecretCodes().isUseIsc2())
+            routine.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+        if (root.getRunSettings().getSecretCodes().isUseIsc3())
+            routine.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+        if (root.getRunSettings().getSecretCodes().isUseIsc4())
+            routine.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+        routine.append(
+            "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+            + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
             + "A0 A4 00 00 02 %DF_ID (9F22)\n"
             + "A0 A4 00 00 02 %EF_ID (9F0F)\n"
             + "A0 B0 00 00 01 [AA] (9000)\n"
             + "\n; restore initial content of EF\n"
             + ".POWER_ON\n"
             + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
-            + "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+        );
+        if (root.getRunSettings().getSecretCodes().isUseIsc2())
+            routine.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+        if (root.getRunSettings().getSecretCodes().isUseIsc3())
+            routine.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+        if (root.getRunSettings().getSecretCodes().isUseIsc4())
+            routine.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+        routine.append(
+            "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+            + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
             + "A0 A4 00 00 02 %DF_ID (9F22)\n"
             + "A0 A4 00 00 02 %EF_ID (9F0F)\n"
             + "A0 D6 00 00 01 %EF_CONTENT (9000)\n"
@@ -555,7 +590,7 @@ public class RfmUsimService {
     private String proactiveInitialization() {
         StringBuilder routine = new StringBuilder();
         routine.append(
-            "\n; proactive initialization\n"
+            "; proactive initialization\n"
             + "A010000013 FFFFFFFF7F3F00DFFF00001FE28A0D02030900 (9XXX)\n"
             + ".BEGIN_LOOP\n"
             + "\t.SWITCH W(1:1)\n"

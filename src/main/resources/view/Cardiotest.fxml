@@ -438,8 +438,8 @@
                                                                 <ComboBox fx:id="cmbKidValuation" prefHeight="31.0" prefWidth="266.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                                                 <ComboBox fx:id="cmbKidMode" prefHeight="31.0" prefWidth="258.0" GridPane.columnIndex="4" GridPane.rowIndex="4" />
                                                                 <ComboBox fx:id="cmbCmacLength" prefHeight="31.0" prefWidth="258.0" GridPane.columnIndex="3" GridPane.rowIndex="5" />
-                                                                                                <Label text="Size / mode" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                                                                                                <Label text="Size / mode" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                                                                <Label text="Size &amp; mode" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                                                <Label text="Size &amp; mode" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                                                                                 <ComboBox fx:id="cmbKicLength" prefWidth="150.0" GridPane.columnIndex="3" GridPane.rowIndex="3" />
                                                                                                 <ComboBox fx:id="cmbKidLength" prefWidth="150.0" GridPane.columnIndex="3" GridPane.rowIndex="4" />
                                                               </children>
@@ -517,14 +517,14 @@
                                             <CheckBox fx:id="chkIncludeRfmUsim" layoutX="12.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleIncludeRfmUsimCheck" text="Include 'RFM USIM'" AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="12.0" />
                                             <CheckBox fx:id="chkIncludeRfmUsimUpdateRecord" layoutX="201.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleIncludeRfmUsimUpdateRecordCheck" text="Include 'RFM USIM - update record'" AnchorPane.topAnchor="12.0" />
                                             <CheckBox fx:id="chkIncludeRfmUsimExpandedMode" layoutX="495.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleIncludeRfmUsimExpandedModeCheck" text="Include 'RFM USIM - expanded mode'" AnchorPane.topAnchor="12.0" />
-                                            <TitledPane animated="false" collapsible="false" focusTraversable="false" layoutX="530.0" layoutY="300.0" prefHeight="310.0" prefWidth="640.0" text="RFM Options &amp; Parameters" AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="50.0">
+                                            <TitledPane animated="false" collapsible="false" focusTraversable="false" layoutX="530.0" layoutY="300.0" prefHeight="310.0" prefWidth="670.0" text="RFM Options &amp; Parameters" AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="50.0">
                                               <content>
                                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                   <children>
-                                                    <GridPane layoutX="32.0" layoutY="32.0" prefHeight="132.0" prefWidth="270.0" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="8.0">
+                                                    <GridPane layoutX="32.0" layoutY="32.0" prefHeight="132.0" prefWidth="240.0" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="8.0">
                                                       <columnConstraints>
-                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="151.0" minWidth="10.0" prefWidth="151.0" />
-                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="80.0" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="151.0" minWidth="10.0" prefWidth="111.0" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="152.0" minWidth="10.0" prefWidth="130.0" />
                                                       </columnConstraints>
                                                       <rowConstraints>
                                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -541,11 +541,11 @@
                                                         <TextField fx:id="txtRfmUsimTargetEfBadCase" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                       </children>
                                                     </GridPane>
-                                                    <GridPane hgap="4.0" layoutX="324.0" layoutY="32.0" prefHeight="132.0" prefWidth="289.0" AnchorPane.leftAnchor="312.0" AnchorPane.topAnchor="8.0">
+                                                    <GridPane hgap="4.0" layoutX="334.0" layoutY="32.0" prefHeight="132.0" prefWidth="363.0" AnchorPane.leftAnchor="270.0" AnchorPane.topAnchor="8.0">
                                                       <columnConstraints>
-                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="213.0" minWidth="10.0" prefWidth="109.0" />
-                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="213.0" minWidth="10.0" prefWidth="105.0" />
-                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="213.0" minWidth="10.0" prefWidth="67.0" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="213.0" minWidth="10.0" prefWidth="140.0" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="213.0" minWidth="10.0" prefWidth="100.0" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="213.0" minWidth="10.0" prefWidth="130.0" />
                                                       </columnConstraints>
                                                       <rowConstraints>
                                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -560,7 +560,7 @@
                                                         <ComboBox fx:id="cmbRfmUsimCustomTargetAccBadCase" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                         <TextField fx:id="txtRfmUsimCustomTargetEfBadCase" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                                         <Label fx:id="lblRfmUsimCustomTarget" text="EF" GridPane.rowIndex="1" />
-                                                        <Label fx:id="lblRfmUsimCustomTargetBadCase" text="EF (bad case)" GridPane.rowIndex="2" />
+                                                        <Label fx:id="lblRfmUsimCustomTargetBadCase" text="EF (negative test)" GridPane.rowIndex="2" />
                                                       </children>
                                                     </GridPane>
                                                     <CheckBox fx:id="chkUseSpecificKeyset" layoutX="20.0" layoutY="169.0" mnemonicParsing="false" onAction="#handleUseSpecificKeysetCheck" text="Use specific keyset:" AnchorPane.bottomAnchor="84.0" AnchorPane.leftAnchor="8.0" />
@@ -593,7 +593,7 @@
                                                 </AnchorPane>
                                               </content>
                                             </TitledPane>
-                                            <TitledPane animated="false" collapsible="false" focusTraversable="false" layoutX="525.0" layoutY="12.0" prefHeight="310.0" prefWidth="640.0" text="Minimum Security Level" AnchorPane.leftAnchor="680.0" AnchorPane.topAnchor="50.0">
+                                            <TitledPane animated="false" collapsible="false" focusTraversable="false" layoutX="705.0" layoutY="50.0" prefHeight="310.0" prefWidth="640.0" text="Minimum Security Level" AnchorPane.leftAnchor="710.0" AnchorPane.topAnchor="50.0">
                                               <content>
                                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                   <children>

@@ -349,6 +349,51 @@ public class RootLayoutController {
                 runSettings.getSecretCodes().setTestCodes2gMessage(errFailure);
             }
         }
+        if (module.getName().equals("RFM_USIM")) {
+            runSettings.getRfmUsim().setTestRfmUsimOk(true);
+            runSettings.getRfmUsim().setTestRfmUsimMessage("OK");
+            String errFailure = "";
+            if (module.getError() != null) {
+                runSettings.getRfmUsim().setTestRfmUsimOk(false);
+                errFailure += module.getError().replace("\n", ";");
+                runSettings.getRfmUsim().setTestRfmUsimMessage(errFailure);
+            }
+            if (module.getFailure() != null) {
+                runSettings.getRfmUsim().setTestRfmUsimOk(false);
+                errFailure += module.getFailure().replace("\n", ";");
+                runSettings.getRfmUsim().setTestRfmUsimMessage(errFailure);
+            }
+        }
+        if (module.getName().equals("RFM_USIM_UpdateRecord")) {
+            runSettings.getRfmUsim().setTestRfmUsimUpdateRecordOk(true);
+            runSettings.getRfmUsim().setTestRfmUsimUpdateRecordMessage("OK");
+            String errFailure = "";
+            if (module.getError() != null) {
+                runSettings.getRfmUsim().setTestRfmUsimUpdateRecordOk(false);
+                errFailure += module.getError().replace("\n", ";");
+                runSettings.getRfmUsim().setTestRfmUsimUpdateRecordMessage(errFailure);
+            }
+            if (module.getFailure() != null) {
+                runSettings.getRfmUsim().setTestRfmUsimUpdateRecordOk(false);
+                errFailure += module.getFailure().replace("\n", ";");
+                runSettings.getRfmUsim().setTestRfmUsimUpdateRecordMessage(errFailure);
+            }
+        }
+        if (module.getName().equals("RFM_USIM_3G_ExpandedMode")) {
+            runSettings.getRfmUsim().setTestRfmUsimExpandedModeOk(true);
+            runSettings.getRfmUsim().setTestRfmUsimExpandedModeMessage("OK");
+            String errFailure = "";
+            if (module.getError() != null) {
+                runSettings.getRfmUsim().setTestRfmUsimExpandedModeOk(false);
+                errFailure += module.getError().replace("\n", ";");
+                runSettings.getRfmUsim().setTestRfmUsimExpandedModeMessage(errFailure);
+            }
+            if (module.getFailure() != null) {
+                runSettings.getRfmUsim().setTestRfmUsimExpandedModeOk(false);
+                errFailure += module.getFailure().replace("\n", ";");
+                runSettings.getRfmUsim().setTestRfmUsimExpandedModeMessage(errFailure);
+            }
+        }
         cardioConfigService.saveConfig(runSettings);
     }
 

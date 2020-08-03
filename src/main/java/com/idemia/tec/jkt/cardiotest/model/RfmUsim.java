@@ -17,6 +17,12 @@ public class RfmUsim {
     private SCP80Keyset cipheringKeyset;
     private SCP80Keyset authKeyset;
     private MinimumSecurityLevel minimumSecurityLevel;
+    private boolean testRfmUsimOk;
+    private String testRfmUsimMessage;
+    private boolean testRfmUsimUpdateRecordOk;
+    private String testRfmUsimUpdateRecordMessage;
+    private boolean testRfmUsimExpandedModeOk;
+    private String testRfmUsimExpandedModeMessage;
 
     public RfmUsim() {}
 
@@ -160,6 +166,54 @@ public class RfmUsim {
 
     public void setMinimumSecurityLevel(MinimumSecurityLevel minimumSecurityLevel) {
         this.minimumSecurityLevel = minimumSecurityLevel;
+    }
+
+    public boolean isTestRfmUsimOk() {
+        return testRfmUsimOk;
+    }
+
+    public void setTestRfmUsimOk(boolean testRfmUsimOk) {
+        this.testRfmUsimOk = testRfmUsimOk;
+    }
+
+    public String getTestRfmUsimMessage() {
+        return testRfmUsimMessage;
+    }
+
+    public void setTestRfmUsimMessage(String testRfmUsimMessage) {
+        this.testRfmUsimMessage = testRfmUsimMessage;
+    }
+
+    public boolean isTestRfmUsimUpdateRecordOk() {
+        return testRfmUsimUpdateRecordOk;
+    }
+
+    public void setTestRfmUsimUpdateRecordOk(boolean testRfmUsimUpdateRecordOk) {
+        this.testRfmUsimUpdateRecordOk = testRfmUsimUpdateRecordOk;
+    }
+
+    public String getTestRfmUsimUpdateRecordMessage() {
+        return testRfmUsimUpdateRecordMessage;
+    }
+
+    public void setTestRfmUsimUpdateRecordMessage(String testRfmUsimUpdateRecordMessage) {
+        this.testRfmUsimUpdateRecordMessage = testRfmUsimUpdateRecordMessage;
+    }
+
+    public boolean isTestRfmUsimExpandedModeOk() {
+        return testRfmUsimExpandedModeOk;
+    }
+
+    public void setTestRfmUsimExpandedModeOk(boolean testRfmUsimExpandedModeOk) {
+        this.testRfmUsimExpandedModeOk = testRfmUsimExpandedModeOk;
+    }
+
+    public String getTestRfmUsimExpandedModeMessage() {
+        return testRfmUsimExpandedModeMessage;
+    }
+
+    public void setTestRfmUsimExpandedModeMessage(String testRfmUsimExpandedModeMessage) {
+        this.testRfmUsimExpandedModeMessage = testRfmUsimExpandedModeMessage;
     }
 
 }

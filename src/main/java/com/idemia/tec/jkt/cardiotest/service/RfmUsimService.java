@@ -232,6 +232,18 @@ public class RfmUsimService {
         return rfmUsimBuffer;
     }
 
+    public StringBuilder generateRfmUsimUpdateRecord(RfmUsim rfmUsim) {
+        StringBuilder rfmUsimUpdateRecordBuffer = new StringBuilder();
+        // TODO
+        return rfmUsimUpdateRecordBuffer;
+    }
+
+    public StringBuilder generateRfmUsimExpandedMode(RfmUsim rfmUsim) {
+        StringBuilder rfmUsimExpandedModeBuffer = new StringBuilder();
+        // TODO
+        return rfmUsimExpandedModeBuffer;
+    }
+
     private String rfmUsimCase1(SCP80Keyset cipherKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel msl) {
         StringBuilder routine = new StringBuilder();
         routine.append(

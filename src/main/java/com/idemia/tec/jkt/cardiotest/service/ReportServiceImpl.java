@@ -1,6 +1,7 @@
 package com.idemia.tec.jkt.cardiotest.service;
 
 import com.idemia.tec.jkt.cardiotest.model.RunSettings;
+import com.idemia.tec.jkt.cardiotest.model.SCP80Keyset;
 import com.idemia.tec.jkt.cardiotest.model.VariableMapping;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -148,6 +149,8 @@ public class ReportServiceImpl implements ReportService {
         // authentication
         if (runSettings.getAuthentication().isIncludeDeltaTest() || runSettings.getAuthentication().isIncludeSqnMax()) {
             html.append("\n<div><h2><b>Authentication</b></h2></div>");
+
+            html.append("\n<div><h3><b>Test modules</b></h3></div>");
             html.append(createTableHeaderModule());
             if (runSettings.getAuthentication().isIncludeDeltaTest()) {
                 html.append("\n<tr><td>Milenage delta test</td>");
@@ -158,6 +161,8 @@ public class ReportServiceImpl implements ReportService {
                     html.append("<td class=\"error\">" + String.join("<br>", messages) + "</td></tr>");
                 }
             }
+            else
+                html.append("\n<tr><td>Milenage delta test</td><td>(not included)</td></tr>");
             if (runSettings.getAuthentication().isIncludeSqnMax()) {
                 html.append("\n<tr><td>Milenage SQN max</td>");
                 if (runSettings.getAuthentication().isTestSqnMaxOk())
@@ -167,6 +172,12 @@ public class ReportServiceImpl implements ReportService {
                     html.append("<td class=\"error\">" + String.join("<br>", messages) + "</td></tr>");
                 }
             }
+            else
+                html.append("\n<tr><td>Milenage SQN max</td><td>(not included)</td></tr>");
+            html.append(createTableFooter());
+
+            html.append("\n<div><h3><b>Authentication options</b></h3></div>");
+            html.append(createTableHeaderModule());
             html.append("\n<tr><td>COMP128-2</td>");
             if (runSettings.getAuthentication().isComp1282())
                 html.append("<td>YES</td></tr>");
@@ -192,6 +203,10 @@ public class ReportServiceImpl implements ReportService {
                 html.append("<td>YES</td></tr>");
             else
                 html.append("<td>NO</td></tr>");
+            html.append(createTableFooter());
+
+            html.append("\n<div><h3><b>Algo parameters</b></h3></div>");
+            html.append(createTableHeaderModule());
             html.append(
                 "\n<tr><td>Authentication AKA - Ci Value 1</td>"
                 + "<td>" + getValue(runSettings.getAuthentication().getAkaC1()) + "</td></tr>"
@@ -216,6 +231,10 @@ public class ReportServiceImpl implements ReportService {
                 "\n<tr><td>Rotation constants (Ri)</td>"
                 + "<td>" + getValue(runSettings.getAuthentication().getAkaRi()) + "</td></tr>"
             );
+            html.append(createTableFooter());
+
+            html.append("\n<div><h3><b>Test parameters</b></h3></div>");
+            html.append(createTableHeaderModule());
             html.append(
                 "\n<tr><td>Subscriber key (K)</td>"
                 + "<td>" + getValue(runSettings.getAuthentication().getKi()) + "</td></tr>"
@@ -251,9 +270,58 @@ public class ReportServiceImpl implements ReportService {
             html.append(createTableFooter());
         }
 
+        // OTA settings
+        html.append("\n<div><h2><b>SCP-80 Keysets</b></h2></div>");
+        for (SCP80Keyset keyset : runSettings.getScp80Keysets()) {
+            html.append("\n<div><h3><b>" + keyset.getKeysetName() + "</b></h3></div>");
+            html.append(createTableHeaderModule());
+            html.append(
+                "\n<tr><td>Version</td>"
+                + "<td>" + keyset.getKeysetVersion() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td>Type</td>"
+                + "<td>" + keyset.getKeysetType() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td>KIC valuation</td>"
+                + "<td>" + getValue(keyset.getKicValuation()) + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td>KIC key length</td>"
+                + "<td>" + keyset.getKicKeyLength() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td>KIC mode</td>"
+                + "<td>" + keyset.getKicMode() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td>KID valuation</td>"
+                + "<td>" + getValue(keyset.getKidValuation()) + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td>KID key length</td>"
+                + "<td>" + keyset.getKidKeyLength() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td>KID mode</td>"
+                + "<td>" + keyset.getKidMode() + "</td></tr>"
+            );
+            if (keyset.getKidMode().equals("AES - CMAC")) {
+                html.append(
+                    "\n<tr><td>CMAC length</td>"
+                    + "<td>" + keyset.getCmacLength() + "</td></tr>"
+                );
+            }
+            html.append(createTableFooter());
+        }
+        // TODO
+
         // secret codes
         if (runSettings.getSecretCodes().isInclude3gScript() || runSettings.getSecretCodes().isInclude2gScript()) {
             html.append("\n<div><h2><b>Secret Codes</b></h2></div>");
+
+            html.append("\n<div><h3><b>Test modules</b></h3></div>");
             html.append(createTableHeaderModule());
             if (runSettings.getSecretCodes().isInclude3gScript()) {
                 html.append("\n<tr><td>Secret codes 3G</td>");
@@ -264,6 +332,8 @@ public class ReportServiceImpl implements ReportService {
                     html.append("<td class=\"error\">" + String.join("<br>", messages) + "</td></tr>");
                 }
             }
+            else
+                html.append("\n<tr><td>Secret codes 3G</td><td>(not included)</td></tr>");
             if (runSettings.getSecretCodes().isInclude2gScript()) {
                 html.append("\n<tr><td>Secret codes 2G</td>");
                 if (runSettings.getSecretCodes().isTestCodes2gOk())
@@ -273,90 +343,122 @@ public class ReportServiceImpl implements ReportService {
                     html.append("<td class=\"error\">" + String.join("<br>", messages) + "</td></tr>");
                 }
             }
+            else
+                html.append("\n<tr><td>Secret codes 2G</td><td>(not included)</td></tr>");
+            html.append(createTableFooter());
+
+            html.append("\n<div><h3><b>Global PIN</b></h3></div>");
+            html.append(createTableHeaderModule());
+            html.append("\n<tr><td>PIN1 disabled</td>");
+            if (runSettings.getSecretCodes().isPin1disabled())
+                html.append("<td>YES</td></tr>");
+            else
+                html.append("<td>NO</td></tr>");
             html.append(
-                "\n<tr><td>Global PIN</td>"
+                "\n<tr><td>Value</td>"
                 + "<td>" + getValue(runSettings.getSecretCodes().getGpin()) + "</td></tr>"
             );
             html.append(
-                "\n<tr><td>Local PIN</td>"
-                + "<td>" + getValue(runSettings.getSecretCodes().getLpin()) + "</td></tr>"
-            );
-            html.append(
-                "\n<tr><td>Global PUK</td>"
-                + "<td>" + getValue(runSettings.getSecretCodes().getGpuk()) + "</td></tr>"
-            );
-            html.append(
-                "\n<tr><td>Local PUK</td>"
-                + "<td>" + getValue(runSettings.getSecretCodes().getLpuk()) + "</td></tr>"
-            );
-            html.append(
-                "\n<tr><td>Global PIN retries</td>"
+                "\n<tr><td>Retries</td>"
                 + "<td>" + runSettings.getSecretCodes().getGpinRetries() + "</td></tr>"
             );
             html.append(
-                "\n<tr><td>Local PIN retries</td>"
-                + "<td>" + runSettings.getSecretCodes().getLpinRetries() + "</td></tr>"
+                "\n<tr><td>Unblock key</td>"
+                + "<td>" + getValue(runSettings.getSecretCodes().getGpuk()) + "</td></tr>"
             );
             html.append(
-                "\n<tr><td>Global PUK retries</td>"
+                "\n<tr><td>Unblock retries</td>"
                 + "<td>" + runSettings.getSecretCodes().getGpukRetries() + "</td></tr>"
-            );
-            html.append(
-                "\n<tr><td>Local PUK retries</td>"
-                + "<td>" + runSettings.getSecretCodes().getLpukRetries() + "</td></tr>"
-            );
-            html.append(
-                "\n<tr><td>CHV1</td>"
-                + "<td>" + getValue(runSettings.getSecretCodes().getChv1()) + "</td></tr>"
-            );
-            html.append(
-                "\n<tr><td>CHV2</td>"
-                + "<td>" + getValue(runSettings.getSecretCodes().getChv2()) + "</td></tr>"
-            );
-            html.append(
-                "\n<tr><td>PUK1</td>"
-                + "<td>" + getValue(runSettings.getSecretCodes().getPuk1()) + "</td></tr>"
-            );
-            html.append(
-                "\n<tr><td>PUK2</td>"
-                + "<td>" + getValue(runSettings.getSecretCodes().getPuk2()) + "</td></tr>"
-            );
-            html.append(
-                "\n<tr><td>CHV1 retries</td>"
-                + "<td>" + runSettings.getSecretCodes().getChv1Retries() + "</td></tr>"
-            );
-            html.append(
-                "\n<tr><td>CHV2 retries</td>"
-                + "<td>" + runSettings.getSecretCodes().getChv2Retries() + "</td></tr>"
-            );
-            html.append(
-                "\n<tr><td>PUK1 retries</td>"
-                + "<td>" + runSettings.getSecretCodes().getPuk1Retries() + "</td></tr>"
-            );
-            html.append(
-                "\n<tr><td>PUK2 retries</td>"
-                + "<td>" + runSettings.getSecretCodes().getPuk2Retries() + "</td></tr>"
             );
             html.append("\n<tr><td>Block Global PUK</td>");
             if (runSettings.getSecretCodes().isBlockGpuk())
                 html.append("<td>YES</td></tr>");
             else
                 html.append("<td>NO</td></tr>");
+            html.append(createTableFooter());
+
+            html.append("\n<div><h3><b>Local PIN</b></h3></div>");
+            html.append(createTableHeaderModule());
+            html.append("\n<tr><td>PIN2 disabled</td>");
+            if (runSettings.getSecretCodes().isPin2disabled())
+                html.append("<td>YES</td></tr>");
+            else
+                html.append("<td>NO</td></tr>");
+            html.append(
+                "\n<tr><td>Value</td>"
+                + "<td>" + getValue(runSettings.getSecretCodes().getLpin()) + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td>Retries</td>"
+                + "<td>" + runSettings.getSecretCodes().getLpinRetries() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td>Unblock key</td>"
+                + "<td>" + getValue(runSettings.getSecretCodes().getLpuk()) + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td>Unblock retries</td>"
+                + "<td>" + runSettings.getSecretCodes().getLpukRetries() + "</td></tr>"
+            );
             html.append("\n<tr><td>Block Local PUK</td>");
             if (runSettings.getSecretCodes().isBlockLpuk())
                 html.append("<td>YES</td></tr>");
             else
                 html.append("<td>NO</td></tr>");
+            html.append(createTableFooter());
+
+            html.append("\n<div><h3><b>CHV1</b></h3></div>");
+            html.append(createTableHeaderModule());
+            html.append(
+                "\n<tr><td>Value</td>"
+                + "<td>" + getValue(runSettings.getSecretCodes().getChv1()) + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td>Retries</td>"
+                + "<td>" + runSettings.getSecretCodes().getChv1Retries() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td>Unblock key</td>"
+                + "<td>" + getValue(runSettings.getSecretCodes().getPuk1()) + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td>Unblock retries</td>"
+                + "<td>" + runSettings.getSecretCodes().getPuk1Retries() + "</td></tr>"
+            );
             html.append("\n<tr><td>Block PUK1</td>");
             if (runSettings.getSecretCodes().isBlockPuk1())
                 html.append("<td>YES</td></tr>");
             else
                 html.append("<td>NO</td></tr>");
+            html.append(createTableFooter());
+
+            html.append("\n<div><h3><b>CHV2</b></h3></div>");
+            html.append(createTableHeaderModule());
+            html.append(
+                "\n<tr><td>Value</td>"
+                + "<td>" + getValue(runSettings.getSecretCodes().getChv2()) + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td>Retries</td>"
+                + "<td>" + runSettings.getSecretCodes().getChv2Retries() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td>Unblock key</td>"
+                + "<td>" + getValue(runSettings.getSecretCodes().getPuk2()) + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td>Unblock retries</td>"
+                + "<td>" + runSettings.getSecretCodes().getPuk2Retries() + "</td></tr>"
+            );
             html.append("\n<tr><td>Block PUK2</td>");
             if (runSettings.getSecretCodes().isBlockPuk2())
                 html.append("<td>YES</td></tr>");
             else
                 html.append("<td>NO</td></tr>");
+            html.append(createTableFooter());
+
+            html.append("\n<div><h3><b>Issuer Secret Codes</b></h3></div>");
+            html.append(createTableHeaderModule());
             html.append(
                 "\n<tr><td>Issuer Secret Code 1</td>"
                 + "<td>" + getValue(runSettings.getSecretCodes().getIsc1()) + "</td></tr>"
@@ -456,32 +558,39 @@ public class ReportServiceImpl implements ReportService {
             "}\n" +
             "th,\n" +
             "td {\n" +
+            "\twidth: 50%;\n" +
             "\ttext-align: left;\n" +
             "\tpadding: 4px;\n" +
             "\tborder-bottom: 1px solid #ddd;\n" +
             "}\n" +
             "th.error {\n" +
+            "\twidth: 50%;\n" +
             "\tbackground-color: firebrick;\n" +
             "\tcolor: #F9F9F9;\n" +
             "}\n" +
             "th.warning {\n" +
+            "\twidth: 50%;\n" +
             "\tbackground-color: darkorange;\n" +
             "\tcolor: #F9F9F9;\n" +
             "}\n" +
 //            "tr:hover {background-color: #f5f5f5;}\n" +
             "td.error {\n" +
+            "\twidth: 50%;\n" +
             "\tbackground-color: #FDEDEC;\n" +
             "\tcolor: #17202A;\n" +
             "}\n" +
             "td.warning {\n" +
+            "\twidth: 50%;\n" +
             "\tbackground-color: #FEF9E7;\n" +
             "\tcolor: #17202A;\n" +
             "}\n" +
             "td.ok {\n" +
+            "\twidth: 50%;\n" +
             "\tbackground-color: #EDFBEE;\n" +
             "\tcolor: #17202A;\n" +
             "}" +
             "td.data {\n" +
+            "\twidth: 50%;\n" +
             "\tfont-family: consolas, Monaco, monospace;\n" +
             "\tfont-size: 13px;\n" +
             "}\n" +
@@ -509,7 +618,7 @@ public class ReportServiceImpl implements ReportService {
     }
 
     private String createTableFooter() {
-        return "\n</tbody>\n" + "</table>\n" + "</div>";
+        return "\n</tbody>\n" + "</table>\n" + "</div>\n<br/>";
     }
 
     private String getValue(String mappedVar) {
@@ -519,7 +628,7 @@ public class ReportServiceImpl implements ReportService {
                 if (mapping.isFixed())
                     value = mapping.getValue();
                 else
-                    value = "%" + mapping.getMccVariable();
+                    value = "<i>" + mapping.getMccVariable() + "</i>";
                 break;
             }
         }

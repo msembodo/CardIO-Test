@@ -773,6 +773,7 @@ public class CardiotestController {
 
         // initialize list of cipher algorithm
         List<String> cipherAlgos = new ArrayList<>();
+        cipherAlgos.add("as defined in keyset");
         cipherAlgos.add("no cipher");
         cipherAlgos.add("DES - CBC");
         cipherAlgos.add("AES - CBC");
@@ -794,6 +795,7 @@ public class CardiotestController {
 
         // initialize list of signing algorithm
         List<String> signingAlgos = new ArrayList<>();
+        signingAlgos.add("as defined in keyset");
         signingAlgos.add("no algorithm");
         signingAlgos.add("DES - CBC");
         signingAlgos.add("AES - CMAC");

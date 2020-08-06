@@ -268,7 +268,7 @@ public class RfmUsimService {
             + ".SET_DLKEY_KID Q\n"
             + ".CHANGE_KIC M\n"
             + ".CHANGE_KID N\n"
-            + spiConfigurator(msl)
+            + spiConfigurator(msl, cipherKeyset, authKeyset)
         );
         if (authKeyset.getKidMode().equals("AES - CMAC"))
             routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
@@ -348,7 +348,7 @@ public class RfmUsimService {
             + ".SET_DLKEY_KID Q\n"
             + ".CHANGE_KIC M\n"
             + ".CHANGE_KID N\n"
-            + spiConfigurator(msl)
+            + spiConfigurator(msl, cipherKeyset, authKeyset)
         );
         if (authKeyset.getKidMode().equals("AES - CMAC"))
             routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
@@ -411,7 +411,7 @@ public class RfmUsimService {
             + ".SET_DLKEY_KID Q\n"
             + ".CHANGE_KIC M\n"
             + ".CHANGE_KID N\n"
-            + spiConfigurator(msl)
+            + spiConfigurator(msl, cipherKeyset, authKeyset)
         );
         if (authKeyset.getKidMode().equals("AES - CMAC"))
             routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
@@ -455,7 +455,7 @@ public class RfmUsimService {
             + ".SET_DLKEY_KID Q\n"
             + ".CHANGE_KIC M\n"
             + ".CHANGE_KID N\n"
-            + spiConfigurator(msl)
+            + spiConfigurator(msl, cipherKeyset, authKeyset)
         );
         if (authKeyset.getKidMode().equals("AES - CMAC"))
             routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
@@ -499,7 +499,7 @@ public class RfmUsimService {
             + ".SET_DLKEY_KID Q\n"
             + ".CHANGE_KIC M\n"
             + ".CHANGE_KID N\n"
-            + spiConfigurator(msl)
+            + spiConfigurator(msl, cipherKeyset, authKeyset)
         );
         if (authKeyset.getKidMode().equals("AES - CMAC"))
             routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
@@ -543,7 +543,7 @@ public class RfmUsimService {
             + ".SET_DLKEY_KID Q\n"
             + ".CHANGE_KIC M\n"
             + ".CHANGE_KID N\n"
-            + spiConfigurator(msl)
+            + spiConfigurator(msl, cipherKeyset, authKeyset)
         );
         if (authKeyset.getKidMode().equals("AES - CMAC"))
             routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
@@ -587,7 +587,7 @@ public class RfmUsimService {
             + ".SET_DLKEY_KID Q\n"
             + ".CHANGE_KIC M\n"
             + ".CHANGE_KID N\n"
-            + spiConfigurator(msl)
+            + spiConfigurator(msl, cipherKeyset, authKeyset)
         );
         if (authKeyset.getKidMode().equals("AES - CMAC"))
             routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
@@ -631,7 +631,7 @@ public class RfmUsimService {
             + ".SET_DLKEY_KID Q\n"
             + ".CHANGE_KIC M\n"
             + ".CHANGE_KID N\n"
-            + spiConfigurator(msl)
+            + spiConfigurator(msl, cipherKeyset, authKeyset)
         );
         if (authKeyset.getKidMode().equals("AES - CMAC"))
             routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
@@ -675,7 +675,7 @@ public class RfmUsimService {
             + ".SET_DLKEY_KID Q\n"
             + ".CHANGE_KIC M\n"
             + ".CHANGE_KID N\n"
-            + spiConfigurator(msl)
+            + spiConfigurator(msl, cipherKeyset, authKeyset)
         );
         if (authKeyset.getKidMode().equals("AES - CMAC"))
             routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
@@ -713,7 +713,7 @@ public class RfmUsimService {
         return routine.toString();
     }
 
-    private String spiConfigurator(MinimumSecurityLevel msl) {
+    private String spiConfigurator(MinimumSecurityLevel msl, SCP80Keyset cipherKeyset, SCP80Keyset authKeyset) {
         StringBuilder spiConf = new StringBuilder();
 
         if (msl.getAuthVerification().equals("No verification"))
@@ -725,33 +725,38 @@ public class RfmUsimService {
         if (msl.getAuthVerification().equals("Digital Signature"))
             spiConf.append(".CHANGE_CRYPTO_VERIF 03 ; Digital Signature\n");
 
-        if (msl.getSigningAlgo().equals("no algorithm"))
+        String signingAlgo;
+        if (msl.getSigningAlgo().equals("as defined in keyset"))
+            signingAlgo = authKeyset.getKidMode();
+        else
+            signingAlgo = msl.getSigningAlgo();
+        if (signingAlgo.equals("no algorithm"))
             spiConf.append(".CHANGE_ALGO_CRYPTO_VERIF 00 ; no algorithm\n");
-        if (msl.getSigningAlgo().equals("DES - CBC"))
+        if (signingAlgo.equals("DES - CBC"))
             spiConf.append(".CHANGE_ALGO_CRYPTO_VERIF 01 ; DES - CBC\n");
-        if (msl.getSigningAlgo().equals("AES - CMAC"))
+        if (signingAlgo.equals("AES - CMAC"))
             spiConf.append(".CHANGE_ALGO_CRYPTO_VERIF 02 ; AES - CMAC\n");
-        if (msl.getSigningAlgo().equals("XOR"))
+        if (signingAlgo.equals("XOR"))
             spiConf.append(".CHANGE_ALGO_CRYPTO_VERIF 03 ; XOR\n");
-        if (msl.getSigningAlgo().equals("3DES - CBC 2 keys"))
+        if (signingAlgo.equals("3DES - CBC 2 keys"))
             spiConf.append(".CHANGE_ALGO_CRYPTO_VERIF 05 ; 3DES - CBC 2 keys\n");
-        if (msl.getSigningAlgo().equals("3DES - CBC 3 keys"))
+        if (signingAlgo.equals("3DES - CBC 3 keys"))
             spiConf.append(".CHANGE_ALGO_CRYPTO_VERIF 09 ; 3DES - CBC 3 keys\n");
-        if (msl.getSigningAlgo().equals("DES - ECB"))
+        if (signingAlgo.equals("DES - ECB"))
             spiConf.append(".CHANGE_ALGO_CRYPTO_VERIF 0D ; DES - ECB\n");
-        if (msl.getSigningAlgo().equals("CRC32 (may be X5h)"))
+        if (signingAlgo.equals("CRC32 (may be X5h)"))
             spiConf.append(".CHANGE_ALGO_CRYPTO_VERIF 0B ; CRC32 (may be X5h)\n");
-        if (msl.getSigningAlgo().equals("CRC32 (may be X0h)"))
+        if (signingAlgo.equals("CRC32 (may be X0h)"))
             spiConf.append(".CHANGE_ALGO_CRYPTO_VERIF 0C ; CRC32 (may be X0h)\n");
-        if (msl.getSigningAlgo().equals("ISO9797 Algo 3 (auth value 8 byte)"))
+        if (signingAlgo.equals("ISO9797 Algo 3 (auth value 8 byte)"))
             spiConf.append(".CHANGE_ALGO_CRYPTO_VERIF 0F ; ISO9797 Algo 3 (auth value 8 byte)\n");
-        if (msl.getSigningAlgo().equals("ISO9797 Algo 3 (auth value 4 byte)"))
+        if (signingAlgo.equals("ISO9797 Algo 3 (auth value 4 byte)"))
             spiConf.append(".CHANGE_ALGO_CRYPTO_VERIF 10 ; ISO9797 Algo 3 (auth value 4 byte)\n");
-        if (msl.getSigningAlgo().equals("ISO9797 Algo 4 (auth value 4 byte)"))
+        if (signingAlgo.equals("ISO9797 Algo 4 (auth value 4 byte)"))
             spiConf.append(".CHANGE_ALGO_CRYPTO_VERIF 11 ; ISO9797 Algo 4 (auth value 4 byte)\n");
-        if (msl.getSigningAlgo().equals("ISO9797 Algo 4 (auth value 8 byte)"))
+        if (signingAlgo.equals("ISO9797 Algo 4 (auth value 8 byte)"))
             spiConf.append(".CHANGE_ALGO_CRYPTO_VERIF 12 ; ISO9797 Algo 4 (auth value 8 byte)\n");
-        if (msl.getSigningAlgo().equals("CRC16"))
+        if (signingAlgo.equals("CRC16"))
             spiConf.append(".CHANGE_ALGO_CRYPTO_VERIF 13 ; CRC16\n");
 
         if (msl.isUseCipher())
@@ -759,19 +764,24 @@ public class RfmUsimService {
         else
             spiConf.append(".CHANGE_CIPHER 00 ; no cipher\n");
 
-        if (msl.getCipherAlgo().equals("no cipher"))
+        String cipherAlgo;
+        if (msl.getCipherAlgo().equals("as defined in keyset"))
+            cipherAlgo = cipherKeyset.getKicMode();
+        else
+            cipherAlgo = msl.getCipherAlgo();
+        if (cipherAlgo.equals("no cipher"))
             spiConf.append(".CHANGE_ALGO_CIPHER 00 ; no cipher\n");
-        if (msl.getCipherAlgo().equals("DES - CBC"))
+        if (cipherAlgo.equals("DES - CBC"))
             spiConf.append(".CHANGE_ALGO_CIPHER 01 ; DES - CBC\n");
-        if (msl.getCipherAlgo().equals("AES - CBC"))
+        if (cipherAlgo.equals("AES - CBC"))
             spiConf.append(".CHANGE_ALGO_CIPHER 02 ; AES - CBC\n");
-        if (msl.getCipherAlgo().equals("XOR"))
+        if (cipherAlgo.equals("XOR"))
             spiConf.append(".CHANGE_ALGO_CIPHER 03 ; XOR\n");
-        if (msl.getCipherAlgo().equals("3DES - CBC 2 keys"))
+        if (cipherAlgo.equals("3DES - CBC 2 keys"))
             spiConf.append(".CHANGE_ALGO_CIPHER 05 ; 3DES - CBC 2 keys\n");
-        if (msl.getCipherAlgo().equals("3DES - CBC 3 keys"))
+        if (cipherAlgo.equals("3DES - CBC 3 keys"))
             spiConf.append(".CHANGE_ALGO_CIPHER 09 ; 3DES - CBC 3 keys\n");
-        if (msl.getCipherAlgo().equals("DES - ECB"))
+        if (cipherAlgo.equals("DES - ECB"))
             spiConf.append(".CHANGE_ALGO_CIPHER 0D ; DES - ECB\n");
 
         if (msl.getCounterChecking().equals("No counter available"))

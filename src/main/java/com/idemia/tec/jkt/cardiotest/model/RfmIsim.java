@@ -2,6 +2,7 @@ package com.idemia.tec.jkt.cardiotest.model;
 
 public class RfmIsim {
 
+    // ini dari master
     private boolean includeRfmIsim;
     private boolean includeRfmIsimUpdateRecord;
     private boolean includeRfmIsimExpandedMode;

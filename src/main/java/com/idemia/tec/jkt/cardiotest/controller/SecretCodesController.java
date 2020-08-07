@@ -5,11 +5,14 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class SecretCodesController {
+
+    static Logger logger = Logger.getLogger(SecretCodesController.class);
 
     @FXML private CheckBox chkPin1Disabled;
     @FXML private CheckBox chkPin2Disabled;
@@ -58,8 +61,7 @@ public class SecretCodesController {
 
     public SecretCodesController() {}
 
-    @FXML
-    private void initialize() {
+    @FXML private void initialize() {
         chkPin1Disabled.setSelected(root.getRunSettings().getSecretCodes().isPin1disabled());
         chkPin2Disabled.setSelected(root.getRunSettings().getSecretCodes().isPin2disabled());
 
@@ -69,32 +71,102 @@ public class SecretCodesController {
         chkInclude2gScript.setSelected(root.getRunSettings().getSecretCodes().isInclude2gScript());
         handleInclude2gScriptCheck();
 
-        cmbGpin.setItems(cardiotest.getMappedVariables());
-        cardiotest.registerForComboUpdate(cmbGpin);
         if (root.getRunSettings().getSecretCodes().getGpin() != null)
             cmbGpin.getSelectionModel().select(root.getRunSettings().getSecretCodes().getGpin());
         if (root.getRunSettings().getSecretCodes().getGpinRetries() != 0)
             txtGpinRetries.setText(Integer.toString(root.getRunSettings().getSecretCodes().getGpinRetries()));
+
+        if (root.getRunSettings().getSecretCodes().getLpin() != null)
+            cmbLpin.getSelectionModel().select(root.getRunSettings().getSecretCodes().getLpin());
+        if (root.getRunSettings().getSecretCodes().getLpinRetries() != 0)
+            txtLpinRetries.setText(Integer.toString(root.getRunSettings().getSecretCodes().getLpinRetries()));
+
+        if (root.getRunSettings().getSecretCodes().getGpuk() != null)
+            cmbGpuk.getSelectionModel().select(root.getRunSettings().getSecretCodes().getGpuk());
+        if (root.getRunSettings().getSecretCodes().getGpukRetries() != 0)
+            txtGpukRetries.setText(Integer.toString(root.getRunSettings().getSecretCodes().getGpukRetries()));
+
+        if (root.getRunSettings().getSecretCodes().getLpuk() != null)
+            cmbLpuk.getSelectionModel().select(root.getRunSettings().getSecretCodes().getLpuk());
+        if (root.getRunSettings().getSecretCodes().getLpukRetries() != 0)
+            txtLpukRetries.setText(Integer.toString(root.getRunSettings().getSecretCodes().getLpukRetries()));
+
+        if (root.getRunSettings().getSecretCodes().getChv1() != null)
+            cmbChv1.getSelectionModel().select(root.getRunSettings().getSecretCodes().getChv1());
+        if (root.getRunSettings().getSecretCodes().getChv1Retries() != 0)
+            txtChv1Retries.setText(Integer.toString(root.getRunSettings().getSecretCodes().getChv1Retries()));
+
+        if (root.getRunSettings().getSecretCodes().getChv2() != null)
+            cmbChv2.getSelectionModel().select(root.getRunSettings().getSecretCodes().getChv2());
+        if (root.getRunSettings().getSecretCodes().getChv2Retries() != 0)
+            txtChv2Retries.setText(Integer.toString(root.getRunSettings().getSecretCodes().getChv2Retries()));
+
+        if (root.getRunSettings().getSecretCodes().getPuk1() != null)
+            cmbPuk1.getSelectionModel().select(root.getRunSettings().getSecretCodes().getPuk1());
+        if (root.getRunSettings().getSecretCodes().getPuk1Retries() != 0)
+            txtPuk1Retries.setText(Integer.toString(root.getRunSettings().getSecretCodes().getPuk1Retries()));
+
+        if (root.getRunSettings().getSecretCodes().getPuk2() != null)
+            cmbPuk2.getSelectionModel().select(root.getRunSettings().getSecretCodes().getPuk2());
+        if (root.getRunSettings().getSecretCodes().getPuk2Retries() != 0)
+            txtPuk2Retries.setText(Integer.toString(root.getRunSettings().getSecretCodes().getPuk2Retries()));
+
+        chkBlockGpuk.setSelected(root.getRunSettings().getSecretCodes().isBlockGpuk());
+        chkBlockLpuk.setSelected(root.getRunSettings().getSecretCodes().isBlockLpuk());
+        chkBlockPuk1.setSelected(root.getRunSettings().getSecretCodes().isBlockPuk1());
+        chkBlockPuk2.setSelected(root.getRunSettings().getSecretCodes().isBlockPuk2());
+
+        if (root.getRunSettings().getSecretCodes().getIsc1() != null)
+            cmbIsc1.getSelectionModel().select(root.getRunSettings().getSecretCodes().getIsc1());
+        if (root.getRunSettings().getSecretCodes().getIsc1Retries() != 0)
+            txtIsc1Retries.setText(Integer.toString(root.getRunSettings().getSecretCodes().getIsc1Retries()));
+
+        if (root.getRunSettings().getSecretCodes().getIsc2() != null)
+            cmbIsc2.getSelectionModel().select(root.getRunSettings().getSecretCodes().getIsc2());
+        if (root.getRunSettings().getSecretCodes().getIsc2Retries() != 0)
+            txtIsc2Retries.setText(Integer.toString(root.getRunSettings().getSecretCodes().getIsc2Retries()));
+        chkUseIsc2.setSelected(root.getRunSettings().getSecretCodes().isUseIsc2());
+        handleUseIsc2Check();
+
+        if (root.getRunSettings().getSecretCodes().getIsc3() != null)
+            cmbIsc3.getSelectionModel().select(root.getRunSettings().getSecretCodes().getIsc3());
+        if (root.getRunSettings().getSecretCodes().getIsc3Retries() != 0)
+            txtIsc3Retries.setText(Integer.toString(root.getRunSettings().getSecretCodes().getIsc3Retries()));
+        chkUseIsc3.setSelected(root.getRunSettings().getSecretCodes().isUseIsc3());
+        handleUseIsc3Check();
+
+        if (root.getRunSettings().getSecretCodes().getIsc4() != null)
+            cmbIsc4.getSelectionModel().select(root.getRunSettings().getSecretCodes().getIsc4());
+        if (root.getRunSettings().getSecretCodes().getIsc4Retries() != 0)
+            txtIsc4Retries.setText(Integer.toString(root.getRunSettings().getSecretCodes().getIsc4Retries()));
+        chkUseIsc4.setSelected(root.getRunSettings().getSecretCodes().isUseIsc4());
+        handleUseIsc4Check();
     }
 
-    @FXML
-    private void handleInclude3gScriptCheck() {
-        if (chkInclude3gScript.isSelected())
-            root.getMenuCodes3g().setDisable(false);
-        else
-            root.getMenuCodes3g().setDisable(true);
+    @FXML private void handleGpinContextMenu() { cmbGpin.setItems(cardiotest.getMappedVariables()); }
+    @FXML private void handleLpinContextMenu() { cmbLpin.setItems(cardiotest.getMappedVariables()); }
+    @FXML private void handleGpukContextMenu() { cmbGpuk.setItems(cardiotest.getMappedVariables()); }
+    @FXML private void handleLpukContextMenu() { cmbLpuk.setItems(cardiotest.getMappedVariables()); }
+    @FXML private void handleChv1ContextMenu() { cmbChv1.setItems(cardiotest.getMappedVariables()); }
+    @FXML private void handleChv2ContextMenu() { cmbChv2.setItems(cardiotest.getMappedVariables()); }
+    @FXML private void handlePuk1ContextMenu() { cmbPuk1.setItems(cardiotest.getMappedVariables()); }
+    @FXML private void handlePuk2ContextMenu() { cmbPuk2.setItems(cardiotest.getMappedVariables()); }
+    @FXML private void handleIsc1ContextMenu() { cmbIsc1.setItems(cardiotest.getMappedVariables()); }
+    @FXML private void handleIsc2ContextMenu() { cmbIsc2.setItems(cardiotest.getMappedVariables()); }
+    @FXML private void handleIsc3ContextMenu() { cmbIsc3.setItems(cardiotest.getMappedVariables()); }
+    @FXML private void handleIsc4ContextMenu() { cmbIsc4.setItems(cardiotest.getMappedVariables()); }
+
+    @FXML private void handleInclude3gScriptCheck() {
+        if (chkInclude3gScript.isSelected()) root.getMenuCodes3g().setDisable(false);
+        else root.getMenuCodes3g().setDisable(true);
     }
 
-    @FXML
-    private void handleInclude2gScriptCheck() {
-        if (chkInclude2gScript.isSelected())
-            root.getMenuCodes2g().setDisable(false);
-        else
-            root.getMenuCodes2g().setDisable(true);
+    @FXML private void handleInclude2gScriptCheck() {
+        if (chkInclude2gScript.isSelected()) root.getMenuCodes2g().setDisable(false);
+        else root.getMenuCodes2g().setDisable(true);
     }
 
-    @FXML
-    private void handleUseIsc2Check() {
+    @FXML private void handleUseIsc2Check() {
         if (chkUseIsc2.isSelected()) {
             lblIsc2.setDisable(false);
             cmbIsc2.setDisable(false);
@@ -108,8 +180,7 @@ public class SecretCodesController {
         }
     }
 
-    @FXML
-    private void handleUseIsc3Check() {
+    @FXML private void handleUseIsc3Check() {
         if (chkUseIsc3.isSelected()) {
             lblIsc3.setDisable(false);
             cmbIsc3.setDisable(false);
@@ -123,8 +194,7 @@ public class SecretCodesController {
         }
     }
 
-    @FXML
-    private void handleUseIsc4Check() {
+    @FXML private void handleUseIsc4Check() {
         if (chkUseIsc4.isSelected()) {
             lblIsc4.setDisable(false);
             cmbIsc4.setDisable(false);

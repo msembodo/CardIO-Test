@@ -34,7 +34,7 @@ public class CardiotestApplication extends Application {
 	private ObservableList<AdvSaveVariable> advSaveVariables = FXCollections.observableArrayList();
 	private ObservableList<VariableMapping> mappings = FXCollections.observableArrayList();
 
-	private ObservableList<SCP80Keyset> scp80Keysets = FXCollections.observableArrayList();
+//	private ObservableList<SCP80Keyset> scp80Keysets = FXCollections.observableArrayList();
 
 	@Autowired
 	private RootLayoutController root;
@@ -49,7 +49,7 @@ public class CardiotestApplication extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		BasicConfigurator.configure();
 		this.primaryStage = primaryStage;
-		this.primaryStage.setTitle("CardIO 2020.06.15-SNAPSHOT");
+		this.primaryStage.setTitle("CardIO-SNAPSHOT");
 
 		initRootLayout();
 		showCardioTest();
@@ -63,9 +63,9 @@ public class CardiotestApplication extends Application {
 		return mappings;
 	}
 
-	public ObservableList<SCP80Keyset> getScp80Keysets() {
-		return scp80Keysets;
-	}
+//	public ObservableList<SCP80Keyset> getScp80Keysets() {
+//		return scp80Keysets;
+//	}
 
 	@Override
 	public void init() throws Exception {

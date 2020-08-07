@@ -1042,7 +1042,11 @@ public class CardiotestController {
         return txtCommandResponse;
     }
 
-    private void registerForComboUpdate(ComboBox<String> comboBox) {
+    public ObservableList<String> getMappedVariables() {
+        return mappedVariables;
+    }
+
+    public void registerForComboUpdate(ComboBox<String> comboBox) {
         comboPool.add(comboBox);
     }
 

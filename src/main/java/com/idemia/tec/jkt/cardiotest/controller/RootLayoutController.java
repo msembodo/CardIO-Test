@@ -52,6 +52,9 @@ public class RootLayoutController {
     private boolean runRfmUsimOk;
     private boolean runRfmUsimUpdateRecordOk;
     private boolean runRfmUsimExpandedModeOk;
+    private boolean runRfmGsmOk;
+    private boolean runRfmGsmUpdateRecordOk;
+    private boolean runRfmGsmExpandedModeOk;
     private boolean runCodes3gOk;
     private boolean runCodes2gOk;
 
@@ -81,6 +84,12 @@ public class RootLayoutController {
     private MenuItem menuRfmUsimUpdateRecord;
     @FXML
     private MenuItem menuRfmUsimExpandedMode;
+    @FXML
+    private MenuItem menuRfmGsm;
+    @FXML
+    private MenuItem menuRfmGsmUpdateRecord;
+    @FXML
+    private MenuItem menuRfmGsmExpandedMode;
     @FXML
     private MenuItem menuCodes3g;
     @FXML
@@ -399,6 +408,51 @@ public class RootLayoutController {
                 runSettings.getRfmUsim().setTestRfmUsimExpandedModeMessage(errFailure);
             }
         }
+        if (module.getName().equals("RFM_GSM")) {
+            runSettings.getRfmGsm().setTestRfmGsmOk(true);
+            runSettings.getRfmGsm().setTestRfmGsmMessage("OK");
+            String errFailure = "";
+            if (module.getError() != null) {
+                runSettings.getRfmGsm().setTestRfmGsmOk(false);
+                errFailure += module.getError().replace("\n", ";");
+                runSettings.getRfmGsm().setTestRfmGsmMessage(errFailure);
+            }
+            if (module.getFailure() != null) {
+                runSettings.getRfmGsm().setTestRfmGsmOk(false);
+                errFailure += module.getFailure().replace("\n", ";");
+                runSettings.getRfmGsm().setTestRfmGsmMessage(errFailure);
+            }
+        }
+        if (module.getName().equals("RFM_GSM_UpdateRecord")) {
+            runSettings.getRfmGsm().setTestRfmGsmUpdateRecordOk(true);
+            runSettings.getRfmGsm().setTestRfmGsmUpdateRecordMessage("OK");
+            String errFailure = "";
+            if (module.getError() != null) {
+                runSettings.getRfmGsm().setTestRfmGsmUpdateRecordOk(false);
+                errFailure += module.getError().replace("\n", ";");
+                runSettings.getRfmGsm().setTestRfmGsmUpdateRecordMessage(errFailure);
+            }
+            if (module.getFailure() != null) {
+                runSettings.getRfmGsm().setTestRfmGsmUpdateRecordOk(false);
+                errFailure += module.getFailure().replace("\n", ";");
+                runSettings.getRfmGsm().setTestRfmGsmUpdateRecordMessage(errFailure);
+            }
+        }
+        if (module.getName().equals("RFM_GSM_3G_ExpandedMode")) {
+            runSettings.getRfmGsm().setTestRfmGsmExpandedModeOk(true);
+            runSettings.getRfmGsm().setTestRfmGsmExpandedModeMessage("OK");
+            String errFailure = "";
+            if (module.getError() != null) {
+                runSettings.getRfmGsm().setTestRfmGsmExpandedModeOk(false);
+                errFailure += module.getError().replace("\n", ";");
+                runSettings.getRfmGsm().setTestRfmGsmExpandedModeMessage(errFailure);
+            }
+            if (module.getFailure() != null) {
+                runSettings.getRfmGsm().setTestRfmGsmExpandedModeOk(false);
+                errFailure += module.getFailure().replace("\n", ";");
+                runSettings.getRfmGsm().setTestRfmGsmExpandedModeMessage(errFailure);
+            }
+        }
         cardioConfigService.saveConfig(runSettings);
     }
 
@@ -694,6 +748,150 @@ public class RootLayoutController {
     }
 
     @FXML
+    private void handleMenuRfmGsm() {
+        handleMenuSaveSettings();
+        // make user wait as verification executes
+        cardiotest.getMaskerPane().setText("Executing RFM_Gsm. Please wait..");
+        // display masker pane
+        cardiotest.getMaskerPane().setVisible(true);
+        menuBar.setDisable(true);
+        appStatusBar.setDisable(true);
+
+        cardiotest.getTxtInterpretedLog().getChildren().clear();
+        appendTextFlow("Executing RFM_Gsm..\n\n");
+
+        // use threads to avoid application freeze
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                runRfmGsmOk = runService.runRfmGsm();
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                cardiotest.getMaskerPane().setVisible(false);
+                menuBar.setDisable(false);
+                appStatusBar.setDisable(false);
+                // update status bar
+                if (runRfmGsmOk) {
+                    appStatusBar.setText("Executed RFM_Gsm: OK");
+                    Notifications.create().title("CardIO").text("Executed RFM_Gsm: OK").showInformation();
+                    appendTextFlow(">> OK\n\n", 0);
+                }
+                else {
+                    appStatusBar.setText("Executed RFM_Gsm: NOK");
+                    Notifications.create().title("CardIO").text("Executed RFM_Gsm: NOK").showError();
+                    appendTextFlow(">> NOT OK\n", 1);
+                }
+                // display commmand-response
+                cardiotest.getTxtCommandResponse().setDisable(false);
+                String logFileName = runSettings.getProjectPath() + "\\scripts\\RFM_Gsm.L00";
+                showCommandResponseLog(logFileName);
+            }
+        };
+        Thread runRfmGsmThread = new Thread(task);
+        runRfmGsmThread.start();
+    }
+
+    @FXML
+    private void handleMenuRfmGsmUpdateRecord() {
+        handleMenuSaveSettings();
+        // make user wait as verification executes
+        cardiotest.getMaskerPane().setText("Executing RFM_Gsm_UpdateRecord. Please wait..");
+        // display masker pane
+        cardiotest.getMaskerPane().setVisible(true);
+        menuBar.setDisable(true);
+        appStatusBar.setDisable(true);
+
+        cardiotest.getTxtInterpretedLog().getChildren().clear();
+        appendTextFlow("Executing RFM_Gsm_UpdateRecord..\n\n");
+
+        // use threads to avoid application freeze
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                runRfmGsmUpdateRecordOk = runService.runRfmGsmUpdateRecord();
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                cardiotest.getMaskerPane().setVisible(false);
+                menuBar.setDisable(false);
+                appStatusBar.setDisable(false);
+                // update status bar
+                if (runRfmGsmUpdateRecordOk) {
+                    appStatusBar.setText("Executed RFM_Gsm_UpdateRecord: OK");
+                    Notifications.create().title("CardIO").text("Executed RFM_Gsm_UpdateRecord: OK").showInformation();
+                    appendTextFlow(">> OK\n\n", 0);
+                }
+                else {
+                    appStatusBar.setText("Executed RFM_Gsm_UpdateRecord: NOK");
+                    Notifications.create().title("CardIO").text("Executed RFM_Gsm_UpdateRecord: NOK").showError();
+                    appendTextFlow(">> NOT OK\n", 1);
+                }
+                // display commmand-response
+                cardiotest.getTxtCommandResponse().setDisable(false);
+                String logFileName = runSettings.getProjectPath() + "\\scripts\\RFM_Gsm_UpdateRecord.L00";
+                showCommandResponseLog(logFileName);
+            }
+        };
+        Thread runRfmGsmUpdateRecordThread = new Thread(task);
+        runRfmGsmUpdateRecordThread.start();
+    }
+
+    @FXML
+    private void handleMenuRfmGsmExpandedMode() {
+        handleMenuSaveSettings();
+        // make user wait as verification executes
+        cardiotest.getMaskerPane().setText("Executing RFM_Gsm_3G_ExpandedMode. Please wait..");
+        // display masker pane
+        cardiotest.getMaskerPane().setVisible(true);
+        menuBar.setDisable(true);
+        appStatusBar.setDisable(true);
+
+        cardiotest.getTxtInterpretedLog().getChildren().clear();
+        appendTextFlow("Executing RFM_Gsm_3G_ExpandedMode..\n\n");
+
+        // use threads to avoid application freeze
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                runRfmGsmExpandedModeOk = runService.runRfmGsmExpandedMode();
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                cardiotest.getMaskerPane().setVisible(false);
+                menuBar.setDisable(false);
+                appStatusBar.setDisable(false);
+                // update status bar
+                if (runRfmGsmExpandedModeOk) {
+                    appStatusBar.setText("Executed RFM_Gsm_3G_ExpandedMode: OK");
+                    Notifications.create().title("CardIO").text("Executed RFM_Gsm_3G_ExpandedMode: OK").showInformation();
+                    appendTextFlow(">> OK\n\n", 0);
+                }
+                else {
+                    appStatusBar.setText("Executed RFM_Gsm_3G_ExpandedMode: NOK");
+                    Notifications.create().title("CardIO").text("Executed RFM_Gsm_3G_ExpandedMode: NOK").showError();
+                    appendTextFlow(">> NOT OK\n", 1);
+                }
+                // display commmand-response
+                cardiotest.getTxtCommandResponse().setDisable(false);
+                String logFileName = runSettings.getProjectPath() + "\\scripts\\RFM_Gsm_3G_ExpandedMode.L00";
+                showCommandResponseLog(logFileName);
+            }
+        };
+        Thread runRfmGsmExpandedModeThread = new Thread(task);
+        runRfmGsmExpandedModeThread.start();
+    }
+
+    @FXML
     private void handleMenuCodes3g() {
         handleMenuSaveSettings();
         // make user wait as verification executes
@@ -852,6 +1050,18 @@ public class RootLayoutController {
 
     public MenuItem getMenuRfmUsimExpandedMode() {
         return menuRfmUsimExpandedMode;
+    }
+
+    public MenuItem getMenuRfmGsm() {
+        return menuRfmGsm;
+    }
+
+    public MenuItem getMenuRfmGsmUpdateRecord() {
+        return menuRfmGsmUpdateRecord;
+    }
+
+    public MenuItem getMenuRfmGsmExpandedMode() {
+        return menuRfmGsmExpandedMode;
     }
 
     public MenuItem getMenuCodes3g() {

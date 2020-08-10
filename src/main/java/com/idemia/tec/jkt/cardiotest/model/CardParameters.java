@@ -5,6 +5,7 @@ public class CardParameters {
     private String cardManagerAid;
     private String usimAid;
     private String dfUsim;
+    private String dfGsm;
     private String dfGsmAccess;
     private String dfTelecom;
     private String isimAid;
@@ -18,6 +19,7 @@ public class CardParameters {
         this.cardManagerAid = cardManagerAid;
         this.usimAid = usimAid;
         this.dfUsim = dfUsim;
+        this.dfGsm = dfGsm;
         this.dfGsmAccess = dfGsmAccess;
         this.dfTelecom = dfTelecom;
         this.isimAid = isimAid;
@@ -48,6 +50,14 @@ public class CardParameters {
 
     public void setDfUsim(String dfUsim) {
         this.dfUsim = dfUsim;
+    }
+
+    public String getDfGsm() {
+        return dfGsm;
+    }
+
+    public void setDfGsm(String dfGsm) {
+        this.dfGsm = dfGsm;
     }
 
     public String getDfGsmAccess() {

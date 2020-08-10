@@ -87,6 +87,13 @@ public class RunServiceImpl implements RunService {
             runAllBuffer.append(addRfmUsim(root.getRunSettings().getRfmUsim()));
         }
 
+        // RFM GSM
+        if (root.getRunSettings().getRfmGsm().isIncludeRfmGsm() ||
+                root.getRunSettings().getRfmGsm().isIncludeRfmGsmUpdateRecord() ||
+                root.getRunSettings().getRfmGsm().isIncludeRfmGsmExpandedMode()) {
+            runAllBuffer.append(addRfmGsm(root.getRunSettings().getRfmGsm()));
+        }
+
         // secret codes
         if (root.getRunSettings().getSecretCodes().isInclude3gScript() || root.getRunSettings().getSecretCodes().isInclude2gScript())
             runAllBuffer.append(addSecretCodes(root.getRunSettings().getSecretCodes()));
@@ -286,6 +293,47 @@ public class RunServiceImpl implements RunService {
         return rfmUsimRunAllString.toString();
     }
 
+    private String addRfmGsm(RfmGsm rfmGsm) {
+        // TODO: options buffer (if required)
+
+        StringBuilder rfmGsmRunAllString = new StringBuilder();
+        rfmGsmRunAllString.append("; RFM GSM\n");
+
+        // add RFM Gsm script to structure
+
+        if (rfmGsm.isIncludeRfmGsm()) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RFM_GSM.txt"))) {
+                bw.append(scriptGenerator.generateRfmGsm(rfmGsm));
+            } catch (IOException e) {
+                logger.error("Failed writing RFM_GSM script");
+            }
+            rfmGsmRunAllString.append(".EXECUTE scripts\\RFM_GSM.txt /PATH logs\n");
+            rfmGsmRunAllString.append(".ALLUNDEFINE\n\n");
+        }
+
+        if (rfmGsm.isIncludeRfmGsmUpdateRecord()) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RFM_GSM_UpdateRecord.txt"))) {
+                bw.append(scriptGenerator.generateRfmGsmUpdateRecord(rfmGsm));
+            } catch (IOException e) {
+                logger.error("Failed writing RFM_GSM_UpdateRecord script");
+            }
+            rfmGsmRunAllString.append(".EXECUTE scripts\\RFM_GSM_UpdateRecord.txt /PATH logs\n");
+            rfmGsmRunAllString.append(".ALLUNDEFINE\n\n");
+        }
+
+        if (rfmGsm.isIncludeRfmGsmExpandedMode()) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RFM_GSM_3G_ExpandedMode.txt"))) {
+                bw.append(scriptGenerator.generateRfmGsmExpandedMode(rfmGsm));
+            } catch (IOException e) {
+                logger.error("Failed writing RFM_GSM_3G_ExpandedMode script");
+            }
+            rfmGsmRunAllString.append(".EXECUTE scripts\\RFM_GSM_3G_ExpandedMode.txt /PATH logs\n");
+            rfmGsmRunAllString.append(".ALLUNDEFINE\n\n");
+        }
+
+        return rfmGsmRunAllString.toString();
+    }
+
     private String addSecretCodes(SecretCodes secretCodes) {
         StringBuilder secretCodesRunAll = new StringBuilder();
         secretCodesRunAll.append("; Secret Codes\n");
@@ -403,6 +451,27 @@ public class RunServiceImpl implements RunService {
     public boolean runRfmUsimExpandedMode() {
         composeScripts();
         runShellCommand("pcomconsole", scriptsDirectory + "RFM_USIM_3G_ExpandedMode.txt");
+        return exitVal == 0;
+    }
+
+    @Override
+    public boolean runRfmGsm() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "RFM_GSM.txt");
+        return exitVal == 0;
+    }
+
+    @Override
+    public boolean runRfmGsmUpdateRecord() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "RFM_GSM_UpdateRecord.txt");
+        return exitVal == 0;
+    }
+
+    @Override
+    public boolean runRfmGsmExpandedMode() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "RFM_GSM_3G_ExpandedMode.txt");
         return exitVal == 0;
     }
 

@@ -393,6 +393,11 @@
                                 <fx:include source="RfmUsim.fxml"></fx:include>
                               </content>
                             </Tab>
+                            <Tab closable="false" text="RFM GSM">
+                              <content>
+                                <fx:include source="RfmGsm.fxml"></fx:include>
+                              </content>
+                            </Tab>
                             <Tab closable="false" text="RFM ISIM">
                               <content>
                                 <fx:include source="RfmIsim.fxml"></fx:include>

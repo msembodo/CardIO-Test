@@ -3,12 +3,15 @@ package com.idemia.tec.jkt.cardiotest.controller;
 import com.idemia.tec.jkt.cardiotest.CardiotestApplication;
 import com.idemia.tec.jkt.cardiotest.model.AdvSaveVariable;
 import com.idemia.tec.jkt.cardiotest.model.RunSettings;
+import com.idemia.tec.jkt.cardiotest.model.SCP80Keyset;
 import com.idemia.tec.jkt.cardiotest.model.TestCase;
 import com.idemia.tec.jkt.cardiotest.response.TestSuiteResponse;
 import com.idemia.tec.jkt.cardiotest.service.CardioConfigService;
 import com.idemia.tec.jkt.cardiotest.service.ReportService;
 import com.idemia.tec.jkt.cardiotest.service.RunService;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.geometry.Orientation;
@@ -41,6 +44,7 @@ public class RootLayoutController {
 
     private CardiotestApplication application;
     private TerminalFactory terminalFactory;
+    private ObservableList<SCP80Keyset> scp80Keysets = FXCollections.observableArrayList();
     private TestSuiteResponse tsResponse;
     private boolean runAtrOk;
     private boolean runDeltaTestOk;
@@ -169,7 +173,8 @@ public class RootLayoutController {
     private void handleMenuSaveSettings() {
         cardiotest.saveControlState();
         runSettings.setVariableMappings(application.getMappings());
-        runSettings.setScp80Keysets(application.getScp80Keysets());
+//        runSettings.setScp80Keysets(application.getScp80Keysets());
+        runSettings.setScp80Keysets(scp80Keysets); // TODO
         cardioConfigService.saveConfig(runSettings);
     }
 
@@ -855,6 +860,10 @@ public class RootLayoutController {
 
     public MenuItem getMenuCodes2g() {
         return menuCodes2g;
+    }
+
+    public ObservableList<SCP80Keyset> getScp80Keysets() {
+        return scp80Keysets;
     }
 
 }

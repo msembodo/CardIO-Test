@@ -299,7 +299,7 @@ public class RunServiceImpl implements RunService {
         StringBuilder rfmGsmRunAllString = new StringBuilder();
         rfmGsmRunAllString.append("; RFM GSM\n");
 
-        // add RFM Gsm script to structure
+        // add RFM GSM script to structure
 
         if (rfmGsm.isIncludeRfmGsm()) {
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RFM_GSM.txt"))) {

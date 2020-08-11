@@ -137,7 +137,7 @@ public class RfmGsmService {
             }
         }
         // case 3
-        rfmGsmBuffer.append("\n*********\n; CASE 3: (Bad Case) send 2G command to Gsm TAR\n*********\n");
+        rfmGsmBuffer.append("\n*********\n; CASE 3: (Bad Case) send 3G command to GSM TAR\n*********\n");
         if (rfmGsm.isUseSpecificKeyset())
             rfmGsmBuffer.append(rfmGsmCase3(rfmGsm.getCipheringKeyset(), rfmGsm.getAuthKeyset(), rfmGsm.getMinimumSecurityLevel()));
         else {
@@ -274,9 +274,9 @@ public class RfmGsmService {
             routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
         routine.append(
             "\n; command(s) sent via OTA\n"
-            + ".SET_BUFFER J 00 A4 00 00 02 %EF_ID ; select EF\n"
+            + ".SET_BUFFER J A0 A4 00 00 02 %EF_ID ; select EF\n"
             + ".APPEND_SCRIPT J\n"
-            + ".SET_BUFFER J 00 D6 00 00 <?> AA ; update binary\n"
+            + ".SET_BUFFER J A0 D6 00 00 <?> AA ; update binary\n"
             + ".APPEND_SCRIPT J\n"
             + ".END_MESSAGE G J\n"
             + "; show OTA message details\n"
@@ -461,14 +461,14 @@ public class RfmGsmService {
             routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
         routine.append(
             "\n; command(s) sent via OTA\n"
-            + ".SET_BUFFER J A0 A4 00 00 02 3F00 ; this command isn't supported by Gsm\n"
+            + ".SET_BUFFER J 00 A4 00 00 02 3F00 ; this command isn't supported by GSM\n"
             + ".APPEND_SCRIPT J\n"
             + ".END_MESSAGE G J\n"
             + "; send envelope\n"
             + "A0 C2 00 00 G J (9XXX)\n"
             + ".CLEAR_SCRIPT\n"
             + "; check PoR\n"
-            + "A0 C0 00 00 W(2;1) [XX XX XX XX XX XX %TAR XX XX XX XX XX XX 00 XX 6E 00] (9000) ; PoR returns '6E00' (class not supported)\n"
+            + "A0 C0 00 00 W(2;1) [XX XX XX XX XX XX %TAR XX XX XX XX XX XX 00 XX 6D 00] (9000) ; PoR returns '6D00' (class not supported)\n"
             + "\n; increment counter by one\n"
             + ".INCREASE_BUFFER L(04:05) 0001\n"
         );

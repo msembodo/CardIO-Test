@@ -65,6 +65,7 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             cardParameters.setCardManagerAid("A000000151000000");
             cardParameters.setUsimAid("A0000000871002FFFFFFFF89");
             cardParameters.setDfUsim("7FF0");
+            cardParameters.setDfGsm("3F00");
             cardParameters.setDfGsmAccess("5F3B");
             cardParameters.setDfTelecom("7F10");
             cardParameters.setIsimAid("A0000000871004FFFFFFFF89");

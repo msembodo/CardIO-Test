@@ -15,7 +15,7 @@ public class CardParameters {
 
     public CardParameters() {}
 
-    public CardParameters(String cardManagerAid, String usimAid, String dfUsim, String dfGsmAccess, String dfTelecom, String isimAid, String dfIsim, String csimAid, String dfCsim) {
+    public CardParameters(String cardManagerAid, String usimAid, String dfUsim, String dfGsm, String dfGsmAccess, String dfTelecom, String isimAid, String dfIsim, String csimAid, String dfCsim) {
         this.cardManagerAid = cardManagerAid;
         this.usimAid = usimAid;
         this.dfUsim = dfUsim;

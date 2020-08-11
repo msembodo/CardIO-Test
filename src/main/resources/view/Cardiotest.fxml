@@ -230,21 +230,23 @@
                                                         <Label text="Card Manager AID" />
                                                         <Label text="USIM AID" GridPane.rowIndex="1" />
                                                         <Label text="DF USIM" GridPane.rowIndex="2" />
-                                                        <Label text="DF GSM Access" GridPane.rowIndex="3" />
-                                                        <Label text="DF Telecom" GridPane.rowIndex="4" />
-                                                        <Label text="ISIM AID" GridPane.rowIndex="5" />
-                                                        <Label text="DF ISIM" GridPane.rowIndex="6" />
-                                                        <Label text="CSIM AID" GridPane.rowIndex="7" />
-                                                        <Label text="DF CSIM" GridPane.rowIndex="8" />
+                                                        <Label text="DF GSM" GridPane.rowIndex="3" />
+                                                        <Label text="DF GSM Access" GridPane.rowIndex="4" />
+                                                        <Label text="DF Telecom" GridPane.rowIndex="5" />
+                                                        <Label text="ISIM AID" GridPane.rowIndex="6" />
+                                                        <Label text="DF ISIM" GridPane.rowIndex="7" />
+                                                        <Label text="CSIM AID" GridPane.rowIndex="8" />
+                                                        <Label text="DF CSIM" GridPane.rowIndex="9" />
                                                         <TextField fx:id="txtCardManagerAid" GridPane.columnIndex="1" />
                                                         <TextField fx:id="txtUsimAid" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                         <TextField fx:id="txtDfUsim" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                        <TextField fx:id="txtDfGsmAccess" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                        <TextField fx:id="txtDfTelecom" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                                        <TextField fx:id="txtIsimAid" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                                                        <TextField fx:id="txtDfIsim" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                                                        <TextField fx:id="txtCsimAid" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                                                        <TextField fx:id="txtDfCsim" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                                                        <TextField fx:id="txtDfGsm" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                        <TextField fx:id="txtDfGsmAccess" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                        <TextField fx:id="txtDfTelecom" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                        <TextField fx:id="txtIsimAid" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                                        <TextField fx:id="txtDfIsim" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                                        <TextField fx:id="txtCsimAid" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                                                        <TextField fx:id="txtDfCsim" GridPane.columnIndex="1" GridPane.rowIndex="9" />
                                                       </children>
                                                     </GridPane>
                                                   </children>

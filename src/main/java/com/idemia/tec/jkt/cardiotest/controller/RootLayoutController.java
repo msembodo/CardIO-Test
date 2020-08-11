@@ -1,10 +1,7 @@
 package com.idemia.tec.jkt.cardiotest.controller;
 
 import com.idemia.tec.jkt.cardiotest.CardiotestApplication;
-import com.idemia.tec.jkt.cardiotest.model.AdvSaveVariable;
-import com.idemia.tec.jkt.cardiotest.model.RunSettings;
-import com.idemia.tec.jkt.cardiotest.model.SCP80Keyset;
-import com.idemia.tec.jkt.cardiotest.model.TestCase;
+import com.idemia.tec.jkt.cardiotest.model.*;
 import com.idemia.tec.jkt.cardiotest.response.TestSuiteResponse;
 import com.idemia.tec.jkt.cardiotest.service.CardioConfigService;
 import com.idemia.tec.jkt.cardiotest.service.ReportService;
@@ -45,6 +42,9 @@ public class RootLayoutController {
     private CardiotestApplication application;
     private TerminalFactory terminalFactory;
     private ObservableList<SCP80Keyset> scp80Keysets = FXCollections.observableArrayList();
+    private ObservableList<CustomScript> customScriptsSection1 = FXCollections.observableArrayList();
+    private ObservableList<CustomScript> customScriptsSection2 = FXCollections.observableArrayList();
+    private ObservableList<CustomScript> customScriptsSection3 = FXCollections.observableArrayList();
     private TestSuiteResponse tsResponse;
     private boolean runAtrOk;
     private boolean runDeltaTestOk;
@@ -173,8 +173,10 @@ public class RootLayoutController {
     private void handleMenuSaveSettings() {
         cardiotest.saveControlState();
         runSettings.setVariableMappings(application.getMappings());
-//        runSettings.setScp80Keysets(application.getScp80Keysets());
-        runSettings.setScp80Keysets(scp80Keysets); // TODO
+        runSettings.setScp80Keysets(scp80Keysets);
+        runSettings.setCustomScriptsSection1(customScriptsSection1);
+        runSettings.setCustomScriptsSection2(customScriptsSection2);
+        runSettings.setCustomScriptsSection3(customScriptsSection3);
         cardioConfigService.saveConfig(runSettings);
     }
 
@@ -864,6 +866,18 @@ public class RootLayoutController {
 
     public ObservableList<SCP80Keyset> getScp80Keysets() {
         return scp80Keysets;
+    }
+
+    public ObservableList<CustomScript> getCustomScriptsSection1() {
+        return customScriptsSection1;
+    }
+
+    public ObservableList<CustomScript> getCustomScriptsSection2() {
+        return customScriptsSection2;
+    }
+
+    public ObservableList<CustomScript> getCustomScriptsSection3() {
+        return customScriptsSection3;
     }
 
 }

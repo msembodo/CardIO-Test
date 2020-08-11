@@ -1,6 +1,5 @@
 package com.idemia.tec.jkt.cardiotest.controller;
 
-import com.idemia.tec.jkt.cardiotest.CardiotestApplication;
 import com.idemia.tec.jkt.cardiotest.model.SCP80Keyset;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;

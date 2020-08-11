@@ -117,6 +117,10 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             rfmUsim.setMinimumSecurityLevel(rfmUsimMsl);
             defaultSettings.setRfmUsim(rfmUsim);
 
+            defaultSettings.setCustomScriptsSection1(new ArrayList<>());
+            defaultSettings.setCustomScriptsSection2(new ArrayList<>());
+            defaultSettings.setCustomScriptsSection3(new ArrayList<>());
+
             ObjectMapper mapper = new ObjectMapper();
             try {
                 mapper.writerWithDefaultPrettyPrinter().writeValue(runSettingsFile, defaultSettings);

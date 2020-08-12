@@ -306,7 +306,7 @@ public class RfmUsimController {
             // MSL integer shoould not be higher than 31 (0x1F)
             Alert mslAlert = new Alert(Alert.AlertType.ERROR);
             mslAlert.initModality(Modality.APPLICATION_MODAL);
-//            mslAlert.initOwner(application.getPrimaryStage());
+            mslAlert.initOwner(txtRfmUsimMslByte.getScene().getWindow());
             mslAlert.setTitle("Minimum Security Level");
             mslAlert.setHeaderText("Invalid MSL");
             mslAlert.setContentText("MSL value should not exceed '1F'");

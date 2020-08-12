@@ -307,7 +307,7 @@ public class RunServiceImpl implements RunService {
             } catch (IOException e) {
                 logger.error("Failed writing RFM_ISIM script");
             }
-            rfmIsimRunAllString.append(".EXECUTE scripts\\RFM_USIM.txt /PATH logs\n");
+            rfmIsimRunAllString.append(".EXECUTE scripts\\RFM_ISIM.txt /PATH logs\n");
             rfmIsimRunAllString.append(".ALLUNDEFINE\n\n");
         }
 
@@ -457,21 +457,21 @@ public class RunServiceImpl implements RunService {
     @Override
     public boolean runRfmIsim() {
         composeScripts();
-        runShellCommand("pcomconsole", scriptsDirectory + "RFM_Isim.txt");
+        runShellCommand("pcomconsole", scriptsDirectory + "RFM_ISIM.txt");
         return exitVal == 0;
     }
 
     @Override
     public boolean runRfmIsimUpdateRecord() {
         composeScripts();
-        runShellCommand("pcomconsole", scriptsDirectory + "RFM_Isim_UpdateRecord.txt");
+        runShellCommand("pcomconsole", scriptsDirectory + "RFM_ISIM_UpdateRecord.txt");
         return exitVal == 0;
     }
 
     @Override
     public boolean runRfmIsimExpandedMode() {
         composeScripts();
-        runShellCommand("pcomconsole", scriptsDirectory + "RFM_Isim_3G_ExpandedMode.txt");
+        runShellCommand("pcomconsole", scriptsDirectory + "RFM_ISIM_3G_ExpandedMode.txt");
         return exitVal == 0;
     }
 

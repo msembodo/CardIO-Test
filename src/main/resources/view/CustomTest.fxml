@@ -110,8 +110,8 @@
                                 <TextField fx:id="txtCs2Description" GridPane.columnIndex="1" />
                                 <TextField fx:id="txtCs2ScriptName" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                 <Label text="Name" GridPane.rowIndex="1" />
-                                <Button fx:id="btnCs2Choose" mnemonicParsing="false" prefWidth="31.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                <Button fx:id="btnCs2Edit" mnemonicParsing="false" prefWidth="31.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                <Button fx:id="btnCs2Choose" mnemonicParsing="false" onAction="#handleBtnCs2Choose" prefWidth="31.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                <Button fx:id="btnCs2Edit" mnemonicParsing="false" onAction="#handleBtnCs2Edit" prefWidth="31.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                               </children>
                             </GridPane>
                             <Label fx:id="lblAddCs2ScriptErrMsg" text="(add script error message)" textFill="#d00707" visible="false" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="92.0">
@@ -166,8 +166,8 @@
                                 <TextField fx:id="txtCs3Description" GridPane.columnIndex="1" />
                                 <TextField fx:id="txtCs3ScriptName" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                 <Label text="Name" GridPane.rowIndex="1" />
-                                <Button fx:id="btnCs3Choose" mnemonicParsing="false" prefWidth="31.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                <Button fx:id="btnCs3Edit" mnemonicParsing="false" prefWidth="31.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                <Button fx:id="btnCs3Choose" mnemonicParsing="false" onAction="#handleBtnCs3Choose" prefWidth="31.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                <Button fx:id="btnCs3Edit" mnemonicParsing="false" onAction="#handleBtnCs3Edit" prefWidth="31.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                               </children>
                             </GridPane>
                             <Label fx:id="lblAddCs3ScriptErrMsg" text="(add script error message)" textFill="#d00707" visible="false" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="92.0">

@@ -8,6 +8,8 @@ public class CustomScript {
 
     private StringProperty customScriptName;
     private String description;
+    private boolean runCustomScriptOk;
+    private String runCustomScriptMessage;
 
     public CustomScript() {}
 
@@ -34,6 +36,22 @@ public class CustomScript {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public boolean isRunCustomScriptOk() {
+        return runCustomScriptOk;
+    }
+
+    public void setRunCustomScriptOk(boolean runCustomScriptOk) {
+        this.runCustomScriptOk = runCustomScriptOk;
+    }
+
+    public String getRunCustomScriptMessage() {
+        return runCustomScriptMessage;
+    }
+
+    public void setRunCustomScriptMessage(String runCustomScriptMessage) {
+        this.runCustomScriptMessage = runCustomScriptMessage;
     }
 
     public String toJson() { return new Gson().toJson(this); }

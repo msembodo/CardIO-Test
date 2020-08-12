@@ -3,6 +3,7 @@ package com.idemia.tec.jkt.cardiotest.controller;
 import com.idemia.tec.jkt.cardiotest.model.CustomScript;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
@@ -151,7 +152,15 @@ public class CustomTabController {
                 e.printStackTrace();
             }
         }
-        editScript(cs1EditFilePath);
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                editScript(cs1EditFilePath);
+                return null;
+            }
+        };
+        Thread editThread = new Thread(task);
+        editThread.start();
     }
 
     @FXML private void handleBtnCs1Add() {
@@ -210,12 +219,46 @@ public class CustomTabController {
 
     @FXML private void handleBtnCs2Choose() {
         // choose from available script and copy to target script folder
-        // TODO
+        FileChooser cs2FileChooser = new FileChooser();
+        cs2FileChooser.setTitle("Select custom script");
+        cs2FileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("PCOM script", "*.pcom", "*.txt")
+        );
+        File cs2ChooseFile = cs2FileChooser.showOpenDialog(btnCs2Choose.getScene().getWindow());
+        if (cs2ChooseFile != null) {
+            File targetFile = new File(scriptsDirectory + cs2ChooseFile.getName());
+            try {
+                Files.copy(cs2ChooseFile.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                txtCs2ScriptName.setText(cs2ChooseFile.getName());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @FXML private void handleBtnCs2Edit() {
         // edit the specified script or, if not exists, create one
-        // TODO
+        String cs2EditFilePath = scriptsDirectory + txtCs2ScriptName.getText();
+        File cs2EditFile = new File(cs2EditFilePath);
+        if (!cs2EditFile.exists()) {
+            try {
+                Files.createFile(cs2EditFile.toPath());
+                try (BufferedWriter bw = new BufferedWriter(new FileWriter(cs2EditFilePath))) {
+                    bw.append(new StringBuilder().append(".CALL Mapping.txt /LIST_OFF\n.CALL Options.txt /LIST_OFF\n"));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                editScript(cs2EditFilePath);
+                return null;
+            }
+        };
+        Thread editThread = new Thread(task);
+        editThread.start();
     }
 
     @FXML private void handleBtnCs2Add() {
@@ -242,6 +285,15 @@ public class CustomTabController {
 
     @FXML private void handleBtnCs2Delete() {
         if (root.getCustomScriptsSection2().size() > 0) {
+            // delete from scripts directory
+            String cs2DeleteFilePath = scriptsDirectory + txtCs2ScriptName.getText();
+            File cs2DeleteFile = new File(cs2DeleteFilePath);
+            try {
+                Files.deleteIfExists(cs2DeleteFile.toPath());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            // remove from table
             lblAddCs2ScriptErrMsg.setVisible(false);
             logger.info("Delete custom script in section 2: " + tblCustomScript2.getSelectionModel().getSelectedItem().getCustomScriptName());
             int selectedIndex = tblCustomScript2.getSelectionModel().getSelectedIndex();
@@ -265,12 +317,46 @@ public class CustomTabController {
 
     @FXML private void handleBtnCs3Choose() {
         // choose from available script and copy to target script folder
-        // TODO
+        FileChooser cs3FileChooser = new FileChooser();
+        cs3FileChooser.setTitle("Select custom script");
+        cs3FileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("PCOM script", "*.pcom", "*.txt")
+        );
+        File cs3ChooseFile = cs3FileChooser.showOpenDialog(btnCs3Choose.getScene().getWindow());
+        if (cs3ChooseFile != null) {
+            File targetFile = new File(scriptsDirectory + cs3ChooseFile.getName());
+            try {
+                Files.copy(cs3ChooseFile.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                txtCs3ScriptName.setText(cs3ChooseFile.getName());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @FXML private void handleBtnCs3Edit() {
         // edit the specified script or, if not exists, create one
-        // TODO
+        String cs3EditFilePath = scriptsDirectory + txtCs3ScriptName.getText();
+        File cs3EditFile = new File(cs3EditFilePath);
+        if (!cs3EditFile.exists()) {
+            try {
+                Files.createFile(cs3EditFile.toPath());
+                try (BufferedWriter bw = new BufferedWriter(new FileWriter(cs3EditFilePath))) {
+                    bw.append(new StringBuilder().append(".CALL Mapping.txt /LIST_OFF\n.CALL Options.txt /LIST_OFF\n"));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                editScript(cs3EditFilePath);
+                return null;
+            }
+        };
+        Thread editThread = new Thread(task);
+        editThread.start();
     }
 
     @FXML private void handleBtnCs3Add() {
@@ -297,6 +383,15 @@ public class CustomTabController {
 
     @FXML private void handleBtnCs3Delete() {
         if (root.getCustomScriptsSection3().size() > 0) {
+            // delete from scripts directory
+            String cs3DeleteFilePath = scriptsDirectory + txtCs3ScriptName.getText();
+            File cs3DeleteFile = new File(cs3DeleteFilePath);
+            try {
+                Files.deleteIfExists(cs3DeleteFile.toPath());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            // remove from table
             lblAddCs3ScriptErrMsg.setVisible(false);
             logger.info("Delete custom script in section 3: " + tblCustomScript3.getSelectionModel().getSelectedItem().getCustomScriptName());
             int selectedIndex = tblCustomScript3.getSelectionModel().getSelectedIndex();

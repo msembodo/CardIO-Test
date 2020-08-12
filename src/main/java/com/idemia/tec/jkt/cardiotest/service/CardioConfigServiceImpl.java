@@ -117,6 +117,20 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             rfmUsim.setMinimumSecurityLevel(rfmUsimMsl);
             defaultSettings.setRfmUsim(rfmUsim);
 
+            MinimumSecurityLevel rfmIsimMsl = new MinimumSecurityLevel(true, "Cryptographic Checksum", "Counter must be higher");
+            rfmIsimMsl.setCipherAlgo("3DES - CBC 2 keys");rfmIsimMsl.setSigningAlgo("3DES - CBC 2 keys");
+            rfmIsimMsl.setPorRequirement("PoR required");
+            rfmIsimMsl.setPorSecurity("response with no security");
+
+            RfmIsim rfmIsim = new RfmIsim();
+            rfmIsim.setIncludeRfmIsim(true);
+            rfmIsim.setTar("B00020");
+            rfmIsim.setTargetEf("6F7F");
+            rfmIsim.setTargetEfBadCase("6F05");
+            rfmIsim.setFullAccess(true);
+            rfmIsim.setMinimumSecurityLevel(rfmIsimMsl);
+            defaultSettings.setRfmIsim(rfmIsim);
+
             ObjectMapper mapper = new ObjectMapper();
             try {
                 mapper.writerWithDefaultPrettyPrinter().writeValue(runSettingsFile, defaultSettings);

@@ -28,6 +28,9 @@
                         <MenuItem fx:id="menuRfmUsim" mnemonicParsing="false" onAction="#handleMenuRfmUsim" text="RFM USIM" />
                         <MenuItem fx:id="menuRfmUsimUpdateRecord" mnemonicParsing="false" onAction="#handleMenuRfmUsimUpdateRecord" text="RFM USIM update record" />
                         <MenuItem fx:id="menuRfmUsimExpandedMode" mnemonicParsing="false" onAction="#handleMenuRfmUsimExpandedMode" text="RFM USIM expanded mode" />
+                        <MenuItem fx:id="menuRfmIsim" mnemonicParsing="false" onAction="#handleMenuRfmIsim" text="RFM Isim" />
+                        <MenuItem fx:id="menuRfmIsimUpdateRecord" mnemonicParsing="false" onAction="#handleMenuRfmIsimUpdateRecord" text="RFM Isim update record" />
+                        <MenuItem fx:id="menuRfmIsimExpandedMode" mnemonicParsing="false" onAction="#handleMenuRfmIsimExpandedMode" text="RFM Isim expanded mode" />
                         <MenuItem fx:id="menuCodes3g" mnemonicParsing="false" onAction="#handleMenuCodes3g" text="Secret Codes 3G" />
                         <MenuItem fx:id="menuCodes2g" mnemonicParsing="false" onAction="#handleMenuCodes2g" text="Secret Codes 2G" />
                     </items>

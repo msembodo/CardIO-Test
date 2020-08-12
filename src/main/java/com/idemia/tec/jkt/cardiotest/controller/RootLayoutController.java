@@ -52,6 +52,9 @@ public class RootLayoutController {
     private boolean runRfmUsimOk;
     private boolean runRfmUsimUpdateRecordOk;
     private boolean runRfmUsimExpandedModeOk;
+    private boolean runRfmIsimOk;
+    private boolean runRfmIsimUpdateRecordOk;
+    private boolean runRfmIsimExpandedModeOk;
     private boolean runCodes3gOk;
     private boolean runCodes2gOk;
 
@@ -81,6 +84,12 @@ public class RootLayoutController {
     private MenuItem menuRfmUsimUpdateRecord;
     @FXML
     private MenuItem menuRfmUsimExpandedMode;
+    @FXML
+    private MenuItem menuRfmIsim;
+    @FXML
+    private MenuItem menuRfmIsimUpdateRecord;
+    @FXML
+    private MenuItem menuRfmIsimExpandedMode;
     @FXML
     private MenuItem menuCodes3g;
     @FXML
@@ -399,6 +408,51 @@ public class RootLayoutController {
                 runSettings.getRfmUsim().setTestRfmUsimExpandedModeMessage(errFailure);
             }
         }
+        if (module.getName().equals("RFM_ISIM")) {
+            runSettings.getRfmIsim().setTestRfmIsimOk(true);
+            runSettings.getRfmIsim().setTestRfmIsimMessage("OK");
+            String errFailure = "";
+            if (module.getError() != null) {
+                runSettings.getRfmIsim().setTestRfmIsimOk(false);
+                errFailure += module.getError().replace("\n", ";");
+                runSettings.getRfmIsim().setTestRfmIsimMessage(errFailure);
+            }
+            if (module.getFailure() != null) {
+                runSettings.getRfmIsim().setTestRfmIsimOk(false);
+                errFailure += module.getFailure().replace("\n", ";");
+                runSettings.getRfmIsim().setTestRfmIsimMessage(errFailure);
+            }
+        }
+        if (module.getName().equals("RFM_ISIM_UpdateRecord")) {
+            runSettings.getRfmIsim().setTestRfmIsimUpdateRecordOk(true);
+            runSettings.getRfmIsim().setTestRfmIsimUpdateRecordMessage("OK");
+            String errFailure = "";
+            if (module.getError() != null) {
+                runSettings.getRfmIsim().setTestRfmIsimUpdateRecordOk(false);
+                errFailure += module.getError().replace("\n", ";");
+                runSettings.getRfmIsim().setTestRfmIsimUpdateRecordMessage(errFailure);
+            }
+            if (module.getFailure() != null) {
+                runSettings.getRfmIsim().setTestRfmIsimUpdateRecordOk(false);
+                errFailure += module.getFailure().replace("\n", ";");
+                runSettings.getRfmIsim().setTestRfmIsimUpdateRecordMessage(errFailure);
+            }
+        }
+        if (module.getName().equals("RFM_ISIM_3G_ExpandedMode")) {
+            runSettings.getRfmIsim().setTestRfmIsimExpandedModeOk(true);
+            runSettings.getRfmIsim().setTestRfmIsimExpandedModeMessage("OK");
+            String errFailure = "";
+            if (module.getError() != null) {
+                runSettings.getRfmIsim().setTestRfmIsimExpandedModeOk(false);
+                errFailure += module.getError().replace("\n", ";");
+                runSettings.getRfmIsim().setTestRfmIsimExpandedModeMessage(errFailure);
+            }
+            if (module.getFailure() != null) {
+                runSettings.getRfmIsim().setTestRfmIsimExpandedModeOk(false);
+                errFailure += module.getFailure().replace("\n", ";");
+                runSettings.getRfmIsim().setTestRfmIsimExpandedModeMessage(errFailure);
+            }
+        }
         cardioConfigService.saveConfig(runSettings);
     }
 
@@ -694,6 +748,150 @@ public class RootLayoutController {
     }
 
     @FXML
+    private void handleMenuRfmIsim() {
+        handleMenuSaveSettings();
+        // make user wait as verification executes
+        cardiotest.getMaskerPane().setText("Executing RFM_ISIM. Please wait..");
+        // display masker pane
+        cardiotest.getMaskerPane().setVisible(true);
+        menuBar.setDisable(true);
+        appStatusBar.setDisable(true);
+
+        cardiotest.getTxtInterpretedLog().getChildren().clear();
+        appendTextFlow("Executing RFM_ISIM..\n\n");
+
+        // use threads to avoid application freeze
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                runRfmIsimOk = runService.runRfmIsim();
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                cardiotest.getMaskerPane().setVisible(false);
+                menuBar.setDisable(false);
+                appStatusBar.setDisable(false);
+                // update status bar
+                if (runRfmIsimOk) {
+                    appStatusBar.setText("Executed RFM_ISIM: OK");
+                    Notifications.create().title("CardIO").text("Executed RFM_ISIM: OK").showInformation();
+                    appendTextFlow(">> OK\n\n", 0);
+                }
+                else {
+                    appStatusBar.setText("Executed RFM_ISIM: NOK");
+                    Notifications.create().title("CardIO").text("Executed RFM_ISIM: NOK").showError();
+                    appendTextFlow(">> NOT OK\n", 1);
+                }
+                // display commmand-response
+                cardiotest.getTxtCommandResponse().setDisable(false);
+                String logFileName = runSettings.getProjectPath() + "\\scripts\\RFM_ISIM.L00";
+                showCommandResponseLog(logFileName);
+            }
+        };
+        Thread runRfmIsimThread = new Thread(task);
+        runRfmIsimThread.start();
+    }
+
+    @FXML
+    private void handleMenuRfmIsimUpdateRecord() {
+        handleMenuSaveSettings();
+        // make user wait as verification executes
+        cardiotest.getMaskerPane().setText("Executing RFM_ISIM_UpdateRecord. Please wait..");
+        // display masker pane
+        cardiotest.getMaskerPane().setVisible(true);
+        menuBar.setDisable(true);
+        appStatusBar.setDisable(true);
+
+        cardiotest.getTxtInterpretedLog().getChildren().clear();
+        appendTextFlow("Executing RFM_ISIM_UpdateRecord..\n\n");
+
+        // use threads to avoid application freeze
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                runRfmIsimUpdateRecordOk = runService.runRfmIsimUpdateRecord();
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                cardiotest.getMaskerPane().setVisible(false);
+                menuBar.setDisable(false);
+                appStatusBar.setDisable(false);
+                // update status bar
+                if (runRfmIsimUpdateRecordOk) {
+                    appStatusBar.setText("Executed RFM_ISIM_UpdateRecord: OK");
+                    Notifications.create().title("CardIO").text("Executed RFM_ISIM_UpdateRecord: OK").showInformation();
+                    appendTextFlow(">> OK\n\n", 0);
+                }
+                else {
+                    appStatusBar.setText("Executed RFM_ISIM_UpdateRecord: NOK");
+                    Notifications.create().title("CardIO").text("Executed RFM_ISIM_UpdateRecord: NOK").showError();
+                    appendTextFlow(">> NOT OK\n", 1);
+                }
+                // display commmand-response
+                cardiotest.getTxtCommandResponse().setDisable(false);
+                String logFileName = runSettings.getProjectPath() + "\\scripts\\RFM_ISIM_UpdateRecord.L00";
+                showCommandResponseLog(logFileName);
+            }
+        };
+        Thread runRfmIsimUpdateRecordThread = new Thread(task);
+        runRfmIsimUpdateRecordThread.start();
+    }
+
+    @FXML
+    private void handleMenuRfmIsimExpandedMode() {
+        handleMenuSaveSettings();
+        // make user wait as verification executes
+        cardiotest.getMaskerPane().setText("Executing RFM_ISIM_3G_ExpandedMode. Please wait..");
+        // display masker pane
+        cardiotest.getMaskerPane().setVisible(true);
+        menuBar.setDisable(true);
+        appStatusBar.setDisable(true);
+
+        cardiotest.getTxtInterpretedLog().getChildren().clear();
+        appendTextFlow("Executing RFM_ISIM_3G_ExpandedMode..\n\n");
+
+        // use threads to avoid application freeze
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                runRfmIsimExpandedModeOk = runService.runRfmIsimExpandedMode();
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                cardiotest.getMaskerPane().setVisible(false);
+                menuBar.setDisable(false);
+                appStatusBar.setDisable(false);
+                // update status bar
+                if (runRfmIsimExpandedModeOk) {
+                    appStatusBar.setText("Executed RFM_ISIM_3G_ExpandedMode: OK");
+                    Notifications.create().title("CardIO").text("Executed RFM_ISIM_3G_ExpandedMode: OK").showInformation();
+                    appendTextFlow(">> OK\n\n", 0);
+                }
+                else {
+                    appStatusBar.setText("Executed RFM_ISIM_3G_ExpandedMode: NOK");
+                    Notifications.create().title("CardIO").text("Executed RFM_ISIM_3G_ExpandedMode: NOK").showError();
+                    appendTextFlow(">> NOT OK\n", 1);
+                }
+                // display commmand-response
+                cardiotest.getTxtCommandResponse().setDisable(false);
+                String logFileName = runSettings.getProjectPath() + "\\scripts\\RFM_ISIM_3G_ExpandedMode.L00";
+                showCommandResponseLog(logFileName);
+            }
+        };
+        Thread runRfmIsimExpandedModeThread = new Thread(task);
+        runRfmIsimExpandedModeThread.start();
+    }
+
+    @FXML
     private void handleMenuCodes3g() {
         handleMenuSaveSettings();
         // make user wait as verification executes
@@ -852,6 +1050,18 @@ public class RootLayoutController {
 
     public MenuItem getMenuRfmUsimExpandedMode() {
         return menuRfmUsimExpandedMode;
+    }
+
+    public MenuItem getMenuRfmIsim() {
+        return menuRfmIsim;
+    }
+
+    public MenuItem getMenuRfmIsimUpdateRecord() {
+        return menuRfmIsimUpdateRecord;
+    }
+
+    public MenuItem getMenuRfmIsimExpandedMode() {
+        return menuRfmIsimExpandedMode;
     }
 
     public MenuItem getMenuCodes3g() {

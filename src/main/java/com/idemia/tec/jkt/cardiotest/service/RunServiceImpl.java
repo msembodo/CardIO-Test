@@ -87,6 +87,13 @@ public class RunServiceImpl implements RunService {
             runAllBuffer.append(addRfmUsim(root.getRunSettings().getRfmUsim()));
         }
 
+        // RFM ISIM
+        if (root.getRunSettings().getRfmIsim().isIncludeRfmIsim() ||
+                root.getRunSettings().getRfmIsim().isIncludeRfmIsimUpdateRecord() ||
+                root.getRunSettings().getRfmIsim().isIncludeRfmIsimExpandedMode()) {
+            runAllBuffer.append(addRfmIsim(root.getRunSettings().getRfmIsim()));
+        }
+
         // secret codes
         if (root.getRunSettings().getSecretCodes().isInclude3gScript() || root.getRunSettings().getSecretCodes().isInclude2gScript())
             runAllBuffer.append(addSecretCodes(root.getRunSettings().getSecretCodes()));
@@ -286,6 +293,47 @@ public class RunServiceImpl implements RunService {
         return rfmUsimRunAllString.toString();
     }
 
+    private String addRfmIsim(RfmIsim rfmIsim) {
+        // TODO: options buffer (if required)
+
+        StringBuilder rfmIsimRunAllString = new StringBuilder();
+        rfmIsimRunAllString.append("; RFM ISIM\n");
+
+        // add RFM ISIM script to structure
+
+        if (rfmIsim.isIncludeRfmIsim()) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RFM_ISIM.txt"))) {
+                bw.append(scriptGenerator.generateRfmIsim(rfmIsim));
+            } catch (IOException e) {
+                logger.error("Failed writing RFM_ISIM script");
+            }
+            rfmIsimRunAllString.append(".EXECUTE scripts\\RFM_USIM.txt /PATH logs\n");
+            rfmIsimRunAllString.append(".ALLUNDEFINE\n\n");
+        }
+
+        if (rfmIsim.isIncludeRfmIsimUpdateRecord()) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RFM_ISIM_UpdateRecord.txt"))) {
+                bw.append(scriptGenerator.generateRfmIsimUpdateRecord(rfmIsim));
+            } catch (IOException e) {
+                logger.error("Failed writing RFM_ISIM_UpdateRecord script");
+            }
+            rfmIsimRunAllString.append(".EXECUTE scripts\\RFM_ISIM_UpdateRecord.txt /PATH logs\n");
+            rfmIsimRunAllString.append(".ALLUNDEFINE\n\n");
+        }
+
+        if (rfmIsim.isIncludeRfmIsimExpandedMode()) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RFM_ISIM_3G_ExpandedMode.txt"))) {
+                bw.append(scriptGenerator.generateRfmIsimExpandedMode(rfmIsim));
+            } catch (IOException e) {
+                logger.error("Failed writing RFM_ISIM_3G_ExpandedMode script");
+            }
+            rfmIsimRunAllString.append(".EXECUTE scripts\\RFM_ISIM_3G_ExpandedMode.txt /PATH logs\n");
+            rfmIsimRunAllString.append(".ALLUNDEFINE\n\n");
+        }
+
+        return rfmIsimRunAllString.toString();
+    }
+
     private String addSecretCodes(SecretCodes secretCodes) {
         StringBuilder secretCodesRunAll = new StringBuilder();
         secretCodesRunAll.append("; Secret Codes\n");
@@ -403,6 +451,27 @@ public class RunServiceImpl implements RunService {
     public boolean runRfmUsimExpandedMode() {
         composeScripts();
         runShellCommand("pcomconsole", scriptsDirectory + "RFM_USIM_3G_ExpandedMode.txt");
+        return exitVal == 0;
+    }
+
+    @Override
+    public boolean runRfmIsim() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "RFM_Isim.txt");
+        return exitVal == 0;
+    }
+
+    @Override
+    public boolean runRfmIsimUpdateRecord() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "RFM_Isim_UpdateRecord.txt");
+        return exitVal == 0;
+    }
+
+    @Override
+    public boolean runRfmIsimExpandedMode() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "RFM_Isim_3G_ExpandedMode.txt");
         return exitVal == 0;
     }
 

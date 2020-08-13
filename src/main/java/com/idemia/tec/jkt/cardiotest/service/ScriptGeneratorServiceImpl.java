@@ -19,7 +19,6 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
     private AuthenticationService authenticationService;
     @Autowired
     private RfmUsimService rfmUsimService;
-
     @Autowired
     private RfmIsimService rfmIsimService;
 

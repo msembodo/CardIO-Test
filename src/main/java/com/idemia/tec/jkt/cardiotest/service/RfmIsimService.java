@@ -49,7 +49,7 @@ public class RfmIsimService {
         if (root.getRunSettings().getSecretCodes().isPin1disabled())
             rfmIsimBuffer.append("\nA0 28 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000) ; enable GPIN1\n");
         // case 1
-        rfmIsimBuffer.append("\n*********\n; CASE 1: RFM Isim with correct security settings\n*********\n");
+        rfmIsimBuffer.append("\n*********\n; CASE 1: RFM ISIM with correct security settings\n*********\n");
         // define target files
         if (rfmIsim.isFullAccess()) {
             rfmIsimBuffer.append(
@@ -112,6 +112,7 @@ public class RfmIsimService {
             rfmIsimBuffer.append(
                     "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
                             + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+                            + "A0 A4 00 00 02 %DF_ID (9F22)\n"
                             + select2gWithAbsolutePath(rfmIsim.getCustomTargetEfBadCase())
                             + "A0 B0 00 00 01 (9000)\n"
                             + ".DEFINE %EF_CONTENT R\n"
@@ -127,7 +128,7 @@ public class RfmIsimService {
             rfmIsimBuffer.append("\n.UNDEFINE %EF_CONTENT\n");
         }
         // case 2
-        rfmIsimBuffer.append("\n*********\n; CASE 2: (Bad Case) RFM with keyset which is not allowed in Isim TAR\n*********\n");
+        rfmIsimBuffer.append("\n*********\n; CASE 2: (Bad Case) RFM with keyset which is not allowed in ISIM TAR\n*********\n");
         if (rfmIsim.isUseSpecificKeyset())
             rfmIsimBuffer.append(rfmIsimCase2(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), rfmIsim.getMinimumSecurityLevel()));
         else {
@@ -137,7 +138,7 @@ public class RfmIsimService {
             }
         }
         // case 3
-        rfmIsimBuffer.append("\n*********\n; CASE 3: (Bad Case) send 2G command to Isim TAR\n*********\n");
+        rfmIsimBuffer.append("\n*********\n; CASE 3: (Bad Case) send 2G command to ISIM TAR\n*********\n");
         if (rfmIsim.isUseSpecificKeyset())
             rfmIsimBuffer.append(rfmIsimCase3(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), rfmIsim.getMinimumSecurityLevel()));
         else {
@@ -379,7 +380,7 @@ public class RfmIsimService {
                 "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
                         + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
                         + "A0 A4 00 00 02 %DF_ID (9F22)\n"
-                        + "A0 A4 00 00 02 %EF_ID (9F0F)\n"
+                        + "A0 A4 00 00 02 %EF_ID_ERR (9F0F)\n"
                         + "A0 B0 00 00 01 [%EF_CONTENT] (9000)\n"
                         + "\n; increment counter by one\n"
                         + ".INCREASE_BUFFER L(04:05) 0001\n"
@@ -461,7 +462,7 @@ public class RfmIsimService {
             routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
         routine.append(
                 "\n; command(s) sent via OTA\n"
-                        + ".SET_BUFFER J A0 A4 00 00 02 3F00 ; this command isn't supported by Isim\n"
+                        + ".SET_BUFFER J A0 A4 00 00 02 3F00 ; this command isn't supported by ISIM\n"
                         + ".APPEND_SCRIPT J\n"
                         + ".END_MESSAGE G J\n"
                         + "; send envelope\n"

@@ -97,6 +97,11 @@
 			<artifactId>poi-scratchpad</artifactId>
 			<version>3.15</version>
 		</dependency>
+		<dependency>
+			<groupId>de.jensd</groupId>
+			<artifactId>fontawesomefx</artifactId>
+			<version>8.9</version>
+		</dependency>
 	</dependencies>
 
 	<build>

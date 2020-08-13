@@ -124,7 +124,7 @@ public class CustomTabController {
         FileChooser cs1FileChooser = new FileChooser();
         cs1FileChooser.setTitle("Select custom script");
         cs1FileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("PCOM script", "*.pcom", "*.txt")
+                new FileChooser.ExtensionFilter("PCOM script", "*.cmd", "*.pcom", "*.txt")
         );
         File cs1ChooseFile = cs1FileChooser.showOpenDialog(btnCs1Choose.getScene().getWindow());
         if (cs1ChooseFile != null) {

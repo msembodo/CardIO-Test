@@ -1,5 +1,6 @@
 package com.idemia.tec.jkt.cardiotest.service;
 
+import com.idemia.tec.jkt.cardiotest.model.CustomScript;
 import com.idemia.tec.jkt.cardiotest.model.RunSettings;
 import com.idemia.tec.jkt.cardiotest.model.SCP80Keyset;
 import com.idemia.tec.jkt.cardiotest.model.VariableMapping;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Service
 public class ReportServiceImpl implements ReportService {
@@ -134,7 +136,7 @@ public class ReportServiceImpl implements ReportService {
                 html.append("<td class=\"ok\">PASSED</td></tr>");
             else {
                 String[] messages = runSettings.getAtr().getTestAtrMesssage().split(";");
-                html.append("<td class=\"error\">" + String.join("<br>", messages) + "</td></tr>");
+                html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
             }
             html.append(
                 "\n<tr><td class=\"item\">ATR</td>"
@@ -159,7 +161,7 @@ public class ReportServiceImpl implements ReportService {
                     html.append("<td class=\"ok\">PASSED</td></tr>");
                 else {
                     String[] messages = runSettings.getAuthentication().getTestDeltaMessage().split(";");
-                    html.append("<td class=\"error\">" + String.join("<br>", messages) + "</td></tr>");
+                    html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
                 }
             }
             else
@@ -170,7 +172,7 @@ public class ReportServiceImpl implements ReportService {
                     html.append("<td class=\"ok\">PASSED</td></tr>");
                 else {
                     String[] messages = runSettings.getAuthentication().getTestSqnMaxMessage().split(";");
-                    html.append("<td class=\"error\">" + String.join("<br>", messages) + "</td></tr>");
+                    html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
                 }
             }
             else
@@ -316,7 +318,31 @@ public class ReportServiceImpl implements ReportService {
             }
             html.append(createTableFooter());
         }
-        // TODO
+        html.append("\n<div><h2>Envelope & SMS Update Parameters</h2></div>");
+        html.append(createTableHeaderModule());
+        html.append(
+            "\n<tr><td class=\"item\">UDHI first byte</td>"
+            + "<td>" + runSettings.getSmsUpdate().getUdhiFirstByte() + "</td></tr>"
+        );
+        html.append(
+            "\n<tr><td class=\"item\">SC address</td>"
+            + "<td>" + runSettings.getSmsUpdate().getScAddress() + "</td></tr>"
+        );
+        html.append(
+            "\n<tr><td class=\"item\">TP-PID</td>"
+            + "<td>" + runSettings.getSmsUpdate().getTpPid() + "</td></tr>"
+        );
+        if (runSettings.getSmsUpdate().isUseWhiteList()) {
+            html.append(
+                "\n<tr><td class=\"item\">TP-OA</td>"
+                + "<td>" + runSettings.getSmsUpdate().getTpOa() + "</td></tr>"
+            );
+        }
+        html.append(
+            "\n<tr><td class=\"item\">PoR format</td>"
+            + "<td>" + runSettings.getSmsUpdate().getPorFormat() + "</td></tr>"
+        );
+        html.append(createTableFooter());
 
         // secret codes
         if (runSettings.getSecretCodes().isInclude3gScript() || runSettings.getSecretCodes().isInclude2gScript()) {
@@ -330,7 +356,7 @@ public class ReportServiceImpl implements ReportService {
                     html.append("<td class=\"ok\">PASSED</td></tr>");
                 else {
                     String[] messages = runSettings.getSecretCodes().getTestCodes3gMessage().split(";");
-                    html.append("<td class=\"error\">" + String.join("<br>", messages) + "</td></tr>");
+                    html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
                 }
             }
             else
@@ -341,7 +367,7 @@ public class ReportServiceImpl implements ReportService {
                     html.append("<td class=\"ok\">PASSED</td></tr>");
                 else {
                     String[] messages = runSettings.getSecretCodes().getTestCodes2gMessage().split(";");
-                    html.append("<td class=\"error\">" + String.join("<br>", messages) + "</td></tr>");
+                    html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
                 }
             }
             else
@@ -500,9 +526,34 @@ public class ReportServiceImpl implements ReportService {
             }
             html.append(createTableFooter());
         }
+        html.append("\n<div><h2>Other Tests</h2></div>");
+        if (runSettings.getCustomScriptsSection1().size() > 0)
+            printCustomScriptsReport(html, runSettings.getCustomScriptsSection1());
+        if (runSettings.getCustomScriptsSection2().size() > 0)
+            printCustomScriptsReport(html, runSettings.getCustomScriptsSection2());
+        if (runSettings.getCustomScriptsSection3().size() > 0)
+            printCustomScriptsReport(html, runSettings.getCustomScriptsSection3());
 
         html.append(createDocumentFooter());
         return html;
+    }
+
+    private void printCustomScriptsReport(StringBuilder htmlBuffer, List<CustomScript> customScripts) {
+        for (CustomScript customScript : customScripts) {
+            htmlBuffer.append("\n<div><h3>" + customScript.getDescription() + "</h3></div>");
+            htmlBuffer.append(createTableHeaderModule());
+            htmlBuffer.append("\n<tr><td class=\"item\">Test result</td>");
+            if (customScript.isRunCustomScriptOk()) htmlBuffer.append("<td class=\"ok\">PASSED</td></tr>");
+            else {
+                String[] messages = customScript.getRunCustomScriptMessage().split(";");
+                htmlBuffer.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
+            }
+            htmlBuffer.append(
+                "\n<tr><td class=\"item\">Script name</td>"
+                + "<td>" + customScript.getCustomScriptName() + "</td></tr>"
+            );
+            htmlBuffer.append(createTableFooter());
+        }
     }
 
     private String createDocumentHeader() {

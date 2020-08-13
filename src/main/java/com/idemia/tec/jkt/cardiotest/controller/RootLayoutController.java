@@ -30,6 +30,7 @@ import javax.smartcardio.TerminalFactory;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 @Component
@@ -238,7 +239,7 @@ public class RootLayoutController {
                     }
                     if (runFailures != 0) {
                         appendTextFlow(">> NOT OK\n", 1);
-                        appendTextFlow("Failures: " + runFailures + "\n\n");
+                        appendTextFlow("Module(s) with failure: " + runFailures + "\n\n");
                     }
                     if (runErrors == 0 & runFailures == 0)
                         appendTextFlow(">> OK\n\n", 0);
@@ -401,7 +402,33 @@ public class RootLayoutController {
                 runSettings.getRfmUsim().setTestRfmUsimExpandedModeMessage(errFailure);
             }
         }
+        if (runSettings.getCustomScriptsSection1().size() > 0)
+            setCustomScriptsTestStatus(module, runSettings.getCustomScriptsSection1());
+        if (runSettings.getCustomScriptsSection2().size() > 0)
+            setCustomScriptsTestStatus(module, runSettings.getCustomScriptsSection2());
+        if (runSettings.getCustomScriptsSection3().size() > 0)
+            setCustomScriptsTestStatus(module, runSettings.getCustomScriptsSection3());
         cardioConfigService.saveConfig(runSettings);
+    }
+
+    private void setCustomScriptsTestStatus(TestCase module, List<CustomScript> customScripts) {
+        for (CustomScript customScript : customScripts) {
+            if (module.getName().equals(getScriptBaseName(customScript.getCustomScriptName()))) {
+                customScript.setRunCustomScriptOk(true);
+                customScript.setRunCustomScriptMessage("OK");
+                String errFailure = "";
+                if (module.getError() != null) {
+                    customScript.setRunCustomScriptOk(false);
+                    errFailure += module.getError().replace("\n", ";");
+                    customScript.setRunCustomScriptMessage(errFailure);
+                }
+                if (module.getFailure() != null) {
+                    customScript.setRunCustomScriptOk(false);
+                    errFailure += module.getFailure().replace("\n", ";");
+                    customScript.setRunCustomScriptMessage(errFailure);
+                }
+            }
+        }
     }
 
     @FXML
@@ -818,6 +845,20 @@ public class RootLayoutController {
         if (style == 1)
             message.setStyle("-fx-fill: RED;-fx-font-weight:normal;");
         cardiotest.getTxtInterpretedLog().getChildren().add(message);
+    }
+
+    private String getScriptBaseName(String scriptName) {
+        if (getScriptExtension(scriptName).get().equals("cmd") || getScriptExtension(scriptName).get().equals("txt"))
+            return scriptName.substring(0, scriptName.length() - 4);
+        if (getScriptExtension(scriptName).get().equals("pcom"))
+            return scriptName.substring(0, scriptName.length() - 5);
+        return null;
+    }
+
+    private Optional<String> getScriptExtension(String scriptName) {
+        return Optional.ofNullable(scriptName)
+                .filter(f -> f.contains("."))
+                .map(f -> f.substring(scriptName.lastIndexOf(".") + 1));
     }
 
     public StatusBar getAppStatusBar() {

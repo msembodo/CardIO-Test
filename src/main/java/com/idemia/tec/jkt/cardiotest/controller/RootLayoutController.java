@@ -1,10 +1,7 @@
 package com.idemia.tec.jkt.cardiotest.controller;
 
 import com.idemia.tec.jkt.cardiotest.CardiotestApplication;
-import com.idemia.tec.jkt.cardiotest.model.AdvSaveVariable;
-import com.idemia.tec.jkt.cardiotest.model.RunSettings;
-import com.idemia.tec.jkt.cardiotest.model.SCP80Keyset;
-import com.idemia.tec.jkt.cardiotest.model.TestCase;
+import com.idemia.tec.jkt.cardiotest.model.*;
 import com.idemia.tec.jkt.cardiotest.response.TestSuiteResponse;
 import com.idemia.tec.jkt.cardiotest.service.CardioConfigService;
 import com.idemia.tec.jkt.cardiotest.service.ReportService;
@@ -33,6 +30,7 @@ import javax.smartcardio.TerminalFactory;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 @Component
@@ -45,6 +43,9 @@ public class RootLayoutController {
     private CardiotestApplication application;
     private TerminalFactory terminalFactory;
     private ObservableList<SCP80Keyset> scp80Keysets = FXCollections.observableArrayList();
+    private ObservableList<CustomScript> customScriptsSection1 = FXCollections.observableArrayList();
+    private ObservableList<CustomScript> customScriptsSection2 = FXCollections.observableArrayList();
+    private ObservableList<CustomScript> customScriptsSection3 = FXCollections.observableArrayList();
     private TestSuiteResponse tsResponse;
     private boolean runAtrOk;
     private boolean runDeltaTestOk;
@@ -182,8 +183,10 @@ public class RootLayoutController {
     private void handleMenuSaveSettings() {
         cardiotest.saveControlState();
         runSettings.setVariableMappings(application.getMappings());
-//        runSettings.setScp80Keysets(application.getScp80Keysets());
-        runSettings.setScp80Keysets(scp80Keysets); // TODO
+        runSettings.setScp80Keysets(scp80Keysets);
+        runSettings.setCustomScriptsSection1(customScriptsSection1);
+        runSettings.setCustomScriptsSection2(customScriptsSection2);
+        runSettings.setCustomScriptsSection3(customScriptsSection3);
         cardioConfigService.saveConfig(runSettings);
     }
 
@@ -245,7 +248,7 @@ public class RootLayoutController {
                     }
                     if (runFailures != 0) {
                         appendTextFlow(">> NOT OK\n", 1);
-                        appendTextFlow("Failures: " + runFailures + "\n\n");
+                        appendTextFlow("Module(s) with failure: " + runFailures + "\n\n");
                     }
                     if (runErrors == 0 & runFailures == 0)
                         appendTextFlow(">> OK\n\n", 0);
@@ -453,7 +456,35 @@ public class RootLayoutController {
                 runSettings.getRfmIsim().setTestRfmIsimExpandedModeMessage(errFailure);
             }
         }
+
+        if (runSettings.getCustomScriptsSection1().size() > 0)
+            setCustomScriptsTestStatus(module, runSettings.getCustomScriptsSection1());
+        if (runSettings.getCustomScriptsSection2().size() > 0)
+            setCustomScriptsTestStatus(module, runSettings.getCustomScriptsSection2());
+        if (runSettings.getCustomScriptsSection3().size() > 0)
+            setCustomScriptsTestStatus(module, runSettings.getCustomScriptsSection3());
+
         cardioConfigService.saveConfig(runSettings);
+    }
+
+    private void setCustomScriptsTestStatus(TestCase module, List<CustomScript> customScripts) {
+        for (CustomScript customScript : customScripts) {
+            if (module.getName().equals(getScriptBaseName(customScript.getCustomScriptName()))) {
+                customScript.setRunCustomScriptOk(true);
+                customScript.setRunCustomScriptMessage("OK");
+                String errFailure = "";
+                if (module.getError() != null) {
+                    customScript.setRunCustomScriptOk(false);
+                    errFailure += module.getError().replace("\n", ";");
+                    customScript.setRunCustomScriptMessage(errFailure);
+                }
+                if (module.getFailure() != null) {
+                    customScript.setRunCustomScriptOk(false);
+                    errFailure += module.getFailure().replace("\n", ";");
+                    customScript.setRunCustomScriptMessage(errFailure);
+                }
+            }
+        }
     }
 
     @FXML
@@ -1016,6 +1047,20 @@ public class RootLayoutController {
         cardiotest.getTxtInterpretedLog().getChildren().add(message);
     }
 
+    private String getScriptBaseName(String scriptName) {
+        if (getScriptExtension(scriptName).get().equals("cmd") || getScriptExtension(scriptName).get().equals("txt"))
+            return scriptName.substring(0, scriptName.length() - 4);
+        if (getScriptExtension(scriptName).get().equals("pcom"))
+            return scriptName.substring(0, scriptName.length() - 5);
+        return null;
+    }
+
+    private Optional<String> getScriptExtension(String scriptName) {
+        return Optional.ofNullable(scriptName)
+                .filter(f -> f.contains("."))
+                .map(f -> f.substring(scriptName.lastIndexOf(".") + 1));
+    }
+
     public StatusBar getAppStatusBar() {
         return appStatusBar;
     }
@@ -1074,6 +1119,18 @@ public class RootLayoutController {
 
     public ObservableList<SCP80Keyset> getScp80Keysets() {
         return scp80Keysets;
+    }
+
+    public ObservableList<CustomScript> getCustomScriptsSection1() {
+        return customScriptsSection1;
+    }
+
+    public ObservableList<CustomScript> getCustomScriptsSection2() {
+        return customScriptsSection2;
+    }
+
+    public ObservableList<CustomScript> getCustomScriptsSection3() {
+        return customScriptsSection3;
     }
 
 }

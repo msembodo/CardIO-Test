@@ -76,9 +76,18 @@ public class RunServiceImpl implements RunService {
         if (root.getRunSettings().getAtr().isIncludeAtr())
             runAllBuffer.append(addAtr(root.getRunSettings().getAtr()));
 
+        // custom scripts section 1
+        if (root.getRunSettings().getCustomScriptsSection1().size() > 0)
+            runAllBuffer.append(addCustomScripts(root.getRunSettings().getCustomScriptsSection1()));
+
         // authentication
         if (root.getRunSettings().getAuthentication().isIncludeDeltaTest() || root.getRunSettings().getAuthentication().isIncludeSqnMax())
             runAllBuffer.append(addAuthentication(root.getRunSettings().getAuthentication()));
+
+        // custom scripts section 2
+        if (root.getRunSettings().getCustomScriptsSection2().size() > 0) {
+            runAllBuffer.append(addCustomScripts(root.getRunSettings().getCustomScriptsSection2()));
+        }
 
         // RFM USIM
         if (root.getRunSettings().getRfmUsim().isIncludeRfmUsim() ||
@@ -92,6 +101,10 @@ public class RunServiceImpl implements RunService {
                 root.getRunSettings().getRfmIsim().isIncludeRfmIsimUpdateRecord() ||
                 root.getRunSettings().getRfmIsim().isIncludeRfmIsimExpandedMode()) {
             runAllBuffer.append(addRfmIsim(root.getRunSettings().getRfmIsim()));
+        }
+        // custom scripts section 3
+        if (root.getRunSettings().getCustomScriptsSection3().size() > 0) {
+            runAllBuffer.append(addCustomScripts(root.getRunSettings().getCustomScriptsSection3()));
         }
 
         // secret codes
@@ -253,8 +266,6 @@ public class RunServiceImpl implements RunService {
     }
 
     private String addRfmUsim(RfmUsim rfmUsim) {
-        // TODO: options buffer (if required)
-
         StringBuilder rfmUsimRunAllString = new StringBuilder();
         rfmUsimRunAllString.append("; RFM USIM\n");
 
@@ -360,6 +371,16 @@ public class RunServiceImpl implements RunService {
         }
 
         return secretCodesRunAll.toString();
+    }
+
+    private String addCustomScripts(List<CustomScript> customScripts) {
+        StringBuilder csRunAllString = new StringBuilder();
+        for (CustomScript cScript : customScripts) {
+            csRunAllString.append("; " + cScript.getDescription() + "\n");
+            csRunAllString.append(".EXECUTE scripts\\" + cScript.getCustomScriptName() + " /PATH logs\n");
+            csRunAllString.append(".ALLUNDEFINE\n\n");
+        }
+        return csRunAllString.toString();
     }
 
     private TestSuite parseRunAllXml() {

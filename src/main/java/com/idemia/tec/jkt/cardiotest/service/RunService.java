@@ -14,6 +14,9 @@ public interface RunService {
     boolean runRfmGsm();
     boolean runRfmGsmUpdateRecord();
     boolean runRfmGsmExpandedMode();
+    boolean runRfmIsim();
+    boolean runRfmIsimUpdateRecord();
+    boolean runRfmIsimExpandedMode();
     boolean runSecretCodes3g();
     boolean runSecretCodes2g();
 

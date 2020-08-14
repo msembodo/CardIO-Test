@@ -25,6 +25,10 @@ public class RunSettings {
     private SmsUpdate smsUpdate;
     private RfmUsim rfmUsim;
     private RfmGsm rfmGsm;
+    private RfmIsim rfmIsim;
+    private List<CustomScript> customScriptsSection1;
+    private List<CustomScript> customScriptsSection2;
+    private List<CustomScript> customScriptsSection3;
 
     public RunSettings() {
     }
@@ -34,7 +38,9 @@ public class RunSettings {
                        String cardImageItemId, String customer, String developerName, String testerName,
                        List<VariableMapping> variableMappings, ATR atr, SecretCodes secretCodes,
                        CardParameters cardParameters, Authentication authentication, List<SCP80Keyset> scp80Keysets,
-                       SmsUpdate smsUpdate, RfmUsim rfmUsim, RfmGsm rfmGsm) {
+                       SmsUpdate smsUpdate, RfmUsim rfmUsim, RfmGsm rfmGsm, RfmIsim rfmIsim,
+                       List<CustomScript> customScriptsSection1, List<CustomScript> customScriptsSection2,
+                       List<CustomScript> customScriptsSection3) {
         this.projectPath = projectPath;
         this.advSaveVariablesPath = advSaveVariablesPath;
         this.readerNumber = readerNumber;
@@ -56,6 +62,10 @@ public class RunSettings {
         this.smsUpdate = smsUpdate;
         this.rfmUsim = rfmUsim;
         this.rfmGsm = rfmGsm;
+        this.rfmIsim = rfmIsim;
+        this.customScriptsSection1 = customScriptsSection1;
+        this.customScriptsSection2 = customScriptsSection2;
+        this.customScriptsSection3 = customScriptsSection3;
     }
 
     public String getProjectPath() {
@@ -225,4 +235,37 @@ public class RunSettings {
     public void setRfmGsm(RfmGsm rfmGsm) {
         this.rfmGsm = rfmGsm;
     }
+
+    public RfmIsim getRfmIsim() {
+        return rfmIsim;
+    }
+
+    public void setRfmIsim(RfmIsim rfmIsim) {
+        this.rfmIsim = rfmIsim;
+    }
+
+    public List<CustomScript> getCustomScriptsSection1() {
+        return customScriptsSection1;
+    }
+
+    public void setCustomScriptsSection1(List<CustomScript> customScriptsSection1) {
+        this.customScriptsSection1 = customScriptsSection1;
+    }
+
+    public List<CustomScript> getCustomScriptsSection2() {
+        return customScriptsSection2;
+    }
+
+    public void setCustomScriptsSection2(List<CustomScript> customScriptsSection2) {
+        this.customScriptsSection2 = customScriptsSection2;
+    }
+
+    public List<CustomScript> getCustomScriptsSection3() {
+        return customScriptsSection3;
+    }
+
+    public void setCustomScriptsSection3(List<CustomScript> customScriptsSection3) {
+        this.customScriptsSection3 = customScriptsSection3;
+    }
+
 }

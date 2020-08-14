@@ -1,6 +1,5 @@
 package com.idemia.tec.jkt.cardiotest.controller;
 
-import com.idemia.tec.jkt.cardiotest.CardiotestApplication;
 import com.idemia.tec.jkt.cardiotest.model.SCP80Keyset;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -307,7 +306,7 @@ public class RfmUsimController {
             // MSL integer shoould not be higher than 31 (0x1F)
             Alert mslAlert = new Alert(Alert.AlertType.ERROR);
             mslAlert.initModality(Modality.APPLICATION_MODAL);
-//            mslAlert.initOwner(application.getPrimaryStage());
+            mslAlert.initOwner(txtRfmUsimMslByte.getScene().getWindow());
             mslAlert.setTitle("Minimum Security Level");
             mslAlert.setHeaderText("Invalid MSL");
             mslAlert.setContentText("MSL value should not exceed '1F'");

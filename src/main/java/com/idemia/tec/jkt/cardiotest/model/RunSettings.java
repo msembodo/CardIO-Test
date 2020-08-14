@@ -24,6 +24,7 @@ public class RunSettings {
     private List<SCP80Keyset> scp80Keysets;
     private SmsUpdate smsUpdate;
     private RfmUsim rfmUsim;
+    private RfmIsim rfmIsim;
     private List<CustomScript> customScriptsSection1;
     private List<CustomScript> customScriptsSection2;
     private List<CustomScript> customScriptsSection3;
@@ -57,6 +58,7 @@ public class RunSettings {
         this.scp80Keysets = scp80Keysets;
         this.smsUpdate = smsUpdate;
         this.rfmUsim = rfmUsim;
+        this.rfmIsim = rfmIsim;
         this.customScriptsSection1 = customScriptsSection1;
         this.customScriptsSection2 = customScriptsSection2;
         this.customScriptsSection3 = customScriptsSection3;
@@ -220,6 +222,14 @@ public class RunSettings {
 
     public void setRfmUsim(RfmUsim rfmUsim) {
         this.rfmUsim = rfmUsim;
+    }
+
+    public RfmIsim getRfmIsim() {
+        return rfmIsim;
+    }
+
+    public void setRfmIsim(RfmIsim rfmIsim) {
+        this.rfmIsim = rfmIsim;
     }
 
     public List<CustomScript> getCustomScriptsSection1() {

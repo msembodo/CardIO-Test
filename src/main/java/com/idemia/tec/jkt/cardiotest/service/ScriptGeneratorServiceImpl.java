@@ -19,6 +19,8 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
     private AuthenticationService authenticationService;
     @Autowired
     private RfmUsimService rfmUsimService;
+    @Autowired
+    private RfmIsimService rfmIsimService;
 
     @Override
     public StringBuilder generateAtr() {
@@ -89,6 +91,43 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
 
         rfmUsimExpandedModeBuffer.append(".POWER_OFF\n");
         return rfmUsimExpandedModeBuffer;
+    }
+
+    @Override
+    public StringBuilder generateRfmIsim(RfmIsim rfmIsim) {
+        return rfmIsimService.generateRfmIsim(rfmIsim);
+    }
+
+    @Override
+    public StringBuilder generateRfmIsimUpdateRecord(RfmIsim rfmIsim) {
+        StringBuilder rfmIsimUpdateRecordBuffer = new StringBuilder();
+        rfmIsimUpdateRecordBuffer.append(
+                ".CALL Mapping.txt /LIST_OFF\n"
+                        + ".CALL Options.txt /LIST_OFF\n\n"
+                        + ".POWER_ON\n"
+        );
+
+        // TODO
+        rfmIsimUpdateRecordBuffer.append("; TODO\n\n");
+
+        rfmIsimUpdateRecordBuffer.append(".POWER_OFF\n");
+        return rfmIsimUpdateRecordBuffer;
+    }
+
+    @Override
+    public StringBuilder generateRfmIsimExpandedMode(RfmIsim rfmIsim) {
+        StringBuilder rfmIsimExpandedModeBuffer = new StringBuilder();
+        rfmIsimExpandedModeBuffer.append(
+                ".CALL Mapping.txt /LIST_OFF\n"
+                        + ".CALL Options.txt /LIST_OFF\n\n"
+                        + ".POWER_ON\n"
+        );
+
+        // TODO
+        rfmIsimExpandedModeBuffer.append("; TODO\n\n");
+
+        rfmIsimExpandedModeBuffer.append(".POWER_OFF\n");
+        return rfmIsimExpandedModeBuffer;
     }
 
     @Override

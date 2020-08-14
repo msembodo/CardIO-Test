@@ -24,6 +24,7 @@ public class RfmIsim {
     private boolean testRfmIsimExpandedModeOk;
     private String testRfmIsimExpandedModeMessage;
 
+// footage from master using rebase <<<<<<< HEAD
     public RfmIsim() {}
 
     public RfmIsim(boolean includeRfmIsim, boolean includeRfmIsimUpdateRecord, boolean includeRfmIsimExpandedMode,
@@ -216,4 +217,8 @@ public class RfmIsim {
         this.testRfmIsimExpandedModeMessage = testRfmIsimExpandedModeMessage;
     }
 
+//=======
+//Start to create RFM ISIM model
+// test to pull by local master
+//This footage to merge this commit with master using rebase>>>>>>> b2c94f4... test pull by local master
 }

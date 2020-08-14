@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class SCP80Keyset {
+public class   SCP80Keyset {
 
     private StringProperty keysetName;
     private int keysetVersion;

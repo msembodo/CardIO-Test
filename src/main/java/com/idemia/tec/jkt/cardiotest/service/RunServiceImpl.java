@@ -87,6 +87,13 @@ public class RunServiceImpl implements RunService {
             runAllBuffer.append(addRfmUsim(root.getRunSettings().getRfmUsim()));
         }
 
+        //Custom RFM --------------------------------------
+        if (root.getRunSettings().getRfmCustom().isIncludeRfmCustom() ||
+                root.getRunSettings().getRfmCustom().isIncludeRfmCustomUpdateRecord() ||
+                root.getRunSettings().getRfmCustom().isIncludeRfmCustomExpandedMode()) {
+            runAllBuffer.append(addRfmCustom(root.getRunSettings().getRfmCustom()));
+        }
+
         // secret codes
         if (root.getRunSettings().getSecretCodes().isInclude3gScript() || root.getRunSettings().getSecretCodes().isInclude2gScript())
             runAllBuffer.append(addSecretCodes(root.getRunSettings().getSecretCodes()));
@@ -286,6 +293,52 @@ public class RunServiceImpl implements RunService {
         return rfmUsimRunAllString.toString();
     }
 
+
+    //Custom RFM --------------------------------------
+
+    private String addRfmCustom(RfmCustom rfmCustom) {
+        // TODO: options buffer (if required)
+
+        StringBuilder rfmCustomRunAllString = new StringBuilder();
+        rfmCustomRunAllString.append("; RFM CUSTOM\n");
+
+        // add RFM CUSTOM script to structure
+
+        if (rfmCustom.isIncludeRfmCustom()) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RFM_CUSTOM.txt"))) {
+                bw.append(scriptGenerator.generateRfmCustom(rfmCustom));
+            } catch (IOException e) {
+                logger.error("Failed writing RFM_CUSTOM script");
+            }
+            rfmCustomRunAllString.append(".EXECUTE scripts\\RFM_CUSTOM.txt /PATH logs\n");
+            rfmCustomRunAllString.append(".ALLUNDEFINE\n\n");
+        }
+
+        if (rfmCustom.isIncludeRfmCustomUpdateRecord()) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RFM_CUSTOM_UpdateRecord.txt"))) {
+                bw.append(scriptGenerator.generateRfmCustomUpdateRecord(rfmCustom));
+            } catch (IOException e) {
+                logger.error("Failed writing RFM_CUSTOM_UpdateRecord script");
+            }
+            rfmCustomRunAllString.append(".EXECUTE scripts\\RFM_CUSTOM_UpdateRecord.txt /PATH logs\n");
+            rfmCustomRunAllString.append(".ALLUNDEFINE\n\n");
+        }
+
+        if (rfmCustom.isIncludeRfmCustomExpandedMode()) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RFM_CUSTOM_3G_ExpandedMode.txt"))) {
+                bw.append(scriptGenerator.generateRfmCustomExpandedMode(rfmCustom));
+            } catch (IOException e) {
+                logger.error("Failed writing RFM_CUSTOM_3G_ExpandedMode script");
+            }
+            rfmCustomRunAllString.append(".EXECUTE scripts\\RFM_CUSTOM_3G_ExpandedMode.txt /PATH logs\n");
+            rfmCustomRunAllString.append(".ALLUNDEFINE\n\n");
+        }
+
+        return rfmCustomRunAllString.toString();
+    }
+
+    // ------------------------------------------------
+
     private String addSecretCodes(SecretCodes secretCodes) {
         StringBuilder secretCodesRunAll = new StringBuilder();
         secretCodesRunAll.append("; Secret Codes\n");
@@ -405,6 +458,29 @@ public class RunServiceImpl implements RunService {
         runShellCommand("pcomconsole", scriptsDirectory + "RFM_USIM_3G_ExpandedMode.txt");
         return exitVal == 0;
     }
+
+    //Custom RFM --------------------------------------
+
+    @Override
+    public boolean runRfmCustom() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "RFM_CUSTOM.txt");
+        return exitVal == 0;
+    }
+    @Override
+    public boolean runRfmCustomUpdateRecord() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "RFM_CUSTOM_UpdateRecord.txt");
+        return exitVal == 0;
+    }
+    @Override
+    public boolean runRfmCustomExpandedMode() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "RFM_CUSTOM_3G_ExpandedMode.txt");
+        return exitVal == 0;
+    }
+
+    // ------------------------------------------------
 
     @Override
     public boolean runSecretCodes3g() {

@@ -12,9 +12,11 @@ public class CardParameters {
     private String csimAid;
     private String dfCsim;
 
+
+
     public CardParameters() {}
 
-    public CardParameters(String cardManagerAid, String usimAid, String dfUsim, String dfGsmAccess, String dfTelecom, String isimAid, String dfIsim, String csimAid, String dfCsim) {
+    public CardParameters(String cardManagerAid, String usimAid, String dfUsim, String dfGsmAccess, String dfTelecom, String isimAid, String dfIsim, String csimAid, String dfCsim ) {
         this.cardManagerAid = cardManagerAid;
         this.usimAid = usimAid;
         this.dfUsim = dfUsim;
@@ -24,6 +26,7 @@ public class CardParameters {
         this.dfIsim = dfIsim;
         this.csimAid = csimAid;
         this.dfCsim = dfCsim;
+
     }
 
     public String getCardManagerAid() {
@@ -37,18 +40,16 @@ public class CardParameters {
     public String getUsimAid() {
         return usimAid;
     }
-
     public void setUsimAid(String usimAid) {
         this.usimAid = usimAid;
     }
-
     public String getDfUsim() {
         return dfUsim;
     }
-
     public void setDfUsim(String dfUsim) {
         this.dfUsim = dfUsim;
     }
+
 
     public String getDfGsmAccess() {
         return dfGsmAccess;

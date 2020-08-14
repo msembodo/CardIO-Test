@@ -20,6 +20,11 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
     @Autowired
     private RfmUsimService rfmUsimService;
 
+    //Custom RFM --------------------------------------
+    @Autowired
+    private RfmCustomService rfmCustomService;
+    // ------------------------------------------------
+
     @Override
     public StringBuilder generateAtr() {
         String composeAtrScript = ".CALL Mapping.txt\n"
@@ -100,5 +105,33 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
     public StringBuilder generateSecretCodes3g(SecretCodes secretCodes) {
         return secretCodesService.generateSecretCodes3g(secretCodes);
     }
+
+    //Custom RFM --------------------------------------
+    @Override
+    public StringBuilder generateRfmCustom(RfmCustom rfmCustom) {
+        return rfmCustomService.generateRfmCustom(rfmCustom);
+    }
+
+    @Override
+    public StringBuilder generateRfmCustomUpdateRecord(RfmCustom rfmCustom) {
+        return rfmCustomService.generateRfmCustomUpdateRecord(rfmCustom);
+    }
+
+    @Override
+    public StringBuilder generateRfmCustomExpandedMode(RfmCustom rfmCustom) {
+        StringBuilder rfmCustomExpandedModeBuffer = new StringBuilder();
+        rfmCustomExpandedModeBuffer.append(
+                ".CALL Mapping.txt /LIST_OFF\n"
+                        + ".CALL Options.txt /LIST_OFF\n\n"
+                        + ".POWER_ON\n"
+        );
+
+        // TODO
+        rfmCustomExpandedModeBuffer.append("; TODO\n\n");
+
+        rfmCustomExpandedModeBuffer.append(".POWER_OFF\n");
+        return rfmCustomExpandedModeBuffer;
+    }
+    // ------------------------------------------------
 
 }

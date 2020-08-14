@@ -52,8 +52,16 @@ public class RootLayoutController {
     private boolean runRfmUsimOk;
     private boolean runRfmUsimUpdateRecordOk;
     private boolean runRfmUsimExpandedModeOk;
+
+    //Custom RFM --------------------------------------
+    private boolean runRfmCustomOk;
+    private boolean runRfmCustomUpdateRecordOk;
+    private boolean runRfmCustomExpandedModeOk;
+
     private boolean runCodes3gOk;
     private boolean runCodes2gOk;
+
+
 
     @Autowired
     private CardiotestController cardiotest;
@@ -81,10 +89,20 @@ public class RootLayoutController {
     private MenuItem menuRfmUsimUpdateRecord;
     @FXML
     private MenuItem menuRfmUsimExpandedMode;
+
+    //Custom RFM --------------------------------------
+    @FXML
+    private MenuItem menuRfmCustom;
+    @FXML
+    private MenuItem menuRfmCustomUpdateRecord;
+    @FXML
+    private MenuItem menuRfmCustomExpandedMode;
+
     @FXML
     private MenuItem menuCodes3g;
     @FXML
     private MenuItem menuCodes2g;
+
 
     private StatusBar appStatusBar;
     private Label lblTerminalInfo;
@@ -399,6 +417,54 @@ public class RootLayoutController {
                 runSettings.getRfmUsim().setTestRfmUsimExpandedModeMessage(errFailure);
             }
         }
+
+        //Custom RFM --------------------------------------
+        if (module.getName().equals("RFM_CUSTOM")) {
+            runSettings.getRfmCustom().setTestRfmCustomOk(true);
+            runSettings.getRfmCustom().setTestRfmCustomMessage("OK");
+            String errFailure = "";
+            if (module.getError() != null) {
+                runSettings.getRfmCustom().setTestRfmCustomOk(false);
+                errFailure += module.getError().replace("\n", ";");
+                runSettings.getRfmCustom().setTestRfmCustomMessage(errFailure);
+            }
+            if (module.getFailure() != null) {
+                runSettings.getRfmCustom().setTestRfmCustomOk(false);
+                errFailure += module.getFailure().replace("\n", ";");
+                runSettings.getRfmCustom().setTestRfmCustomMessage(errFailure);
+            }
+        }
+        if (module.getName().equals("RFM_CUSTOM_UpdateRecord")) {
+            runSettings.getRfmCustom().setTestRfmCustomUpdateRecordOk(true);
+            runSettings.getRfmCustom().setTestRfmCustomUpdateRecordMessage("OK");
+            String errFailure = "";
+            if (module.getError() != null) {
+                runSettings.getRfmCustom().setTestRfmCustomUpdateRecordOk(false);
+                errFailure += module.getError().replace("\n", ";");
+                runSettings.getRfmCustom().setTestRfmCustomUpdateRecordMessage(errFailure);
+            }
+            if (module.getFailure() != null) {
+                runSettings.getRfmCustom().setTestRfmCustomUpdateRecordOk(false);
+                errFailure += module.getFailure().replace("\n", ";");
+                runSettings.getRfmCustom().setTestRfmCustomUpdateRecordMessage(errFailure);
+            }
+        }
+        if (module.getName().equals("RFM_CUSTOM_3G_ExpandedMode")) {
+            runSettings.getRfmCustom().setTestRfmCustomExpandedModeOk(true);
+            runSettings.getRfmCustom().setTestRfmCustomExpandedModeMessage("OK");
+            String errFailure = "";
+            if (module.getError() != null) {
+                runSettings.getRfmCustom().setTestRfmCustomExpandedModeOk(false);
+                errFailure += module.getError().replace("\n", ";");
+                runSettings.getRfmCustom().setTestRfmCustomExpandedModeMessage(errFailure);
+            }
+            if (module.getFailure() != null) {
+                runSettings.getRfmCustom().setTestRfmCustomExpandedModeOk(false);
+                errFailure += module.getFailure().replace("\n", ";");
+                runSettings.getRfmCustom().setTestRfmCustomExpandedModeMessage(errFailure);
+            }
+        }
+
         cardioConfigService.saveConfig(runSettings);
     }
 
@@ -693,6 +759,149 @@ public class RootLayoutController {
         runRfmUsimExpandedModeThread.start();
     }
 
+    //Custom RFM --------------------------------------
+    @FXML
+    private void handleMenuRfmCustom() {
+        handleMenuSaveSettings();
+        // make user wait as verification executes
+        cardiotest.getMaskerPane().setText("Executing RFM_CUSTOM. Please wait..");
+        // display masker pane
+        cardiotest.getMaskerPane().setVisible(true);
+        menuBar.setDisable(true);
+        appStatusBar.setDisable(true);
+
+        cardiotest.getTxtInterpretedLog().getChildren().clear();
+        appendTextFlow("Executing RFM_CUSTOM..\n\n");
+
+        // use threads to avoid application freeze
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                runRfmCustomOk = runService.runRfmCustom();
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                cardiotest.getMaskerPane().setVisible(false);
+                menuBar.setDisable(false);
+                appStatusBar.setDisable(false);
+                // update status bar
+                if (runRfmCustomOk) {
+                    appStatusBar.setText("Executed RFM_CUSTOM: OK");
+                    Notifications.create().title("CardIO").text("Executed RFM_CUSTOM: OK").showInformation();
+                    appendTextFlow(">> OK\n\n", 0);
+                }
+                else {
+                    appStatusBar.setText("Executed RFM_CUSTOM: NOK");
+                    Notifications.create().title("CardIO").text("Executed RFM_CUSTOM: NOK").showError();
+                    appendTextFlow(">> NOT OK\n", 1);
+                }
+                // display commmand-response
+                cardiotest.getTxtCommandResponse().setDisable(false);
+                String logFileName = runSettings.getProjectPath() + "\\scripts\\RFM_CUSTOM.L00";
+                showCommandResponseLog(logFileName);
+            }
+        };
+        Thread runRfmCustomThread = new Thread(task);
+        runRfmCustomThread.start();
+    }
+    @FXML
+    private void handleMenuRfmCustomUpdateRecord() {
+        handleMenuSaveSettings();
+        // make user wait as verification executes
+        cardiotest.getMaskerPane().setText("Executing RFM_CUSTOM_UpdateRecord. Please wait..");
+        // display masker pane
+        cardiotest.getMaskerPane().setVisible(true);
+        menuBar.setDisable(true);
+        appStatusBar.setDisable(true);
+
+        cardiotest.getTxtInterpretedLog().getChildren().clear();
+        appendTextFlow("Executing RFM_CUSTOM_UpdateRecord..\n\n");
+
+        // use threads to avoid application freeze
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                runRfmCustomUpdateRecordOk = runService.runRfmCustomUpdateRecord();
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                cardiotest.getMaskerPane().setVisible(false);
+                menuBar.setDisable(false);
+                appStatusBar.setDisable(false);
+                // update status bar
+                if (runRfmCustomUpdateRecordOk) {
+                    appStatusBar.setText("Executed RFM_CUSTOM_UpdateRecord: OK");
+                    Notifications.create().title("CardIO").text("Executed RFM_CUSTOM_UpdateRecord: OK").showInformation();
+                    appendTextFlow(">> OK\n\n", 0);
+                }
+                else {
+                    appStatusBar.setText("Executed RFM_CUSTOM_UpdateRecord: NOK");
+                    Notifications.create().title("CardIO").text("Executed RFM_CUSTOM_UpdateRecord: NOK").showError();
+                    appendTextFlow(">> NOT OK\n", 1);
+                }
+                // display commmand-response
+                cardiotest.getTxtCommandResponse().setDisable(false);
+                String logFileName = runSettings.getProjectPath() + "\\scripts\\RFM_CUSTOM_UpdateRecord.L00";
+                showCommandResponseLog(logFileName);
+            }
+        };
+        Thread runRfmCustomUpdateRecordThread = new Thread(task);
+        runRfmCustomUpdateRecordThread.start();
+    }
+    @FXML
+    private void handleMenuRfmCustomExpandedMode() {
+        handleMenuSaveSettings();
+        // make user wait as verification executes
+        cardiotest.getMaskerPane().setText("Executing RFM_CUSTOM_3G_ExpandedMode. Please wait..");
+        // display masker pane
+        cardiotest.getMaskerPane().setVisible(true);
+        menuBar.setDisable(true);
+        appStatusBar.setDisable(true);
+
+        cardiotest.getTxtInterpretedLog().getChildren().clear();
+        appendTextFlow("Executing RFM_CUSTOM_3G_ExpandedMode..\n\n");
+
+        // use threads to avoid application freeze
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                runRfmCustomExpandedModeOk = runService.runRfmCustomExpandedMode();
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                cardiotest.getMaskerPane().setVisible(false);
+                menuBar.setDisable(false);
+                appStatusBar.setDisable(false);
+                // update status bar
+                if (runRfmCustomExpandedModeOk) {
+                    appStatusBar.setText("Executed RFM_CUSTOM_3G_ExpandedMode: OK");
+                    Notifications.create().title("CardIO").text("Executed RFM_CUSTOM_3G_ExpandedMode: OK").showInformation();
+                    appendTextFlow(">> OK\n\n", 0);
+                }
+                else {
+                    appStatusBar.setText("Executed RFM_CUSTOM_3G_ExpandedMode: NOK");
+                    Notifications.create().title("CardIO").text("Executed RFM_CUSTOM_3G_ExpandedMode: NOK").showError();
+                    appendTextFlow(">> NOT OK\n", 1);
+                }
+                // display commmand-response
+                cardiotest.getTxtCommandResponse().setDisable(false);
+                String logFileName = runSettings.getProjectPath() + "\\scripts\\RFM_CUSTOM_3G_ExpandedMode.L00";
+                showCommandResponseLog(logFileName);
+            }
+        };
+        Thread runRfmCustomExpandedModeThread = new Thread(task);
+        runRfmCustomExpandedModeThread.start();
+    }
+
     @FXML
     private void handleMenuCodes3g() {
         handleMenuSaveSettings();
@@ -854,6 +1063,17 @@ public class RootLayoutController {
         return menuRfmUsimExpandedMode;
     }
 
+    //Custom RFM --------------------------------------
+    public MenuItem getMenuRfmCustom() {
+        return menuRfmCustom;
+    }
+    public MenuItem getMenuRfmCustomUpdateRecord() {
+        return menuRfmCustomUpdateRecord;
+    }
+    public MenuItem getMenuRfmCustomExpandedMode() {
+        return menuRfmCustomExpandedMode;
+    }
+
     public MenuItem getMenuCodes3g() {
         return menuCodes3g;
     }
@@ -865,5 +1085,9 @@ public class RootLayoutController {
     public ObservableList<SCP80Keyset> getScp80Keysets() {
         return scp80Keysets;
     }
+
+
+
+
 
 }

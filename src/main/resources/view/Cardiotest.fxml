@@ -393,6 +393,11 @@
                                 <fx:include source="RfmUsim.fxml"></fx:include>
                               </content>
                             </Tab>
+                            <Tab closable="false" text="RFM CUSTOM">
+                              <content>
+                                <fx:include source="RfmCustom.fxml"></fx:include>
+                              </content>
+                            </Tab>
                             <Tab closable="false" text="RFM ISIM">
                               <content>
                                 <fx:include source="RfmIsim.fxml"></fx:include>
@@ -401,11 +406,6 @@
                             <Tab closable="false" text="Secret Codes">
                               <content>
                                 <fx:include source="SecretCodes.fxml"></fx:include>
-                              </content>
-                            </Tab>
-                            <Tab closable="false" text="Custom Test">
-                              <content>
-                                <fx:include source="CustomTest.fxml"></fx:include>
                               </content>
                             </Tab>
                           </tabs>

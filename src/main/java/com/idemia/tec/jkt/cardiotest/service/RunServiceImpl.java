@@ -76,9 +76,18 @@ public class RunServiceImpl implements RunService {
         if (root.getRunSettings().getAtr().isIncludeAtr())
             runAllBuffer.append(addAtr(root.getRunSettings().getAtr()));
 
+        // custom scripts section 1
+        if (root.getRunSettings().getCustomScriptsSection1().size() > 0)
+            runAllBuffer.append(addCustomScripts(root.getRunSettings().getCustomScriptsSection1()));
+
         // authentication
         if (root.getRunSettings().getAuthentication().isIncludeDeltaTest() || root.getRunSettings().getAuthentication().isIncludeSqnMax())
             runAllBuffer.append(addAuthentication(root.getRunSettings().getAuthentication()));
+
+        // custom scripts section 2
+        if (root.getRunSettings().getCustomScriptsSection2().size() > 0) {
+            runAllBuffer.append(addCustomScripts(root.getRunSettings().getCustomScriptsSection2()));
+        }
 
         // RFM USIM
         if (root.getRunSettings().getRfmUsim().isIncludeRfmUsim() ||
@@ -92,6 +101,18 @@ public class RunServiceImpl implements RunService {
                 root.getRunSettings().getRfmGsm().isIncludeRfmGsmUpdateRecord() ||
                 root.getRunSettings().getRfmGsm().isIncludeRfmGsmExpandedMode()) {
             runAllBuffer.append(addRfmGsm(root.getRunSettings().getRfmGsm()));
+        }
+
+        // RFM ISIM
+        if (root.getRunSettings().getRfmIsim().isIncludeRfmIsim() ||
+                root.getRunSettings().getRfmIsim().isIncludeRfmIsimUpdateRecord() ||
+                root.getRunSettings().getRfmIsim().isIncludeRfmIsimExpandedMode()) {
+            runAllBuffer.append(addRfmIsim(root.getRunSettings().getRfmIsim()));
+        }
+
+        // custom scripts section 3
+        if (root.getRunSettings().getCustomScriptsSection3().size() > 0) {
+            runAllBuffer.append(addCustomScripts(root.getRunSettings().getCustomScriptsSection3()));
         }
 
         // secret codes
@@ -253,8 +274,6 @@ public class RunServiceImpl implements RunService {
     }
 
     private String addRfmUsim(RfmUsim rfmUsim) {
-        // TODO: options buffer (if required)
-
         StringBuilder rfmUsimRunAllString = new StringBuilder();
         rfmUsimRunAllString.append("; RFM USIM\n");
 
@@ -334,6 +353,47 @@ public class RunServiceImpl implements RunService {
         return rfmGsmRunAllString.toString();
     }
 
+    private String addRfmIsim(RfmIsim rfmIsim) {
+        // TODO: options buffer (if required)
+
+        StringBuilder rfmIsimRunAllString = new StringBuilder();
+        rfmIsimRunAllString.append("; RFM ISIM\n");
+
+        // add RFM ISIM script to structure
+
+        if (rfmIsim.isIncludeRfmIsim()) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RFM_ISIM.txt"))) {
+                bw.append(scriptGenerator.generateRfmIsim(rfmIsim));
+            } catch (IOException e) {
+                logger.error("Failed writing RFM_ISIM script");
+            }
+            rfmIsimRunAllString.append(".EXECUTE scripts\\RFM_ISIM.txt /PATH logs\n");
+            rfmIsimRunAllString.append(".ALLUNDEFINE\n\n");
+        }
+
+        if (rfmIsim.isIncludeRfmIsimUpdateRecord()) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RFM_ISIM_UpdateRecord.txt"))) {
+                bw.append(scriptGenerator.generateRfmIsimUpdateRecord(rfmIsim));
+            } catch (IOException e) {
+                logger.error("Failed writing RFM_ISIM_UpdateRecord script");
+            }
+            rfmIsimRunAllString.append(".EXECUTE scripts\\RFM_ISIM_UpdateRecord.txt /PATH logs\n");
+            rfmIsimRunAllString.append(".ALLUNDEFINE\n\n");
+        }
+
+        if (rfmIsim.isIncludeRfmIsimExpandedMode()) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RFM_ISIM_3G_ExpandedMode.txt"))) {
+                bw.append(scriptGenerator.generateRfmIsimExpandedMode(rfmIsim));
+            } catch (IOException e) {
+                logger.error("Failed writing RFM_ISIM_3G_ExpandedMode script");
+            }
+            rfmIsimRunAllString.append(".EXECUTE scripts\\RFM_ISIM_3G_ExpandedMode.txt /PATH logs\n");
+            rfmIsimRunAllString.append(".ALLUNDEFINE\n\n");
+        }
+
+        return rfmIsimRunAllString.toString();
+    }
+
     private String addSecretCodes(SecretCodes secretCodes) {
         StringBuilder secretCodesRunAll = new StringBuilder();
         secretCodesRunAll.append("; Secret Codes\n");
@@ -360,6 +420,16 @@ public class RunServiceImpl implements RunService {
         }
 
         return secretCodesRunAll.toString();
+    }
+
+    private String addCustomScripts(List<CustomScript> customScripts) {
+        StringBuilder csRunAllString = new StringBuilder();
+        for (CustomScript cScript : customScripts) {
+            csRunAllString.append("; " + cScript.getDescription() + "\n");
+            csRunAllString.append(".EXECUTE scripts\\" + cScript.getCustomScriptName() + " /PATH logs\n");
+            csRunAllString.append(".ALLUNDEFINE\n\n");
+        }
+        return csRunAllString.toString();
     }
 
     private TestSuite parseRunAllXml() {
@@ -455,23 +525,44 @@ public class RunServiceImpl implements RunService {
     }
 
     @Override
+
     public boolean runRfmGsm() {
         composeScripts();
         runShellCommand("pcomconsole", scriptsDirectory + "RFM_GSM.txt");
         return exitVal == 0;
     }
 
+    public boolean runRfmIsim() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "RFM_ISIM.txt");
+        return exitVal == 0;
+    }
+
     @Override
+
     public boolean runRfmGsmUpdateRecord() {
         composeScripts();
         runShellCommand("pcomconsole", scriptsDirectory + "RFM_GSM_UpdateRecord.txt");
         return exitVal == 0;
     }
 
+    public boolean runRfmIsimUpdateRecord() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "RFM_ISIM_UpdateRecord.txt");
+        return exitVal == 0;
+    }
+
     @Override
+
     public boolean runRfmGsmExpandedMode() {
         composeScripts();
         runShellCommand("pcomconsole", scriptsDirectory + "RFM_GSM_3G_ExpandedMode.txt");
+        return exitVal == 0;
+    }
+
+    public boolean runRfmIsimExpandedMode() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "RFM_ISIM_3G_ExpandedMode.txt");
         return exitVal == 0;
     }
 

@@ -69,6 +69,7 @@ public class CardiotestController {
     @FXML private TextField txtCardManagerAid;
     @FXML private TextField txtUsimAid;
     @FXML private TextField txtDfUsim;
+    @FXML private TextField txtDfGsm;
     @FXML private TextField txtDfGsmAccess;
     @FXML private TextField txtDfTelecom;
     @FXML private TextField txtIsimAid;
@@ -114,6 +115,7 @@ public class CardiotestController {
     @Autowired private SecretCodesController secretCodesController;
     @Autowired private AuthenticationController authenticationController;
     @Autowired private RfmUsimController rfmUsimController;
+    @Autowired private RfmGsmController rfmGsmController;
     @Autowired private RfmIsimController rfmIsimController;
 
     public CardiotestController() {}
@@ -252,6 +254,7 @@ public class CardiotestController {
         txtCardManagerAid.setText(root.getRunSettings().getCardParameters().getCardManagerAid());
         txtUsimAid.setText(root.getRunSettings().getCardParameters().getUsimAid());
         txtDfUsim.setText(root.getRunSettings().getCardParameters().getDfUsim());
+        txtDfGsm.setText(root.getRunSettings().getCardParameters().getDfGsm());
         txtDfGsmAccess.setText(root.getRunSettings().getCardParameters().getDfGsmAccess());
         txtDfTelecom.setText(root.getRunSettings().getCardParameters().getDfTelecom());
         txtIsimAid.setText(root.getRunSettings().getCardParameters().getIsimAid());
@@ -639,6 +642,7 @@ public class CardiotestController {
         root.getRunSettings().getCardParameters().setCardManagerAid(txtCardManagerAid.getText());
         root.getRunSettings().getCardParameters().setUsimAid(txtUsimAid.getText());
         root.getRunSettings().getCardParameters().setDfUsim(txtDfUsim.getText());
+        root.getRunSettings().getCardParameters().setDfGsm(txtDfGsm.getText());
         root.getRunSettings().getCardParameters().setDfGsmAccess(txtDfGsmAccess.getText());
         root.getRunSettings().getCardParameters().setDfTelecom(txtDfTelecom.getText());
         root.getRunSettings().getCardParameters().setIsimAid(txtIsimAid.getText());
@@ -663,8 +667,12 @@ public class CardiotestController {
         // RFM USIM
         rfmUsimController.saveControlState();
 
+        // RFM GSM
+        rfmGsmController.saveControlState();
+
         // RFM Isim
         rfmIsimController.saveControlState();
+
     }
 
 }

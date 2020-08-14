@@ -112,6 +112,7 @@ public class RfmUsimService {
             rfmUsimBuffer.append(
                 "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
                 + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+                + "A0 A4 00 00 02 %DF_ID (9F22)\n"
                 + select2gWithAbsolutePath(rfmUsim.getCustomTargetEfBadCase())
                 + "A0 B0 00 00 01 (9000)\n"
                 + ".DEFINE %EF_CONTENT R\n"
@@ -379,7 +380,7 @@ public class RfmUsimService {
             "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
             + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
             + "A0 A4 00 00 02 %DF_ID (9F22)\n"
-            + "A0 A4 00 00 02 %EF_ID (9F0F)\n"
+            + "A0 A4 00 00 02 %EF_ID_ERR (9F0F)\n"
             + "A0 B0 00 00 01 [%EF_CONTENT] (9000)\n"
             + "\n; increment counter by one\n"
             + ".INCREASE_BUFFER L(04:05) 0001\n"

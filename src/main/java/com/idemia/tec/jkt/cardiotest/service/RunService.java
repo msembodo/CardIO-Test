@@ -11,6 +11,9 @@ public interface RunService {
     boolean runRfmUsim();
     boolean runRfmUsimUpdateRecord();
     boolean runRfmUsimExpandedMode();
+    boolean runRfmIsim();
+    boolean runRfmIsimUpdateRecord();
+    boolean runRfmIsimExpandedMode();
     boolean runSecretCodes3g();
     boolean runSecretCodes2g();
 

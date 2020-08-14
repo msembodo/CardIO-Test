@@ -116,8 +116,7 @@ public class CardiotestController {
     @Autowired private SecretCodesController secretCodesController;
     @Autowired private AuthenticationController authenticationController;
     @Autowired private RfmUsimController rfmUsimController;
-
-    //CUstom RFM --------------------------------------
+    @Autowired private RfmIsimController rfmIsimController;
     @Autowired private RfmCustomController rfmCustomController;
 
     public CardiotestController() {}
@@ -668,9 +667,13 @@ public class CardiotestController {
         // RFM USIM
         rfmUsimController.saveControlState();
 
+
         //Custom RFM --------------------------------------
         rfmCustomController.saveControlState();
 
+
+        // RFM Isim
+        rfmIsimController.saveControlState();
 
     }
 

@@ -34,8 +34,6 @@ public class CardiotestApplication extends Application {
 	private ObservableList<AdvSaveVariable> advSaveVariables = FXCollections.observableArrayList();
 	private ObservableList<VariableMapping> mappings = FXCollections.observableArrayList();
 
-//	private ObservableList<SCP80Keyset> scp80Keysets = FXCollections.observableArrayList();
-
 	@Autowired
 	private RootLayoutController root;
 
@@ -62,10 +60,6 @@ public class CardiotestApplication extends Application {
 	public ObservableList<VariableMapping> getMappings() {
 		return mappings;
 	}
-
-//	public ObservableList<SCP80Keyset> getScp80Keysets() {
-//		return scp80Keysets;
-//	}
 
 	@Override
 	public void init() throws Exception {

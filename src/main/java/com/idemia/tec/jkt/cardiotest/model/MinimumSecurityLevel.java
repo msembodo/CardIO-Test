@@ -30,7 +30,6 @@ public class MinimumSecurityLevel {
         if (authVerification.equals("Redundancy Check")) msl += 1;
         if (authVerification.equals("Cryptographic Checksum")) msl += 2;
         if (authVerification.equals("Digital Signature")) msl += 3;
-//        return String.format("%02X", msl);
         computedMsl = String.format("%02X", msl);
     }
 

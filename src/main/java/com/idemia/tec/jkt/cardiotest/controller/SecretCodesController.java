@@ -156,15 +156,8 @@ public class SecretCodesController {
     @FXML private void handleIsc3ContextMenu() { cmbIsc3.setItems(cardiotest.getMappedVariables()); }
     @FXML private void handleIsc4ContextMenu() { cmbIsc4.setItems(cardiotest.getMappedVariables()); }
 
-    @FXML private void handleInclude3gScriptCheck() {
-        if (chkInclude3gScript.isSelected()) root.getMenuCodes3g().setDisable(false);
-        else root.getMenuCodes3g().setDisable(true);
-    }
-
-    @FXML private void handleInclude2gScriptCheck() {
-        if (chkInclude2gScript.isSelected()) root.getMenuCodes2g().setDisable(false);
-        else root.getMenuCodes2g().setDisable(true);
-    }
+    @FXML private void handleInclude3gScriptCheck() { root.getMenuCodes3g().setDisable(!chkInclude3gScript.isSelected()); }
+    @FXML private void handleInclude2gScriptCheck() { root.getMenuCodes2g().setDisable(!chkInclude2gScript.isSelected()); }
 
     @FXML private void handleUseIsc2Check() {
         if (chkUseIsc2.isSelected()) {

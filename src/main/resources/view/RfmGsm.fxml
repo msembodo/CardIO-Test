@@ -60,7 +60,7 @@
                       <children>
                         <CheckBox fx:id="chkRfmGsmFullAccess" mnemonicParsing="false" onAction="#handleRfmGsmFullAccessCheck" text="Full access" />
                         <ComboBox fx:id="cmbRfmGsmCustomTargetAcc" onMouseClicked="#handleCustomTargetAccContextMenu" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <TextField fx:id="txtRfmGsmCustomTargetEf" prefHeight="31.0" prefWidth="144.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                        <TextField fx:id="txtRfmGsmCustomTargetEf" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                         <ComboBox fx:id="cmbRfmGsmCustomTargetAccBadCase" onMouseClicked="#handleCustomTargetAccBadCaseContextMenu" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                         <TextField fx:id="txtRfmGsmCustomTargetEfBadCase" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                         <Label fx:id="lblRfmGsmCustomTarget" text="EF" GridPane.rowIndex="1" />
@@ -118,21 +118,21 @@
                       </rowConstraints>
                       <children>
                         <Label text="MSL" />
-                        <TextField fx:id="txtRfmGsmMslByte" prefHeight="31.0" prefWidth="176.0" GridPane.columnIndex="1" />
-                        <Button mnemonicParsing="false" onAction="#handleButtonSetRfmGsmMsl" prefHeight="31.0" prefWidth="80.0" text="Set" GridPane.columnIndex="2" />
+                        <TextField fx:id="txtRfmGsmMslByte" prefWidth="176.0" GridPane.columnIndex="1" />
+                        <Button mnemonicParsing="false" onAction="#handleButtonSetRfmGsmMsl" prefWidth="80.0" text="Set" GridPane.columnIndex="2" />
                         <Label text="Cipher algorithm" GridPane.rowIndex="1" />
-                        <ComboBox fx:id="cmbRfmGsmCipherAlgo" prefHeight="31.0" prefWidth="254.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <ComboBox fx:id="cmbRfmGsmCipherAlgo" prefWidth="254.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         <CheckBox fx:id="chkRfmGsmUseCipher" mnemonicParsing="false" onAction="#handleRfmGsmUseCipherCheck" text="Use cipher" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                         <Label text="Authentication verification" GridPane.rowIndex="2" />
-                        <ComboBox fx:id="cmbRfmGsmAuthVerif" onAction="#handleRfmGsmAuthVerifSelection" prefHeight="31.0" prefWidth="254.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <ComboBox fx:id="cmbRfmGsmAuthVerif" onAction="#handleRfmGsmAuthVerifSelection" prefWidth="254.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                         <Label text="Signing algorithm" GridPane.rowIndex="3" />
-                        <ComboBox fx:id="cmbRfmGsmSigningAlgo" prefHeight="31.0" prefWidth="254.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <ComboBox fx:id="cmbRfmGsmSigningAlgo" prefWidth="254.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                         <Label text="Counter checking" GridPane.rowIndex="4" />
-                        <ComboBox fx:id="cmbRfmGsmCounterCheck" onAction="#handleRfmGsmCounterCheckingSelection" prefHeight="31.0" prefWidth="254.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <ComboBox fx:id="cmbRfmGsmCounterCheck" onAction="#handleRfmGsmCounterCheckingSelection" prefWidth="254.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                         <Label text="PoR requirement" GridPane.rowIndex="5" />
-                        <ComboBox fx:id="cmbRfmGsmPorRequirement" prefHeight="31.0" prefWidth="254.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                        <ComboBox fx:id="cmbRfmGsmPorRequirement" prefWidth="254.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                         <Label text="PoR security" GridPane.rowIndex="6" />
-                        <ComboBox fx:id="cmbRfmGsmPorSecurity" prefHeight="31.0" prefWidth="254.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                        <ComboBox fx:id="cmbRfmGsmPorSecurity" prefWidth="254.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                         <CheckBox fx:id="chkRfmGsmCipherPor" mnemonicParsing="false" text="Cipher PoR" GridPane.columnIndex="2" GridPane.rowIndex="6" />
                       </children>
                     </GridPane>

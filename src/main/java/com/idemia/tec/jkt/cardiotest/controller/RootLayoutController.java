@@ -62,48 +62,28 @@ public class RootLayoutController {
     private boolean runCodes3gOk;
     private boolean runCodes2gOk;
 
-    @Autowired
-    private CardiotestController cardiotest;
-    @Autowired
-    private CardioConfigService cardioConfigService;
-    @Autowired
-    private RunService runService;
-    @Autowired
-    private ReportService reportService;
+    @Autowired private CardiotestController cardiotest;
+    @Autowired private CardioConfigService cardioConfigService;
+    @Autowired private RunService runService;
+    @Autowired private ReportService reportService;
 
-    @FXML
-    private BorderPane rootBorderPane;
-    @FXML
-    private MenuBar menuBar;
+    @FXML private BorderPane rootBorderPane;
+    @FXML private MenuBar menuBar;
 
-    @FXML
-    private MenuItem menuAtr;
-    @FXML
-    private MenuItem menuDeltaTest;
-    @FXML
-    private MenuItem menuSqnMax;
-    @FXML
-    private MenuItem menuRfmUsim;
-    @FXML
-    private MenuItem menuRfmUsimUpdateRecord;
-    @FXML
-    private MenuItem menuRfmUsimExpandedMode;
-    @FXML
-    private MenuItem menuRfmGsm;
-    @FXML
-    private MenuItem menuRfmGsmUpdateRecord;
-    @FXML
-    private MenuItem menuRfmGsmExpandedMode;
-    @FXML
-    private MenuItem menuRfmIsim;
-    @FXML
-    private MenuItem menuRfmIsimUpdateRecord;
-    @FXML
-    private MenuItem menuRfmIsimExpandedMode;
-    @FXML
-    private MenuItem menuCodes3g;
-    @FXML
-    private MenuItem menuCodes2g;
+    @FXML private MenuItem menuAtr;
+    @FXML private MenuItem menuDeltaTest;
+    @FXML private MenuItem menuSqnMax;
+    @FXML private MenuItem menuRfmUsim;
+    @FXML private MenuItem menuRfmUsimUpdateRecord;
+    @FXML private MenuItem menuRfmUsimExpandedMode;
+    @FXML private MenuItem menuRfmGsm;
+    @FXML private MenuItem menuRfmGsmUpdateRecord;
+    @FXML private MenuItem menuRfmGsmExpandedMode;
+    @FXML private MenuItem menuRfmIsim;
+    @FXML private MenuItem menuRfmIsimUpdateRecord;
+    @FXML private MenuItem menuRfmIsimExpandedMode;
+    @FXML private MenuItem menuCodes3g;
+    @FXML private MenuItem menuCodes2g;
 
     private StatusBar appStatusBar;
     private Label lblTerminalInfo;
@@ -118,8 +98,7 @@ public class RootLayoutController {
         return runSettings;
     }
 
-    @FXML
-    private void initialize() {
+    @FXML private void initialize() {
         appStatusBar = new StatusBar();
         rootBorderPane.setBottom(appStatusBar);
 
@@ -146,14 +125,12 @@ public class RootLayoutController {
         }
     }
 
-    @FXML
-    private void handleMenuQuit() {
+    @FXML private void handleMenuQuit() {
         // quit application
         Platform.exit();
     }
 
-    @FXML
-    private void handleMenuLoadVariables() {
+    @FXML private void handleMenuLoadVariables() {
         // user select variable file
         FileChooser variableFileChooser = new FileChooser();
         variableFileChooser.setTitle("Select MCC exported variable file");
@@ -188,8 +165,7 @@ public class RootLayoutController {
         }
     }
 
-    @FXML
-    private void handleMenuSaveSettings() {
+    @FXML private void handleMenuSaveSettings() {
         cardiotest.saveControlState();
         runSettings.setVariableMappings(application.getMappings());
         runSettings.setScp80Keysets(scp80Keysets);
@@ -199,18 +175,15 @@ public class RootLayoutController {
         cardioConfigService.saveConfig(runSettings);
     }
 
-    @FXML
-    private void handleMenuSelectReader() {
+    @FXML private void handleMenuSelectReader() {
         application.showSelectReader();
     }
 
-    @FXML
-    private void handleMenuToolOptions() {
+    @FXML private void handleMenuToolOptions() {
         application.showToolOptions();
     }
 
-    @FXML
-    private void handleMenuRunAll() {
+    @FXML private void handleMenuRunAll() {
         handleMenuSaveSettings();
 
         // make user wait as verification executes
@@ -541,8 +514,7 @@ public class RootLayoutController {
         }
     }
 
-    @FXML
-    private void handleMenuAtr() {
+    @FXML private void handleMenuAtr() {
         handleMenuSaveSettings();
         // make user wait as verification executes
         cardiotest.getMaskerPane().setText("Executing ATR. Please wait..");
@@ -590,8 +562,7 @@ public class RootLayoutController {
         runAtrThread.start();
     }
 
-    @FXML
-    private void handleMenuDeltaTest() {
+    @FXML private void handleMenuDeltaTest() {
         handleMenuSaveSettings();
         // make user wait as verification executes
         cardiotest.getMaskerPane().setText("Executing MILLENAGE_DELTA_TEST. Please wait..");
@@ -639,8 +610,7 @@ public class RootLayoutController {
         runDeltaTestThread.start();
     }
 
-    @FXML
-    private void handleMenuSqnMax() {
+    @FXML private void handleMenuSqnMax() {
         handleMenuSaveSettings();
         // make user wait as verification executes
         cardiotest.getMaskerPane().setText("Executing MILLENAGE_SQN_MAX. Please wait..");
@@ -688,8 +658,7 @@ public class RootLayoutController {
         runSqnMaxThread.start();
     }
 
-    @FXML
-    private void handleMenuRfmUsim() {
+    @FXML private void handleMenuRfmUsim() {
         handleMenuSaveSettings();
         // make user wait as verification executes
         cardiotest.getMaskerPane().setText("Executing RFM_USIM. Please wait..");
@@ -736,8 +705,7 @@ public class RootLayoutController {
         runRfmUsimThread.start();
     }
 
-    @FXML
-    private void handleMenuRfmUsimUpdateRecord() {
+    @FXML private void handleMenuRfmUsimUpdateRecord() {
         handleMenuSaveSettings();
         // make user wait as verification executes
         cardiotest.getMaskerPane().setText("Executing RFM_USIM_UpdateRecord. Please wait..");
@@ -784,8 +752,7 @@ public class RootLayoutController {
         runRfmUsimUpdateRecordThread.start();
     }
 
-    @FXML
-    private void handleMenuRfmUsimExpandedMode() {
+    @FXML private void handleMenuRfmUsimExpandedMode() {
         handleMenuSaveSettings();
         // make user wait as verification executes
         cardiotest.getMaskerPane().setText("Executing RFM_USIM_3G_ExpandedMode. Please wait..");
@@ -832,8 +799,7 @@ public class RootLayoutController {
         runRfmUsimExpandedModeThread.start();
     }
 
-    @FXML
-    private void handleMenuRfmGsm() {
+    @FXML private void handleMenuRfmGsm() {
         handleMenuSaveSettings();
         // make user wait as verification executes
         cardiotest.getMaskerPane().setText("Executing RFM_Gsm. Please wait..");
@@ -880,8 +846,7 @@ public class RootLayoutController {
         runRfmGsmThread.start();
     }
 
-    @FXML
-    private void handleMenuRfmGsmUpdateRecord() {
+    @FXML private void handleMenuRfmGsmUpdateRecord() {
         handleMenuSaveSettings();
         // make user wait as verification executes
         cardiotest.getMaskerPane().setText("Executing RFM_Gsm_UpdateRecord. Please wait..");
@@ -928,8 +893,7 @@ public class RootLayoutController {
         runRfmGsmUpdateRecordThread.start();
     }
 
-    @FXML
-    private void handleMenuRfmGsmExpandedMode() {
+    @FXML private void handleMenuRfmGsmExpandedMode() {
         handleMenuSaveSettings();
         // make user wait as verification executes
         cardiotest.getMaskerPane().setText("Executing RFM_Gsm_3G_ExpandedMode. Please wait..");
@@ -975,8 +939,7 @@ public class RootLayoutController {
         runRfmGsmExpandedModeThread.start();
     }
 
-    @FXML
-    private void handleMenuRfmIsim() {
+    @FXML private void handleMenuRfmIsim() {
         handleMenuSaveSettings();
         // make user wait as verification executes
         cardiotest.getMaskerPane().setText("Executing RFM_ISIM. Please wait..");
@@ -1024,8 +987,7 @@ public class RootLayoutController {
         runRfmIsimThread.start();
     }
 
-    @FXML
-    private void handleMenuRfmIsimUpdateRecord() {
+    @FXML private void handleMenuRfmIsimUpdateRecord() {
         handleMenuSaveSettings();
         // make user wait as verification executes
         cardiotest.getMaskerPane().setText("Executing RFM_ISIM_UpdateRecord. Please wait..");
@@ -1072,8 +1034,7 @@ public class RootLayoutController {
         runRfmIsimUpdateRecordThread.start();
     }
 
-    @FXML
-    private void handleMenuRfmIsimExpandedMode() {
+    @FXML private void handleMenuRfmIsimExpandedMode() {
         handleMenuSaveSettings();
         // make user wait as verification executes
         cardiotest.getMaskerPane().setText("Executing RFM_ISIM_3G_ExpandedMode. Please wait..");
@@ -1121,8 +1082,7 @@ public class RootLayoutController {
         runRfmIsimExpandedModeThread.start();
     }
 
-    @FXML
-    private void handleMenuCodes3g() {
+    @FXML private void handleMenuCodes3g() {
         handleMenuSaveSettings();
         // make user wait as verification executes
         cardiotest.getMaskerPane().setText("Executing SecretCodes_3G. Please wait..");
@@ -1170,8 +1130,7 @@ public class RootLayoutController {
         runCodes3gThread.start();
     }
 
-    @FXML
-    private void handleMenuCodes2g() {
+    @FXML private void handleMenuCodes2g() {
         handleMenuSaveSettings();
         // make user wait as verification executes
         cardiotest.getMaskerPane().setText("Executing SecretCodes_2G. Please wait..");

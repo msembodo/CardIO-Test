@@ -8,8 +8,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthenticationService {
 
-    @Autowired
-    private RootLayoutController root;
+    @Autowired private RootLayoutController root;
 
     public StringBuilder generateMilenageDeltaTest(Authentication authentication) {
         StringBuilder deltaTestBuffer = new StringBuilder();

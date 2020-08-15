@@ -1,6 +1,5 @@
 package com.idemia.tec.jkt.cardiotest.controller;
 
-import com.idemia.tec.jkt.cardiotest.CardiotestApplication;
 import com.idemia.tec.jkt.cardiotest.model.SCP80Keyset;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -57,7 +56,6 @@ public class RfmGsmController {
         chkIncludeRfmGsm.setSelected(root.getRunSettings().getRfmGsm().isIncludeRfmGsm());
         handleIncludeRfmGsmCheck();
 
-        //System.out.print(root.getRunSettings().getRfmGsm());
         chkIncludeRfmGsmUpdateRecord.setSelected(root.getRunSettings().getRfmGsm().isIncludeRfmGsmUpdateRecord());
         handleIncludeRfmGsmUpdateRecordCheck();
 
@@ -202,26 +200,9 @@ public class RfmGsmController {
     @FXML private void handleCipherKeysetContextMenu() { cmbRfmGsmCipheringKeyset.setItems(cardiotest.getScp80KeysetLabels()); }
     @FXML private void handleAuthKeysetContextMenu() { cmbRfmGsmAuthKeyset.setItems(cardiotest.getScp80KeysetLabels()); }
 
-    @FXML private void handleIncludeRfmGsmCheck() {
-        if (chkIncludeRfmGsm.isSelected())
-            root.getMenuRfmGsm().setDisable(false);
-        else
-            root.getMenuRfmGsm().setDisable(true);
-    }
-
-    @FXML private void handleIncludeRfmGsmUpdateRecordCheck() {
-        if (chkIncludeRfmGsmUpdateRecord.isSelected())
-            root.getMenuRfmGsmUpdateRecord().setDisable(false);
-        else
-            root.getMenuRfmGsmUpdateRecord().setDisable(true);
-    }
-
-    @FXML private void handleIncludeRfmGsmExpandedModeCheck() {
-        if (chkIncludeRfmGsmExpandedMode.isSelected())
-            root.getMenuRfmGsmExpandedMode().setDisable(false);
-        else
-            root.getMenuRfmGsmExpandedMode().setDisable(true);
-    }
+    @FXML private void handleIncludeRfmGsmCheck() { root.getMenuRfmGsm().setDisable(!chkIncludeRfmGsm.isSelected()); }
+    @FXML private void handleIncludeRfmGsmUpdateRecordCheck() { root.getMenuRfmGsmUpdateRecord().setDisable(!chkIncludeRfmGsmUpdateRecord.isSelected()); }
+    @FXML private void handleIncludeRfmGsmExpandedModeCheck() { root.getMenuRfmGsmExpandedMode().setDisable(!chkIncludeRfmGsmExpandedMode.isSelected()); }
 
     @FXML private void handleRfmGsmFullAccessCheck() {
         if (chkRfmGsmFullAccess.isSelected()) {
@@ -286,29 +267,17 @@ public class RfmGsmController {
         }
     }
 
-    @FXML private void handleRfmGsmCustomKicCheck() {
-        if (chkRfmGsmCustomKic.isSelected())
-            txtRfmGsmCustomKic.setDisable(false);
-        else
-            txtRfmGsmCustomKic.setDisable(true);
-    }
-
-    @FXML private void handleRfmGsmCustomKidCheck() {
-        if (chkRfmGsmCustomKid.isSelected())
-            txtRfmGsmCustomKid.setDisable(false);
-        else
-            txtRfmGsmCustomKid.setDisable(true);
-    }
+    @FXML private void handleRfmGsmCustomKicCheck() { txtRfmGsmCustomKic.setDisable(!chkRfmGsmCustomKic.isSelected()); }
+    @FXML private void handleRfmGsmCustomKidCheck() { txtRfmGsmCustomKid.setDisable(!chkRfmGsmCustomKid.isSelected()); }
 
     @FXML private void handleButtonSetRfmGsmMsl() {
         String mslHexStr = txtRfmGsmMslByte.getText();
         int mslInteger = Integer.parseInt(mslHexStr, 16);
-//        logger.info("MSL integer: " + mslInteger);
         if (mslInteger > 31) {
             // MSL integer shoould not be higher than 31 (0x1F)
             Alert mslAlert = new Alert(Alert.AlertType.ERROR);
             mslAlert.initModality(Modality.APPLICATION_MODAL);
-//            mslAlert.initOwner(application.getPrimaryStage());
+            mslAlert.initOwner(txtRfmGsmMslByte.getScene().getWindow());
             mslAlert.setTitle("Minimum Security Level");
             mslAlert.setHeaderText("Invalid MSL");
             mslAlert.setContentText("MSL value should not exceed '1F'");
@@ -481,10 +450,7 @@ public class RfmGsmController {
     }
 
     @FXML private void handleRfmGsmUseCipherCheck() {
-        if (chkRfmGsmUseCipher.isSelected())
-            root.getRunSettings().getRfmGsm().getMinimumSecurityLevel().setUseCipher(true);
-        else
-            root.getRunSettings().getRfmGsm().getMinimumSecurityLevel().setUseCipher(false);
+        root.getRunSettings().getRfmGsm().getMinimumSecurityLevel().setUseCipher(chkRfmGsmUseCipher.isSelected());
         root.getRunSettings().getRfmGsm().getMinimumSecurityLevel().computeMsl();
         txtRfmGsmMslByte.setText(root.getRunSettings().getRfmGsm().getMinimumSecurityLevel().getComputedMsl());
     }
@@ -500,7 +466,6 @@ public class RfmGsmController {
         root.getRunSettings().getRfmGsm().getMinimumSecurityLevel().computeMsl();
         txtRfmGsmMslByte.setText(root.getRunSettings().getRfmGsm().getMinimumSecurityLevel().getComputedMsl());
     }
-
 
     public void saveControlState() {
         root.getRunSettings().getRfmGsm().setIncludeRfmGsm(chkIncludeRfmGsm.isSelected());

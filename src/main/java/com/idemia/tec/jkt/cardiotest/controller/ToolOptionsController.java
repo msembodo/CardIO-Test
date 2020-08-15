@@ -9,13 +9,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class ToolOptionsController {
 
-    @FXML
-    private CheckBox chkStopOnError;
+    @FXML private CheckBox chkStopOnError;
 
     private CardiotestApplication application;
 
-    @Autowired
-    private RootLayoutController root;
+    @Autowired private RootLayoutController root;
 
     public ToolOptionsController() {}
 
@@ -23,18 +21,15 @@ public class ToolOptionsController {
         this.application = application;
     }
 
-    @FXML
-    private void initialize() {
+    @FXML private void initialize() {
         chkStopOnError.setSelected(root.getRunSettings().isStopOnError());
     }
 
-    @FXML
-    private void handleButtonCancel() {
+    @FXML private void handleButtonCancel() {
         application.getToolOptionsDialogStage().close();
     }
 
-    @FXML
-    private void handleButtonOk() {
+    @FXML private void handleButtonOk() {
         root.getRunSettings().setStopOnError(chkStopOnError.isSelected());
         application.getToolOptionsDialogStage().close();
     }

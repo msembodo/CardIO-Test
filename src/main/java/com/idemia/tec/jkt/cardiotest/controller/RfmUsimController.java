@@ -200,26 +200,9 @@ public class RfmUsimController {
     @FXML private void handleCipherKeysetContextMenu() { cmbRfmUsimCipheringKeyset.setItems(cardiotest.getScp80KeysetLabels()); }
     @FXML private void handleAuthKeysetContextMenu() { cmbRfmUsimAuthKeyset.setItems(cardiotest.getScp80KeysetLabels()); }
 
-    @FXML private void handleIncludeRfmUsimCheck() {
-        if (chkIncludeRfmUsim.isSelected())
-            root.getMenuRfmUsim().setDisable(false);
-        else
-            root.getMenuRfmUsim().setDisable(true);
-    }
-
-    @FXML private void handleIncludeRfmUsimUpdateRecordCheck() {
-        if (chkIncludeRfmUsimUpdateRecord.isSelected())
-            root.getMenuRfmUsimUpdateRecord().setDisable(false);
-        else
-            root.getMenuRfmUsimUpdateRecord().setDisable(true);
-    }
-
-    @FXML private void handleIncludeRfmUsimExpandedModeCheck() {
-        if (chkIncludeRfmUsimExpandedMode.isSelected())
-            root.getMenuRfmUsimExpandedMode().setDisable(false);
-        else
-            root.getMenuRfmUsimExpandedMode().setDisable(true);
-    }
+    @FXML private void handleIncludeRfmUsimCheck() { root.getMenuRfmUsim().setDisable(!chkIncludeRfmUsim.isSelected()); }
+    @FXML private void handleIncludeRfmUsimUpdateRecordCheck() { root.getMenuRfmUsimUpdateRecord().setDisable(!chkIncludeRfmUsimUpdateRecord.isSelected()); }
+    @FXML private void handleIncludeRfmUsimExpandedModeCheck() { root.getMenuRfmUsimExpandedMode().setDisable(!chkIncludeRfmUsimExpandedMode.isSelected()); }
 
     @FXML private void handleRfmUsimFullAccessCheck() {
         if (chkRfmUsimFullAccess.isSelected()) {
@@ -284,24 +267,12 @@ public class RfmUsimController {
         }
     }
 
-    @FXML private void handleRfmUsimCustomKicCheck() {
-        if (chkRfmUsimCustomKic.isSelected())
-            txtRfmUsimCustomKic.setDisable(false);
-        else
-            txtRfmUsimCustomKic.setDisable(true);
-    }
-
-    @FXML private void handleRfmUsimCustomKidCheck() {
-        if (chkRfmUsimCustomKid.isSelected())
-            txtRfmUsimCustomKid.setDisable(false);
-        else
-            txtRfmUsimCustomKid.setDisable(true);
-    }
+    @FXML private void handleRfmUsimCustomKicCheck() { txtRfmUsimCustomKic.setDisable(!chkRfmUsimCustomKic.isSelected()); }
+    @FXML private void handleRfmUsimCustomKidCheck() { txtRfmUsimCustomKid.setDisable(!chkRfmUsimCustomKid.isSelected()); }
 
     @FXML private void handleButtonSetRfmUsimMsl() {
         String mslHexStr = txtRfmUsimMslByte.getText();
         int mslInteger = Integer.parseInt(mslHexStr, 16);
-//        logger.info("MSL integer: " + mslInteger);
         if (mslInteger > 31) {
             // MSL integer shoould not be higher than 31 (0x1F)
             Alert mslAlert = new Alert(Alert.AlertType.ERROR);
@@ -479,10 +450,7 @@ public class RfmUsimController {
     }
 
     @FXML private void handleRfmUsimUseCipherCheck() {
-        if (chkRfmUsimUseCipher.isSelected())
-            root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setUseCipher(true);
-        else
-            root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setUseCipher(false);
+        root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setUseCipher(chkRfmUsimUseCipher.isSelected());
         root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().computeMsl();
         txtRfmUsimMslByte.setText(root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().getComputedMsl());
     }
@@ -498,7 +466,6 @@ public class RfmUsimController {
         root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().computeMsl();
         txtRfmUsimMslByte.setText(root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().getComputedMsl());
     }
-
 
     public void saveControlState() {
         root.getRunSettings().getRfmUsim().setIncludeRfmUsim(chkIncludeRfmUsim.isSelected());

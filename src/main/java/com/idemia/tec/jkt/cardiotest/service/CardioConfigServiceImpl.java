@@ -13,19 +13,18 @@ public class CardioConfigServiceImpl implements CardioConfigService {
 
     private File runSettingsFile;
 
-    @Override
-    public RunSettings initConfig() {
+    @Override public RunSettings initConfig() {
         runSettingsFile = new File("run-settings.json");
         if (runSettingsFile.exists()) {
             // read saved settings
             ObjectMapper mapper = new ObjectMapper();
-            try {
-                return mapper.readValue(runSettingsFile, RunSettings.class);
-            } catch (IOException e) {
+            try { return mapper.readValue(runSettingsFile, RunSettings.class); }
+            catch (IOException e) {
                 e.printStackTrace();
                 return null;
             }
-        } else {
+        }
+        else {
             // constants for default values
             String PROJECT_PATH_DEFAULT = "C:\\";
             String ADV_SAVE_VAR_DEFAULT = "variables.txt";
@@ -181,13 +180,9 @@ public class CardioConfigServiceImpl implements CardioConfigService {
         }
     }
 
-    @Override
-    public void saveConfig(RunSettings runSettings) {
+    @Override public void saveConfig(RunSettings runSettings) {
         ObjectMapper mapper = new ObjectMapper();
-        try {
-            mapper.writerWithDefaultPrettyPrinter().writeValue(runSettingsFile, runSettings);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        try { mapper.writerWithDefaultPrettyPrinter().writeValue(runSettingsFile, runSettings); }
+        catch (IOException e) { e.printStackTrace(); }
     }
 }

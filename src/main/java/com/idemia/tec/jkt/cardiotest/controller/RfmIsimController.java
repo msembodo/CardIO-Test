@@ -1,6 +1,5 @@
 package com.idemia.tec.jkt.cardiotest.controller;
 
-import com.idemia.tec.jkt.cardiotest.CardiotestApplication;
 import com.idemia.tec.jkt.cardiotest.model.SCP80Keyset;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -201,26 +200,9 @@ public class RfmIsimController {
     @FXML private void handleCipherKeysetContextMenu() { cmbRfmIsimCipheringKeyset.setItems(cardiotest.getScp80KeysetLabels()); }
     @FXML private void handleAuthKeysetContextMenu() { cmbRfmIsimAuthKeyset.setItems(cardiotest.getScp80KeysetLabels()); }
 
-    @FXML private void handleIncludeRfmIsimCheck() {
-        if (chkIncludeRfmIsim.isSelected())
-            root.getMenuRfmIsim().setDisable(false);
-        else
-            root.getMenuRfmIsim().setDisable(true);
-    }
-
-    @FXML private void handleIncludeRfmIsimUpdateRecordCheck() {
-        if (chkIncludeRfmIsimUpdateRecord.isSelected())
-            root.getMenuRfmIsimUpdateRecord().setDisable(false);
-        else
-            root.getMenuRfmIsimUpdateRecord().setDisable(true);
-    }
-
-    @FXML private void handleIncludeRfmIsimExpandedModeCheck() {
-        if (chkIncludeRfmIsimExpandedMode.isSelected())
-            root.getMenuRfmIsimExpandedMode().setDisable(false);
-        else
-            root.getMenuRfmIsimExpandedMode().setDisable(true);
-    }
+    @FXML private void handleIncludeRfmIsimCheck() { root.getMenuRfmIsim().setDisable(!chkIncludeRfmIsim.isSelected()); }
+    @FXML private void handleIncludeRfmIsimUpdateRecordCheck() { root.getMenuRfmIsimUpdateRecord().setDisable(!chkIncludeRfmIsimUpdateRecord.isSelected()); }
+    @FXML private void handleIncludeRfmIsimExpandedModeCheck() { root.getMenuRfmIsimExpandedMode().setDisable(!chkIncludeRfmIsimExpandedMode.isSelected()); }
 
     @FXML private void handleRfmIsimFullAccessCheck() {
         if (chkRfmIsimFullAccess.isSelected()) {
@@ -285,29 +267,17 @@ public class RfmIsimController {
         }
     }
 
-    @FXML private void handleRfmIsimCustomKicCheck() {
-        if (chkRfmIsimCustomKic.isSelected())
-            txtRfmIsimCustomKic.setDisable(false);
-        else
-            txtRfmIsimCustomKic.setDisable(true);
-    }
-
-    @FXML private void handleRfmIsimCustomKidCheck() {
-        if (chkRfmIsimCustomKid.isSelected())
-            txtRfmIsimCustomKid.setDisable(false);
-        else
-            txtRfmIsimCustomKid.setDisable(true);
-    }
+    @FXML private void handleRfmIsimCustomKicCheck() { txtRfmIsimCustomKic.setDisable(!chkRfmIsimCustomKic.isSelected()); }
+    @FXML private void handleRfmIsimCustomKidCheck() { txtRfmIsimCustomKid.setDisable(!chkRfmIsimCustomKid.isSelected()); }
 
     @FXML private void handleButtonSetRfmIsimMsl() {
         String mslHexStr = txtRfmIsimMslByte.getText();
         int mslInteger = Integer.parseInt(mslHexStr, 16);
-//        logger.info("MSL integer: " + mslInteger);
         if (mslInteger > 31) {
             // MSL integer shoould not be higher than 31 (0x1F)
             Alert mslAlert = new Alert(Alert.AlertType.ERROR);
             mslAlert.initModality(Modality.APPLICATION_MODAL);
-//            mslAlert.initOwner(application.getPrimaryStage());
+            mslAlert.initOwner(txtRfmIsimMslByte.getScene().getWindow());
             mslAlert.setTitle("Minimum Security Level");
             mslAlert.setHeaderText("Invalid MSL");
             mslAlert.setContentText("MSL value should not exceed '1F'");
@@ -480,10 +450,7 @@ public class RfmIsimController {
     }
 
     @FXML private void handleRfmIsimUseCipherCheck() {
-        if (chkRfmIsimUseCipher.isSelected())
-            root.getRunSettings().getRfmIsim().getMinimumSecurityLevel().setUseCipher(true);
-        else
-            root.getRunSettings().getRfmIsim().getMinimumSecurityLevel().setUseCipher(false);
+        root.getRunSettings().getRfmIsim().getMinimumSecurityLevel().setUseCipher(chkRfmIsimUseCipher.isSelected());
         root.getRunSettings().getRfmIsim().getMinimumSecurityLevel().computeMsl();
         txtRfmIsimMslByte.setText(root.getRunSettings().getRfmIsim().getMinimumSecurityLevel().getComputedMsl());
     }
@@ -499,7 +466,6 @@ public class RfmIsimController {
         root.getRunSettings().getRfmIsim().getMinimumSecurityLevel().computeMsl();
         txtRfmIsimMslByte.setText(root.getRunSettings().getRfmIsim().getMinimumSecurityLevel().getComputedMsl());
     }
-
 
     public void saveControlState() {
         root.getRunSettings().getRfmIsim().setIncludeRfmIsim(chkIncludeRfmIsim.isSelected());

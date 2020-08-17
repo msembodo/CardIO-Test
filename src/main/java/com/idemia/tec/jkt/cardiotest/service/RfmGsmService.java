@@ -12,8 +12,7 @@ import java.io.File;
 @Service
 public class RfmGsmService {
 
-    @Autowired
-    private RootLayoutController root;
+    @Autowired private RootLayoutController root;
 
     public StringBuilder generateRfmGsm(RfmGsm rfmGsm) {
         StringBuilder rfmGsmBuffer = new StringBuilder();

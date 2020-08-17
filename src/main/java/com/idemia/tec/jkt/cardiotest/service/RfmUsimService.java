@@ -12,8 +12,7 @@ import java.io.File;
 @Service
 public class RfmUsimService {
 
-    @Autowired
-    private RootLayoutController root;
+    @Autowired private RootLayoutController root;
 
     public StringBuilder generateRfmUsim(RfmUsim rfmUsim) {
         StringBuilder rfmUsimBuffer = new StringBuilder();

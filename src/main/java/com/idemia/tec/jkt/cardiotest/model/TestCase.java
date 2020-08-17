@@ -28,8 +28,7 @@ public class TestCase {
         return name;
     }
 
-    @XmlAttribute
-    public void setName(String name) {
+    @XmlAttribute public void setName(String name) {
         this.name = name;
     }
 
@@ -37,8 +36,7 @@ public class TestCase {
         return className;
     }
 
-    @XmlAttribute(name = "classname")
-    public void setClassName(String className) {
+    @XmlAttribute(name = "classname") public void setClassName(String className) {
         this.className = className;
     }
 
@@ -46,8 +44,7 @@ public class TestCase {
         return time;
     }
 
-    @XmlAttribute
-    public void setTime(String time) {
+    @XmlAttribute public void setTime(String time) {
         this.time = time;
     }
 
@@ -55,8 +52,7 @@ public class TestCase {
         return error;
     }
 
-    @XmlElement
-    public void setError(String error) {
+    @XmlElement public void setError(String error) {
         this.error = error;
     }
 
@@ -64,8 +60,7 @@ public class TestCase {
         return failure;
     }
 
-    @XmlElement
-    public void setFailure(String failure) {
+    @XmlElement public void setFailure(String failure) {
         this.failure = failure;
     }
 

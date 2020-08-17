@@ -35,13 +35,10 @@ public class RunServiceImpl implements RunService {
     private String scriptsDirectory;
     private int exitVal;
 
-    @Autowired
-    private RootLayoutController root;
-    @Autowired
-    private ScriptGeneratorService scriptGenerator;
+    @Autowired private RootLayoutController root;
+    @Autowired private ScriptGeneratorService scriptGenerator;
 
-    @Override
-    public TestSuiteResponse runAll() {
+    @Override public TestSuiteResponse runAll() {
         composeScripts();
         runShellCommand("pcomconsole", root.getRunSettings().getProjectPath() + "\\RunAll.pcom");
         // parse result xml
@@ -50,9 +47,7 @@ public class RunServiceImpl implements RunService {
             if (runAllResult != null) {
                 logger.info(runAllResult.toJson());
                 return new TestSuiteResponse(true, "RunAll executed normally", runAllResult);
-            } else {
-                return new TestSuiteResponse(false, "Failed parsing RunAll output", null);
-            }
+            } else return new TestSuiteResponse(false, "Failed parsing RunAll output", null);
         }
         else {
             logger.error("Exit value: " + exitVal);
@@ -73,8 +68,7 @@ public class RunServiceImpl implements RunService {
         runAllBuffer.append(createRunAllHeader());
 
         // ATR
-        if (root.getRunSettings().getAtr().isIncludeAtr())
-            runAllBuffer.append(addAtr(root.getRunSettings().getAtr()));
+        if (root.getRunSettings().getAtr().isIncludeAtr()) runAllBuffer.append(addAtr(root.getRunSettings().getAtr()));
 
         // custom scripts section 1
         if (root.getRunSettings().getCustomScriptsSection1().size() > 0)
@@ -130,26 +124,20 @@ public class RunServiceImpl implements RunService {
         // save mappings to file
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "Mapping.txt"))) {
             bw.append(scriptGenerator.generateMapping());
-        } catch (IOException e) {
-            logger.error("Failed writing mapping file");
         }
+        catch (IOException e) { logger.error("Failed writing mapping file"); }
 
         // save options to file
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "Options.txt"))) {
             bw.append(optionsBuffer);
-        } catch (IOException e) {
-            logger.error("Failed writing options file");
         }
+        catch (IOException e) { logger.error("Failed writing options file"); }
 
         // save runall to file
-        try (BufferedWriter bw = new BufferedWriter(
-                new FileWriter(root.getRunSettings().getProjectPath() + "\\RunAll.pcom")
-        )) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(root.getRunSettings().getProjectPath() + "\\RunAll.pcom"))) {
             bw.append(runAllBuffer);
-        } catch (IOException e) {
-//            e.printStackTrace();
-            logger.error(e.getMessage());
         }
+        catch (IOException e) { logger.error(e.getMessage()); }
     }
 
     private void createFullStructure() {
@@ -169,19 +157,14 @@ public class RunServiceImpl implements RunService {
                     File targetDll = new File(scriptsDirectory + dll);
                     Files.copy(sourceDll.toPath(), targetDll.toPath(), StandardCopyOption.REPLACE_EXISTING);
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+            catch (IOException e) { e.printStackTrace(); }
         }
         // copy variable file to project directory
         File sourceVarFile = new File(root.getRunSettings().getAdvSaveVariablesPath());
         File targetVarFile = new File(root.getRunSettings().getProjectPath() + "\\variables.txt");
-        try {
-            Files.copy(sourceVarFile.toPath(), targetVarFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-//            e.printStackTrace();
-            logger.error(e.getMessage() + " - failed copying variable file to project directory");
-        }
+        try { Files.copy(sourceVarFile.toPath(), targetVarFile.toPath(), StandardCopyOption.REPLACE_EXISTING); }
+        catch (IOException e) { logger.error(e.getMessage() + " - failed copying variable file to project directory"); }
     }
 
     private String createRunAllHeader() {
@@ -231,9 +214,8 @@ public class RunServiceImpl implements RunService {
         // add ATR script to structure
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "ATR.txt"))) {
             bw.append(scriptGenerator.generateAtr());
-        } catch (IOException e) {
-            logger.error("Failed writing ATR script");
         }
+        catch (IOException e) { logger.error("Failed writing ATR script"); }
 
         return "; ATR\n"
                 + ".EXECUTE scripts\\ATR.txt /PATH logs\n"
@@ -259,9 +241,8 @@ public class RunServiceImpl implements RunService {
         if (authentication.isIncludeDeltaTest()) {
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "Authentication_MILLENAGE_DELTA_TEST.txt"))) {
                 bw.append(scriptGenerator.generateMilenageDeltaTest(authentication));
-            } catch (IOException e) {
-                logger.error("Failed writing MILLENAGE_DELTA_TEST script");
             }
+            catch (IOException e) { logger.error("Failed writing MILLENAGE_DELTA_TEST script"); }
             authRunAllString.append(".EXECUTE scripts\\Authentication_MILLENAGE_DELTA_TEST.txt /PATH logs\n");
             authRunAllString.append(".ALLUNDEFINE\n\n");
         }
@@ -269,9 +250,8 @@ public class RunServiceImpl implements RunService {
         if (authentication.isIncludeSqnMax()) {
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "Authentication_MILLENAGE_SQN_MAX.txt"))) {
                 bw.append(scriptGenerator.generateMilenageSqnMax(authentication));
-            } catch (IOException e) {
-                logger.error("Failed writing MILLENAGE_SQN_MAX script");
             }
+            catch (IOException e) { logger.error("Failed writing MILLENAGE_SQN_MAX script"); }
             authRunAllString.append(".EXECUTE scripts\\Authentication_MILLENAGE_SQN_MAX.txt /PATH logs\n");
             authRunAllString.append(".ALLUNDEFINE\n\n");
         }
@@ -288,9 +268,8 @@ public class RunServiceImpl implements RunService {
         if (rfmUsim.isIncludeRfmUsim()) {
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RFM_USIM.txt"))) {
                 bw.append(scriptGenerator.generateRfmUsim(rfmUsim));
-            } catch (IOException e) {
-                logger.error("Failed writing RFM_USIM script");
             }
+            catch (IOException e) { logger.error("Failed writing RFM_USIM script"); }
             rfmUsimRunAllString.append(".EXECUTE scripts\\RFM_USIM.txt /PATH logs\n");
             rfmUsimRunAllString.append(".ALLUNDEFINE\n\n");
         }
@@ -298,9 +277,8 @@ public class RunServiceImpl implements RunService {
         if (rfmUsim.isIncludeRfmUsimUpdateRecord()) {
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RFM_USIM_UpdateRecord.txt"))) {
                 bw.append(scriptGenerator.generateRfmUsimUpdateRecord(rfmUsim));
-            } catch (IOException e) {
-                logger.error("Failed writing RFM_USIM_UpdateRecord script");
             }
+            catch (IOException e) { logger.error("Failed writing RFM_USIM_UpdateRecord script"); }
             rfmUsimRunAllString.append(".EXECUTE scripts\\RFM_USIM_UpdateRecord.txt /PATH logs\n");
             rfmUsimRunAllString.append(".ALLUNDEFINE\n\n");
         }
@@ -308,9 +286,8 @@ public class RunServiceImpl implements RunService {
         if (rfmUsim.isIncludeRfmUsimExpandedMode()) {
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RFM_USIM_3G_ExpandedMode.txt"))) {
                 bw.append(scriptGenerator.generateRfmUsimExpandedMode(rfmUsim));
-            } catch (IOException e) {
-                logger.error("Failed writing RFM_USIM_3G_ExpandedMode script");
             }
+            catch (IOException e) { logger.error("Failed writing RFM_USIM_3G_ExpandedMode script"); }
             rfmUsimRunAllString.append(".EXECUTE scripts\\RFM_USIM_3G_ExpandedMode.txt /PATH logs\n");
             rfmUsimRunAllString.append(".ALLUNDEFINE\n\n");
         }
@@ -329,9 +306,8 @@ public class RunServiceImpl implements RunService {
         if (rfmGsm.isIncludeRfmGsm()) {
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RFM_GSM.txt"))) {
                 bw.append(scriptGenerator.generateRfmGsm(rfmGsm));
-            } catch (IOException e) {
-                logger.error("Failed writing RFM_GSM script");
             }
+            catch (IOException e) { logger.error("Failed writing RFM_GSM script"); }
             rfmGsmRunAllString.append(".EXECUTE scripts\\RFM_GSM.txt /PATH logs\n");
             rfmGsmRunAllString.append(".ALLUNDEFINE\n\n");
         }
@@ -339,9 +315,8 @@ public class RunServiceImpl implements RunService {
         if (rfmGsm.isIncludeRfmGsmUpdateRecord()) {
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RFM_GSM_UpdateRecord.txt"))) {
                 bw.append(scriptGenerator.generateRfmGsmUpdateRecord(rfmGsm));
-            } catch (IOException e) {
-                logger.error("Failed writing RFM_GSM_UpdateRecord script");
             }
+            catch (IOException e) { logger.error("Failed writing RFM_GSM_UpdateRecord script"); }
             rfmGsmRunAllString.append(".EXECUTE scripts\\RFM_GSM_UpdateRecord.txt /PATH logs\n");
             rfmGsmRunAllString.append(".ALLUNDEFINE\n\n");
         }
@@ -349,9 +324,8 @@ public class RunServiceImpl implements RunService {
         if (rfmGsm.isIncludeRfmGsmExpandedMode()) {
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RFM_GSM_3G_ExpandedMode.txt"))) {
                 bw.append(scriptGenerator.generateRfmGsmExpandedMode(rfmGsm));
-            } catch (IOException e) {
-                logger.error("Failed writing RFM_GSM_3G_ExpandedMode script");
             }
+            catch (IOException e) { logger.error("Failed writing RFM_GSM_3G_ExpandedMode script"); }
             rfmGsmRunAllString.append(".EXECUTE scripts\\RFM_GSM_3G_ExpandedMode.txt /PATH logs\n");
             rfmGsmRunAllString.append(".ALLUNDEFINE\n\n");
         }
@@ -370,9 +344,8 @@ public class RunServiceImpl implements RunService {
         if (rfmIsim.isIncludeRfmIsim()) {
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RFM_ISIM.txt"))) {
                 bw.append(scriptGenerator.generateRfmIsim(rfmIsim));
-            } catch (IOException e) {
-                logger.error("Failed writing RFM_ISIM script");
             }
+            catch (IOException e) { logger.error("Failed writing RFM_ISIM script"); }
             rfmIsimRunAllString.append(".EXECUTE scripts\\RFM_ISIM.txt /PATH logs\n");
             rfmIsimRunAllString.append(".ALLUNDEFINE\n\n");
         }
@@ -380,9 +353,8 @@ public class RunServiceImpl implements RunService {
         if (rfmIsim.isIncludeRfmIsimUpdateRecord()) {
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RFM_ISIM_UpdateRecord.txt"))) {
                 bw.append(scriptGenerator.generateRfmIsimUpdateRecord(rfmIsim));
-            } catch (IOException e) {
-                logger.error("Failed writing RFM_ISIM_UpdateRecord script");
             }
+            catch (IOException e) { logger.error("Failed writing RFM_ISIM_UpdateRecord script"); }
             rfmIsimRunAllString.append(".EXECUTE scripts\\RFM_ISIM_UpdateRecord.txt /PATH logs\n");
             rfmIsimRunAllString.append(".ALLUNDEFINE\n\n");
         }
@@ -390,9 +362,8 @@ public class RunServiceImpl implements RunService {
         if (rfmIsim.isIncludeRfmIsimExpandedMode()) {
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RFM_ISIM_3G_ExpandedMode.txt"))) {
                 bw.append(scriptGenerator.generateRfmIsimExpandedMode(rfmIsim));
-            } catch (IOException e) {
-                logger.error("Failed writing RFM_ISIM_3G_ExpandedMode script");
             }
+            catch (IOException e) { logger.error("Failed writing RFM_ISIM_3G_ExpandedMode script"); }
             rfmIsimRunAllString.append(".EXECUTE scripts\\RFM_ISIM_3G_ExpandedMode.txt /PATH logs\n");
             rfmIsimRunAllString.append(".ALLUNDEFINE\n\n");
         }
@@ -400,7 +371,6 @@ public class RunServiceImpl implements RunService {
         return rfmIsimRunAllString.toString();
     }
 
-    //Custom RFM --------------------------------------
     private String addRfmCustom(RfmCustom rfmCustom) {
         // TODO: options buffer (if required)
 
@@ -441,7 +411,6 @@ public class RunServiceImpl implements RunService {
 
         return rfmCustomRunAllString.toString();
     }
-    // ------------------------------------------------
 
     private String addSecretCodes(SecretCodes secretCodes) {
         StringBuilder secretCodesRunAll = new StringBuilder();
@@ -451,9 +420,8 @@ public class RunServiceImpl implements RunService {
         if (secretCodes.isInclude3gScript()) {
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "SecretCodes_3G.txt"))) {
                 bw.append(scriptGenerator.generateSecretCodes3g(secretCodes));
-            } catch (IOException e) {
-                logger.error("Failed writing SecretCodes_3G script");
             }
+            catch (IOException e) { logger.error("Failed writing SecretCodes_3G script"); }
             secretCodesRunAll.append(".EXECUTE scripts\\SecretCodes_3G.txt /PATH logs\n");
             secretCodesRunAll.append(".ALLUNDEFINE\n\n");
         }
@@ -461,9 +429,8 @@ public class RunServiceImpl implements RunService {
         if (secretCodes.isInclude2gScript()) {
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "SecretCodes_2G.txt"))) {
                 bw.append(scriptGenerator.generateSecretCodes2g(secretCodes));
-            } catch (IOException e) {
-                logger.error("Failed writing SecretCodes_2G script");
             }
+            catch (IOException e) { logger.error("Failed writing SecretCodes_2G script"); }
             secretCodesRunAll.append(".EXECUTE scripts\\SecretCodes_2G.txt /PATH logs\n");
             secretCodesRunAll.append(".ALLUNDEFINE\n\n");
         }
@@ -487,7 +454,8 @@ public class RunServiceImpl implements RunService {
             JAXBContext jaxbContext = JAXBContext.newInstance(TestSuite.class);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             return (TestSuite) unmarshaller.unmarshal(runXml);
-        } catch (JAXBException e) {
+        }
+        catch (JAXBException e) {
             e.printStackTrace();
             return null;
         }
@@ -505,10 +473,8 @@ public class RunServiceImpl implements RunService {
         try {
             List<CardTerminal> terminals = root.getTerminalFactory().terminals().list();
             readerName = terminals.get(root.getRunSettings().getReaderNumber()).getName();
-        } catch (CardException e) {
-            logger.error(e.getMessage());
-//            e.printStackTrace();
         }
+        catch (CardException e) { logger.error(e.getMessage()); }
         List<String> cmdArray = new ArrayList<>();
         cmdArray.add(pcomExecutable);
         cmdArray.add("-script");
@@ -521,130 +487,111 @@ public class RunServiceImpl implements RunService {
         cmdArray.add(readerName);
         cmdArray.add("-protocol");
         cmdArray.add("TPDUMode");
-        if (root.getRunSettings().isStopOnError())
-            cmdArray.add("-stoponerror");
+        if (root.getRunSettings().isStopOnError()) cmdArray.add("-stoponerror");
         try {
             logger.info("Executing.. " + scriptName);
             launchProcess(cmdArray);
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
         }
+        catch (IOException | InterruptedException e) { e.printStackTrace(); }
     }
 
-    @Override
-    public boolean runAtr() {
+    @Override public boolean runAtr() {
         composeScripts();
         runShellCommand("pcomconsole", scriptsDirectory + "ATR.txt");
         return exitVal == 0;
     }
 
-    @Override
-    public boolean runDeltaTest() {
+    @Override public boolean runDeltaTest() {
         composeScripts();
         runShellCommand("pcomconsole", scriptsDirectory + "Authentication_MILLENAGE_DELTA_TEST.txt");
         return exitVal == 0;
     }
 
-    @Override
-    public boolean runSqnMax() {
+    @Override public boolean runSqnMax() {
         composeScripts();
         runShellCommand("pcomconsole", scriptsDirectory + "Authentication_MILLENAGE_SQN_MAX.txt");
         return exitVal == 0;
     }
 
-    @Override
-    public boolean runRfmUsim() {
+    @Override public boolean runRfmUsim() {
         composeScripts();
         runShellCommand("pcomconsole", scriptsDirectory + "RFM_USIM.txt");
         return exitVal == 0;
     }
 
-    @Override
-    public boolean runRfmUsimUpdateRecord() {
+    @Override public boolean runRfmUsimUpdateRecord() {
         composeScripts();
         runShellCommand("pcomconsole", scriptsDirectory + "RFM_USIM_UpdateRecord.txt");
         return exitVal == 0;
     }
 
-    @Override
-    public boolean runRfmUsimExpandedMode() {
+    @Override public boolean runRfmUsimExpandedMode() {
         composeScripts();
         runShellCommand("pcomconsole", scriptsDirectory + "RFM_USIM_3G_ExpandedMode.txt");
         return exitVal == 0;
     }
 
-    @Override
-
-    public boolean runRfmGsm() {
+    @Override public boolean runRfmGsm() {
         composeScripts();
         runShellCommand("pcomconsole", scriptsDirectory + "RFM_GSM.txt");
         return exitVal == 0;
     }
 
-    public boolean runRfmIsim() {
-        composeScripts();
-        runShellCommand("pcomconsole", scriptsDirectory + "RFM_ISIM.txt");
-        return exitVal == 0;
-    }
-
-    public boolean runRfmCustom() {
-        composeScripts();
-        runShellCommand("pcomconsole", scriptsDirectory + "RFM_CUSTOM.txt");
-        return exitVal == 0;
-    }
-
-
-    @Override
-
-    public boolean runRfmGsmUpdateRecord() {
+    @Override public boolean runRfmGsmUpdateRecord() {
         composeScripts();
         runShellCommand("pcomconsole", scriptsDirectory + "RFM_GSM_UpdateRecord.txt");
         return exitVal == 0;
     }
 
-    public boolean runRfmIsimUpdateRecord() {
-        composeScripts();
-        runShellCommand("pcomconsole", scriptsDirectory + "RFM_ISIM_UpdateRecord.txt");
-        return exitVal == 0;
-    }
-
-    public boolean runRfmCustomUpdateRecord() {
-        composeScripts();
-        runShellCommand("pcomconsole", scriptsDirectory + "RFM_CUSTOM_UpdateRecord.txt");
-        return exitVal == 0;
-    }
-
-
-    @Override
-
-    public boolean runRfmGsmExpandedMode() {
+    @Override public boolean runRfmGsmExpandedMode() {
         composeScripts();
         runShellCommand("pcomconsole", scriptsDirectory + "RFM_GSM_3G_ExpandedMode.txt");
         return exitVal == 0;
     }
 
-    public boolean runRfmIsimExpandedMode() {
+    @Override public boolean runRfmIsim() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "RFM_ISIM.txt");
+        return exitVal == 0;
+    }
+
+    @Override public boolean runRfmIsimUpdateRecord() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "RFM_ISIM_UpdateRecord.txt");
+        return exitVal == 0;
+    }
+
+    @Override public boolean runRfmIsimExpandedMode() {
         composeScripts();
         runShellCommand("pcomconsole", scriptsDirectory + "RFM_ISIM_3G_ExpandedMode.txt");
         return exitVal == 0;
     }
 
-    public boolean runRfmCustomExpandedMode() {
+    @Override public boolean runRfmCustom() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "RFM_CUSTOM.txt");
+        return exitVal == 0;
+    }
+
+    @Override public boolean runRfmCustomUpdateRecord() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "RFM_CUSTOM_UpdateRecord.txt");
+        return exitVal == 0;
+    }
+
+    @Override public boolean runRfmCustomExpandedMode() {
         composeScripts();
         runShellCommand("pcomconsole", scriptsDirectory + "RFM_CUSTOM_3G_ExpandedMode.txt");
         return exitVal == 0;
     }
 
-
-    @Override
-    public boolean runSecretCodes3g() {
+    @Override public boolean runSecretCodes3g() {
         composeScripts();
         runShellCommand("pcomconsole", scriptsDirectory + "SecretCodes_3G.txt");
         return exitVal == 0;
     }
 
-    @Override
-    public boolean runSecretCodes2g() {
+    @Override public boolean runSecretCodes2g() {
         composeScripts();
         runShellCommand("pcomconsole", scriptsDirectory + "SecretCodes_2G.txt");
         return exitVal == 0;

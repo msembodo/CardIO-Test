@@ -65,6 +65,7 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             cardParameters.setCardManagerAid("A000000151000000");
             cardParameters.setUsimAid("A0000000871002FFFFFFFF89");
             cardParameters.setDfUsim("7FF0");
+            cardParameters.setDfGsm("3F00");
             cardParameters.setDfGsmAccess("5F3B");
             cardParameters.setDfTelecom("7F10");
             cardParameters.setIsimAid("A0000000871004FFFFFFFF89");
@@ -119,6 +120,21 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             rfmUsim.setMinimumSecurityLevel(rfmUsimMsl);
             defaultSettings.setRfmUsim(rfmUsim);
 
+            MinimumSecurityLevel rfmGsmMsl = new MinimumSecurityLevel(true, "Cryptographic Checksum", "Counter must be higher");
+            rfmGsmMsl.setCipherAlgo("3DES - CBC 2 keys");
+            rfmGsmMsl.setSigningAlgo("3DES - CBC 2 keys");
+            rfmGsmMsl.setPorRequirement("PoR required");
+            rfmGsmMsl.setPorSecurity("response with no security");
+
+            RfmGsm rfmGsm = new RfmGsm();
+            rfmGsm.setIncludeRfmGsm(true);
+            rfmGsm.setTar("B00001");
+            rfmGsm.setTargetEf("6F7B");
+            rfmGsm.setTargetEfBadCase("6F05");
+            rfmGsm.setFullAccess(true);
+            rfmGsm.setMinimumSecurityLevel(rfmGsmMsl);
+            defaultSettings.setRfmGsm(rfmGsm);
+
             MinimumSecurityLevel rfmIsimMsl = new MinimumSecurityLevel(true, "Cryptographic Checksum", "Counter must be higher");
             rfmIsimMsl.setCipherAlgo("3DES - CBC 2 keys");rfmIsimMsl.setSigningAlgo("3DES - CBC 2 keys");
             rfmIsimMsl.setPorRequirement("PoR required");
@@ -137,7 +153,6 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             defaultSettings.setCustomScriptsSection2(new ArrayList<>());
             defaultSettings.setCustomScriptsSection3(new ArrayList<>());
 
-            //Custom RFM --------------------------------------
             MinimumSecurityLevel rfmCustomMsl = new MinimumSecurityLevel(true, "Cryptographic Checksum", "Counter must be higher");
             rfmCustomMsl.setCipherAlgo("3DES - CBC 2 keys");
             rfmCustomMsl.setSigningAlgo("3DES - CBC 2 keys");
@@ -153,7 +168,7 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             rfmCustom.setFullAccess(true);
             rfmCustom.setMinimumSecurityLevel(rfmCustomMsl);
             defaultSettings.setRfmCustom(rfmCustom);
-            // ------------------------------------------------
+            rfmCustom.setCustomRfmDesc("RFM - X");
 
             ObjectMapper mapper = new ObjectMapper();
             try {

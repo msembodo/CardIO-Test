@@ -96,12 +96,20 @@ public class RunServiceImpl implements RunService {
             runAllBuffer.append(addRfmUsim(root.getRunSettings().getRfmUsim()));
         }
 
+        // RFM GSM
+        if (root.getRunSettings().getRfmGsm().isIncludeRfmGsm() ||
+                root.getRunSettings().getRfmGsm().isIncludeRfmGsmUpdateRecord() ||
+                root.getRunSettings().getRfmGsm().isIncludeRfmGsmExpandedMode()) {
+            runAllBuffer.append(addRfmGsm(root.getRunSettings().getRfmGsm()));
+        }
+
         // RFM ISIM
         if (root.getRunSettings().getRfmIsim().isIncludeRfmIsim() ||
                 root.getRunSettings().getRfmIsim().isIncludeRfmIsimUpdateRecord() ||
                 root.getRunSettings().getRfmIsim().isIncludeRfmIsimExpandedMode()) {
             runAllBuffer.append(addRfmIsim(root.getRunSettings().getRfmIsim()));
         }
+
         // custom scripts section 3
         if (root.getRunSettings().getCustomScriptsSection3().size() > 0) {
             runAllBuffer.append(addCustomScripts(root.getRunSettings().getCustomScriptsSection3()));
@@ -310,6 +318,47 @@ public class RunServiceImpl implements RunService {
         return rfmUsimRunAllString.toString();
     }
 
+    private String addRfmGsm(RfmGsm rfmGsm) {
+        // TODO: options buffer (if required)
+
+        StringBuilder rfmGsmRunAllString = new StringBuilder();
+        rfmGsmRunAllString.append("; RFM GSM\n");
+
+        // add RFM GSM script to structure
+
+        if (rfmGsm.isIncludeRfmGsm()) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RFM_GSM.txt"))) {
+                bw.append(scriptGenerator.generateRfmGsm(rfmGsm));
+            } catch (IOException e) {
+                logger.error("Failed writing RFM_GSM script");
+            }
+            rfmGsmRunAllString.append(".EXECUTE scripts\\RFM_GSM.txt /PATH logs\n");
+            rfmGsmRunAllString.append(".ALLUNDEFINE\n\n");
+        }
+
+        if (rfmGsm.isIncludeRfmGsmUpdateRecord()) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RFM_GSM_UpdateRecord.txt"))) {
+                bw.append(scriptGenerator.generateRfmGsmUpdateRecord(rfmGsm));
+            } catch (IOException e) {
+                logger.error("Failed writing RFM_GSM_UpdateRecord script");
+            }
+            rfmGsmRunAllString.append(".EXECUTE scripts\\RFM_GSM_UpdateRecord.txt /PATH logs\n");
+            rfmGsmRunAllString.append(".ALLUNDEFINE\n\n");
+        }
+
+        if (rfmGsm.isIncludeRfmGsmExpandedMode()) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RFM_GSM_3G_ExpandedMode.txt"))) {
+                bw.append(scriptGenerator.generateRfmGsmExpandedMode(rfmGsm));
+            } catch (IOException e) {
+                logger.error("Failed writing RFM_GSM_3G_ExpandedMode script");
+            }
+            rfmGsmRunAllString.append(".EXECUTE scripts\\RFM_GSM_3G_ExpandedMode.txt /PATH logs\n");
+            rfmGsmRunAllString.append(".ALLUNDEFINE\n\n");
+        }
+
+        return rfmGsmRunAllString.toString();
+    }
+
     private String addRfmIsim(RfmIsim rfmIsim) {
         // TODO: options buffer (if required)
 
@@ -356,7 +405,7 @@ public class RunServiceImpl implements RunService {
         // TODO: options buffer (if required)
 
         StringBuilder rfmCustomRunAllString = new StringBuilder();
-        rfmCustomRunAllString.append("; RFM CUSTOM\n");
+        rfmCustomRunAllString.append("; " + rfmCustom.getCustomRfmDesc()+"\n");
 
         // add RFM CUSTOM script to structure
 
@@ -525,48 +574,67 @@ public class RunServiceImpl implements RunService {
     }
 
     @Override
+
+    public boolean runRfmGsm() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "RFM_GSM.txt");
+        return exitVal == 0;
+    }
+
     public boolean runRfmIsim() {
         composeScripts();
         runShellCommand("pcomconsole", scriptsDirectory + "RFM_ISIM.txt");
         return exitVal == 0;
     }
 
+    public boolean runRfmCustom() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "RFM_CUSTOM.txt");
+        return exitVal == 0;
+    }
+
+
     @Override
+
+    public boolean runRfmGsmUpdateRecord() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "RFM_GSM_UpdateRecord.txt");
+        return exitVal == 0;
+    }
+
     public boolean runRfmIsimUpdateRecord() {
         composeScripts();
         runShellCommand("pcomconsole", scriptsDirectory + "RFM_ISIM_UpdateRecord.txt");
         return exitVal == 0;
     }
 
+    public boolean runRfmCustomUpdateRecord() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "RFM_CUSTOM_UpdateRecord.txt");
+        return exitVal == 0;
+    }
+
+
     @Override
+
+    public boolean runRfmGsmExpandedMode() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "RFM_GSM_3G_ExpandedMode.txt");
+        return exitVal == 0;
+    }
+
     public boolean runRfmIsimExpandedMode() {
         composeScripts();
         runShellCommand("pcomconsole", scriptsDirectory + "RFM_ISIM_3G_ExpandedMode.txt");
         return exitVal == 0;
     }
 
-    //Custom RFM --------------------------------------
-
-    @Override
-    public boolean runRfmCustom() {
-        composeScripts();
-        runShellCommand("pcomconsole", scriptsDirectory + "RFM_CUSTOM.txt");
-        return exitVal == 0;
-    }
-    @Override
-    public boolean runRfmCustomUpdateRecord() {
-        composeScripts();
-        runShellCommand("pcomconsole", scriptsDirectory + "RFM_CUSTOM_UpdateRecord.txt");
-        return exitVal == 0;
-    }
-    @Override
     public boolean runRfmCustomExpandedMode() {
         composeScripts();
         runShellCommand("pcomconsole", scriptsDirectory + "RFM_CUSTOM_3G_ExpandedMode.txt");
         return exitVal == 0;
     }
 
-    // ------------------------------------------------
 
     @Override
     public boolean runSecretCodes3g() {

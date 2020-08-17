@@ -11,6 +11,9 @@ public interface RunService {
     boolean runRfmUsim();
     boolean runRfmUsimUpdateRecord();
     boolean runRfmUsimExpandedMode();
+    boolean runRfmGsm();
+    boolean runRfmGsmUpdateRecord();
+    boolean runRfmGsmExpandedMode();
     boolean runRfmIsim();
     boolean runRfmIsimUpdateRecord();
     boolean runRfmIsimExpandedMode();

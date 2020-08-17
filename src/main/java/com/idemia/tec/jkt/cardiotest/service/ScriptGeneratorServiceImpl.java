@@ -20,6 +20,8 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
     @Autowired
     private RfmUsimService rfmUsimService;
     @Autowired
+    private RfmGsmService rfmGsmService;
+    @Autowired
     private RfmIsimService rfmIsimService;
 
     //Custom RFM --------------------------------------
@@ -99,6 +101,43 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
     }
 
     @Override
+    public StringBuilder generateRfmGsm(RfmGsm rfmGsm) {
+        return rfmGsmService.generateRfmGsm(rfmGsm);
+    }
+
+    @Override
+    public StringBuilder generateRfmGsmUpdateRecord(RfmGsm rfmGsm) {
+        StringBuilder rfmGsmUpdateRecordBuffer = new StringBuilder();
+        rfmGsmUpdateRecordBuffer.append(
+                ".CALL Mapping.txt /LIST_OFF\n"
+                        + ".CALL Options.txt /LIST_OFF\n\n"
+                        + ".POWER_ON\n"
+        );
+
+        // TODO
+        rfmGsmUpdateRecordBuffer.append("; TODO\n\n");
+
+        rfmGsmUpdateRecordBuffer.append(".POWER_OFF\n");
+        return rfmGsmUpdateRecordBuffer;
+    }
+
+    @Override
+    public StringBuilder generateRfmGsmExpandedMode(RfmGsm rfmGsm) {
+        StringBuilder rfmGsmExpandedModeBuffer = new StringBuilder();
+        rfmGsmExpandedModeBuffer.append(
+                ".CALL Mapping.txt /LIST_OFF\n"
+                        + ".CALL Options.txt /LIST_OFF\n\n"
+                        + ".POWER_ON\n"
+        );
+
+        // TODO
+        rfmGsmExpandedModeBuffer.append("; TODO\n\n");
+
+        rfmGsmExpandedModeBuffer.append(".POWER_OFF\n");
+        return rfmGsmExpandedModeBuffer;
+    }
+
+    @Override
     public StringBuilder generateRfmIsim(RfmIsim rfmIsim) {
         return rfmIsimService.generateRfmIsim(rfmIsim);
     }
@@ -128,7 +167,6 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
                         + ".POWER_ON\n"
         );
 
-        // TODO
         rfmIsimExpandedModeBuffer.append("; TODO\n\n");
 
         rfmIsimExpandedModeBuffer.append(".POWER_OFF\n");
@@ -145,7 +183,6 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
         return secretCodesService.generateSecretCodes3g(secretCodes);
     }
 
-    //Custom RFM --------------------------------------
     @Override
     public StringBuilder generateRfmCustom(RfmCustom rfmCustom) {
         return rfmCustomService.generateRfmCustom(rfmCustom);
@@ -171,6 +208,5 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
         rfmCustomExpandedModeBuffer.append(".POWER_OFF\n");
         return rfmCustomExpandedModeBuffer;
     }
-    // ------------------------------------------------
 
 }

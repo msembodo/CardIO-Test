@@ -149,4 +149,8 @@ public class Ram {
     public Isd getIsd() {
         return isdSettings;
     }
+
+    public void setIsd(Isd isdSettings){
+        this.isdSettings = isdSettings;
+    }
 }

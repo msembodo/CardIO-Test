@@ -110,6 +110,13 @@ public class RunServiceImpl implements RunService {
             runAllBuffer.append(addRfmIsim(root.getRunSettings().getRfmIsim()));
         }
 
+        // RAM
+        if (root.getRunSettings().getRam().isIncludeRam() ||
+                root.getRunSettings().getRam().isIncludeRamUpdateRecord() ||
+                root.getRunSettings().getRam().isIncludeRamExpandedMode()) {
+            runAllBuffer.append(addRam(root.getRunSettings().getRam()));
+        }
+
         // custom scripts section 3
         if (root.getRunSettings().getCustomScriptsSection3().size() > 0) {
             runAllBuffer.append(addCustomScripts(root.getRunSettings().getCustomScriptsSection3()));
@@ -394,6 +401,47 @@ public class RunServiceImpl implements RunService {
         return rfmIsimRunAllString.toString();
     }
 
+    private String addRam(Ram ram) {
+        // TODO: options buffer (if required)
+
+        StringBuilder ramRunAllString = new StringBuilder();
+        ramRunAllString.append("; RFM ISIM\n");
+
+        // add RFM ISIM script to structure
+
+        if (ram.isIncludeRam()) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RFM_ISIM.txt"))) {
+                bw.append(scriptGenerator.generateRam(ram));
+            } catch (IOException e) {
+                logger.error("Failed writing RFM_ISIM script");
+            }
+            ramRunAllString.append(".EXECUTE scripts\\RFM_ISIM.txt /PATH logs\n");
+            ramRunAllString.append(".ALLUNDEFINE\n\n");
+        }
+
+        if (ram.isIncludeRamUpdateRecord()) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RFM_ISIM_UpdateRecord.txt"))) {
+                bw.append(scriptGenerator.generateRamUpdateRecord(ram));
+            } catch (IOException e) {
+                logger.error("Failed writing RFM_ISIM_UpdateRecord script");
+            }
+            ramRunAllString.append(".EXECUTE scripts\\RFM_ISIM_UpdateRecord.txt /PATH logs\n");
+            ramRunAllString.append(".ALLUNDEFINE\n\n");
+        }
+
+        if (ram.isIncludeRamExpandedMode()) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RFM_ISIM_3G_ExpandedMode.txt"))) {
+                bw.append(scriptGenerator.generateRamExpandedMode(ram));
+            } catch (IOException e) {
+                logger.error("Failed writing RFM_ISIM_3G_ExpandedMode script");
+            }
+            ramRunAllString.append(".EXECUTE scripts\\RFM_ISIM_3G_ExpandedMode.txt /PATH logs\n");
+            ramRunAllString.append(".ALLUNDEFINE\n\n");
+        }
+
+        return ramRunAllString.toString();
+    }
+
     private String addSecretCodes(SecretCodes secretCodes) {
         StringBuilder secretCodesRunAll = new StringBuilder();
         secretCodesRunAll.append("; Secret Codes\n");
@@ -538,6 +586,14 @@ public class RunServiceImpl implements RunService {
         return exitVal == 0;
     }
 
+    public boolean runRam() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "RAM.txt");
+        return exitVal == 0;
+    }
+
+
+
     @Override
 
     public boolean runRfmGsmUpdateRecord() {
@@ -552,6 +608,12 @@ public class RunServiceImpl implements RunService {
         return exitVal == 0;
     }
 
+    public boolean runRamUpdateRecord() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "RAM_UpdateRecord.txt");
+        return exitVal == 0;
+    }
+
     @Override
 
     public boolean runRfmGsmExpandedMode() {
@@ -563,6 +625,12 @@ public class RunServiceImpl implements RunService {
     public boolean runRfmIsimExpandedMode() {
         composeScripts();
         runShellCommand("pcomconsole", scriptsDirectory + "RFM_ISIM_3G_ExpandedMode.txt");
+        return exitVal == 0;
+    }
+
+    public boolean runRamExpandedMode() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "RAM_3G_ExpandedMode.txt");
         return exitVal == 0;
     }
 

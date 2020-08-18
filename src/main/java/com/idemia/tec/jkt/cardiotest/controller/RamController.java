@@ -26,6 +26,14 @@ public class RamController {
     @FXML private CheckBox chkRamCipherPor;
     @FXML private ComboBox<String> cmbRamCounterCheck;
     @FXML private TextField txtRamTar;
+    @FXML private ComboBox<String> cmbRamMethodForGpCommand;
+    @FXML private TextField txtRamScpMode;
+    @FXML private ComboBox<String> cmbRamScLevel;
+    @FXML private CheckBox chkRamSecured;
+    @FXML private ComboBox<String> cmbIsdEnc;
+    @FXML private ComboBox<String> cmbIsdMac;
+    @FXML private ComboBox<String> cmbIsdKey;
+    @FXML private ComboBox<String> cmbIsdPin;
     @FXML private CheckBox chkUseSpecificKeyset;
     @FXML private Label lblRamCipheringKeyset;
     @FXML private ComboBox<String> cmbRamCipheringKeyset;
@@ -129,26 +137,31 @@ public class RamController {
         cmbRamPorSecurity.getItems().addAll(porSecurities);
         cmbRamPorSecurity.setValue(root.getRunSettings().getRam().getMinimumSecurityLevel().getPorSecurity());
 
-        // RFM USIM parameters
+        // initialize Method for GP Command
+        List<String> methodForGpCommand = new ArrayList<>();
+        methodForGpCommand.add("with Card Manager Keyset");
+        methodForGpCommand.add("no Card Manager Keyset");
+        methodForGpCommand.add("SIMBiOs");
+        cmbRamMethodForGpCommand.getItems().addAll(methodForGpCommand);
+        cmbRamMethodForGpCommand.setValue(root.getRunSettings().getRam().getIsd().getMethodForGpCommand());
+
+        // initialize SC Level
+        List<String> scLevel = new ArrayList<>();
+        scLevel.add("00");
+        scLevel.add("01");
+        scLevel.add("03");
+        cmbRamScLevel.getItems().addAll(scLevel);
+        cmbRamScLevel.setValue(root.getRunSettings().getRam().getIsd().getScLevel());
+
+        // ISD secured state
+        chkRamSecured.setSelected(root.getRunSettings().getRam().getIsd().isSecuredState());
+
+        // RAM parameters
 
         txtRamTar.setText(root.getRunSettings().getRam().getTar());
-        txtRamTargetEf.setText(root.getRunSettings().getRam().getTargetEf());
-        txtRamTargetEfBadCase.setText(root.getRunSettings().getRam().getTargetEfBadCase());
+        txtRamScpMode.setText(root.getRunSettings().getRam().getIsd().getScpMode());
 
-        if (root.getRunSettings().getRam().getCustomTargetAcc() != null)
-            cmbRamCustomTargetAcc.getSelectionModel().select(root.getRunSettings().getRam().getCustomTargetAcc());
-        if (root.getRunSettings().getRam().getCustomTargetEf() != null)
-            txtRamCustomTargetEf.setText(root.getRunSettings().getRam().getCustomTargetEf());
-
-        if (root.getRunSettings().getRam().getCustomTargetAccBadCase() != null)
-            cmbRamCustomTargetAccBadCase.getSelectionModel().select(root.getRunSettings().getRam().getCustomTargetAccBadCase());
-        if (root.getRunSettings().getRam().getCustomTargetEfBadCase() != null)
-            txtRamCustomTargetEfBadCase.setText(root.getRunSettings().getRam().getCustomTargetEfBadCase());
-
-        chkRamFullAccess.setSelected(root.getRunSettings().getRam().isFullAccess());
-        handleRamFullAccessCheck();
-
-        // initialize list of available keysets for RFM USIM
+        // initialize list of available keysets for RAM
 
         if (root.getRunSettings().getRam().getCipheringKeyset() != null) {
             cmbRamCipheringKeyset.setValue(root.getRunSettings().getRam().getCipheringKeyset().getKeysetName());
@@ -186,10 +199,12 @@ public class RamController {
         handleUseSpecificKeysetCheck();
     }
 
-    @FXML private void handleCustomTargetAccContextMenu() { cmbRamCustomTargetAcc.setItems(cardiotest.getMappedVariables()); }
-    @FXML private void handleCustomTargetAccBadCaseContextMenu() { cmbRamCustomTargetAccBadCase.setItems(cardiotest.getMappedVariables()); }
     @FXML private void handleCipherKeysetContextMenu() { cmbRamCipheringKeyset.setItems(cardiotest.getScp80KeysetLabels()); }
     @FXML private void handleAuthKeysetContextMenu() { cmbRamAuthKeyset.setItems(cardiotest.getScp80KeysetLabels()); }
+    @FXML private void handleIsdEncContextMenu() { cmbIsdEnc.setItems(cardiotest.getMappedVariables()); }
+    @FXML private void handleIsdMacContextMenu() { cmbIsdMac.setItems(cardiotest.getMappedVariables()); }
+    @FXML private void handleIsdKeyContextMenu() { cmbIsdKey.setItems(cardiotest.getMappedVariables()); }
+    @FXML private void handleIsdPinContextMenu() { cmbIsdPin.setItems(cardiotest.getMappedVariables()); }
 
     @FXML private void handleIncludeRamCheck() {
         if (chkIncludeRam.isSelected())
@@ -210,24 +225,6 @@ public class RamController {
             root.getMenuRamExpandedMode().setDisable(false);
         else
             root.getMenuRamExpandedMode().setDisable(true);
-    }
-
-    @FXML private void handleRamFullAccessCheck() {
-        if (chkRamFullAccess.isSelected()) {
-            lblRamCustomTarget.setDisable(true);
-            cmbRamCustomTargetAcc.setDisable(true);
-            txtRamCustomTargetEf.setDisable(true);
-            lblRamCustomTargetBadCase.setDisable(true);
-            cmbRamCustomTargetAccBadCase.setDisable(true);
-            txtRamCustomTargetEfBadCase.setDisable(true);
-        } else {
-            lblRamCustomTarget.setDisable(false);
-            cmbRamCustomTargetAcc.setDisable(false);
-            txtRamCustomTargetEf.setDisable(false);
-            lblRamCustomTargetBadCase.setDisable(false);
-            cmbRamCustomTargetAccBadCase.setDisable(false);
-            txtRamCustomTargetEfBadCase.setDisable(false);
-        }
     }
 
     @FXML private void handleUseSpecificKeysetCheck() {
@@ -490,6 +487,37 @@ public class RamController {
         txtRamMslByte.setText(root.getRunSettings().getRam().getMinimumSecurityLevel().getComputedMsl());
     }
 
+    @FXML private void handleRamMethodForGpCommand() {
+        System.out.println(cmbRamMethodForGpCommand.getValue());
+        if(cmbRamMethodForGpCommand.getValue() == "with Card Manager Keyset") {
+            txtRamScpMode.setDisable(false);
+            cmbRamScLevel.setDisable(false);
+            chkRamSecured.setDisable(false);
+            cmbIsdEnc.setDisable(false);
+            cmbIsdMac.setDisable(false);
+            cmbIsdKey.setDisable(false);
+            cmbIsdPin.setDisable(true);
+        }
+        else if(cmbRamMethodForGpCommand.getValue() == "no Card Manager Keyset") {
+            txtRamScpMode.setDisable(true);
+            cmbRamScLevel.setDisable(true);
+            chkRamSecured.setDisable(true);
+            cmbIsdEnc.setDisable(true);
+            cmbIsdMac.setDisable(true);
+            cmbIsdKey.setDisable(true);
+            cmbIsdPin.setDisable(true);
+        }
+        else if(cmbRamMethodForGpCommand.getValue() == "SIMBiOs"){
+            txtRamScpMode.setDisable(true);
+            cmbRamScLevel.setDisable(true);
+            chkRamSecured.setDisable(true);
+            cmbIsdEnc.setDisable(true);
+            cmbIsdMac.setDisable(true);
+            cmbIsdKey.setDisable(true);
+            cmbIsdPin.setDisable(false);
+        }
+    }
+
 
     public void saveControlState() {
         root.getRunSettings().getRam().setIncludeRam(chkIncludeRam.isSelected());
@@ -508,15 +536,6 @@ public class RamController {
         root.getRunSettings().getRam().getMinimumSecurityLevel().setPorSecurity(cmbRamPorSecurity.getSelectionModel().getSelectedItem());
 
         root.getRunSettings().getRam().setTar(txtRamTar.getText());
-        root.getRunSettings().getRam().setTargetEf(txtRamTargetEf.getText());
-        root.getRunSettings().getRam().setTargetEfBadCase(txtRamTargetEfBadCase.getText());
-        root.getRunSettings().getRam().setFullAccess(chkRamFullAccess.isSelected());
-        if (!root.getRunSettings().getRam().isFullAccess()) {
-            root.getRunSettings().getRam().setCustomTargetAcc(cmbRamCustomTargetAcc.getSelectionModel().getSelectedItem());
-            root.getRunSettings().getRam().setCustomTargetEf(txtRamCustomTargetEf.getText());
-            root.getRunSettings().getRam().setCustomTargetAccBadCase(cmbRamCustomTargetAccBadCase.getSelectionModel().getSelectedItem());
-            root.getRunSettings().getRam().setCustomTargetEfBadCase(txtRamCustomTargetEfBadCase.getText());
-        }
 
         root.getRunSettings().getRam().setUseSpecificKeyset(chkUseSpecificKeyset.isSelected());
         SCP80Keyset RamCipheringKeyset = new SCP80Keyset();

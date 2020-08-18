@@ -147,6 +147,23 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             rfmIsim.setMinimumSecurityLevel(rfmIsimMsl);
             defaultSettings.setRfmIsim(rfmIsim);
 
+
+            MinimumSecurityLevel ramMsl = new MinimumSecurityLevel(true, "Cryptographic Checksum", "Counter must be higher");
+            ramMsl.setCipherAlgo("3DES - CBC 2 keys");ramMsl.setSigningAlgo("3DES - CBC 2 keys");
+            ramMsl.setPorRequirement("PoR required");
+            ramMsl.setPorSecurity("response with no security");
+
+            Ram ram = new Ram();
+            ram.setIncludeRam(true);
+            ram.setTar("000000");
+            ram.setMinimumSecurityLevel(ramMsl);
+            Isd isd = new Isd();
+            isd.setMethodForGpCommand("with Card Manager Keyset");
+            isd.setScLevel("00");
+            isd.setScpMode("0255");
+            ram.setIsd(isd);
+            defaultSettings.setRam(ram);
+
             defaultSettings.setCustomScriptsSection1(new ArrayList<>());
             defaultSettings.setCustomScriptsSection2(new ArrayList<>());
             defaultSettings.setCustomScriptsSection3(new ArrayList<>());

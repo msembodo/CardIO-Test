@@ -43,10 +43,10 @@
                                     <Label text="SCP Mode" GridPane.rowIndex="2" />
                                     <Label text="SC Level" GridPane.rowIndex="3" />
                         <TextField fx:id="txtRamTar" GridPane.columnIndex="1" />
-                                    <ComboBox fx:id="cmbRamCardType" onAction="#handleRamCardType" onMouseClicked="#handleCustomTargetAccContextMenu" prefWidth="150.0" promptText="Type" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                    <ComboBox fx:id="cmbRamMethodForGpCommand" onAction="#handleRamMethodForGpCommand" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                     <TextField fx:id="txtRamScpMode" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                    <ComboBox fx:id="cmbRamScLevel" onAction="#handleRamScLevel" onMouseClicked="#handleCustomTargetAccContextMenu" prefWidth="150.0" promptText="Level" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                    <CheckBox fx:id="chkRamSecured" mnemonicParsing="false" onAction="#handleRamSecured" text="Secured" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                    <ComboBox fx:id="cmbRamScLevel" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                    <CheckBox fx:id="chkRamSecured" mnemonicParsing="false" text="Secured" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                       </children>
                     </GridPane>
                     <CheckBox fx:id="chkUseSpecificKeyset" layoutX="20.0" layoutY="169.0" mnemonicParsing="false" onAction="#handleUseSpecificKeysetCheck" text="Use specific keyset:" AnchorPane.bottomAnchor="84.0" AnchorPane.leftAnchor="8.0" />
@@ -68,10 +68,10 @@
                                     <Label text="Mac Value" GridPane.rowIndex="1" />
                                     <Label text="Key Value" GridPane.rowIndex="2" />
                                     <Label text="CM Pin" GridPane.rowIndex="3" />
-                                    <ComboBox fx:id="cmbIsdEnc" onAction="#handleIsdEnc" onMouseClicked="#handleCipherKeysetContextMenu" prefWidth="150.0" GridPane.columnIndex="1" />
-                                    <ComboBox fx:id="cmbIsdMac" onAction="#handleIsdMac" onMouseClicked="#handleCipherKeysetContextMenu" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                    <ComboBox fx:id="cmbIsdKey" onAction="#handleIsdKey" onMouseClicked="#handleCipherKeysetContextMenu" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                    <ComboBox fx:id="cmbIsdPin" onAction="#handleIsdPin" onMouseClicked="#handleCipherKeysetContextMenu" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                    <ComboBox fx:id="cmbIsdEnc" onMouseClicked="#handleIsdEncContextMenu" prefWidth="150.0" GridPane.columnIndex="1" />
+                                    <ComboBox fx:id="cmbIsdMac" onMouseClicked="#handleIsdMacContextMenu" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                    <ComboBox fx:id="cmbIsdKey" onMouseClicked="#handleIsdKeyContextMenu" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                    <ComboBox fx:id="cmbIsdPin" onMouseClicked="#handleIsdPinContextMenu" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                  </children>
                               </GridPane>
                     <GridPane hgap="8.0" layoutX="32.0" layoutY="133.0" prefHeight="68.0" prefWidth="589.0" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0">

@@ -405,6 +405,11 @@
                                 <fx:include source="RfmIsim.fxml" />
                               </content>
                             </Tab>
+                            <Tab closable="false" text="RAM">
+                              <content>
+                                <fx:include source="Ram.fxml" />
+                              </content>
+                            </Tab>
                             <Tab closable="false" text="Secret Codes">
                               <content>
                                 <fx:include source="SecretCodes.fxml" />

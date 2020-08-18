@@ -50,7 +50,7 @@ public class Isd {
         this.scLevel = scLevel;
     }
 
-    public boolean getSecuredSate() {
+    public boolean isSecuredState() {
         return securedState;
     }
 

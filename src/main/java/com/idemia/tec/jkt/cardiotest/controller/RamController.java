@@ -1,6 +1,7 @@
 package com.idemia.tec.jkt.cardiotest.controller;
 
 import com.idemia.tec.jkt.cardiotest.model.SCP80Keyset;
+import com.idemia.tec.jkt.cardiotest.model.Isd;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Modality;
@@ -197,6 +198,9 @@ public class RamController {
 
         chkUseSpecificKeyset.setSelected(root.getRunSettings().getRam().isUseSpecificKeyset());
         handleUseSpecificKeysetCheck();
+
+        cmbRamMethodForGpCommand.setValue(root.getRunSettings().getRam().getIsd().getMethodForGpCommand());
+        handleRamMethodForGpCommand();
     }
 
     @FXML private void handleCipherKeysetContextMenu() { cmbRamCipheringKeyset.setItems(cardiotest.getScp80KeysetLabels()); }
@@ -488,8 +492,7 @@ public class RamController {
     }
 
     @FXML private void handleRamMethodForGpCommand() {
-        System.out.println(cmbRamMethodForGpCommand.getValue());
-        if(cmbRamMethodForGpCommand.getValue() == "with Card Manager Keyset") {
+        if(cmbRamMethodForGpCommand.getValue().equals("with Card Manager Keyset")) {
             txtRamScpMode.setDisable(false);
             cmbRamScLevel.setDisable(false);
             chkRamSecured.setDisable(false);
@@ -498,7 +501,7 @@ public class RamController {
             cmbIsdKey.setDisable(false);
             cmbIsdPin.setDisable(true);
         }
-        else if(cmbRamMethodForGpCommand.getValue() == "no Card Manager Keyset") {
+        else if(cmbRamMethodForGpCommand.getValue().equals("no Card Manager Keyset")) {
             txtRamScpMode.setDisable(true);
             cmbRamScLevel.setDisable(true);
             chkRamSecured.setDisable(true);
@@ -507,7 +510,7 @@ public class RamController {
             cmbIsdKey.setDisable(true);
             cmbIsdPin.setDisable(true);
         }
-        else if(cmbRamMethodForGpCommand.getValue() == "SIMBiOs"){
+        else if(cmbRamMethodForGpCommand.getValue().equals("SIMBiOs")) {
             txtRamScpMode.setDisable(true);
             cmbRamScLevel.setDisable(true);
             chkRamSecured.setDisable(true);
@@ -591,6 +594,17 @@ public class RamController {
             }
         }
         root.getRunSettings().getRam().setAuthKeyset(RamAuthKeyset);
+
+        Isd isd = new Isd();
+        isd.setMethodForGpCommand(cmbRamMethodForGpCommand.getSelectionModel().getSelectedItem());
+        isd.setScpMode(txtRamScpMode.getText());
+        isd.setScLevel(cmbRamScLevel.getSelectionModel().getSelectedItem());
+        isd.setSecuredState(chkRamSecured.isSelected());
+        isd.setCardManagerEnc(cmbIsdEnc.getSelectionModel().getSelectedItem());
+        isd.setCardManagerMac(cmbIsdMac.getSelectionModel().getSelectedItem());
+        isd.setCardManagerKey(cmbIsdKey.getSelectionModel().getSelectedItem());
+        isd.setCardManagerPin(cmbIsdPin.getSelectionModel().getSelectedItem());
+        root.getRunSettings().getRam().setIsd(isd);
     }
 
 }

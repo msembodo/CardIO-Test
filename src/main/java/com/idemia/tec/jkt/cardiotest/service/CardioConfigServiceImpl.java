@@ -153,14 +153,16 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             ramMsl.setPorRequirement("PoR required");
             ramMsl.setPorSecurity("response with no security");
 
-            Ram ram = new Ram();
-            ram.setIncludeRam(true);
-            ram.setTar("000000");
-            ram.setMinimumSecurityLevel(ramMsl);
             Isd isd = new Isd();
             isd.setMethodForGpCommand("with Card Manager Keyset");
             isd.setScLevel("00");
             isd.setScpMode("0255");
+
+            Ram ram = new Ram();
+            ram.setIncludeRam(true);
+            ram.setTar("000000");
+            ram.setMinimumSecurityLevel(ramMsl);
+
             ram.setIsd(isd);
             defaultSettings.setRam(ram);
 

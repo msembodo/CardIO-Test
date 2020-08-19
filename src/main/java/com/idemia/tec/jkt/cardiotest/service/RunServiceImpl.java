@@ -407,15 +407,15 @@ public class RunServiceImpl implements RunService {
         StringBuilder ramRunAllString = new StringBuilder();
         ramRunAllString.append("; RFM ISIM\n");
 
-        // add RFM ISIM script to structure
+        // add RAM script to structure
 
         if (ram.isIncludeRam()) {
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RFM_ISIM.txt"))) {
                 bw.append(scriptGenerator.generateRam(ram));
             } catch (IOException e) {
-                logger.error("Failed writing RFM_ISIM script");
+                logger.error("Failed writing RAM script");
             }
-            ramRunAllString.append(".EXECUTE scripts\\RFM_ISIM.txt /PATH logs\n");
+            ramRunAllString.append(".EXECUTE scripts\\RAM.txt /PATH logs\n");
             ramRunAllString.append(".ALLUNDEFINE\n\n");
         }
 
@@ -423,9 +423,9 @@ public class RunServiceImpl implements RunService {
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RFM_ISIM_UpdateRecord.txt"))) {
                 bw.append(scriptGenerator.generateRamUpdateRecord(ram));
             } catch (IOException e) {
-                logger.error("Failed writing RFM_ISIM_UpdateRecord script");
+                logger.error("Failed writing RAM_UpdateRecord script");
             }
-            ramRunAllString.append(".EXECUTE scripts\\RFM_ISIM_UpdateRecord.txt /PATH logs\n");
+            ramRunAllString.append(".EXECUTE scripts\\RAM_UpdateRecord.txt /PATH logs\n");
             ramRunAllString.append(".ALLUNDEFINE\n\n");
         }
 
@@ -433,9 +433,9 @@ public class RunServiceImpl implements RunService {
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RFM_ISIM_3G_ExpandedMode.txt"))) {
                 bw.append(scriptGenerator.generateRamExpandedMode(ram));
             } catch (IOException e) {
-                logger.error("Failed writing RFM_ISIM_3G_ExpandedMode script");
+                logger.error("Failed writing RAM_3G_ExpandedMode script");
             }
-            ramRunAllString.append(".EXECUTE scripts\\RFM_ISIM_3G_ExpandedMode.txt /PATH logs\n");
+            ramRunAllString.append(".EXECUTE scripts\\RAM_3G_ExpandedMode.txt /PATH logs\n");
             ramRunAllString.append(".ALLUNDEFINE\n\n");
         }
 

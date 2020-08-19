@@ -4,6 +4,7 @@ import com.idemia.tec.jkt.cardiotest.CardiotestApplication;
 import com.idemia.tec.jkt.cardiotest.model.*;
 import com.idemia.tec.jkt.cardiotest.response.TestSuiteResponse;
 import com.idemia.tec.jkt.cardiotest.service.CardioConfigService;
+import com.idemia.tec.jkt.cardiotest.service.ExportImportService;
 import com.idemia.tec.jkt.cardiotest.service.ReportService;
 import com.idemia.tec.jkt.cardiotest.service.RunService;
 import javafx.application.Platform;
@@ -66,6 +67,7 @@ public class RootLayoutController {
     @Autowired private CardioConfigService cardioConfigService;
     @Autowired private RunService runService;
     @Autowired private ReportService reportService;
+    @Autowired private ExportImportService eximService;
 
     @FXML private BorderPane rootBorderPane;
     @FXML private MenuBar menuBar;
@@ -173,6 +175,25 @@ public class RootLayoutController {
         runSettings.setCustomScriptsSection2(customScriptsSection2);
         runSettings.setCustomScriptsSection3(customScriptsSection3);
         cardioConfigService.saveConfig(runSettings);
+    }
+
+    @FXML private void handleMenuImportSettings() {
+        // TODO
+    }
+
+    @FXML private void handleMenuExportSettings() {
+        FileChooser exportFileChooser = new FileChooser();
+        exportFileChooser.setTitle("Export Settings");
+        exportFileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Compressed settings", "*.zip")
+        );
+        File exportFile = exportFileChooser.showSaveDialog(application.getPrimaryStage());
+        if (exportFile != null) {
+            try {
+                eximService.export(runSettings, exportFile);
+            }
+            catch (IOException e) { logger.error("Failed exporting settings: " + e.getMessage()); }
+        }
     }
 
     @FXML private void handleMenuSelectReader() {

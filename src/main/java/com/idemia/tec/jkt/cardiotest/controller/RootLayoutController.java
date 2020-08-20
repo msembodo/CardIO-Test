@@ -189,9 +189,7 @@ public class RootLayoutController {
         );
         File exportFile = exportFileChooser.showSaveDialog(application.getPrimaryStage());
         if (exportFile != null) {
-            try {
-                eximService.export(runSettings, exportFile);
-            }
+            try { appStatusBar.setText(eximService.export(runSettings, exportFile)); }
             catch (IOException e) { logger.error("Failed exporting settings: " + e.getMessage()); }
         }
     }

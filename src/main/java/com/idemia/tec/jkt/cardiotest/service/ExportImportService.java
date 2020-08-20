@@ -26,17 +26,21 @@ public class ExportImportService {
     private String scriptsDirectory;
     private File exportRunSettingsFile;
 
-    public String export(RunSettings rs, File exportFile) throws IOException {
+    public void importSettings() {
+        // TODO
+    }
+
+    public String exportSettings(RunSettings rs, File exportFile) throws IOException {
         // deep copy RunSettings object with json serialization
         ObjectMapper rsMapper = new ObjectMapper();
-        RunSettings ers = rsMapper.readValue(rsMapper.writeValueAsString(rs), RunSettings.class);
+        RunSettings ers = rsMapper.readValue(rsMapper.writeValueAsString(rs), RunSettings.class); // exported run settings
         ers.setProjectPath(null);
         ers.setAdvSaveVariablesPath(null);
         ers.setReaderNumber(0);
 
         // populate source files in temporary folder
         File tmpDir = new File("tmp\\");
-        if (!tmpDir.exists()) tmpDir.mkdir();
+        if (!tmpDir.exists()) if (tmpDir.mkdir()) logger.info("Created tmp directory in app root");
 
         // settings file
         exportRunSettingsFile = new File("tmp\\ex-run-settings.json");
@@ -64,8 +68,7 @@ public class ExportImportService {
         }
         boolean zipOk = zip(srcFiles, exportFile);
 
-        // delete all files in temporary folder
-        for (File srcFile : srcFiles) Files.deleteIfExists(srcFile.toPath());
+        for (File srcFile : srcFiles) Files.deleteIfExists(srcFile.toPath()); // delete all files in temporary folder
 
         if (zipOk) return "Exported settings to " + exportFile.getAbsolutePath();
         else return "Failed exporting settings.";
@@ -90,15 +93,14 @@ public class ExportImportService {
                 zipOut.putNextEntry(zipEntry);
                 byte[] bytes = new byte[1024];
                 int length;
-                while((length = fis.read(bytes)) >= 0) {
-                    zipOut.write(bytes, 0, length);
-                }
+                while((length = fis.read(bytes)) >= 0) zipOut.write(bytes, 0, length);
                 fis.close();
             }
             zipOut.close();
             fos.close();
             return true;
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             logger.error("Error zipping files: " + e.getMessage());
             return false;
         }

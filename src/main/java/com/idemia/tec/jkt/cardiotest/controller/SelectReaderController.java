@@ -27,9 +27,7 @@ public class SelectReaderController {
 
     public SelectReaderController() {}
 
-    public void setMainApp(CardiotestApplication application) {
-        this.application = application;
-    }
+    public void setMainApp(CardiotestApplication application) { this.application = application; }
 
     @FXML private void initialize() {
         // get list of actual readers
@@ -37,21 +35,18 @@ public class SelectReaderController {
             terminals = root.getTerminalFactory().terminals().list();
             if (!terminals.isEmpty()) {
                 List<String> readerNames = new ArrayList<>();
-                for (CardTerminal terminal : terminals)
-                    readerNames.add(terminal.getName());
+                for (CardTerminal terminal : terminals) readerNames.add(terminal.getName());
                 cmbReader.getItems().addAll(readerNames);
 
                 if (root.getRunSettings().getReaderNumber() == -1) cmbReader.getSelectionModel().select(0);
                 else cmbReader.getSelectionModel().select(root.getRunSettings().getReaderNumber());
-
-            } else logger.error("No terminal/reader detected!");
-
-        } catch (CardException e) { logger.error("Failed to list PCSC terminals"); }
+            }
+            else logger.error("No terminal/reader detected!");
+        }
+        catch (CardException e) { logger.error("Failed to list PCSC terminals"); }
     }
 
-    @FXML public void handleButtonCancel() {
-        application.getSelectReaderDialogStage().close();
-    }
+    @FXML public void handleButtonCancel() { application.getSelectReaderDialogStage().close(); }
 
     @FXML public void handleButtonOk() {
         int selectedReaderIndex = cmbReader.getSelectionModel().getSelectedIndex();

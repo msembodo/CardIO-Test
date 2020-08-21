@@ -13,7 +13,10 @@
                 <Menu mnemonicParsing="false" text="File">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#handleMenuLoadVariables" text="Load Variables" />
-                  <MenuItem mnemonicParsing="false" onAction="#handleMenuSaveSettings" text="Save Settings" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleMenuSaveSettings" text="Save Settings" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleMenuImportSettings" text="Import Settings" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleMenuExportSettings" text="Export Settings" />
                         <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem mnemonicParsing="false" onAction="#handleMenuQuit" text="Quit" />
                     </items>

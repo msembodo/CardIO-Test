@@ -143,6 +143,7 @@ public class RunServiceImpl implements RunService {
         // copy DLLs
         File dllDir = new File(scriptsDirectory + "dll\\");
         if (!dllDir.exists()) {
+            logger.info("Copy DLLs to " + scriptsDirectory);
             dllDir.mkdir();
             try (Stream<Path> walk = Files.walk(Paths.get("dll"))) {
                 List<String> dllFiles = walk.filter(Files::isRegularFile).map(Path::toString).collect(Collectors.toList());

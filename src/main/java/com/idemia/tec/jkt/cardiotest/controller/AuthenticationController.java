@@ -37,7 +37,7 @@ public class AuthenticationController {
 
     public AuthenticationController() {}
 
-    @FXML private void initialize() {
+    @FXML public void initialize() {
         chkIncludeDeltaTest.setSelected(root.getRunSettings().getAuthentication().isIncludeDeltaTest());
         handleIncludeDeltaTestCheck();
 

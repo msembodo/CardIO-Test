@@ -52,7 +52,7 @@ public class RfmGsmController {
 
     public RfmGsmController() {}
 
-    @FXML private void initialize() {
+    @FXML public void initialize() {
         chkIncludeRfmGsm.setSelected(root.getRunSettings().getRfmGsm().isIncludeRfmGsm());
         handleIncludeRfmGsmCheck();
 

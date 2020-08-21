@@ -61,7 +61,7 @@ public class SecretCodesController {
 
     public SecretCodesController() {}
 
-    @FXML private void initialize() {
+    @FXML public void initialize() {
         chkPin1Disabled.setSelected(root.getRunSettings().getSecretCodes().isPin1disabled());
         chkPin2Disabled.setSelected(root.getRunSettings().getSecretCodes().isPin2disabled());
 

@@ -183,7 +183,7 @@ public class CardiotestController {
         }
     }
 
-    @FXML private void initialize() {
+    @FXML public void initialize() {
         // initialize variable table
         clmnDefined.setCellValueFactory(celldata -> celldata.getValue().definedVariable());
         clmnValue.setCellValueFactory(celldata -> celldata.getValue().value());

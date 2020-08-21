@@ -58,7 +58,7 @@ public class CustomTabController {
 
     public CustomTabController() {}
 
-    @FXML private void initialize() {
+    @FXML public void initialize() {
         // init section 1
         clmnCs1Name.setCellValueFactory(celldata -> celldata.getValue().customScriptNameProperty());
         showCustomScriptSection1(null);

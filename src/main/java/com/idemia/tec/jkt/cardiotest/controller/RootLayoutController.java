@@ -64,6 +64,12 @@ public class RootLayoutController {
     private boolean runCodes2gOk;
 
     @Autowired private CardiotestController cardiotest;
+    @Autowired private AuthenticationController authenticationController;
+    @Autowired private SecretCodesController secretCodesController;
+    @Autowired private RfmGsmController rfmGsmController;
+    @Autowired private RfmUsimController rfmUsimController;
+    @Autowired private RfmIsimController rfmIsimController;
+    @Autowired private CustomTabController customTabController;
     @Autowired private CardioConfigService cardioConfigService;
     @Autowired private RunService runService;
     @Autowired private ReportService reportService;
@@ -89,6 +95,9 @@ public class RootLayoutController {
 
     private StatusBar appStatusBar;
     private Label lblTerminalInfo;
+
+    private File importProjectDir;
+    private File importVarFile;
 
     public RootLayoutController() {}
 
@@ -131,30 +140,32 @@ public class RootLayoutController {
                 new FileChooser.ExtensionFilter("Variables data", "*.txt")
         );
         File selectedVarFile = variableFileChooser.showOpenDialog(application.getPrimaryStage());
-        if (selectedVarFile != null) {
-            application.getAdvSaveVariables().clear();
-            cardiotest.getCmbMccVar().getItems().clear();
-            try {
-                Scanner scanner = new Scanner(selectedVarFile);
-                List<String> definedVariables = new ArrayList<>();
-                while (scanner.hasNextLine()) {
-                    String line = scanner.nextLine();
-                    if (line.startsWith(".DEFINE"))
-                        definedVariables.add(line);
-                }
-                runSettings.setAdvSaveVariablesPath(selectedVarFile.getAbsolutePath());
-                logger.info(String.format("Variable file selected: %s", selectedVarFile.getAbsolutePath()));
-                appStatusBar.setText("Variables loaded.");
-                for (String line : definedVariables) {
-                    String[] components = line.split("\\s+");
-                    application.getAdvSaveVariables().add(
-                            new AdvSaveVariable(components[1].substring(1), components[2])
-                    );
-                    cardiotest.getCmbMccVar().getItems().add(components[1].substring(1));
-                }
+        if (selectedVarFile != null) loadVariables(selectedVarFile);
+    }
+
+    private void loadVariables(File selectedVarFile) {
+        application.getAdvSaveVariables().clear();
+        cardiotest.getCmbMccVar().getItems().clear();
+        try {
+            Scanner scanner = new Scanner(selectedVarFile);
+            List<String> definedVariables = new ArrayList<>();
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                if (line.startsWith(".DEFINE"))
+                    definedVariables.add(line);
             }
-            catch (FileNotFoundException e) { e.printStackTrace(); }
+            runSettings.setAdvSaveVariablesPath(selectedVarFile.getAbsolutePath());
+            logger.info(String.format("Variable file selected: %s", selectedVarFile.getAbsolutePath()));
+            appStatusBar.setText("Variables loaded.");
+            for (String line : definedVariables) {
+                String[] components = line.split("\\s+");
+                application.getAdvSaveVariables().add(
+                        new AdvSaveVariable(components[1].substring(1), components[2])
+                );
+                cardiotest.getCmbMccVar().getItems().add(components[1].substring(1));
+            }
         }
+        catch (FileNotFoundException e) { e.printStackTrace(); }
     }
 
     @FXML private void handleMenuSaveSettings() {
@@ -168,15 +179,44 @@ public class RootLayoutController {
     }
 
     @FXML private void handleMenuImportSettings() {
+        importProjectDir = null;
+        importVarFile = null;
         FileChooser importFileChooser = new FileChooser();
         importFileChooser.setTitle("Import Settings");
         importFileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Compressed settings", "*.zip")
         );
-        File importFile = importFileChooser.showOpenDialog(application.getPrimaryStage());
-        if (importFile != null) {
+        File importZipFile = importFileChooser.showOpenDialog(application.getPrimaryStage());
+        if (importZipFile != null) {
             application.showImportDialog();
-            // TODO
+            if (importProjectDir!= null && importVarFile != null) {
+                logger.info("Project directory: " + importProjectDir.getAbsolutePath());
+                logger.info("Adv save variables: " + importVarFile.getAbsolutePath());
+                try {
+                    if (eximService.importSettings(importZipFile, importProjectDir, importVarFile)) {
+                        logger.info("Import success");
+                        // re-init configurations
+                        runSettings = cardioConfigService.initConfig();
+                        application.getMappings().clear();
+                        cardiotest.initialize();
+                        cardiotest.setObservableList();
+                        authenticationController.initialize();
+                        rfmGsmController.initialize();
+                        rfmUsimController.initialize();
+                        rfmIsimController.initialize();
+                        secretCodesController.initialize();
+                        customTabController.initialize();
+                    }
+                    else appStatusBar.setText("Failed importing " + importZipFile.getAbsolutePath());
+                }
+                catch (IOException e) { e.printStackTrace(); }
+            }
+            else {
+                String statusBarMsg = "";
+                if (importProjectDir == null) statusBarMsg += "Project directory has not been selected; ";
+                if (importVarFile == null) statusBarMsg += "Adv save variables has not been selected";
+                appStatusBar.setText(statusBarMsg);
+            }
         }
     }
 
@@ -281,7 +321,6 @@ public class RootLayoutController {
         };
         Thread runAllThread = new Thread(task);
         runAllThread.start(); // run in background
-
     }
 
     private void setTestStatus(TestCase module) {
@@ -1236,4 +1275,6 @@ public class RootLayoutController {
     public ObservableList<CustomScript> getCustomScriptsSection2() { return customScriptsSection2; }
     public ObservableList<CustomScript> getCustomScriptsSection3() { return customScriptsSection3; }
 
+    public void setImportProjectDir(File importProjectDir) { this.importProjectDir = importProjectDir; }
+    public void setImportVarFile(File importVarFile) { this.importVarFile = importVarFile; }
 }

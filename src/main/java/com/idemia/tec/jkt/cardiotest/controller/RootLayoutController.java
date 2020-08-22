@@ -29,6 +29,7 @@ import javax.smartcardio.CardException;
 import javax.smartcardio.CardTerminal;
 import javax.smartcardio.TerminalFactory;
 import java.io.*;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -195,17 +196,7 @@ public class RootLayoutController {
                 try {
                     if (eximService.importSettings(importZipFile, importProjectDir, importVarFile)) {
                         logger.info("Import success");
-                        // re-init configurations
-                        runSettings = cardioConfigService.initConfig();
-                        application.getMappings().clear();
-                        cardiotest.initialize();
-                        cardiotest.setObservableList();
-                        authenticationController.initialize();
-                        rfmGsmController.initialize();
-                        rfmUsimController.initialize();
-                        rfmIsimController.initialize();
-                        secretCodesController.initialize();
-                        customTabController.initialize();
+                        reinitConfig();
                     }
                     else appStatusBar.setText("Failed importing " + importZipFile.getAbsolutePath());
                 }
@@ -218,6 +209,33 @@ public class RootLayoutController {
                 appStatusBar.setText(statusBarMsg);
             }
         }
+    }
+
+    private void reinitConfig() {
+        runSettings = cardioConfigService.initConfig();
+        try {
+            List<CardTerminal> terminals = terminalFactory.terminals().list();
+            if (terminals.isEmpty()) lblTerminalInfo.setText("(no terminal/reader detected)");
+            else if (runSettings.getReaderNumber() != -1)
+                lblTerminalInfo.setText(terminals.get(runSettings.getReaderNumber()).getName());
+        } catch (CardException e) {
+            logger.error("Failed to list PCSC terminals");
+            lblTerminalInfo.setText("(no terminal/reader detected)");
+            lblTerminalInfo.setTextFill(Color.RED);
+        }
+        application.getMappings().clear();
+        scp80Keysets.clear();
+        customScriptsSection1.clear();
+        customScriptsSection2.clear();
+        customScriptsSection3.clear();
+        cardiotest.initialize();
+        cardiotest.setObservableList();
+        authenticationController.initialize();
+        rfmGsmController.initialize();
+        rfmUsimController.initialize();
+        rfmIsimController.initialize();
+        secretCodesController.initialize();
+        customTabController.initialize();
     }
 
     @FXML private void handleMenuExportSettings() {

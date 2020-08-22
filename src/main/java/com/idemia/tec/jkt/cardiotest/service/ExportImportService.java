@@ -1,9 +1,11 @@
 package com.idemia.tec.jkt.cardiotest.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.idemia.tec.jkt.cardiotest.controller.RootLayoutController;
 import com.idemia.tec.jkt.cardiotest.model.CustomScript;
 import com.idemia.tec.jkt.cardiotest.model.RunSettings;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -27,6 +29,8 @@ public class ExportImportService {
     private String impScriptsDirectory;
     private String expScriptsDirectory;
 
+    @Autowired private RootLayoutController root;
+
     public boolean importSettings(File importFile, File projectDir, File advSaveVar) throws IOException {
         // inflate zip file to tmp
         File tmpDir = new File("tmp\\");
@@ -44,8 +48,8 @@ public class ExportImportService {
         RunSettings rs = ersMapper.readValue(exportRunSettingsFile, RunSettings.class);
         rs.setProjectPath(projectDir.getAbsolutePath());
         rs.setAdvSaveVariablesPath(advSaveVar.getAbsolutePath());
-
-        // TODO get readerNumber from current and set to exported RunSettings*
+        // TODO get readerNumber from current
+        rs.setReaderNumber(root.getRunSettings().getReaderNumber());
 
         // copy custom scripts (if any)
         if (rs.getCustomScriptsSection1().size() > 0) copyScriptFromTmp(rs.getCustomScriptsSection1());

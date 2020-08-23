@@ -122,6 +122,10 @@ public class RootLayoutController {
             List<CardTerminal> terminals = terminalFactory.terminals().list();
             if (terminals.isEmpty()) lblTerminalInfo.setText("(no terminal/reader detected)");
             else if (runSettings.getReaderNumber() != -1)
+                if (runSettings.getReaderNumber() > terminals.size() - 1) {
+                    runSettings.setReaderNumber(0); // set to first reader when terminals have changed
+                    logger.info("Card terminals have changed; going default to first reader");
+                }
                 lblTerminalInfo.setText(terminals.get(runSettings.getReaderNumber()).getName());
         } catch (CardException e) {
             logger.error("Failed to list PCSC terminals");
@@ -213,16 +217,16 @@ public class RootLayoutController {
 
     private void reinitConfig() {
         runSettings = cardioConfigService.initConfig();
-        try {
-            List<CardTerminal> terminals = terminalFactory.terminals().list();
-            if (terminals.isEmpty()) lblTerminalInfo.setText("(no terminal/reader detected)");
-            else if (runSettings.getReaderNumber() != -1)
-                lblTerminalInfo.setText(terminals.get(runSettings.getReaderNumber()).getName());
-        } catch (CardException e) {
-            logger.error("Failed to list PCSC terminals");
-            lblTerminalInfo.setText("(no terminal/reader detected)");
-            lblTerminalInfo.setTextFill(Color.RED);
-        }
+//        try {
+//            List<CardTerminal> terminals = terminalFactory.terminals().list();
+//            if (terminals.isEmpty()) lblTerminalInfo.setText("(no terminal/reader detected)");
+//            else if (runSettings.getReaderNumber() != -1)
+//                lblTerminalInfo.setText(terminals.get(runSettings.getReaderNumber()).getName());
+//        } catch (CardException e) {
+//            logger.error("Failed to list PCSC terminals");
+//            lblTerminalInfo.setText("(no terminal/reader detected)");
+//            lblTerminalInfo.setTextFill(Color.RED);
+//        }
         application.getMappings().clear();
         scp80Keysets.clear();
         customScriptsSection1.clear();

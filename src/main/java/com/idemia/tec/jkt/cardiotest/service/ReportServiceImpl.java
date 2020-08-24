@@ -626,7 +626,7 @@ public class ReportServiceImpl implements ReportService {
         return header.toString();
     }
 
-    private String createDocumentFooter() { return "\n<div><i>Created by CardIO on " + new Timestamp(System.currentTimeMillis()) + "</i></div>\n</body>\n</html>"; }
+    private String createDocumentFooter() { return "\n<div><i>Created by CARDIO on " + new Timestamp(System.currentTimeMillis()) + "</i></div>\n</body>\n</html>"; }
 
     private String createTableHeader() { return "\n<div>\n" + "<table>\n" + "<tbody>"; }
 

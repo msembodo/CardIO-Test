@@ -227,7 +227,10 @@ public class RootLayoutController {
 //            lblTerminalInfo.setText("(no terminal/reader detected)");
 //            lblTerminalInfo.setTextFill(Color.RED);
 //        }
+        application.getAdvSaveVariables().clear();
         application.getMappings().clear();
+        cardiotest.getCmbMccVar().getItems().clear();
+        cardiotest.getMappedVariables().clear();
         scp80Keysets.clear();
         customScriptsSection1.clear();
         customScriptsSection2.clear();

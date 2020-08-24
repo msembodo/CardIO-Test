@@ -45,7 +45,7 @@ public class CardiotestApplication extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		BasicConfigurator.configure();
 		this.primaryStage = primaryStage;
-		this.primaryStage.setTitle("CardIO-SNAPSHOT");
+		this.primaryStage.setTitle("CARDIO-SNAPSHOT");
 
 		initRootLayout();
 		showCardioTest();

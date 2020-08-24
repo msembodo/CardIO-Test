@@ -133,7 +133,7 @@ public class CustomTabController {
                 Files.copy(cs1ChooseFile.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                 txtCs1ScriptName.setText(cs1ChooseFile.getName());
             } catch (IOException e) {
-                e.printStackTrace();
+                e.getMessage();
             }
         }
     }

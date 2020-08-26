@@ -2,6 +2,7 @@ package com.idemia.tec.jkt.cardiotest.service;
 
 import com.idemia.tec.jkt.cardiotest.model.Authentication;
 import com.idemia.tec.jkt.cardiotest.model.RfmUsim;
+import com.idemia.tec.jkt.cardiotest.model.RfmGsm;
 import com.idemia.tec.jkt.cardiotest.model.RfmIsim;
 import com.idemia.tec.jkt.cardiotest.model.SecretCodes;
 
@@ -14,6 +15,9 @@ public interface ScriptGeneratorService {
     StringBuilder generateRfmUsim(RfmUsim rfmUsim);
     StringBuilder generateRfmUsimUpdateRecord(RfmUsim rfmUsim);
     StringBuilder generateRfmUsimExpandedMode(RfmUsim rfmUsim);
+    StringBuilder generateRfmGsm(RfmGsm rfmGsm);
+    StringBuilder generateRfmGsmUpdateRecord(RfmGsm rfmGsm);
+    StringBuilder generateRfmGsmExpandedMode(RfmGsm rfmGsm);
     StringBuilder generateRfmIsim(RfmIsim rfmIsim);
     StringBuilder generateRfmIsimUpdateRecord(RfmIsim rfmIsim);
     StringBuilder generateRfmIsimExpandedMode(RfmIsim rfmIsim);

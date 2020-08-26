@@ -24,20 +24,23 @@ public class RunSettings {
     private List<SCP80Keyset> scp80Keysets;
     private SmsUpdate smsUpdate;
     private RfmUsim rfmUsim;
+    private RfmGsm rfmGsm;
     private RfmIsim rfmIsim;
     private List<CustomScript> customScriptsSection1;
     private List<CustomScript> customScriptsSection2;
     private List<CustomScript> customScriptsSection3;
 
-    public RunSettings() {}
+    public RunSettings() {
+    }
 
     public RunSettings(String projectPath, String advSaveVariablesPath, int readerNumber, boolean stopOnError,
                        String requestId, String requestName, String profileName, int profileVersion,
                        String cardImageItemId, String customer, String developerName, String testerName,
                        List<VariableMapping> variableMappings, ATR atr, SecretCodes secretCodes,
                        CardParameters cardParameters, Authentication authentication, List<SCP80Keyset> scp80Keysets,
-                       SmsUpdate smsUpdate, RfmUsim rfmUsim, List<CustomScript> customScriptsSection1,
-                       List<CustomScript> customScriptsSection2, List<CustomScript> customScriptsSection3) {
+                       SmsUpdate smsUpdate, RfmUsim rfmUsim, RfmGsm rfmGsm, RfmIsim rfmIsim,
+                       List<CustomScript> customScriptsSection1, List<CustomScript> customScriptsSection2,
+                       List<CustomScript> customScriptsSection3) {
         this.projectPath = projectPath;
         this.advSaveVariablesPath = advSaveVariablesPath;
         this.readerNumber = readerNumber;
@@ -58,6 +61,7 @@ public class RunSettings {
         this.scp80Keysets = scp80Keysets;
         this.smsUpdate = smsUpdate;
         this.rfmUsim = rfmUsim;
+        this.rfmGsm = rfmGsm;
         this.rfmIsim = rfmIsim;
         this.customScriptsSection1 = customScriptsSection1;
         this.customScriptsSection2 = customScriptsSection2;
@@ -222,6 +226,14 @@ public class RunSettings {
 
     public void setRfmUsim(RfmUsim rfmUsim) {
         this.rfmUsim = rfmUsim;
+    }
+
+    public RfmGsm getRfmGsm() {
+        return rfmGsm;
+    }
+
+    public void setRfmGsm(RfmGsm rfmGsm) {
+        this.rfmGsm = rfmGsm;
     }
 
     public RfmIsim getRfmIsim() {

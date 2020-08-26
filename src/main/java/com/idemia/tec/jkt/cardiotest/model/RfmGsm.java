@@ -1,10 +1,10 @@
 package com.idemia.tec.jkt.cardiotest.model;
 
-public class RfmIsim {
-    
-    private boolean includeRfmIsim;
-    private boolean includeRfmIsimUpdateRecord;
-    private boolean includeRfmIsimExpandedMode;
+public class RfmGsm {
+
+    private boolean includeRfmGsm;
+    private boolean includeRfmGsmUpdateRecord;
+    private boolean includeRfmGsmExpandedMode;
     private String tar;
     private String targetEf;
     private String targetEfBadCase;
@@ -17,23 +17,23 @@ public class RfmIsim {
     private SCP80Keyset cipheringKeyset;
     private SCP80Keyset authKeyset;
     private MinimumSecurityLevel minimumSecurityLevel;
-    private boolean testRfmIsimOk;
-    private String testRfmIsimMessage;
-    private boolean testRfmIsimUpdateRecordOk;
-    private String testRfmIsimUpdateRecordMessage;
-    private boolean testRfmIsimExpandedModeOk;
-    private String testRfmIsimExpandedModeMessage;
+    private boolean testRfmGsmOk;
+    private String testRfmGsmMessage;
+    private boolean testRfmGsmUpdateRecordOk;
+    private String testRfmGsmUpdateRecordMessage;
+    private boolean testRfmGsmExpandedModeOk;
+    private String testRfmGsmExpandedModeMessage;
 
-    public RfmIsim() {}
+    public RfmGsm() {}
 
-    public RfmIsim(boolean includeRfmIsim, boolean includeRfmIsimUpdateRecord, boolean includeRfmIsimExpandedMode,
-                   String tar, String targetEf, String targetEfBadCase, boolean fullAccess, String customTargetAcc,
-                   String customTargetEf, String customTargetAccBadCase, String customTargetEfBadCase,
-                   boolean useSpecificKeyset, SCP80Keyset cipheringKeyset, SCP80Keyset authKeyset,
-                   MinimumSecurityLevel minimumSecurityLevel) {
-        this.includeRfmIsim = includeRfmIsim;
-        this.includeRfmIsimUpdateRecord = includeRfmIsimUpdateRecord;
-        this.includeRfmIsimExpandedMode = includeRfmIsimExpandedMode;
+    public RfmGsm(boolean includeRfmGsm, boolean includeRfmGsmUpdateRecord, boolean includeRfmGsmExpandedMode,
+                  String tar, String targetEf, String targetEfBadCase, boolean fullAccess, String customTargetAcc,
+                  String customTargetEf, String customTargetAccBadCase, String customTargetEfBadCase,
+                  boolean useSpecificKeyset, SCP80Keyset cipheringKeyset, SCP80Keyset authKeyset,
+                  MinimumSecurityLevel minimumSecurityLevel) {
+        this.includeRfmGsm = includeRfmGsm;
+        this.includeRfmGsmUpdateRecord = includeRfmGsmUpdateRecord;
+        this.includeRfmGsmExpandedMode = includeRfmGsmExpandedMode;
         this.tar = tar;
         this.targetEf = targetEf;
         this.targetEfBadCase = targetEfBadCase;
@@ -48,28 +48,28 @@ public class RfmIsim {
         this.minimumSecurityLevel = minimumSecurityLevel;
     }
 
-    public boolean isIncludeRfmIsim() {
-        return includeRfmIsim;
+    public boolean isIncludeRfmGsm() {
+        return includeRfmGsm;
     }
 
-    public void setIncludeRfmIsim(boolean includeRfmIsim) {
-        this.includeRfmIsim = includeRfmIsim;
+    public void setIncludeRfmGsm(boolean includeRfmGsm) {
+        this.includeRfmGsm = includeRfmGsm;
     }
 
-    public boolean isIncludeRfmIsimUpdateRecord() {
-        return includeRfmIsimUpdateRecord;
+    public boolean isIncludeRfmGsmUpdateRecord() {
+        return includeRfmGsmUpdateRecord;
     }
 
-    public void setIncludeRfmIsimUpdateRecord(boolean includeRfmIsimUpdateRecord) {
-        this.includeRfmIsimUpdateRecord = includeRfmIsimUpdateRecord;
+    public void setIncludeRfmGsmUpdateRecord(boolean includeRfmGsmUpdateRecord) {
+        this.includeRfmGsmUpdateRecord = includeRfmGsmUpdateRecord;
     }
 
-    public boolean isIncludeRfmIsimExpandedMode() {
-        return includeRfmIsimExpandedMode;
+    public boolean isIncludeRfmGsmExpandedMode() {
+        return includeRfmGsmExpandedMode;
     }
 
-    public void setIncludeRfmIsimExpandedMode(boolean includeRfmIsimExpandedMode) {
-        this.includeRfmIsimExpandedMode = includeRfmIsimExpandedMode;
+    public void setIncludeRfmGsmExpandedMode(boolean includeRfmGsmExpandedMode) {
+        this.includeRfmGsmExpandedMode = includeRfmGsmExpandedMode;
     }
 
     public String getTar() {
@@ -168,52 +168,52 @@ public class RfmIsim {
         this.minimumSecurityLevel = minimumSecurityLevel;
     }
 
-    public boolean isTestRfmIsimOk() {
-        return testRfmIsimOk;
+    public boolean isTestRfmGsmOk() {
+        return testRfmGsmOk;
     }
 
-    public void setTestRfmIsimOk(boolean testRfmIsimOk) {
-        this.testRfmIsimOk = testRfmIsimOk;
+    public void setTestRfmGsmOk(boolean testRfmGsmOk) {
+        this.testRfmGsmOk = testRfmGsmOk;
     }
 
-    public String getTestRfmIsimMessage() {
-        return testRfmIsimMessage;
+    public String getTestRfmGsmMessage() {
+        return testRfmGsmMessage;
     }
 
-    public void setTestRfmIsimMessage(String testRfmIsimMessage) {
-        this.testRfmIsimMessage = testRfmIsimMessage;
+    public void setTestRfmGsmMessage(String testRfmGsmMessage) {
+        this.testRfmGsmMessage = testRfmGsmMessage;
     }
 
-    public boolean isTestRfmIsimUpdateRecordOk() {
-        return testRfmIsimUpdateRecordOk;
+    public boolean isTestRfmGsmUpdateRecordOk() {
+        return testRfmGsmUpdateRecordOk;
     }
 
-    public void setTestRfmIsimUpdateRecordOk(boolean testRfmIsimUpdateRecordOk) {
-        this.testRfmIsimUpdateRecordOk = testRfmIsimUpdateRecordOk;
+    public void setTestRfmGsmUpdateRecordOk(boolean testRfmGsmUpdateRecordOk) {
+        this.testRfmGsmUpdateRecordOk = testRfmGsmUpdateRecordOk;
     }
 
-    public String getTestRfmIsimUpdateRecordMessage() {
-        return testRfmIsimUpdateRecordMessage;
+    public String getTestRfmGsmUpdateRecordMessage() {
+        return testRfmGsmUpdateRecordMessage;
     }
 
-    public void setTestRfmIsimUpdateRecordMessage(String testRfmIsimUpdateRecordMessage) {
-        this.testRfmIsimUpdateRecordMessage = testRfmIsimUpdateRecordMessage;
+    public void setTestRfmGsmUpdateRecordMessage(String testRfmGsmUpdateRecordMessage) {
+        this.testRfmGsmUpdateRecordMessage = testRfmGsmUpdateRecordMessage;
     }
 
-    public boolean isTestRfmIsimExpandedModeOk() {
-        return testRfmIsimExpandedModeOk;
+    public boolean isTestRfmGsmExpandedModeOk() {
+        return testRfmGsmExpandedModeOk;
     }
 
-    public void setTestRfmIsimExpandedModeOk(boolean testRfmIsimExpandedModeOk) {
-        this.testRfmIsimExpandedModeOk = testRfmIsimExpandedModeOk;
+    public void setTestRfmGsmExpandedModeOk(boolean testRfmGsmExpandedModeOk) {
+        this.testRfmGsmExpandedModeOk = testRfmGsmExpandedModeOk;
     }
 
-    public String getTestRfmIsimExpandedModeMessage() {
-        return testRfmIsimExpandedModeMessage;
+    public String getTestRfmGsmExpandedModeMessage() {
+        return testRfmGsmExpandedModeMessage;
     }
 
-    public void setTestRfmIsimExpandedModeMessage(String testRfmIsimExpandedModeMessage) {
-        this.testRfmIsimExpandedModeMessage = testRfmIsimExpandedModeMessage;
+    public void setTestRfmGsmExpandedModeMessage(String testRfmGsmExpandedModeMessage) {
+        this.testRfmGsmExpandedModeMessage = testRfmGsmExpandedModeMessage;
     }
 
 }

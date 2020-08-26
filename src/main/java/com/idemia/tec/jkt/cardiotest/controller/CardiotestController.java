@@ -69,6 +69,7 @@ public class CardiotestController {
     @FXML private TextField txtCardManagerAid;
     @FXML private TextField txtUsimAid;
     @FXML private TextField txtDfUsim;
+    @FXML private TextField txtDfGsm;
     @FXML private TextField txtDfGsmAccess;
     @FXML private TextField txtDfTelecom;
     @FXML private TextField txtIsimAid;
@@ -114,6 +115,7 @@ public class CardiotestController {
     @Autowired private SecretCodesController secretCodesController;
     @Autowired private AuthenticationController authenticationController;
     @Autowired private RfmUsimController rfmUsimController;
+    @Autowired private RfmGsmController rfmGsmController;
     @Autowired private RfmIsimController rfmIsimController;
 
     public CardiotestController() {}
@@ -181,8 +183,7 @@ public class CardiotestController {
         }
     }
 
-    @FXML
-    private void initialize() {
+    @FXML public void initialize() {
         // initialize variable table
         clmnDefined.setCellValueFactory(celldata -> celldata.getValue().definedVariable());
         clmnValue.setCellValueFactory(celldata -> celldata.getValue().value());
@@ -252,6 +253,7 @@ public class CardiotestController {
         txtCardManagerAid.setText(root.getRunSettings().getCardParameters().getCardManagerAid());
         txtUsimAid.setText(root.getRunSettings().getCardParameters().getUsimAid());
         txtDfUsim.setText(root.getRunSettings().getCardParameters().getDfUsim());
+        txtDfGsm.setText(root.getRunSettings().getCardParameters().getDfGsm());
         txtDfGsmAccess.setText(root.getRunSettings().getCardParameters().getDfGsmAccess());
         txtDfTelecom.setText(root.getRunSettings().getCardParameters().getDfTelecom());
         txtIsimAid.setText(root.getRunSettings().getCardParameters().getIsimAid());
@@ -477,7 +479,6 @@ public class CardiotestController {
             tblMapping.getItems().remove(selectedIndex);
             showMappings(null);
             tblMapping.getSelectionModel().clearSelection();
-
         }
     }
 
@@ -502,9 +503,7 @@ public class CardiotestController {
 
     @FXML private void handleButtonGetAtr() {
         try {
-            CardTerminal terminal = root.getTerminalFactory().terminals().list().get(
-                    root.getRunSettings().getReaderNumber()
-            );
+            CardTerminal terminal = root.getTerminalFactory().terminals().list().get(root.getRunSettings().getReaderNumber());
             Card connection = terminal.connect("*");
             javax.smartcardio.ATR atr = connection.getATR();
             byte[] atrBytes = atr.getBytes();
@@ -516,8 +515,8 @@ public class CardiotestController {
             root.getRunSettings().getAtr().setTck(statusTck.substring(4).toUpperCase()); // TCK
             txtAtr.setText(root.getRunSettings().getAtr().getAtrString());
             lblProtocol.setText("Protocol: " + connection.getProtocol()
-                    + "; Status: " + root.getRunSettings().getAtr().getStatus()
-                    + "; TCK: " + root.getRunSettings().getAtr().getTck());
+                + "; Status: " + root.getRunSettings().getAtr().getStatus()
+                + "; TCK: " + root.getRunSettings().getAtr().getTck());
             connection.disconnect(false);
 
         } catch (CardException e) {
@@ -533,12 +532,7 @@ public class CardiotestController {
         }
     }
 
-    @FXML private void handleIncludeAtrCheck() {
-        if (chkIncludeAtr.isSelected())
-            root.getMenuAtr().setDisable(false);
-        else
-            root.getMenuAtr().setDisable(true);
-    }
+    @FXML private void handleIncludeAtrCheck() { root.getMenuAtr().setDisable(!chkIncludeAtr.isSelected()); }
 
     private boolean mappedVariableExist(String testMappedVariable) {
         for (VariableMapping mapping : application.getMappings()) {
@@ -639,6 +633,7 @@ public class CardiotestController {
         root.getRunSettings().getCardParameters().setCardManagerAid(txtCardManagerAid.getText());
         root.getRunSettings().getCardParameters().setUsimAid(txtUsimAid.getText());
         root.getRunSettings().getCardParameters().setDfUsim(txtDfUsim.getText());
+        root.getRunSettings().getCardParameters().setDfGsm(txtDfGsm.getText());
         root.getRunSettings().getCardParameters().setDfGsmAccess(txtDfGsmAccess.getText());
         root.getRunSettings().getCardParameters().setDfTelecom(txtDfTelecom.getText());
         root.getRunSettings().getCardParameters().setIsimAid(txtIsimAid.getText());
@@ -662,6 +657,9 @@ public class CardiotestController {
 
         // RFM USIM
         rfmUsimController.saveControlState();
+
+        // RFM GSM
+        rfmGsmController.saveControlState();
 
         // RFM Isim
         rfmIsimController.saveControlState();

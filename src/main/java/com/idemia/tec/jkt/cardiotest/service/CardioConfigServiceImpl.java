@@ -13,19 +13,18 @@ public class CardioConfigServiceImpl implements CardioConfigService {
 
     private File runSettingsFile;
 
-    @Override
-    public RunSettings initConfig() {
+    @Override public RunSettings initConfig() {
         runSettingsFile = new File("run-settings.json");
         if (runSettingsFile.exists()) {
             // read saved settings
             ObjectMapper mapper = new ObjectMapper();
-            try {
-                return mapper.readValue(runSettingsFile, RunSettings.class);
-            } catch (IOException e) {
+            try { return mapper.readValue(runSettingsFile, RunSettings.class); }
+            catch (IOException e) {
                 e.printStackTrace();
                 return null;
             }
-        } else {
+        }
+        else {
             // constants for default values
             String PROJECT_PATH_DEFAULT = "C:\\";
             String ADV_SAVE_VAR_DEFAULT = "variables.txt";
@@ -65,6 +64,7 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             cardParameters.setCardManagerAid("A000000151000000");
             cardParameters.setUsimAid("A0000000871002FFFFFFFF89");
             cardParameters.setDfUsim("7FF0");
+            cardParameters.setDfGsm("3F00");
             cardParameters.setDfGsmAccess("5F3B");
             cardParameters.setDfTelecom("7F10");
             cardParameters.setIsimAid("A0000000871004FFFFFFFF89");
@@ -117,6 +117,21 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             rfmUsim.setMinimumSecurityLevel(rfmUsimMsl);
             defaultSettings.setRfmUsim(rfmUsim);
 
+            MinimumSecurityLevel rfmGsmMsl = new MinimumSecurityLevel(true, "Cryptographic Checksum", "Counter must be higher");
+            rfmGsmMsl.setCipherAlgo("3DES - CBC 2 keys");
+            rfmGsmMsl.setSigningAlgo("3DES - CBC 2 keys");
+            rfmGsmMsl.setPorRequirement("PoR required");
+            rfmGsmMsl.setPorSecurity("response with no security");
+
+            RfmGsm rfmGsm = new RfmGsm();
+            rfmGsm.setIncludeRfmGsm(true);
+            rfmGsm.setTar("B00001");
+            rfmGsm.setTargetEf("6F7B");
+            rfmGsm.setTargetEfBadCase("6F05");
+            rfmGsm.setFullAccess(true);
+            rfmGsm.setMinimumSecurityLevel(rfmGsmMsl);
+            defaultSettings.setRfmGsm(rfmGsm);
+
             MinimumSecurityLevel rfmIsimMsl = new MinimumSecurityLevel(true, "Cryptographic Checksum", "Counter must be higher");
             rfmIsimMsl.setCipherAlgo("3DES - CBC 2 keys");rfmIsimMsl.setSigningAlgo("3DES - CBC 2 keys");
             rfmIsimMsl.setPorRequirement("PoR required");
@@ -147,13 +162,9 @@ public class CardioConfigServiceImpl implements CardioConfigService {
         }
     }
 
-    @Override
-    public void saveConfig(RunSettings runSettings) {
+    @Override public void saveConfig(RunSettings runSettings) {
         ObjectMapper mapper = new ObjectMapper();
-        try {
-            mapper.writerWithDefaultPrettyPrinter().writeValue(runSettingsFile, runSettings);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        try { mapper.writerWithDefaultPrettyPrinter().writeValue(runSettingsFile, runSettings); }
+        catch (IOException e) { e.printStackTrace(); }
     }
 }

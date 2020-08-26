@@ -34,4 +34,7 @@ build/
 lib/
 dll/
 
-run-settings.json
+### temporary folder ###
+tmp/
+
+*.json

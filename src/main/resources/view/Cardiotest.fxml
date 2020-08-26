@@ -479,6 +479,11 @@
                                 </children>
                               </AnchorPane>
                             </Tab>
+                            <Tab closable="false" text="Ammendment B">
+                              <content>
+                                <fx:include source="Amdb.fxml" />
+                              </content>
+                            </Tab>
                             <Tab closable="false" text="Secret Codes">
                               <content>
                                 <fx:include source="SecretCodes.fxml" />

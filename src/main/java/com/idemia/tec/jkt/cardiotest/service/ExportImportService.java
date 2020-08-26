@@ -48,7 +48,7 @@ public class ExportImportService {
         RunSettings rs = ersMapper.readValue(exportRunSettingsFile, RunSettings.class);
         rs.setProjectPath(projectDir.getAbsolutePath());
         rs.setAdvSaveVariablesPath(advSaveVar.getAbsolutePath());
-        rs.setReaderNumber(root.getRunSettings().getReaderNumber());
+        rs.setReaderNumber(root.getRunSettings().getReaderNumber()); // get readerNumber from current
 
         // copy custom scripts (if any)
         if (rs.getCustomScriptsSection1().size() > 0) copyScriptFromTmp(rs.getCustomScriptsSection1());

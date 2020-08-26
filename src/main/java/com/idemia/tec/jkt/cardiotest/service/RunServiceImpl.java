@@ -200,9 +200,7 @@ public class RunServiceImpl implements RunService {
                 + ".LIBRARY_PATH /DISP\n\n";
     }
 
-    private String endRunAll() {
-        return ".LIBRARY_PATH /DEL";
-    }
+    private String endRunAll() { return ".LIBRARY_PATH /DEL"; }
 
     private String addAtr(ATR atr) {
         // add ATR to options
@@ -315,8 +313,6 @@ public class RunServiceImpl implements RunService {
     }
 
     private String addRfmGsm(RfmGsm rfmGsm) {
-        // TODO: options buffer (if required)
-
         StringBuilder rfmGsmRunAllString = new StringBuilder();
         rfmGsmRunAllString.append("; RFM GSM\n");
 
@@ -353,8 +349,6 @@ public class RunServiceImpl implements RunService {
     }
 
     private String addRfmIsim(RfmIsim rfmIsim) {
-        // TODO: options buffer (if required)
-
         StringBuilder rfmIsimRunAllString = new StringBuilder();
         rfmIsimRunAllString.append("; RFM ISIM\n");
 

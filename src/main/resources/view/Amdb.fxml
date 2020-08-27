@@ -37,11 +37,11 @@
                         <Label text="SD TAR" />
                         <Label text="Ciphering keyset" GridPane.rowIndex="1" />
                         <Label text="Auth keyset" GridPane.rowIndex="2" />
-                        <TextField GridPane.columnIndex="1" />
-                        <ComboBox prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <ComboBox prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <Label text="Kic (hex): " GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                        <Label text="Kid (hex): " GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                        <TextField fx:id="txtSdTar" GridPane.columnIndex="1" />
+                        <ComboBox fx:id="cmbCipherKeyset" onAction="#handleCipherKeysetSelection" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <ComboBox fx:id="cmbAuthKeyset" onAction="#handleAuthKeysetSelection" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Label fx:id="lblKic" text="Kic (hex): " GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                        <Label fx:id="lblKid" text="Kid (hex): " GridPane.columnIndex="2" GridPane.rowIndex="2" />
                       </children>
                     </GridPane>
                     <GridPane hgap="4.0" layoutX="429.0" layoutY="24.0" prefHeight="235.0" prefWidth="598.0" AnchorPane.topAnchor="8.0">
@@ -67,15 +67,16 @@
                         <Label text="Counter checking" GridPane.rowIndex="4" />
                         <Label text="PoR requirement" GridPane.rowIndex="5" />
                         <Label text="PoR security" GridPane.rowIndex="6" />
-                        <TextField prefWidth="176.0" GridPane.columnIndex="1" />
-                        <Button mnemonicParsing="false" prefWidth="80.0" text="Set" GridPane.columnIndex="2" />
-                        <ComboBox prefWidth="300.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <CheckBox mnemonicParsing="false" text="Use cipher" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                        <ComboBox prefWidth="300.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <ComboBox prefWidth="300.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                        <ComboBox prefWidth="300.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                        <ComboBox prefWidth="300.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                        <ComboBox prefWidth="300.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                        <TextField fx:id="txtMslByte" prefWidth="176.0" GridPane.columnIndex="1" />
+                        <Button mnemonicParsing="false" onAction="#handleBtnSetMsl" prefWidth="80.0" text="Set" GridPane.columnIndex="2" />
+                        <ComboBox fx:id="cmbCipherAlgo" prefWidth="300.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <CheckBox fx:id="chkUseCipher" mnemonicParsing="false" onAction="#handleUseCipherCheck" text="Use cipher" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                        <ComboBox fx:id="cmbAuthVerif" onAction="#handleAuthVerifSelection" prefWidth="300.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <ComboBox fx:id="cmbSigningAlgo" prefWidth="300.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <ComboBox fx:id="cmbCounterCheck" onAction="#handleCounterCheckSelection" prefWidth="300.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <ComboBox fx:id="cmbPorRequirement" prefWidth="300.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                        <ComboBox fx:id="cmbPorSecurity" prefWidth="300.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                        <CheckBox fx:id="chkCipherPor" mnemonicParsing="false" text="Cipher PoR" GridPane.columnIndex="2" GridPane.rowIndex="6" />
                       </children>
                     </GridPane>
                   </children>
@@ -100,20 +101,20 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                       </rowConstraints>
                       <children>
-                        <CheckBox mnemonicParsing="false" />
-                        <TextField GridPane.columnIndex="2" />
-                        <CheckBox mnemonicParsing="false" GridPane.rowIndex="1" />
-                        <TextField GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                        <CheckBox mnemonicParsing="false" GridPane.rowIndex="2" />
-                        <TextField GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                        <CheckBox mnemonicParsing="false" GridPane.rowIndex="3" />
+                        <CheckBox fx:id="chkDestinationAddress" mnemonicParsing="false" />
+                        <TextField fx:id="txtDestinationAddress" GridPane.columnIndex="2" />
+                        <CheckBox fx:id="chkBufferSize" mnemonicParsing="false" GridPane.rowIndex="1" />
+                        <TextField fx:id="txtBufferSize" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                        <CheckBox fx:id="chkNetworkAccessName" mnemonicParsing="false" GridPane.rowIndex="2" />
+                        <TextField fx:id="txtNetworkAccessName" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                        <CheckBox fx:id="chkTransportLevel" mnemonicParsing="false" GridPane.rowIndex="3" />
                         <Label text="Destination address" GridPane.columnIndex="1" />
                         <Label text="Buffer size" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         <Label text="Network access name" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                         <Label text="Transport level" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                        <ComboBox prefWidth="160.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                        <ComboBox fx:id="cmbTransportLevel" prefWidth="160.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                         <Label text="Port" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                        <TextField GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                        <TextField fx:id="txtPort" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                       </children>
                     </GridPane>
                   </children>

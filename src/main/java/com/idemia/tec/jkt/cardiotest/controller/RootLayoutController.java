@@ -53,22 +53,14 @@ public class RootLayoutController {
     private boolean runRfmUsimOk;
     private boolean runRfmUsimUpdateRecordOk;
     private boolean runRfmUsimExpandedModeOk;
-
     private boolean runRfmGsmOk;
     private boolean runRfmGsmUpdateRecordOk;
     private boolean runRfmGsmExpandedModeOk;
-
     private boolean runRfmIsimOk;
     private boolean runRfmIsimUpdateRecordOk;
     private boolean runRfmIsimExpandedModeOk;
-
-    private boolean runRfmCustomOk;
-    private boolean runRfmCustomUpdateRecordOk;
-    private boolean runRfmCustomExpandedModeOk;
-
     private boolean runCodes3gOk;
     private boolean runCodes2gOk;
-
 
     @Autowired private CardiotestController cardiotest;
     @Autowired private CardioConfigService cardioConfigService;
@@ -90,18 +82,16 @@ public class RootLayoutController {
     @FXML private MenuItem menuRfmIsim;
     @FXML private MenuItem menuRfmIsimUpdateRecord;
     @FXML private MenuItem menuRfmIsimExpandedMode;
-    @FXML private MenuItem menuRfmCustom;
-    @FXML private MenuItem menuRfmCustomUpdateRecord;
-    @FXML private MenuItem menuRfmCustomExpandedMode;
     @FXML private MenuItem menuCodes3g;
     @FXML private MenuItem menuCodes2g;
-
 
     private StatusBar appStatusBar;
     private Label lblTerminalInfo;
 
-    public RootLayoutController() {
-    }
+    private File importProjectDir;
+    private File importVarFile;
+
+    public RootLayoutController() {}
 
     public void setMainApp(CardiotestApplication application) {
         this.application = application;
@@ -127,8 +117,9 @@ public class RootLayoutController {
             List<CardTerminal> terminals = terminalFactory.terminals().list();
             if (terminals.isEmpty())
                 lblTerminalInfo.setText("(no terminal/reader detected)");
-            else if (runSettings.getReaderNumber() != -1)
-                lblTerminalInfo.setText(terminals.get(runSettings.getReaderNumber()).getName());
+            else
+                if (runSettings.getReaderNumber() != -1)
+                    lblTerminalInfo.setText(terminals.get(runSettings.getReaderNumber()).getName());
         } catch (CardException e) {
             logger.error("Failed to list PCSC terminals");
             lblTerminalInfo.setText("(no terminal/reader detected)");
@@ -262,7 +253,8 @@ public class RootLayoutController {
                     reportService.createReportFromSettings(runSettings);
                     cardiotest.getTxtCommandResponse().clear();
                     cardiotest.getTabBottom().getSelectionModel().select(0);
-                } else {
+                }
+                else {
                     appStatusBar.setText(tsResponse.getMessage());
                     Notifications.create().title("CardIO").text(tsResponse.getMessage()).showError();
                     logger.error(tsResponse.getMessage());
@@ -404,7 +396,6 @@ public class RootLayoutController {
                 runSettings.getRfmUsim().setTestRfmUsimExpandedModeMessage(errFailure);
             }
         }
-
         if (module.getName().equals("RFM_GSM")) {
             runSettings.getRfmGsm().setTestRfmGsmOk(true);
             runSettings.getRfmGsm().setTestRfmGsmMessage("OK");
@@ -450,7 +441,6 @@ public class RootLayoutController {
                 runSettings.getRfmGsm().setTestRfmGsmExpandedModeMessage(errFailure);
             }
         }
-
         if (module.getName().equals("RFM_ISIM")) {
             runSettings.getRfmIsim().setTestRfmIsimOk(true);
             runSettings.getRfmIsim().setTestRfmIsimMessage("OK");
@@ -503,54 +493,6 @@ public class RootLayoutController {
             setCustomScriptsTestStatus(module, runSettings.getCustomScriptsSection2());
         if (runSettings.getCustomScriptsSection3().size() > 0)
             setCustomScriptsTestStatus(module, runSettings.getCustomScriptsSection3());
-
-
-        //Custom RFM --------------------------------------
-        if (module.getName().equals("RFM_CUSTOM")) {
-            runSettings.getRfmCustom().setTestRfmCustomOk(true);
-            runSettings.getRfmCustom().setTestRfmCustomMessage("OK");
-            String errFailure = "";
-            if (module.getError() != null) {
-                runSettings.getRfmCustom().setTestRfmCustomOk(false);
-                errFailure += module.getError().replace("\n", ";");
-                runSettings.getRfmCustom().setTestRfmCustomMessage(errFailure);
-            }
-            if (module.getFailure() != null) {
-                runSettings.getRfmCustom().setTestRfmCustomOk(false);
-                errFailure += module.getFailure().replace("\n", ";");
-                runSettings.getRfmCustom().setTestRfmCustomMessage(errFailure);
-            }
-        }
-        if (module.getName().equals("RFM_CUSTOM_UpdateRecord")) {
-            runSettings.getRfmCustom().setTestRfmCustomUpdateRecordOk(true);
-            runSettings.getRfmCustom().setTestRfmCustomUpdateRecordMessage("OK");
-            String errFailure = "";
-            if (module.getError() != null) {
-                runSettings.getRfmCustom().setTestRfmCustomUpdateRecordOk(false);
-                errFailure += module.getError().replace("\n", ";");
-                runSettings.getRfmCustom().setTestRfmCustomUpdateRecordMessage(errFailure);
-            }
-            if (module.getFailure() != null) {
-                runSettings.getRfmCustom().setTestRfmCustomUpdateRecordOk(false);
-                errFailure += module.getFailure().replace("\n", ";");
-                runSettings.getRfmCustom().setTestRfmCustomUpdateRecordMessage(errFailure);
-            }
-        }
-        if (module.getName().equals("RFM_CUSTOM_3G_ExpandedMode")) {
-            runSettings.getRfmCustom().setTestRfmCustomExpandedModeOk(true);
-            runSettings.getRfmCustom().setTestRfmCustomExpandedModeMessage("OK");
-            String errFailure = "";
-            if (module.getError() != null) {
-                runSettings.getRfmCustom().setTestRfmCustomExpandedModeOk(false);
-                errFailure += module.getError().replace("\n", ";");
-                runSettings.getRfmCustom().setTestRfmCustomExpandedModeMessage(errFailure);
-            }
-            if (module.getFailure() != null) {
-                runSettings.getRfmCustom().setTestRfmCustomExpandedModeOk(false);
-                errFailure += module.getFailure().replace("\n", ";");
-                runSettings.getRfmCustom().setTestRfmCustomExpandedModeMessage(errFailure);
-            }
-        }
 
         cardioConfigService.saveConfig(runSettings);
     }
@@ -607,7 +549,8 @@ public class RootLayoutController {
                     appStatusBar.setText("Executed ATR: OK");
                     Notifications.create().title("CardIO").text("Executed ATR: OK").showInformation();
                     appendTextFlow(">> OK\n\n", 0);
-                } else {
+                }
+                else {
                     appStatusBar.setText("Executed ATR: NOK");
                     Notifications.create().title("CardIO").text("Executed ATR: NOK").showError();
                     appendTextFlow(">> NOT OK\n", 1);
@@ -654,7 +597,8 @@ public class RootLayoutController {
                     appStatusBar.setText("Executed MILLENAGE_DELTA_TEST: OK");
                     Notifications.create().title("CardIO").text("Executed MILLENAGE_DELTA_TEST: OK").showInformation();
                     appendTextFlow(">> OK\n\n", 0);
-                } else {
+                }
+                else {
                     appStatusBar.setText("Executed MILLENAGE_DELTA_TEST: NOK");
                     Notifications.create().title("CardIO").text("Executed MILLENAGE_DELTA_TEST: NOK").showError();
                     appendTextFlow(">> NOT OK\n", 1);
@@ -701,7 +645,8 @@ public class RootLayoutController {
                     appStatusBar.setText("Executed MILLENAGE_SQN_MAX: OK");
                     Notifications.create().title("CardIO").text("Executed MILLENAGE_SQN_MAX: OK").showInformation();
                     appendTextFlow(">> OK\n\n", 0);
-                } else {
+                }
+                else {
                     appStatusBar.setText("Executed MILLENAGE_SQN_MAX: NOK");
                     Notifications.create().title("CardIO").text("Executed MILLENAGE_SQN_MAX: NOK").showError();
                     appendTextFlow(">> NOT OK\n", 1);
@@ -747,7 +692,8 @@ public class RootLayoutController {
                     appStatusBar.setText("Executed RFM_USIM: OK");
                     Notifications.create().title("CardIO").text("Executed RFM_USIM: OK").showInformation();
                     appendTextFlow(">> OK\n\n", 0);
-                } else {
+                }
+                else {
                     appStatusBar.setText("Executed RFM_USIM: NOK");
                     Notifications.create().title("CardIO").text("Executed RFM_USIM: NOK").showError();
                     appendTextFlow(">> NOT OK\n", 1);
@@ -793,7 +739,8 @@ public class RootLayoutController {
                     appStatusBar.setText("Executed RFM_USIM_UpdateRecord: OK");
                     Notifications.create().title("CardIO").text("Executed RFM_USIM_UpdateRecord: OK").showInformation();
                     appendTextFlow(">> OK\n\n", 0);
-                } else {
+                }
+                else {
                     appStatusBar.setText("Executed RFM_USIM_UpdateRecord: NOK");
                     Notifications.create().title("CardIO").text("Executed RFM_USIM_UpdateRecord: NOK").showError();
                     appendTextFlow(">> NOT OK\n", 1);
@@ -839,7 +786,8 @@ public class RootLayoutController {
                     appStatusBar.setText("Executed RFM_USIM_3G_ExpandedMode: OK");
                     Notifications.create().title("CardIO").text("Executed RFM_USIM_3G_ExpandedMode: OK").showInformation();
                     appendTextFlow(">> OK\n\n", 0);
-                } else {
+                }
+                else {
                     appStatusBar.setText("Executed RFM_USIM_3G_ExpandedMode: NOK");
                     Notifications.create().title("CardIO").text("Executed RFM_USIM_3G_ExpandedMode: NOK").showError();
                     appendTextFlow(">> NOT OK\n", 1);
@@ -1026,7 +974,8 @@ public class RootLayoutController {
                     appStatusBar.setText("Executed RFM_ISIM: OK");
                     Notifications.create().title("CardIO").text("Executed RFM_ISIM: OK").showInformation();
                     appendTextFlow(">> OK\n\n", 0);
-                } else {
+                }
+                else {
                     appStatusBar.setText("Executed RFM_ISIM: NOK");
                     Notifications.create().title("CardIO").text("Executed RFM_ISIM: NOK").showError();
                     appendTextFlow(">> NOT OK\n", 1);
@@ -1072,7 +1021,8 @@ public class RootLayoutController {
                     appStatusBar.setText("Executed RFM_ISIM_UpdateRecord: OK");
                     Notifications.create().title("CardIO").text("Executed RFM_ISIM_UpdateRecord: OK").showInformation();
                     appendTextFlow(">> OK\n\n", 0);
-                } else {
+                }
+                else {
                     appStatusBar.setText("Executed RFM_ISIM_UpdateRecord: NOK");
                     Notifications.create().title("CardIO").text("Executed RFM_ISIM_UpdateRecord: NOK").showError();
                     appendTextFlow(">> NOT OK\n", 1);
@@ -1119,7 +1069,8 @@ public class RootLayoutController {
                     appStatusBar.setText("Executed RFM_ISIM_3G_ExpandedMode: OK");
                     Notifications.create().title("CardIO").text("Executed RFM_ISIM_3G_ExpandedMode: OK").showInformation();
                     appendTextFlow(">> OK\n\n", 0);
-                } else {
+                }
+                else {
                     appStatusBar.setText("Executed RFM_ISIM_3G_ExpandedMode: NOK");
                     Notifications.create().title("CardIO").text("Executed RFM_ISIM_3G_ExpandedMode: NOK").showError();
                     appendTextFlow(">> NOT OK\n", 1);
@@ -1132,149 +1083,6 @@ public class RootLayoutController {
         };
         Thread runRfmIsimExpandedModeThread = new Thread(task);
         runRfmIsimExpandedModeThread.start();
-    }
-
-
-    //Custom RFM --------------------------------------
-    @FXML
-    private void handleMenuRfmCustom() {
-        handleMenuSaveSettings();
-        // make user wait as verification executes
-        cardiotest.getMaskerPane().setText("Executing RFM_CUSTOM. Please wait..");
-        // display masker pane
-        cardiotest.getMaskerPane().setVisible(true);
-        menuBar.setDisable(true);
-        appStatusBar.setDisable(true);
-
-        cardiotest.getTxtInterpretedLog().getChildren().clear();
-        appendTextFlow("Executing RFM_CUSTOM..\n\n");
-
-        // use threads to avoid application freeze
-        Task<Void> task = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                runRfmCustomOk = runService.runRfmCustom();
-                return null;
-            }
-
-            @Override
-            protected void succeeded() {
-                super.succeeded();
-                cardiotest.getMaskerPane().setVisible(false);
-                menuBar.setDisable(false);
-                appStatusBar.setDisable(false);
-                // update status bar
-                if (runRfmCustomOk) {
-                    appStatusBar.setText("Executed RFM_CUSTOM: OK");
-                    Notifications.create().title("CardIO").text("Executed RFM_CUSTOM: OK").showInformation();
-                    appendTextFlow(">> OK\n\n", 0);
-                } else {
-                    appStatusBar.setText("Executed RFM_CUSTOM: NOK");
-                    Notifications.create().title("CardIO").text("Executed RFM_CUSTOM: NOK").showError();
-                    appendTextFlow(">> NOT OK\n", 1);
-                }
-                // display commmand-response
-                cardiotest.getTxtCommandResponse().setDisable(false);
-                String logFileName = runSettings.getProjectPath() + "\\scripts\\RFM_CUSTOM.L00";
-                showCommandResponseLog(logFileName);
-            }
-        };
-        Thread runRfmCustomThread = new Thread(task);
-        runRfmCustomThread.start();
-    }
-
-    @FXML
-    private void handleMenuRfmCustomUpdateRecord() {
-        handleMenuSaveSettings();
-        // make user wait as verification executes
-        cardiotest.getMaskerPane().setText("Executing RFM_CUSTOM_UpdateRecord. Please wait..");
-        // display masker pane
-        cardiotest.getMaskerPane().setVisible(true);
-        menuBar.setDisable(true);
-        appStatusBar.setDisable(true);
-
-        cardiotest.getTxtInterpretedLog().getChildren().clear();
-        appendTextFlow("Executing RFM_CUSTOM_UpdateRecord..\n\n");
-
-        // use threads to avoid application freeze
-        Task<Void> task = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                runRfmCustomUpdateRecordOk = runService.runRfmCustomUpdateRecord();
-                return null;
-            }
-
-            @Override
-            protected void succeeded() {
-                super.succeeded();
-                cardiotest.getMaskerPane().setVisible(false);
-                menuBar.setDisable(false);
-                appStatusBar.setDisable(false);
-                // update status bar
-                if (runRfmCustomUpdateRecordOk) {
-                    appStatusBar.setText("Executed RFM_CUSTOM_UpdateRecord: OK");
-                    Notifications.create().title("CardIO").text("Executed RFM_CUSTOM_UpdateRecord: OK").showInformation();
-                    appendTextFlow(">> OK\n\n", 0);
-                } else {
-                    appStatusBar.setText("Executed RFM_CUSTOM_UpdateRecord: NOK");
-                    Notifications.create().title("CardIO").text("Executed RFM_CUSTOM_UpdateRecord: NOK").showError();
-                    appendTextFlow(">> NOT OK\n", 1);
-                }
-                // display commmand-response
-                cardiotest.getTxtCommandResponse().setDisable(false);
-                String logFileName = runSettings.getProjectPath() + "\\scripts\\RFM_CUSTOM_UpdateRecord.L00";
-                showCommandResponseLog(logFileName);
-            }
-        };
-        Thread runRfmCustomUpdateRecordThread = new Thread(task);
-        runRfmCustomUpdateRecordThread.start();
-    }
-
-    @FXML
-    private void handleMenuRfmCustomExpandedMode() {
-        handleMenuSaveSettings();
-        // make user wait as verification executes
-        cardiotest.getMaskerPane().setText("Executing RFM_CUSTOM_3G_ExpandedMode. Please wait..");
-        // display masker pane
-        cardiotest.getMaskerPane().setVisible(true);
-        menuBar.setDisable(true);
-        appStatusBar.setDisable(true);
-
-        cardiotest.getTxtInterpretedLog().getChildren().clear();
-        appendTextFlow("Executing RFM_CUSTOM_3G_ExpandedMode..\n\n");
-
-        // use threads to avoid application freeze
-        Task<Void> task = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                runRfmCustomExpandedModeOk = runService.runRfmCustomExpandedMode();
-                return null;
-            }
-
-            @Override
-            protected void succeeded() {
-                super.succeeded();
-                cardiotest.getMaskerPane().setVisible(false);
-                menuBar.setDisable(false);
-                appStatusBar.setDisable(false);
-                // update status bar
-                if (runRfmCustomExpandedModeOk) {
-                    appStatusBar.setText("Executed RFM_CUSTOM_3G_ExpandedMode: OK");
-                    Notifications.create().title("CardIO").text("Executed RFM_CUSTOM_3G_ExpandedMode: OK").showInformation();
-                    appendTextFlow(">> OK\n\n", 0);
-                } else {
-                    appStatusBar.setText("Executed RFM_CUSTOM_3G_ExpandedMode: NOK");
-                    Notifications.create().title("CardIO").text("Executed RFM_CUSTOM_3G_ExpandedMode: NOK").showError();
-                    appendTextFlow(">> NOT OK\n", 1);
-                }
-                // display commmand-response
-                cardiotest.getTxtCommandResponse().setDisable(false);
-                String logFileName = runSettings.getProjectPath() + "\\scripts\\RFM_CUSTOM_3G_ExpandedMode.L00";
-                showCommandResponseLog(logFileName);
-            }
-        };
-        Thread runRfmCustomExpandedModeThread = new Thread(task);
-        runRfmCustomExpandedModeThread.start();
     }
 
     @FXML private void handleMenuCodes3g() {
@@ -1309,7 +1117,8 @@ public class RootLayoutController {
                     appStatusBar.setText("Executed SecretCodes_3G: OK");
                     Notifications.create().title("CardIO").text("Executed SecretCodes_3G: OK").showInformation();
                     appendTextFlow(">> OK\n\n", 0);
-                } else {
+                }
+                else {
                     appStatusBar.setText("Executed SecretCodes_3G: NOK");
                     Notifications.create().title("CardIO").text("Executed SecretCodes_3G: NOK").showError();
                     appendTextFlow(">> NOT OK\n", 1);
@@ -1356,7 +1165,8 @@ public class RootLayoutController {
                     appStatusBar.setText("Executed SecretCodes_2G: OK");
                     Notifications.create().title("CardIO").text("Executed SecretCodes_2G: OK").showInformation();
                     appendTextFlow(">> OK\n\n", 0);
-                } else {
+                }
+                else {
                     appStatusBar.setText("Executed SecretCodes_2G: NOK");
                     Notifications.create().title("CardIO").text("Executed SecretCodes_2G: NOK").showError();
                     appendTextFlow(">> NOT OK\n", 1);
@@ -1472,18 +1282,6 @@ public class RootLayoutController {
         return menuRfmIsimExpandedMode;
     }
 
-    public MenuItem getMenuRfmCustom() {
-        return menuRfmCustom;
-    }
-
-    public MenuItem getMenuRfmCustomUpdateRecord() {
-        return menuRfmCustomUpdateRecord;
-    }
-
-    public MenuItem getMenuRfmCustomExpandedMode() {
-        return menuRfmCustomExpandedMode;
-    }
-    
     public MenuItem getMenuCodes3g() {
         return menuCodes3g;
     }
@@ -1507,6 +1305,5 @@ public class RootLayoutController {
     public ObservableList<CustomScript> getCustomScriptsSection3() {
         return customScriptsSection3;
     }
-
 
 }

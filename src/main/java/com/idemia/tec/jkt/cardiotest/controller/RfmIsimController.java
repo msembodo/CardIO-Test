@@ -52,7 +52,7 @@ public class RfmIsimController {
 
     public RfmIsimController() {}
 
-    @FXML private void initialize() {
+    @FXML public void initialize() {
         chkIncludeRfmIsim.setSelected(root.getRunSettings().getRfmIsim().isIncludeRfmIsim());
         handleIncludeRfmIsimCheck();
 

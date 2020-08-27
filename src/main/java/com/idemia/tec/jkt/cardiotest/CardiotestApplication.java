@@ -30,46 +30,33 @@ public class CardiotestApplication extends Application {
 	private Stage primaryStage;
 	private Stage selectReaderDialogStage;
 	private Stage toolOptionsDialogStage;
+	private Stage importDialogStage;
 
 	private ObservableList<AdvSaveVariable> advSaveVariables = FXCollections.observableArrayList();
 	private ObservableList<VariableMapping> mappings = FXCollections.observableArrayList();
 
-	@Autowired
-	private RootLayoutController root;
+	@Autowired private RootLayoutController root;
 
 	public CardiotestApplication() {}
 
-	public static void main(String[] args) {
-		launch(CardiotestApplication.class, args);
-	}
+	public static void main(String[] args) { launch(CardiotestApplication.class, args); }
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		BasicConfigurator.configure();
 		this.primaryStage = primaryStage;
-		this.primaryStage.setTitle("CardIO-SNAPSHOT");
+		this.primaryStage.setTitle("CARDIO-SNAPSHOT");
 
 		initRootLayout();
 		showCardioTest();
 	}
 
-	public ObservableList<AdvSaveVariable> getAdvSaveVariables() {
-		return advSaveVariables;
-	}
+	public ObservableList<AdvSaveVariable> getAdvSaveVariables() { return advSaveVariables; }
+	public ObservableList<VariableMapping> getMappings() { return mappings; }
 
-	public ObservableList<VariableMapping> getMappings() {
-		return mappings;
-	}
+	@Override public void init() throws Exception { springContext = SpringApplication.run(CardiotestApplication.class); }
 
-	@Override
-	public void init() throws Exception {
-		springContext = SpringApplication.run(CardiotestApplication.class);
-	}
-
-	@Override
-	public void stop() throws Exception {
-		springContext.stop();
-	}
+	@Override public void stop() throws Exception { springContext.stop(); }
 
 	public void initRootLayout() {
 		try {
@@ -85,10 +72,8 @@ public class CardiotestApplication extends Application {
 
 			primaryStage.setScene(scene);
 			primaryStage.show();
-
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
+		catch (IOException e) { e.printStackTrace(); }
 	}
 
 	public void showCardioTest() {
@@ -104,10 +89,31 @@ public class CardiotestApplication extends Application {
 			controller.setMainApp(this);
 
 			controller.setObservableList();
-
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
+		catch (IOException e) { e.printStackTrace(); }
+	}
+
+	public void showImportDialog() {
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/ImportSettings.fxml"));
+			loader.setControllerFactory(springContext::getBean);
+			AnchorPane importSettings = loader.load();
+
+			// give controller access to main app
+			ImportSettingsController controller = loader.getController();
+			controller.setMainApp(this);
+
+			// create dialog
+			importDialogStage = new Stage();
+			importDialogStage.setTitle("Select project directory and variables");
+			importDialogStage.setResizable(false);
+			importDialogStage.initModality(Modality.WINDOW_MODAL);
+			importDialogStage.initOwner(primaryStage);
+			Scene scene = new Scene(importSettings);
+			importDialogStage.setScene(scene);
+			importDialogStage.showAndWait();
+		}
+		catch (IOException e) { e.printStackTrace(); }
 	}
 
 	public void showSelectReader() {
@@ -128,11 +134,9 @@ public class CardiotestApplication extends Application {
 			selectReaderDialogStage.initOwner(primaryStage);
 			Scene scene = new Scene(selectReader);
 			selectReaderDialogStage.setScene(scene);
-
 			selectReaderDialogStage.showAndWait();
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
+		catch (Exception e) { e.printStackTrace(); }
 	}
 
 	public void showToolOptions() {
@@ -153,23 +157,13 @@ public class CardiotestApplication extends Application {
 			toolOptionsDialogStage.initOwner(primaryStage);
 			Scene scene = new Scene(toolOptions);
 			toolOptionsDialogStage.setScene(scene);
-
 			toolOptionsDialogStage.showAndWait();
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
+		catch (Exception e) { e.printStackTrace(); }
 	}
 
-	public Stage getPrimaryStage() {
-		return primaryStage;
-	}
-
-	public Stage getSelectReaderDialogStage() {
-		return selectReaderDialogStage;
-	}
-
-	public Stage getToolOptionsDialogStage() {
-		return toolOptionsDialogStage;
-	}
-
+	public Stage getPrimaryStage() { return primaryStage; }
+	public Stage getSelectReaderDialogStage() { return selectReaderDialogStage; }
+	public Stage getToolOptionsDialogStage() { return toolOptionsDialogStage; }
+	public Stage getImportDialogStage() { return importDialogStage; }
 }

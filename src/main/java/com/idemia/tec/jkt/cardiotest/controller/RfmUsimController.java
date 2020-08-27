@@ -52,7 +52,7 @@ public class RfmUsimController {
 
     public RfmUsimController() {}
 
-    @FXML private void initialize() {
+    @FXML public void initialize() {
         chkIncludeRfmUsim.setSelected(root.getRunSettings().getRfmUsim().isIncludeRfmUsim());
         handleIncludeRfmUsimCheck();
 

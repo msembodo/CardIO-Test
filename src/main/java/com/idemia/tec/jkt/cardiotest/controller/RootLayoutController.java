@@ -59,6 +59,9 @@ public class RootLayoutController {
     private boolean runRfmIsimOk;
     private boolean runRfmIsimUpdateRecordOk;
     private boolean runRfmIsimExpandedModeOk;
+    private boolean runRfmCustomOk;
+    private boolean runRfmCustomUpdateRecordOk;
+    private boolean runRfmCustomExpandedModeOk;
     private boolean runCodes3gOk;
     private boolean runCodes2gOk;
 
@@ -82,6 +85,9 @@ public class RootLayoutController {
     @FXML private MenuItem menuRfmIsim;
     @FXML private MenuItem menuRfmIsimUpdateRecord;
     @FXML private MenuItem menuRfmIsimExpandedMode;
+    @FXML private MenuItem menuRfmCustom;
+    @FXML private MenuItem menuRfmCustomUpdateRecord;
+    @FXML private MenuItem menuRfmCustomExpandedMode;
     @FXML private MenuItem menuCodes3g;
     @FXML private MenuItem menuCodes2g;
 
@@ -115,11 +121,14 @@ public class RootLayoutController {
         try {
             // list available readers
             List<CardTerminal> terminals = terminalFactory.terminals().list();
-            if (terminals.isEmpty())
-                lblTerminalInfo.setText("(no terminal/reader detected)");
-            else
-                if (runSettings.getReaderNumber() != -1)
-                    lblTerminalInfo.setText(terminals.get(runSettings.getReaderNumber()).getName());
+            if (terminals.isEmpty()) lblTerminalInfo.setText("(no terminal/reader detected)");
+            else if (runSettings.getReaderNumber() != -1)
+                if (runSettings.getReaderNumber() > terminals.size() - 1) {
+                    runSettings.setReaderNumber(0); // set to first reader when terminals have changed
+                    logger.info("Card terminals have changed; going default to first reader");
+                }
+                lblTerminalInfo.setText(terminals.get(runSettings.getReaderNumber()).getName());
+
         } catch (CardException e) {
             logger.error("Failed to list PCSC terminals");
             lblTerminalInfo.setText("(no terminal/reader detected)");
@@ -1085,6 +1094,144 @@ public class RootLayoutController {
         runRfmIsimExpandedModeThread.start();
     }
 
+    @FXML private void handleMenuRfmCustom() {
+        handleMenuSaveSettings();
+        // make user wait as verification executes
+        cardiotest.getMaskerPane().setText("Executing RFM_CUSTOM. Please wait..");
+        // display masker pane
+        cardiotest.getMaskerPane().setVisible(true);
+        menuBar.setDisable(true);
+        appStatusBar.setDisable(true);
+
+        cardiotest.getTxtInterpretedLog().getChildren().clear();
+        appendTextFlow("Executing RFM_CUSTOM..\n\n");
+
+        // use threads to avoid application freeze
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                runRfmCustomOk = runService.runRfmCustom();
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                cardiotest.getMaskerPane().setVisible(false);
+                menuBar.setDisable(false);
+                appStatusBar.setDisable(false);
+                // update status bar
+                if (runRfmCustomOk) {
+                    appStatusBar.setText("Executed RFM_CUSTOM: OK");
+                    Notifications.create().title("CardIO").text("Executed RFM_CUSTOM: OK").showInformation();
+                    appendTextFlow(">> OK\n\n", 0);
+                } else {
+                    appStatusBar.setText("Executed RFM_CUSTOM: NOK");
+                    Notifications.create().title("CardIO").text("Executed RFM_CUSTOM: NOK").showError();
+                    appendTextFlow(">> NOT OK\n", 1);
+                }
+                // display commmand-response
+                cardiotest.getTxtCommandResponse().setDisable(false);
+                String logFileName = runSettings.getProjectPath() + "\\scripts\\RFM_CUSTOM.L00";
+                showCommandResponseLog(logFileName);
+            }
+        };
+        Thread runRfmCustomThread = new Thread(task);
+        runRfmCustomThread.start();
+    }
+
+    @FXML private void handleMenuRfmCustomUpdateRecord() {
+        handleMenuSaveSettings();
+        // make user wait as verification executes
+        cardiotest.getMaskerPane().setText("Executing RFM_CUSTOM_UpdateRecord. Please wait..");
+        // display masker pane
+        cardiotest.getMaskerPane().setVisible(true);
+        menuBar.setDisable(true);
+        appStatusBar.setDisable(true);
+
+        cardiotest.getTxtInterpretedLog().getChildren().clear();
+        appendTextFlow("Executing RFM_CUSTOM_UpdateRecord..\n\n");
+
+        // use threads to avoid application freeze
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                runRfmCustomUpdateRecordOk = runService.runRfmCustomUpdateRecord();
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                cardiotest.getMaskerPane().setVisible(false);
+                menuBar.setDisable(false);
+                appStatusBar.setDisable(false);
+                // update status bar
+                if (runRfmCustomUpdateRecordOk) {
+                    appStatusBar.setText("Executed RFM_CUSTOM_UpdateRecord: OK");
+                    Notifications.create().title("CardIO").text("Executed RFM_CUSTOM_UpdateRecord: OK").showInformation();
+                    appendTextFlow(">> OK\n\n", 0);
+                } else {
+                    appStatusBar.setText("Executed RFM_CUSTOM_UpdateRecord: NOK");
+                    Notifications.create().title("CardIO").text("Executed RFM_CUSTOM_UpdateRecord: NOK").showError();
+                    appendTextFlow(">> NOT OK\n", 1);
+                }
+                // display commmand-response
+                cardiotest.getTxtCommandResponse().setDisable(false);
+                String logFileName = runSettings.getProjectPath() + "\\scripts\\RFM_CUSTOM_UpdateRecord.L00";
+                showCommandResponseLog(logFileName);
+            }
+        };
+        Thread runRfmCustomUpdateRecordThread = new Thread(task);
+        runRfmCustomUpdateRecordThread.start();
+    }
+
+    @FXML private void handleMenuRfmCustomExpandedMode() {
+        handleMenuSaveSettings();
+        // make user wait as verification executes
+        cardiotest.getMaskerPane().setText("Executing RFM_CUSTOM_3G_ExpandedMode. Please wait..");
+        // display masker pane
+        cardiotest.getMaskerPane().setVisible(true);
+        menuBar.setDisable(true);
+        appStatusBar.setDisable(true);
+
+        cardiotest.getTxtInterpretedLog().getChildren().clear();
+        appendTextFlow("Executing RFM_CUSTOM_3G_ExpandedMode..\n\n");
+
+        // use threads to avoid application freeze
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                runRfmCustomExpandedModeOk = runService.runRfmCustomExpandedMode();
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                cardiotest.getMaskerPane().setVisible(false);
+                menuBar.setDisable(false);
+                appStatusBar.setDisable(false);
+                // update status bar
+                if (runRfmCustomExpandedModeOk) {
+                    appStatusBar.setText("Executed RFM_CUSTOM_3G_ExpandedMode: OK");
+                    Notifications.create().title("CardIO").text("Executed RFM_CUSTOM_3G_ExpandedMode: OK").showInformation();
+                    appendTextFlow(">> OK\n\n", 0);
+                } else {
+                    appStatusBar.setText("Executed RFM_CUSTOM_3G_ExpandedMode: NOK");
+                    Notifications.create().title("CardIO").text("Executed RFM_CUSTOM_3G_ExpandedMode: NOK").showError();
+                    appendTextFlow(">> NOT OK\n", 1);
+                }
+                // display commmand-response
+                cardiotest.getTxtCommandResponse().setDisable(false);
+                String logFileName = runSettings.getProjectPath() + "\\scripts\\RFM_CUSTOM_3G_ExpandedMode.L00";
+                showCommandResponseLog(logFileName);
+            }
+        };
+        Thread runRfmCustomExpandedModeThread = new Thread(task);
+        runRfmCustomExpandedModeThread.start();
+    }
+
     @FXML private void handleMenuCodes3g() {
         handleMenuSaveSettings();
         // make user wait as verification executes
@@ -1222,88 +1369,38 @@ public class RootLayoutController {
                 .map(f -> f.substring(scriptName.lastIndexOf(".") + 1));
     }
 
-    public StatusBar getAppStatusBar() {
-        return appStatusBar;
-    }
 
-    public TerminalFactory getTerminalFactory() {
-        return terminalFactory;
-    }
+    public StatusBar getAppStatusBar() { return appStatusBar; }
+    public TerminalFactory getTerminalFactory() { return terminalFactory; }
+    public Label getLblTerminalInfo() { return lblTerminalInfo; }
+    public MenuItem getMenuAtr() { return menuAtr; }
+    public MenuItem getMenuDeltaTest() { return menuDeltaTest; }
+    public MenuItem getMenuSqnMax() { return menuSqnMax; }
+    public MenuItem getMenuRfmUsim() { return menuRfmUsim; }
+    public MenuItem getMenuRfmUsimUpdateRecord() { return menuRfmUsimUpdateRecord; }
+    public MenuItem getMenuRfmUsimExpandedMode() { return menuRfmUsimExpandedMode; }
+    public MenuItem getMenuRfmGsm() { return menuRfmGsm; }
+    public MenuItem getMenuRfmGsmUpdateRecord() { return menuRfmGsmUpdateRecord; }
+    public MenuItem getMenuRfmGsmExpandedMode() { return menuRfmGsmExpandedMode; }
+    public MenuItem getMenuRfmIsim() { return menuRfmIsim; }
+    public MenuItem getMenuRfmIsimUpdateRecord() { return menuRfmIsimUpdateRecord; }
+    public MenuItem getMenuRfmIsimExpandedMode() { return menuRfmIsimExpandedMode; }
+    public MenuItem getMenuRfmCustom() {
+        return menuRfmCustom;
+        }
+    public MenuItem getMenuRfmCustomUpdateRecord() {
+        return menuRfmCustomUpdateRecord;
+        }
+    public MenuItem getMenuRfmCustomExpandedMode() {
+        return menuRfmCustomExpandedMode;
+        }
+    public MenuItem getMenuCodes3g() { return menuCodes3g; }
+    public MenuItem getMenuCodes2g() { return menuCodes2g; }
+    public ObservableList<SCP80Keyset> getScp80Keysets() { return scp80Keysets; }
+    public ObservableList<CustomScript> getCustomScriptsSection1() { return customScriptsSection1; }
+    public ObservableList<CustomScript> getCustomScriptsSection2() { return customScriptsSection2; }
+    public ObservableList<CustomScript> getCustomScriptsSection3() { return customScriptsSection3; }
 
-    public Label getLblTerminalInfo() {
-        return lblTerminalInfo;
-    }
-
-    public MenuItem getMenuAtr() {
-        return menuAtr;
-    }
-
-    public MenuItem getMenuDeltaTest() {
-        return menuDeltaTest;
-    }
-
-    public MenuItem getMenuSqnMax() {
-        return menuSqnMax;
-    }
-
-    public MenuItem getMenuRfmUsim() {
-        return menuRfmUsim;
-    }
-
-    public MenuItem getMenuRfmUsimUpdateRecord() {
-        return menuRfmUsimUpdateRecord;
-    }
-
-    public MenuItem getMenuRfmUsimExpandedMode() {
-        return menuRfmUsimExpandedMode;
-    }
-
-    public MenuItem getMenuRfmGsm() {
-        return menuRfmGsm;
-    }
-
-    public MenuItem getMenuRfmGsmUpdateRecord() {
-        return menuRfmGsmUpdateRecord;
-    }
-
-    public MenuItem getMenuRfmGsmExpandedMode() {
-        return menuRfmGsmExpandedMode;
-    }
-
-    public MenuItem getMenuRfmIsim() {
-        return menuRfmIsim;
-    }
-
-    public MenuItem getMenuRfmIsimUpdateRecord() {
-        return menuRfmIsimUpdateRecord;
-    }
-
-    public MenuItem getMenuRfmIsimExpandedMode() {
-        return menuRfmIsimExpandedMode;
-    }
-
-    public MenuItem getMenuCodes3g() {
-        return menuCodes3g;
-    }
-
-    public MenuItem getMenuCodes2g() {
-        return menuCodes2g;
-    }
-
-    public ObservableList<SCP80Keyset> getScp80Keysets() {
-        return scp80Keysets;
-    }
-
-    public ObservableList<CustomScript> getCustomScriptsSection1() {
-        return customScriptsSection1;
-    }
-
-    public ObservableList<CustomScript> getCustomScriptsSection2() {
-        return customScriptsSection2;
-    }
-
-    public ObservableList<CustomScript> getCustomScriptsSection3() {
-        return customScriptsSection3;
-    }
-
+    public void setImportProjectDir(File importProjectDir) { this.importProjectDir = importProjectDir; }
+    public void setImportVarFile(File importVarFile) { this.importVarFile = importVarFile; }
 }

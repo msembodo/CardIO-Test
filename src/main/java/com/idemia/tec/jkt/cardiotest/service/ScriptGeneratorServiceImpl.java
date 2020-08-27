@@ -20,7 +20,6 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
     @Autowired private RfmCustomService rfmCustomService;
 
     @Override public StringBuilder generateAtr() {
-
         String composeAtrScript = ".CALL Mapping.txt\n"
             + ".CALL Options.txt\n\n"
             + ".POWER_ON /PROTOCOL_ON /NEGOTIATE_PROTOCOL [%ATR] (" + root.getRunSettings().getAtr().getStatus() + ")\n"

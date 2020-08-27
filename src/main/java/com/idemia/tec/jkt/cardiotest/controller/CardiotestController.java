@@ -186,8 +186,7 @@ public class CardiotestController {
         }
     }
 
-    @FXML
-    private void initialize() {
+    @FXML public void initialize() {
         // initialize variable table
         clmnDefined.setCellValueFactory(celldata -> celldata.getValue().definedVariable());
         clmnValue.setCellValueFactory(celldata -> celldata.getValue().value());
@@ -483,7 +482,6 @@ public class CardiotestController {
             tblMapping.getItems().remove(selectedIndex);
             showMappings(null);
             tblMapping.getSelectionModel().clearSelection();
-
         }
     }
 
@@ -508,9 +506,7 @@ public class CardiotestController {
 
     @FXML private void handleButtonGetAtr() {
         try {
-            CardTerminal terminal = root.getTerminalFactory().terminals().list().get(
-                    root.getRunSettings().getReaderNumber()
-            );
+            CardTerminal terminal = root.getTerminalFactory().terminals().list().get(root.getRunSettings().getReaderNumber());
             Card connection = terminal.connect("*");
             javax.smartcardio.ATR atr = connection.getATR();
             byte[] atrBytes = atr.getBytes();
@@ -522,8 +518,8 @@ public class CardiotestController {
             root.getRunSettings().getAtr().setTck(statusTck.substring(4).toUpperCase()); // TCK
             txtAtr.setText(root.getRunSettings().getAtr().getAtrString());
             lblProtocol.setText("Protocol: " + connection.getProtocol()
-                    + "; Status: " + root.getRunSettings().getAtr().getStatus()
-                    + "; TCK: " + root.getRunSettings().getAtr().getTck());
+                + "; Status: " + root.getRunSettings().getAtr().getStatus()
+                + "; TCK: " + root.getRunSettings().getAtr().getTck());
             connection.disconnect(false);
 
         } catch (CardException e) {
@@ -539,12 +535,7 @@ public class CardiotestController {
         }
     }
 
-    @FXML private void handleIncludeAtrCheck() {
-        if (chkIncludeAtr.isSelected())
-            root.getMenuAtr().setDisable(false);
-        else
-            root.getMenuAtr().setDisable(true);
-    }
+    @FXML private void handleIncludeAtrCheck() { root.getMenuAtr().setDisable(!chkIncludeAtr.isSelected()); }
 
     private boolean mappedVariableExist(String testMappedVariable) {
         for (VariableMapping mapping : application.getMappings()) {

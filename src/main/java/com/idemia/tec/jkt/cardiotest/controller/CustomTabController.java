@@ -58,7 +58,7 @@ public class CustomTabController {
 
     public CustomTabController() {}
 
-    @FXML private void initialize() {
+    @FXML public void initialize() {
         // init section 1
         clmnCs1Name.setCellValueFactory(celldata -> celldata.getValue().customScriptNameProperty());
         showCustomScriptSection1(null);
@@ -132,9 +132,8 @@ public class CustomTabController {
             try {
                 Files.copy(cs1ChooseFile.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                 txtCs1ScriptName.setText(cs1ChooseFile.getName());
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+            catch (IOException e) { logger.error(e.getMessage()); }
         }
     }
 

@@ -29,6 +29,8 @@ public class RunSettings {
     private List<CustomScript> customScriptsSection1;
     private List<CustomScript> customScriptsSection2;
     private List<CustomScript> customScriptsSection3;
+    private RfmCustom rfmCustom;
+
 
     public RunSettings() {
     }
@@ -40,7 +42,8 @@ public class RunSettings {
                        CardParameters cardParameters, Authentication authentication, List<SCP80Keyset> scp80Keysets,
                        SmsUpdate smsUpdate, RfmUsim rfmUsim, RfmGsm rfmGsm, RfmIsim rfmIsim,
                        List<CustomScript> customScriptsSection1, List<CustomScript> customScriptsSection2,
-                       List<CustomScript> customScriptsSection3) {
+                       List<CustomScript> customScriptsSection3, RfmCustom rfmCustom) {
+
         this.projectPath = projectPath;
         this.advSaveVariablesPath = advSaveVariablesPath;
         this.readerNumber = readerNumber;
@@ -66,6 +69,8 @@ public class RunSettings {
         this.customScriptsSection1 = customScriptsSection1;
         this.customScriptsSection2 = customScriptsSection2;
         this.customScriptsSection3 = customScriptsSection3;
+        this.rfmCustom = rfmCustom;
+
     }
 
     public String getProjectPath() {
@@ -266,6 +271,14 @@ public class RunSettings {
 
     public void setCustomScriptsSection3(List<CustomScript> customScriptsSection3) {
         this.customScriptsSection3 = customScriptsSection3;
+
     }
+
+    public RfmCustom getRfmCustom() {
+        return rfmCustom;
+    }
+
+    public void setRfmCustom(RfmCustom rfmCustom) {
+        this.rfmCustom = rfmCustom; }
 
 }

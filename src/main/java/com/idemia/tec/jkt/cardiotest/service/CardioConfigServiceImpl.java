@@ -73,6 +73,8 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             cardParameters.setDfCsim("7FF3");
             defaultSettings.setCardParameters(cardParameters);
 
+
+
             Authentication authentication = new Authentication();
             authentication.setIncludeDeltaTest(true);
             authentication.setIncludeSqnMax(true);
@@ -150,6 +152,22 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             defaultSettings.setCustomScriptsSection2(new ArrayList<>());
             defaultSettings.setCustomScriptsSection3(new ArrayList<>());
 
+            MinimumSecurityLevel rfmCustomMsl = new MinimumSecurityLevel(true, "Cryptographic Checksum", "Counter must be higher");
+            rfmCustomMsl.setCipherAlgo("3DES - CBC 2 keys");
+            rfmCustomMsl.setSigningAlgo("3DES - CBC 2 keys");
+            rfmCustomMsl.setPorRequirement("PoR required");
+            rfmCustomMsl.setPorSecurity("response with no security");
+
+            RfmCustom rfmCustom = new RfmCustom();
+            rfmCustom.setIncludeRfmCustom(true);
+            rfmCustom.setTar("494D45");
+            rfmCustom.setTargetDf("7FF0");
+            rfmCustom.setTargetEf("6F7B");
+            rfmCustom.setTargetEfBadCase("6F05");
+            rfmCustom.setFullAccess(true);
+            rfmCustom.setMinimumSecurityLevel(rfmCustomMsl);
+            defaultSettings.setRfmCustom(rfmCustom);
+            rfmCustom.setCustomRfmDesc("RFM - X");
 
             ObjectMapper mapper = new ObjectMapper();
             try {

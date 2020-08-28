@@ -4,6 +4,7 @@ import com.idemia.tec.jkt.cardiotest.CardiotestApplication;
 import com.idemia.tec.jkt.cardiotest.model.*;
 import com.idemia.tec.jkt.cardiotest.response.TestSuiteResponse;
 import com.idemia.tec.jkt.cardiotest.service.CardioConfigService;
+import com.idemia.tec.jkt.cardiotest.service.ExportImportService;
 import com.idemia.tec.jkt.cardiotest.service.ReportService;
 import com.idemia.tec.jkt.cardiotest.service.RunService;
 import javafx.application.Platform;
@@ -28,6 +29,7 @@ import javax.smartcardio.CardException;
 import javax.smartcardio.CardTerminal;
 import javax.smartcardio.TerminalFactory;
 import java.io.*;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -66,9 +68,16 @@ public class RootLayoutController {
     private boolean runCodes2gOk;
 
     @Autowired private CardiotestController cardiotest;
+    @Autowired private AuthenticationController authenticationController;
+    @Autowired private SecretCodesController secretCodesController;
+    @Autowired private RfmGsmController rfmGsmController;
+    @Autowired private RfmUsimController rfmUsimController;
+    @Autowired private RfmIsimController rfmIsimController;
+    @Autowired private CustomTabController customTabController;
     @Autowired private CardioConfigService cardioConfigService;
     @Autowired private RunService runService;
     @Autowired private ReportService reportService;
+    @Autowired private ExportImportService eximService;
 
     @FXML private BorderPane rootBorderPane;
     @FXML private MenuBar menuBar;
@@ -99,13 +108,9 @@ public class RootLayoutController {
 
     public RootLayoutController() {}
 
-    public void setMainApp(CardiotestApplication application) {
-        this.application = application;
-    }
+    public void setMainApp(CardiotestApplication application) { this.application = application; }
 
-    public RunSettings getRunSettings() {
-        return runSettings;
-    }
+    public RunSettings getRunSettings() { return runSettings; }
 
     @FXML private void initialize() {
         appStatusBar = new StatusBar();
@@ -118,8 +123,8 @@ public class RootLayoutController {
         lblTerminalInfo = new Label();
         appStatusBar.getRightItems().add(new Separator(Orientation.VERTICAL));
         appStatusBar.getRightItems().add(lblTerminalInfo);
+        // list available readers
         try {
-            // list available readers
             List<CardTerminal> terminals = terminalFactory.terminals().list();
             if (terminals.isEmpty()) lblTerminalInfo.setText("(no terminal/reader detected)");
             else if (runSettings.getReaderNumber() != -1)
@@ -128,7 +133,6 @@ public class RootLayoutController {
                     logger.info("Card terminals have changed; going default to first reader");
                 }
                 lblTerminalInfo.setText(terminals.get(runSettings.getReaderNumber()).getName());
-
         } catch (CardException e) {
             logger.error("Failed to list PCSC terminals");
             lblTerminalInfo.setText("(no terminal/reader detected)");
@@ -137,10 +141,7 @@ public class RootLayoutController {
         }
     }
 
-    @FXML private void handleMenuQuit() {
-        // quit application
-        Platform.exit();
-    }
+    @FXML private void handleMenuQuit() { Platform.exit(); } // quit application
 
     @FXML private void handleMenuLoadVariables() {
         // user select variable file
@@ -150,31 +151,32 @@ public class RootLayoutController {
                 new FileChooser.ExtensionFilter("Variables data", "*.txt")
         );
         File selectedVarFile = variableFileChooser.showOpenDialog(application.getPrimaryStage());
-        if (selectedVarFile != null) {
-            application.getAdvSaveVariables().clear();
-            cardiotest.getCmbMccVar().getItems().clear();
-            try {
-                Scanner scanner = new Scanner(selectedVarFile);
-                List<String> definedVariables = new ArrayList<>();
-                while (scanner.hasNextLine()) {
-                    String line = scanner.nextLine();
-                    if (line.startsWith(".DEFINE"))
-                        definedVariables.add(line);
-                }
-                runSettings.setAdvSaveVariablesPath(selectedVarFile.getAbsolutePath());
-                logger.info(String.format("Variable file selected: %s", selectedVarFile.getAbsolutePath()));
-                appStatusBar.setText("Variables loaded.");
-                for (String line : definedVariables) {
-                    String[] components = line.split("\\s+");
-                    application.getAdvSaveVariables().add(
-                            new AdvSaveVariable(components[1].substring(1), components[2])
-                    );
-                    cardiotest.getCmbMccVar().getItems().add(components[1].substring(1));
-                }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
+        if (selectedVarFile != null) loadVariables(selectedVarFile);
+    }
+
+    private void loadVariables(File selectedVarFile) {
+        application.getAdvSaveVariables().clear();
+        cardiotest.getCmbMccVar().getItems().clear();
+        try {
+            Scanner scanner = new Scanner(selectedVarFile);
+            List<String> definedVariables = new ArrayList<>();
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                if (line.startsWith(".DEFINE"))
+                    definedVariables.add(line);
+            }
+            runSettings.setAdvSaveVariablesPath(selectedVarFile.getAbsolutePath());
+            logger.info(String.format("Variable file selected: %s", selectedVarFile.getAbsolutePath()));
+            appStatusBar.setText("Variables loaded.");
+            for (String line : definedVariables) {
+                String[] components = line.split("\\s+");
+                application.getAdvSaveVariables().add(
+                        new AdvSaveVariable(components[1].substring(1), components[2])
+                );
+                cardiotest.getCmbMccVar().getItems().add(components[1].substring(1));
             }
         }
+        catch (FileNotFoundException e) { e.printStackTrace(); }
     }
 
     @FXML private void handleMenuSaveSettings() {
@@ -187,21 +189,91 @@ public class RootLayoutController {
         cardioConfigService.saveConfig(runSettings);
     }
 
-    @FXML private void handleMenuSelectReader() {
-        application.showSelectReader();
+    @FXML private void handleMenuImportSettings() {
+        importProjectDir = null;
+        importVarFile = null;
+        FileChooser importFileChooser = new FileChooser();
+        importFileChooser.setTitle("Import Settings");
+        importFileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Compressed settings", "*.zip")
+        );
+        File importZipFile = importFileChooser.showOpenDialog(application.getPrimaryStage());
+        if (importZipFile != null) {
+            application.showImportDialog();
+            if (importProjectDir!= null && importVarFile != null) {
+                logger.info("Project directory: " + importProjectDir.getAbsolutePath());
+                logger.info("Adv save variables: " + importVarFile.getAbsolutePath());
+                try {
+                    if (eximService.importSettings(importZipFile, importProjectDir, importVarFile)) {
+                        logger.info("Import success");
+                        reinitConfig();
+                    }
+                    else appStatusBar.setText("Failed importing " + importZipFile.getAbsolutePath());
+                }
+                catch (IOException e) { e.printStackTrace(); }
+            }
+            else {
+                String statusBarMsg = "";
+                if (importProjectDir == null) statusBarMsg += "Project directory has not been selected; ";
+                if (importVarFile == null) statusBarMsg += "Adv save variables has not been selected";
+                appStatusBar.setText(statusBarMsg);
+            }
+        }
     }
 
-    @FXML private void handleMenuToolOptions() {
-        application.showToolOptions();
+    private void reinitConfig() {
+        runSettings = cardioConfigService.initConfig();
+//        try {
+//            List<CardTerminal> terminals = terminalFactory.terminals().list();
+//            if (terminals.isEmpty()) lblTerminalInfo.setText("(no terminal/reader detected)");
+//            else if (runSettings.getReaderNumber() != -1)
+//                lblTerminalInfo.setText(terminals.get(runSettings.getReaderNumber()).getName());
+//        } catch (CardException e) {
+//            logger.error("Failed to list PCSC terminals");
+//            lblTerminalInfo.setText("(no terminal/reader detected)");
+//            lblTerminalInfo.setTextFill(Color.RED);
+//        }
+        application.getAdvSaveVariables().clear();
+        application.getMappings().clear();
+        cardiotest.getCmbMccVar().getItems().clear();
+        cardiotest.getMappedVariables().clear();
+        scp80Keysets.clear();
+        customScriptsSection1.clear();
+        customScriptsSection2.clear();
+        customScriptsSection3.clear();
+        cardiotest.initialize();
+        cardiotest.setObservableList();
+        authenticationController.initialize();
+        rfmGsmController.initialize();
+        rfmUsimController.initialize();
+        rfmIsimController.initialize();
+        secretCodesController.initialize();
+        customTabController.initialize();
     }
+
+    @FXML private void handleMenuExportSettings() {
+        FileChooser exportFileChooser = new FileChooser();
+        exportFileChooser.setTitle("Export Settings");
+        exportFileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Compressed settings", "*.zip")
+        );
+        File exportFile = exportFileChooser.showSaveDialog(application.getPrimaryStage());
+        if (exportFile != null) {
+            try { appStatusBar.setText(eximService.exportSettings(runSettings, exportFile)); }
+            catch (IOException e) { logger.error("Failed exporting settings: " + e.getMessage()); }
+        }
+    }
+
+    @FXML private void handleMenuSelectReader() { application.showSelectReader(); }
+
+    @FXML private void handleMenuToolOptions() { application.showToolOptions(); }
 
     @FXML private void handleMenuRunAll() {
         handleMenuSaveSettings();
 
         // make user wait as verification executes
         cardiotest.getMaskerPane().setText("Executing RunAll. Please wait..");
-        // display masker pane
-        cardiotest.getMaskerPane().setVisible(true);
+        cardiotest.getMaskerPane().setVisible(true); // display masker pane
         menuBar.setDisable(true);
         appStatusBar.setDisable(true);
 
@@ -278,10 +350,8 @@ public class RootLayoutController {
                 }
             }
         };
-
         Thread runAllThread = new Thread(task);
         runAllThread.start(); // run in background
-
     }
 
     private void setTestStatus(TestCase module) {
@@ -503,6 +573,54 @@ public class RootLayoutController {
         if (runSettings.getCustomScriptsSection3().size() > 0)
             setCustomScriptsTestStatus(module, runSettings.getCustomScriptsSection3());
 
+
+        //Custom RFM --------------------------------------
+        if (module.getName().equals("RFM_CUSTOM")) {
+            runSettings.getRfmCustom().setTestRfmCustomOk(true);
+            runSettings.getRfmCustom().setTestRfmCustomMessage("OK");
+            String errFailure = "";
+            if (module.getError() != null) {
+                runSettings.getRfmCustom().setTestRfmCustomOk(false);
+                errFailure += module.getError().replace("\n", ";");
+                runSettings.getRfmCustom().setTestRfmCustomMessage(errFailure);
+            }
+            if (module.getFailure() != null) {
+                runSettings.getRfmCustom().setTestRfmCustomOk(false);
+                errFailure += module.getFailure().replace("\n", ";");
+                runSettings.getRfmCustom().setTestRfmCustomMessage(errFailure);
+            }
+        }
+        if (module.getName().equals("RFM_CUSTOM_UpdateRecord")) {
+            runSettings.getRfmCustom().setTestRfmCustomUpdateRecordOk(true);
+            runSettings.getRfmCustom().setTestRfmCustomUpdateRecordMessage("OK");
+            String errFailure = "";
+            if (module.getError() != null) {
+                runSettings.getRfmCustom().setTestRfmCustomUpdateRecordOk(false);
+                errFailure += module.getError().replace("\n", ";");
+                runSettings.getRfmCustom().setTestRfmCustomUpdateRecordMessage(errFailure);
+            }
+            if (module.getFailure() != null) {
+                runSettings.getRfmCustom().setTestRfmCustomUpdateRecordOk(false);
+                errFailure += module.getFailure().replace("\n", ";");
+                runSettings.getRfmCustom().setTestRfmCustomUpdateRecordMessage(errFailure);
+            }
+        }
+        if (module.getName().equals("RFM_CUSTOM_3G_ExpandedMode")) {
+            runSettings.getRfmCustom().setTestRfmCustomExpandedModeOk(true);
+            runSettings.getRfmCustom().setTestRfmCustomExpandedModeMessage("OK");
+            String errFailure = "";
+            if (module.getError() != null) {
+                runSettings.getRfmCustom().setTestRfmCustomExpandedModeOk(false);
+                errFailure += module.getError().replace("\n", ";");
+                runSettings.getRfmCustom().setTestRfmCustomExpandedModeMessage(errFailure);
+            }
+            if (module.getFailure() != null) {
+                runSettings.getRfmCustom().setTestRfmCustomExpandedModeOk(false);
+                errFailure += module.getFailure().replace("\n", ";");
+                runSettings.getRfmCustom().setTestRfmCustomExpandedModeMessage(errFailure);
+            }
+        }
+
         cardioConfigService.saveConfig(runSettings);
     }
 
@@ -530,8 +648,7 @@ public class RootLayoutController {
         handleMenuSaveSettings();
         // make user wait as verification executes
         cardiotest.getMaskerPane().setText("Executing ATR. Please wait..");
-        // display masker pane
-        cardiotest.getMaskerPane().setVisible(true);
+        cardiotest.getMaskerPane().setVisible(true); // display masker pane
         menuBar.setDisable(true);
         appStatusBar.setDisable(true);
 
@@ -578,8 +695,7 @@ public class RootLayoutController {
         handleMenuSaveSettings();
         // make user wait as verification executes
         cardiotest.getMaskerPane().setText("Executing MILLENAGE_DELTA_TEST. Please wait..");
-        // display masker pane
-        cardiotest.getMaskerPane().setVisible(true);
+        cardiotest.getMaskerPane().setVisible(true); // display masker pane
         menuBar.setDisable(true);
         appStatusBar.setDisable(true);
 
@@ -626,8 +742,7 @@ public class RootLayoutController {
         handleMenuSaveSettings();
         // make user wait as verification executes
         cardiotest.getMaskerPane().setText("Executing MILLENAGE_SQN_MAX. Please wait..");
-        // display masker pane
-        cardiotest.getMaskerPane().setVisible(true);
+        cardiotest.getMaskerPane().setVisible(true); // display masker pane
         menuBar.setDisable(true);
         appStatusBar.setDisable(true);
 
@@ -674,8 +789,7 @@ public class RootLayoutController {
         handleMenuSaveSettings();
         // make user wait as verification executes
         cardiotest.getMaskerPane().setText("Executing RFM_USIM. Please wait..");
-        // display masker pane
-        cardiotest.getMaskerPane().setVisible(true);
+        cardiotest.getMaskerPane().setVisible(true); // display masker pane
         menuBar.setDisable(true);
         appStatusBar.setDisable(true);
 
@@ -721,8 +835,7 @@ public class RootLayoutController {
         handleMenuSaveSettings();
         // make user wait as verification executes
         cardiotest.getMaskerPane().setText("Executing RFM_USIM_UpdateRecord. Please wait..");
-        // display masker pane
-        cardiotest.getMaskerPane().setVisible(true);
+        cardiotest.getMaskerPane().setVisible(true); // display masker pane
         menuBar.setDisable(true);
         appStatusBar.setDisable(true);
 
@@ -768,8 +881,7 @@ public class RootLayoutController {
         handleMenuSaveSettings();
         // make user wait as verification executes
         cardiotest.getMaskerPane().setText("Executing RFM_USIM_3G_ExpandedMode. Please wait..");
-        // display masker pane
-        cardiotest.getMaskerPane().setVisible(true);
+        cardiotest.getMaskerPane().setVisible(true); // display masker pane
         menuBar.setDisable(true);
         appStatusBar.setDisable(true);
 
@@ -815,8 +927,7 @@ public class RootLayoutController {
         handleMenuSaveSettings();
         // make user wait as verification executes
         cardiotest.getMaskerPane().setText("Executing RFM_Gsm. Please wait..");
-        // display masker pane
-        cardiotest.getMaskerPane().setVisible(true);
+        cardiotest.getMaskerPane().setVisible(true); // display masker pane
         menuBar.setDisable(true);
         appStatusBar.setDisable(true);
 
@@ -862,8 +973,7 @@ public class RootLayoutController {
         handleMenuSaveSettings();
         // make user wait as verification executes
         cardiotest.getMaskerPane().setText("Executing RFM_Gsm_UpdateRecord. Please wait..");
-        // display masker pane
-        cardiotest.getMaskerPane().setVisible(true);
+        cardiotest.getMaskerPane().setVisible(true); // display masker pane
         menuBar.setDisable(true);
         appStatusBar.setDisable(true);
 
@@ -909,8 +1019,7 @@ public class RootLayoutController {
         handleMenuSaveSettings();
         // make user wait as verification executes
         cardiotest.getMaskerPane().setText("Executing RFM_Gsm_3G_ExpandedMode. Please wait..");
-        // display masker pane
-        cardiotest.getMaskerPane().setVisible(true);
+        cardiotest.getMaskerPane().setVisible(true); // display masker pane
         menuBar.setDisable(true);
         appStatusBar.setDisable(true);
 
@@ -955,8 +1064,7 @@ public class RootLayoutController {
         handleMenuSaveSettings();
         // make user wait as verification executes
         cardiotest.getMaskerPane().setText("Executing RFM_ISIM. Please wait..");
-        // display masker pane
-        cardiotest.getMaskerPane().setVisible(true);
+        cardiotest.getMaskerPane().setVisible(true); // display masker pane
         menuBar.setDisable(true);
         appStatusBar.setDisable(true);
 
@@ -1003,8 +1111,7 @@ public class RootLayoutController {
         handleMenuSaveSettings();
         // make user wait as verification executes
         cardiotest.getMaskerPane().setText("Executing RFM_ISIM_UpdateRecord. Please wait..");
-        // display masker pane
-        cardiotest.getMaskerPane().setVisible(true);
+        cardiotest.getMaskerPane().setVisible(true); // display masker pane
         menuBar.setDisable(true);
         appStatusBar.setDisable(true);
 
@@ -1050,8 +1157,7 @@ public class RootLayoutController {
         handleMenuSaveSettings();
         // make user wait as verification executes
         cardiotest.getMaskerPane().setText("Executing RFM_ISIM_3G_ExpandedMode. Please wait..");
-        // display masker pane
-        cardiotest.getMaskerPane().setVisible(true);
+        cardiotest.getMaskerPane().setVisible(true); // display masker pane
         menuBar.setDisable(true);
         appStatusBar.setDisable(true);
 
@@ -1094,7 +1200,9 @@ public class RootLayoutController {
         runRfmIsimExpandedModeThread.start();
     }
 
-    @FXML private void handleMenuRfmCustom() {
+    //Custom RFM --------------------------------------
+    @FXML
+    private void handleMenuRfmCustom() {
         handleMenuSaveSettings();
         // make user wait as verification executes
         cardiotest.getMaskerPane().setText("Executing RFM_CUSTOM. Please wait..");
@@ -1140,7 +1248,8 @@ public class RootLayoutController {
         runRfmCustomThread.start();
     }
 
-    @FXML private void handleMenuRfmCustomUpdateRecord() {
+    @FXML
+    private void handleMenuRfmCustomUpdateRecord() {
         handleMenuSaveSettings();
         // make user wait as verification executes
         cardiotest.getMaskerPane().setText("Executing RFM_CUSTOM_UpdateRecord. Please wait..");
@@ -1186,7 +1295,8 @@ public class RootLayoutController {
         runRfmCustomUpdateRecordThread.start();
     }
 
-    @FXML private void handleMenuRfmCustomExpandedMode() {
+    @FXML
+    private void handleMenuRfmCustomExpandedMode() {
         handleMenuSaveSettings();
         // make user wait as verification executes
         cardiotest.getMaskerPane().setText("Executing RFM_CUSTOM_3G_ExpandedMode. Please wait..");
@@ -1236,8 +1346,7 @@ public class RootLayoutController {
         handleMenuSaveSettings();
         // make user wait as verification executes
         cardiotest.getMaskerPane().setText("Executing SecretCodes_3G. Please wait..");
-        // display masker pane
-        cardiotest.getMaskerPane().setVisible(true);
+        cardiotest.getMaskerPane().setVisible(true); // display masker pane
         menuBar.setDisable(true);
         appStatusBar.setDisable(true);
 
@@ -1284,8 +1393,7 @@ public class RootLayoutController {
         handleMenuSaveSettings();
         // make user wait as verification executes
         cardiotest.getMaskerPane().setText("Executing SecretCodes_2G. Please wait..");
-        // display masker pane
-        cardiotest.getMaskerPane().setVisible(true);
+        cardiotest.getMaskerPane().setVisible(true); // display masker pane
         menuBar.setDisable(true);
         appStatusBar.setDisable(true);
 
@@ -1336,9 +1444,8 @@ public class RootLayoutController {
                 sb.append(currentLine + "\n");
             cardiotest.getTxtCommandResponse().setText(sb.toString());
             cardiotest.getTabBottom().getSelectionModel().select(0);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+        catch (IOException e) { e.printStackTrace(); }
     }
 
     private void appendTextFlow(String text) {
@@ -1348,10 +1455,8 @@ public class RootLayoutController {
 
     private void appendTextFlow(String text, int style) {
         Text message = new Text(text);
-        if (style == 0)
-            message.setStyle("-fx-fill: #4F8A10;-fx-font-weight:bold;");
-        if (style == 1)
-            message.setStyle("-fx-fill: RED;-fx-font-weight:normal;");
+        if (style == 0) message.setStyle("-fx-fill: #4F8A10;-fx-font-weight:bold;");
+        if (style == 1) message.setStyle("-fx-fill: RED;-fx-font-weight:normal;");
         cardiotest.getTxtInterpretedLog().getChildren().add(message);
     }
 
@@ -1368,7 +1473,6 @@ public class RootLayoutController {
                 .filter(f -> f.contains("."))
                 .map(f -> f.substring(scriptName.lastIndexOf(".") + 1));
     }
-
 
     public StatusBar getAppStatusBar() { return appStatusBar; }
     public TerminalFactory getTerminalFactory() { return terminalFactory; }

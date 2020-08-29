@@ -411,6 +411,11 @@
                                 <fx:include source="RfmCustom.fxml" />
                               </content>
                             </Tab>
+                            <Tab closable="false" text="File Management">
+                              <content>
+                                <fx:include source="FIle_Management.fxml" />
+                              </content>
+                            </Tab>
                             <Tab closable="false" text="Secret Codes">
                               <content>
                                 <fx:include source="SecretCodes.fxml" />

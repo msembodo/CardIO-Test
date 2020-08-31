@@ -77,6 +77,8 @@ public class CardiotestController {
     @FXML private TextField txtCsimAid;
     @FXML private TextField txtDfCsim;
 
+
+
     // OTA settings tab
     @FXML private TableView<SCP80Keyset> tblScp80Keyset;
     @FXML private TableColumn<SCP80Keyset, String> clmnKeysetName;
@@ -117,6 +119,7 @@ public class CardiotestController {
     @Autowired private RfmUsimController rfmUsimController;
     @Autowired private RfmGsmController rfmGsmController;
     @Autowired private RfmIsimController rfmIsimController;
+    @Autowired private RfmCustomController rfmCustomController;
 
     public CardiotestController() {}
 
@@ -641,6 +644,7 @@ public class CardiotestController {
         root.getRunSettings().getCardParameters().setCsimAid(txtCsimAid.getText());
         root.getRunSettings().getCardParameters().setDfCsim(txtDfCsim.getText());
 
+
         // SMS update settings
         root.getRunSettings().getSmsUpdate().setUdhiFirstByte(txtUdhiFirstByte.getText());
         root.getRunSettings().getSmsUpdate().setScAddress(txtScAddress.getText());
@@ -663,6 +667,10 @@ public class CardiotestController {
 
         // RFM Isim
         rfmIsimController.saveControlState();
+
+        //Custom RFM --------------------------------------
+        rfmCustomController.saveControlState();
+
     }
 
 }

@@ -78,6 +78,7 @@ public class RootLayoutController {
     @Autowired private RunService runService;
     @Autowired private ReportService reportService;
     @Autowired private ExportImportService eximService;
+    @Autowired private FileManagementController fileManagementController;
 
     @FXML private BorderPane rootBorderPane;
     @FXML private MenuBar menuBar;
@@ -99,6 +100,7 @@ public class RootLayoutController {
     @FXML private MenuItem menuRfmCustomExpandedMode;
     @FXML private MenuItem menuCodes3g;
     @FXML private MenuItem menuCodes2g;
+    @FXML private MenuItem menuLinkFile;
 
     private StatusBar appStatusBar;
     private Label lblTerminalInfo;
@@ -249,6 +251,7 @@ public class RootLayoutController {
         rfmIsimController.initialize();
         secretCodesController.initialize();
         customTabController.initialize();
+        fileManagementController.initialize();
     }
 
     @FXML private void handleMenuExportSettings() {
@@ -1504,6 +1507,7 @@ public class RootLayoutController {
     public ObservableList<CustomScript> getCustomScriptsSection1() { return customScriptsSection1; }
     public ObservableList<CustomScript> getCustomScriptsSection2() { return customScriptsSection2; }
     public ObservableList<CustomScript> getCustomScriptsSection3() { return customScriptsSection3; }
+    public MenuItem getMenuLinkFile() { return menuLinkFile; }
 
     public void setImportProjectDir(File importProjectDir) { this.importProjectDir = importProjectDir; }
     public void setImportVarFile(File importVarFile) { this.importVarFile = importVarFile; }

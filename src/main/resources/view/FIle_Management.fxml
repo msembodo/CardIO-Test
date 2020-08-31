@@ -9,7 +9,7 @@
             <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="630.0" prefWidth="1530.0">
                     <children>
-                        <CheckBox layoutX="12.0" layoutY="14.0" mnemonicParsing="false" selected="true" text="Include 'Linked File Test'" AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="12.0" />
+                        <CheckBox fx:id="chkIncludeLinkFile" layoutX="12.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleIncludeLinkFileCheck" selected="true" text="Include 'Link File'" AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="12.0" />
                         <CheckBox layoutX="1050.0" layoutY="12.0" mnemonicParsing="false" selected="true" text="Include 'SFI Check'" AnchorPane.leftAnchor="1010.0" AnchorPane.topAnchor="12.0" />
                         <CheckBox layoutX="653.0" layoutY="13.0" mnemonicParsing="false" selected="true" text="Include 'Readable &amp; Updateable when Invalidated'" AnchorPane.leftAnchor="660.0" AnchorPane.topAnchor="12.0" />
                         <TitledPane animated="false" collapsible="false" focusTraversable="false" layoutX="530.0" layoutY="300.0" prefHeight="540.0" prefWidth="590.0" text="Linked File Test" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="890.0" AnchorPane.topAnchor="50.0">
@@ -26,11 +26,11 @@
                                             </rowConstraints>
                                             <children>
                                                 <Label prefHeight="17.0" prefWidth="95.0" text="File Path [Master]" />
-                                                <TextField prefHeight="21.0" prefWidth="141.0" GridPane.columnIndex="1" />
+                                                <TextField fx:id="path_MasterTextField" prefHeight="21.0" prefWidth="141.0" GridPane.columnIndex="1" />
                                             </children>
                                         </GridPane>
-                                        <Button layoutX="18.0" layoutY="337.0" mnemonicParsing="false" text="Add" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="110.0" />
-                                        <Button layoutX="70.0" layoutY="337.0" mnemonicParsing="false" text="Delete" AnchorPane.leftAnchor="60.0" AnchorPane.topAnchor="110.0" />
+                                        <Button layoutX="18.0" layoutY="337.0" mnemonicParsing="false" onAction="#newPathButtonPushed" text="Add" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="110.0" />
+                                        <Button layoutX="70.0" layoutY="337.0" mnemonicParsing="false" onAction="#deletePathButtonPusshed" text="Delete" AnchorPane.leftAnchor="60.0" AnchorPane.topAnchor="110.0" />
                                         <TableView fx:id="tblLinkFileTest" layoutX="280.0" layoutY="35.6" prefHeight="458.0" prefWidth="278.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="280.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                                             <columns>
                                                 <TableColumn fx:id="clmMaster" onEditCommit="#changePath_MasterCellEvent" prefWidth="106.0" text="Master" />
@@ -50,7 +50,7 @@
                                  </rowConstraints>
                                  <children>
                                     <Label prefHeight="17.0" prefWidth="95.0" text="File Path [Ghost]" />
-                                    <TextField prefHeight="21.0" prefWidth="141.0" GridPane.columnIndex="1" />
+                                    <TextField fx:id="path_GhostTextField" prefHeight="21.0" prefWidth="141.0" GridPane.columnIndex="1" />
                                  </children>
                               </GridPane>
                                     </children>

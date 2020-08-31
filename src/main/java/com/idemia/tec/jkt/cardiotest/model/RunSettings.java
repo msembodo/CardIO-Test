@@ -31,6 +31,8 @@ public class RunSettings {
     private List<CustomScript> customScriptsSection3;
     private RfmCustom rfmCustom;
 
+    private FileManagement fileManagement;
+
 
     public RunSettings() {
     }
@@ -208,6 +210,15 @@ public class RunSettings {
     public void setAuthentication(Authentication authentication) {
         this.authentication = authentication;
     }
+
+    public FileManagement getFileManagement() {
+        return fileManagement;
+    }
+
+    public void setFileManagement(FileManagement fileManagement) {
+        this.fileManagement = fileManagement;
+    }
+
 
     public List<SCP80Keyset> getScp80Keysets() {
         return scp80Keysets;

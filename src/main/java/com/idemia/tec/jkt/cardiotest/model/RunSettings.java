@@ -24,20 +24,23 @@ public class RunSettings {
     private List<SCP80Keyset> scp80Keysets;
     private SmsUpdate smsUpdate;
     private RfmUsim rfmUsim;
+    private RfmGsm rfmGsm;
     private RfmIsim rfmIsim;
+    private RfmCustom rfmCustom;
     private List<CustomScript> customScriptsSection1;
     private List<CustomScript> customScriptsSection2;
     private List<CustomScript> customScriptsSection3;
 
-    public RunSettings() {}
+    public RunSettings() { }
 
     public RunSettings(String projectPath, String advSaveVariablesPath, int readerNumber, boolean stopOnError,
                        String requestId, String requestName, String profileName, int profileVersion,
                        String cardImageItemId, String customer, String developerName, String testerName,
                        List<VariableMapping> variableMappings, ATR atr, SecretCodes secretCodes,
                        CardParameters cardParameters, Authentication authentication, List<SCP80Keyset> scp80Keysets,
-                       SmsUpdate smsUpdate, RfmUsim rfmUsim, List<CustomScript> customScriptsSection1,
-                       List<CustomScript> customScriptsSection2, List<CustomScript> customScriptsSection3) {
+                       SmsUpdate smsUpdate, RfmUsim rfmUsim, RfmGsm rfmGsm, RfmIsim rfmIsim, RfmCustom rfmCustom,
+                       List<CustomScript> customScriptsSection1, List<CustomScript> customScriptsSection2,
+                       List<CustomScript> customScriptsSection3) {
         this.projectPath = projectPath;
         this.advSaveVariablesPath = advSaveVariablesPath;
         this.readerNumber = readerNumber;
@@ -58,7 +61,9 @@ public class RunSettings {
         this.scp80Keysets = scp80Keysets;
         this.smsUpdate = smsUpdate;
         this.rfmUsim = rfmUsim;
+        this.rfmGsm = rfmGsm;
         this.rfmIsim = rfmIsim;
+        this.rfmCustom = rfmCustom;
         this.customScriptsSection1 = customScriptsSection1;
         this.customScriptsSection2 = customScriptsSection2;
         this.customScriptsSection3 = customScriptsSection3;
@@ -224,6 +229,14 @@ public class RunSettings {
         this.rfmUsim = rfmUsim;
     }
 
+    public RfmGsm getRfmGsm() {
+        return rfmGsm;
+    }
+
+    public void setRfmGsm(RfmGsm rfmGsm) {
+        this.rfmGsm = rfmGsm;
+    }
+
     public RfmIsim getRfmIsim() {
         return rfmIsim;
     }
@@ -231,6 +244,13 @@ public class RunSettings {
     public void setRfmIsim(RfmIsim rfmIsim) {
         this.rfmIsim = rfmIsim;
     }
+
+    public RfmCustom getRfmCustom() {
+        return rfmCustom;
+    }
+
+    public void setRfmCustom(RfmCustom rfmCustom) {
+        this.rfmCustom = rfmCustom; }
 
     public List<CustomScript> getCustomScriptsSection1() {
         return customScriptsSection1;
@@ -254,6 +274,7 @@ public class RunSettings {
 
     public void setCustomScriptsSection3(List<CustomScript> customScriptsSection3) {
         this.customScriptsSection3 = customScriptsSection3;
+
     }
 
 }

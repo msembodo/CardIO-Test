@@ -194,7 +194,7 @@
                                                       </rowConstraints>
                                                       <children>
                                                         <Button mnemonicParsing="false" onAction="#handleButtonGetAtr" text="Get ATR" GridPane.columnIndex="1" />
-                                                        <TextField fx:id="txtAtr" focusTraversable="false" prefHeight="31.0" prefWidth="491.0" />
+                                                        <TextField fx:id="txtAtr" focusTraversable="false" prefWidth="491.0" />
                                                       </children>
                                                       <padding>
                                                         <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
@@ -206,11 +206,11 @@
                                                 </AnchorPane>
                                               </content>
                                             </TitledPane>
-                                            <TitledPane animated="false" collapsible="false" focusTraversable="false" layoutX="860.0" layoutY="158.0" prefHeight="360.0" prefWidth="640.0" text="Card Parameters" AnchorPane.leftAnchor="870.0" AnchorPane.topAnchor="160.0">
+                                            <TitledPane animated="false" collapsible="false" focusTraversable="false" layoutX="860.0" layoutY="158.0" prefHeight="400.0" prefWidth="640.0" text="Card Parameters" AnchorPane.leftAnchor="870.0" AnchorPane.topAnchor="160.0">
                                               <content>
                                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                   <children>
-                                                    <GridPane layoutX="14.0" layoutY="14.0" prefHeight="290.0" prefWidth="600.0">
+                                                    <GridPane layoutX="26.0" layoutY="26.0" prefHeight="332.0" prefWidth="610.0" AnchorPane.leftAnchor="2.0" AnchorPane.topAnchor="2.0">
                                                       <columnConstraints>
                                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="293.0" minWidth="10.0" prefWidth="154.0" />
                                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="446.0" minWidth="10.0" prefWidth="446.0" />
@@ -225,26 +225,29 @@
                                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                       </rowConstraints>
                                                       <children>
                                                         <Label text="Card Manager AID" />
                                                         <Label text="USIM AID" GridPane.rowIndex="1" />
                                                         <Label text="DF USIM" GridPane.rowIndex="2" />
-                                                        <Label text="DF GSM Access" GridPane.rowIndex="3" />
-                                                        <Label text="DF Telecom" GridPane.rowIndex="4" />
-                                                        <Label text="ISIM AID" GridPane.rowIndex="5" />
-                                                        <Label text="DF ISIM" GridPane.rowIndex="6" />
-                                                        <Label text="CSIM AID" GridPane.rowIndex="7" />
-                                                        <Label text="DF CSIM" GridPane.rowIndex="8" />
+                                                        <Label text="DF GSM" GridPane.rowIndex="3" />
+                                                        <Label text="DF GSM Access" GridPane.rowIndex="4" />
+                                                        <Label text="DF Telecom" GridPane.rowIndex="5" />
+                                                        <Label text="ISIM AID" GridPane.rowIndex="6" />
+                                                        <Label text="DF ISIM" GridPane.rowIndex="7" />
+                                                        <Label text="CSIM AID" GridPane.rowIndex="8" />
+                                                        <Label text="DF CSIM" GridPane.rowIndex="9" />
                                                         <TextField fx:id="txtCardManagerAid" GridPane.columnIndex="1" />
                                                         <TextField fx:id="txtUsimAid" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                         <TextField fx:id="txtDfUsim" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                        <TextField fx:id="txtDfGsmAccess" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                        <TextField fx:id="txtDfTelecom" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                                        <TextField fx:id="txtIsimAid" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                                                        <TextField fx:id="txtDfIsim" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                                                        <TextField fx:id="txtCsimAid" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                                                        <TextField fx:id="txtDfCsim" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                                                        <TextField fx:id="txtDfGsm" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                        <TextField fx:id="txtDfGsmAccess" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                        <TextField fx:id="txtDfTelecom" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                        <TextField fx:id="txtIsimAid" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                                        <TextField fx:id="txtDfIsim" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                                        <TextField fx:id="txtCsimAid" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                                                        <TextField fx:id="txtDfCsim" GridPane.columnIndex="1" GridPane.rowIndex="9" />
                                                       </children>
                                                     </GridPane>
                                                   </children>
@@ -313,13 +316,13 @@
                                                                 <Label text="Kid" GridPane.rowIndex="4" />
                                                                 <Label fx:id="lblCmacLength" text="CMAC length" GridPane.columnIndex="2" GridPane.rowIndex="5" />
                                                                 <TextField fx:id="txtKeysetName" GridPane.columnIndex="1" />
-                                                                <ComboBox fx:id="cmbKeysetVersion" prefHeight="31.0" prefWidth="284.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                                <ComboBox fx:id="cmbKeysetType" onAction="#handleKeysetTypeSelection" prefHeight="31.0" prefWidth="266.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                                <ComboBox fx:id="cmbKicValuation" prefHeight="31.0" prefWidth="266.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                                <ComboBox fx:id="cmbKicMode" prefHeight="31.0" prefWidth="258.0" GridPane.columnIndex="4" GridPane.rowIndex="3" />
-                                                                <ComboBox fx:id="cmbKidValuation" prefHeight="31.0" prefWidth="266.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                                                <ComboBox fx:id="cmbKidMode" prefHeight="31.0" prefWidth="258.0" GridPane.columnIndex="4" GridPane.rowIndex="4" />
-                                                                <ComboBox fx:id="cmbCmacLength" prefHeight="31.0" prefWidth="258.0" GridPane.columnIndex="3" GridPane.rowIndex="5" />
+                                                                <ComboBox fx:id="cmbKeysetVersion" prefWidth="284.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                <ComboBox fx:id="cmbKeysetType" onAction="#handleKeysetTypeSelection" prefWidth="266.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                <ComboBox fx:id="cmbKicValuation" prefWidth="266.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                <ComboBox fx:id="cmbKicMode" prefWidth="258.0" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+                                                                <ComboBox fx:id="cmbKidValuation" prefWidth="266.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                                <ComboBox fx:id="cmbKidMode" prefWidth="258.0" GridPane.columnIndex="4" GridPane.rowIndex="4" />
+                                                                <ComboBox fx:id="cmbCmacLength" prefWidth="258.0" GridPane.columnIndex="3" GridPane.rowIndex="5" />
                                                                 <Label text="Size &amp; mode" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                                                 <Label text="Size &amp; mode" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                                                 <ComboBox fx:id="cmbKicLength" prefWidth="150.0" GridPane.columnIndex="3" GridPane.rowIndex="3" />
@@ -393,9 +396,19 @@
                                 <fx:include source="RfmUsim.fxml" />
                               </content>
                             </Tab>
+                            <Tab closable="false" text="RFM GSM">
+                              <content>
+                                <fx:include source="RfmGsm.fxml" />
+                              </content>
+                            </Tab>
                             <Tab closable="false" text="RFM ISIM">
                               <content>
                                 <fx:include source="RfmIsim.fxml" />
+                              </content>
+                            </Tab>
+                            <Tab closable="false" text="Custom RFM">
+                              <content>
+                                <fx:include source="RfmCustom.fxml" />
                               </content>
                             </Tab>
                             <Tab closable="false" text="Secret Codes">

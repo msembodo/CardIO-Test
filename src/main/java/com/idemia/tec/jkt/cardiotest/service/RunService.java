@@ -11,10 +11,20 @@ public interface RunService {
     boolean runRfmUsim();
     boolean runRfmUsimUpdateRecord();
     boolean runRfmUsimExpandedMode();
+    boolean runRfmGsm();
+    boolean runRfmGsmUpdateRecord();
+    boolean runRfmGsmExpandedMode();
     boolean runRfmIsim();
     boolean runRfmIsimUpdateRecord();
     boolean runRfmIsimExpandedMode();
     boolean runSecretCodes3g();
     boolean runSecretCodes2g();
+
+    //Custom RFM --------------------------------------
+    boolean runRfmCustom();
+    boolean runRfmCustomUpdateRecord();
+    boolean runRfmCustomExpandedMode();
+    // ------------------------------------------------
+
 
 }

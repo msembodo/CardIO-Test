@@ -37,7 +37,7 @@ public class AuthenticationController {
 
     public AuthenticationController() {}
 
-    @FXML private void initialize() {
+    @FXML public void initialize() {
         chkIncludeDeltaTest.setSelected(root.getRunSettings().getAuthentication().isIncludeDeltaTest());
         handleIncludeDeltaTestCheck();
 
@@ -78,21 +78,8 @@ public class AuthenticationController {
     @FXML private void handleKiContextMenu() { cmbKi.setItems(cardiotest.getMappedVariables()); }
     @FXML private void handleOpcContextMenu() { cmbOpc.setItems(cardiotest.getMappedVariables()); }
 
-    @FXML
-    private void handleIncludeDeltaTestCheck() {
-        if (chkIncludeDeltaTest.isSelected())
-            root.getMenuDeltaTest().setDisable(false);
-        else
-            root.getMenuDeltaTest().setDisable(true);
-    }
-
-    @FXML
-    private void handleIncludeSqnMaxCheck() {
-        if (chkIncludeSqnMax.isSelected())
-            root.getMenuSqnMax().setDisable(false);
-        else
-            root.getMenuSqnMax().setDisable(true);
-    }
+    @FXML private void handleIncludeDeltaTestCheck() { root.getMenuDeltaTest().setDisable(!chkIncludeDeltaTest.isSelected()); }
+    @FXML private void handleIncludeSqnMaxCheck() { root.getMenuSqnMax().setDisable(!chkIncludeSqnMax.isSelected()); }
 
     public void saveControlState() {
         root.getRunSettings().getAuthentication().setIncludeDeltaTest(chkIncludeDeltaTest.isSelected());

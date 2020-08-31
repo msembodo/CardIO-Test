@@ -19,8 +19,7 @@ public class ReportServiceImpl implements ReportService {
 
     private RunSettings runSettings;
 
-    @Override
-    public void createReportFromSettings(RunSettings runSettings) {
+    @Override public void createReportFromSettings(RunSettings runSettings) {
         this.runSettings = runSettings;
         try {
             Document document = new Document();
@@ -29,9 +28,8 @@ public class ReportServiceImpl implements ReportService {
             document.open();
             XMLWorkerHelper.getInstance().parseXHtml(writer, document, new StringReader(composeHtml().toString()));
             document.close();
-        } catch (DocumentException | IOException e) {
-            e.printStackTrace();
         }
+        catch (DocumentException | IOException e) { e.printStackTrace(); }
     }
 
     private StringBuilder composeHtml() {
@@ -132,8 +130,7 @@ public class ReportServiceImpl implements ReportService {
             html.append("\n<div><h2>Answer To Reset</h2></div>");
             html.append(createTableHeaderModule());
             html.append("\n<tr><td class=\"item\">ATR check</td>");
-            if (runSettings.getAtr().isTestAtrOk())
-                html.append("<td class=\"ok\">PASSED</td></tr>");
+            if (runSettings.getAtr().isTestAtrOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
             else {
                 String[] messages = runSettings.getAtr().getTestAtrMesssage().split(";");
                 html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
@@ -152,60 +149,45 @@ public class ReportServiceImpl implements ReportService {
         // authentication
         if (runSettings.getAuthentication().isIncludeDeltaTest() || runSettings.getAuthentication().isIncludeSqnMax()) {
             html.append("\n<div><h2>Authentication</h2></div>");
-
             html.append("\n<div><h3>Test modules</h3></div>");
             html.append(createTableHeaderModule());
             if (runSettings.getAuthentication().isIncludeDeltaTest()) {
                 html.append("\n<tr><td class=\"item\">Milenage delta test</td>");
-                if (runSettings.getAuthentication().isTestDeltaOk())
-                    html.append("<td class=\"ok\">PASSED</td></tr>");
+                if (runSettings.getAuthentication().isTestDeltaOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
                 else {
                     String[] messages = runSettings.getAuthentication().getTestDeltaMessage().split(";");
                     html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
                 }
             }
-            else
-                html.append("\n<tr><td class=\"item\">Milenage delta test</td><td>(not included)</td></tr>");
+            else html.append("\n<tr><td class=\"item\">Milenage delta test</td><td>(not included)</td></tr>");
             if (runSettings.getAuthentication().isIncludeSqnMax()) {
                 html.append("\n<tr><td class=\"item\">Milenage SQN max</td>");
-                if (runSettings.getAuthentication().isTestSqnMaxOk())
-                    html.append("<td class=\"ok\">PASSED</td></tr>");
+                if (runSettings.getAuthentication().isTestSqnMaxOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
                 else {
                     String[] messages = runSettings.getAuthentication().getTestSqnMaxMessage().split(";");
                     html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
                 }
             }
-            else
-                html.append("\n<tr><td class=\"item\">Milenage SQN max</td><td>(not included)</td></tr>");
+            else html.append("\n<tr><td class=\"item\">Milenage SQN max</td><td>(not included)</td></tr>");
             html.append(createTableFooter());
 
             html.append("\n<div><h3>Authentication options</h3></div>");
             html.append(createTableHeaderModule());
             html.append("\n<tr><td class=\"item\">COMP128-2</td>");
-            if (runSettings.getAuthentication().isComp1282())
-                html.append("<td>YES</td></tr>");
-            else
-                html.append("<td>NO</td></tr>");
+            if (runSettings.getAuthentication().isComp1282()) html.append("<td>YES</td></tr>");
+            else html.append("<td>NO</td></tr>");
             html.append("\n<tr><td class=\"item\">COMP128-3</td>");
-            if (runSettings.getAuthentication().isComp1283())
-                html.append("<td>YES</td></tr>");
-            else
-                html.append("<td>NO</td></tr>");
+            if (runSettings.getAuthentication().isComp1283()) html.append("<td>YES</td></tr>");
+            else html.append("<td>NO</td></tr>");
             html.append("\n<tr><td class=\"item\">Milenage</td>");
-            if (runSettings.getAuthentication().isMilenage())
-                html.append("<td>YES</td></tr>");
-            else
-                html.append("<td>NO</td></tr>");
+            if (runSettings.getAuthentication().isMilenage()) html.append("<td>YES</td></tr>");
+            else html.append("<td>NO</td></tr>");
             html.append("\n<tr><td class=\"item\">ISIM auth</td>");
-            if (runSettings.getAuthentication().isIsimAuth())
-                html.append("<td>YES</td></tr>");
-            else
-                html.append("<td>NO</td></tr>");
+            if (runSettings.getAuthentication().isIsimAuth()) html.append("<td>YES</td></tr>");
+            else html.append("<td>NO</td></tr>");
             html.append("\n<tr><td class=\"item\">GSM algo</td>");
-            if (runSettings.getAuthentication().isGsmAlgo())
-                html.append("<td>YES</td></tr>");
-            else
-                html.append("<td>NO</td></tr>");
+            if (runSettings.getAuthentication().isGsmAlgo()) html.append("<td>YES</td></tr>");
+            else html.append("<td>NO</td></tr>");
             html.append(createTableFooter());
 
             html.append("\n<div><h3>Algo parameters</h3></div>");
@@ -352,35 +334,29 @@ public class ReportServiceImpl implements ReportService {
             html.append(createTableHeaderModule());
             if (runSettings.getSecretCodes().isInclude3gScript()) {
                 html.append("\n<tr><td class=\"item\">Secret codes 3G</td>");
-                if (runSettings.getSecretCodes().isTestCodes3gOk())
-                    html.append("<td class=\"ok\">PASSED</td></tr>");
+                if (runSettings.getSecretCodes().isTestCodes3gOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
                 else {
                     String[] messages = runSettings.getSecretCodes().getTestCodes3gMessage().split(";");
                     html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
                 }
             }
-            else
-                html.append("\n<tr><td class=\"item\">Secret codes 3G</td><td>(not included)</td></tr>");
+            else html.append("\n<tr><td class=\"item\">Secret codes 3G</td><td>(not included)</td></tr>");
             if (runSettings.getSecretCodes().isInclude2gScript()) {
                 html.append("\n<tr><td class=\"item\">Secret codes 2G</td>");
-                if (runSettings.getSecretCodes().isTestCodes2gOk())
-                    html.append("<td class=\"ok\">PASSED</td></tr>");
+                if (runSettings.getSecretCodes().isTestCodes2gOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
                 else {
                     String[] messages = runSettings.getSecretCodes().getTestCodes2gMessage().split(";");
                     html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
                 }
             }
-            else
-                html.append("\n<tr><td class=\"item\">Secret codes 2G</td><td>(not included)</td></tr>");
+            else html.append("\n<tr><td class=\"item\">Secret codes 2G</td><td>(not included)</td></tr>");
             html.append(createTableFooter());
 
             html.append("\n<div><h3>Global PIN</h3></div>");
             html.append(createTableHeaderModule());
             html.append("\n<tr><td class=\"item\">PIN1 disabled</td>");
-            if (runSettings.getSecretCodes().isPin1disabled())
-                html.append("<td>YES</td></tr>");
-            else
-                html.append("<td>NO</td></tr>");
+            if (runSettings.getSecretCodes().isPin1disabled()) html.append("<td>YES</td></tr>");
+            else html.append("<td>NO</td></tr>");
             html.append(
                 "\n<tr><td class=\"item\">Value</td>"
                 + "<td>" + getValue(runSettings.getSecretCodes().getGpin()) + "</td></tr>"
@@ -398,19 +374,15 @@ public class ReportServiceImpl implements ReportService {
                 + "<td>" + runSettings.getSecretCodes().getGpukRetries() + "</td></tr>"
             );
             html.append("\n<tr><td class=\"item\">Block Global PUK</td>");
-            if (runSettings.getSecretCodes().isBlockGpuk())
-                html.append("<td>YES</td></tr>");
-            else
-                html.append("<td>NO</td></tr>");
+            if (runSettings.getSecretCodes().isBlockGpuk()) html.append("<td>YES</td></tr>");
+            else html.append("<td>NO</td></tr>");
             html.append(createTableFooter());
 
             html.append("\n<div><h3>Local PIN</h3></div>");
             html.append(createTableHeaderModule());
             html.append("\n<tr><td class=\"item\">PIN2 disabled</td>");
-            if (runSettings.getSecretCodes().isPin2disabled())
-                html.append("<td>YES</td></tr>");
-            else
-                html.append("<td>NO</td></tr>");
+            if (runSettings.getSecretCodes().isPin2disabled()) html.append("<td>YES</td></tr>");
+            else html.append("<td>NO</td></tr>");
             html.append(
                 "\n<tr><td class=\"item\">Value</td>"
                 + "<td>" + getValue(runSettings.getSecretCodes().getLpin()) + "</td></tr>"
@@ -428,10 +400,8 @@ public class ReportServiceImpl implements ReportService {
                 + "<td>" + runSettings.getSecretCodes().getLpukRetries() + "</td></tr>"
             );
             html.append("\n<tr><td class=\"item\">Block Local PUK</td>");
-            if (runSettings.getSecretCodes().isBlockLpuk())
-                html.append("<td>YES</td></tr>");
-            else
-                html.append("<td>NO</td></tr>");
+            if (runSettings.getSecretCodes().isBlockLpuk()) html.append("<td>YES</td></tr>");
+            else html.append("<td>NO</td></tr>");
             html.append(createTableFooter());
 
             html.append("\n<div><h3>CHV1</h3></div>");
@@ -453,10 +423,8 @@ public class ReportServiceImpl implements ReportService {
                 + "<td>" + runSettings.getSecretCodes().getPuk1Retries() + "</td></tr>"
             );
             html.append("\n<tr><td class=\"item\">Block PUK1</td>");
-            if (runSettings.getSecretCodes().isBlockPuk1())
-                html.append("<td>YES</td></tr>");
-            else
-                html.append("<td>NO</td></tr>");
+            if (runSettings.getSecretCodes().isBlockPuk1()) html.append("<td>YES</td></tr>");
+            else html.append("<td>NO</td></tr>");
             html.append(createTableFooter());
 
             html.append("\n<div><h3>CHV2</h3></div>");
@@ -478,10 +446,8 @@ public class ReportServiceImpl implements ReportService {
                 + "<td>" + runSettings.getSecretCodes().getPuk2Retries() + "</td></tr>"
             );
             html.append("\n<tr><td class=\"item\">Block PUK2</td>");
-            if (runSettings.getSecretCodes().isBlockPuk2())
-                html.append("<td>YES</td></tr>");
-            else
-                html.append("<td>NO</td></tr>");
+            if (runSettings.getSecretCodes().isBlockPuk2()) html.append("<td>YES</td></tr>");
+            else html.append("<td>NO</td></tr>");
             html.append(createTableFooter());
 
             html.append("\n<div><h3>Issuer Secret Codes</h3></div>");
@@ -527,12 +493,9 @@ public class ReportServiceImpl implements ReportService {
             html.append(createTableFooter());
         }
         html.append("\n<div><h2>Other Tests</h2></div>");
-        if (runSettings.getCustomScriptsSection1().size() > 0)
-            printCustomScriptsReport(html, runSettings.getCustomScriptsSection1());
-        if (runSettings.getCustomScriptsSection2().size() > 0)
-            printCustomScriptsReport(html, runSettings.getCustomScriptsSection2());
-        if (runSettings.getCustomScriptsSection3().size() > 0)
-            printCustomScriptsReport(html, runSettings.getCustomScriptsSection3());
+        if (runSettings.getCustomScriptsSection1().size() > 0) printCustomScriptsReport(html, runSettings.getCustomScriptsSection1());
+        if (runSettings.getCustomScriptsSection2().size() > 0) printCustomScriptsReport(html, runSettings.getCustomScriptsSection2());
+        if (runSettings.getCustomScriptsSection3().size() > 0) printCustomScriptsReport(html, runSettings.getCustomScriptsSection3());
 
         html.append(createDocumentFooter());
         return html;
@@ -663,30 +626,20 @@ public class ReportServiceImpl implements ReportService {
         return header.toString();
     }
 
-    private String createDocumentFooter() {
-        return "\n<div><i>Created by CardIO on " + new Timestamp(System.currentTimeMillis()) + "</i></div>\n</body>\n</html>";
-    }
+    private String createDocumentFooter() { return "\n<div><i>Created by CARDIO on " + new Timestamp(System.currentTimeMillis()) + "</i></div>\n</body>\n</html>"; }
 
-    private String createTableHeader() {
-        return "\n<div>\n" + "<table>\n" + "<tbody>";
-    }
+    private String createTableHeader() { return "\n<div>\n" + "<table>\n" + "<tbody>"; }
 
-    private String createTableHeaderModule() {
-        return "\n<div>\n" + "<table class=\"module\">\n" + "<tbody>";
-    }
+    private String createTableHeaderModule() { return "\n<div>\n" + "<table class=\"module\">\n" + "<tbody>"; }
 
-    private String createTableFooter() {
-        return "\n</tbody>\n" + "</table>\n" + "</div>\n<br/>";
-    }
+    private String createTableFooter() { return "\n</tbody>\n" + "</table>\n" + "</div>\n<br/>"; }
 
     private String getValue(String mappedVar) {
         String value = "";
         for (VariableMapping mapping : runSettings.getVariableMappings()) {
             if (mapping.getMappedVariable().equals(mappedVar)) {
-                if (mapping.isFixed())
-                    value = mapping.getValue();
-                else
-                    value = "<i>" + mapping.getMccVariable() + "</i>";
+                if (mapping.isFixed()) value = mapping.getValue();
+                else value = "<i>" + mapping.getMccVariable() + "</i>";
                 break;
             }
         }

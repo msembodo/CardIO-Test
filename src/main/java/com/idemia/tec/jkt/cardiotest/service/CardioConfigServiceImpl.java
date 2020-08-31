@@ -167,7 +167,7 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             rfmCustom.setFullAccess(true);
             rfmCustom.setMinimumSecurityLevel(rfmCustomMsl);
             defaultSettings.setRfmCustom(rfmCustom);
-            rfmCustom.setCustomRfmDesc("RFM - X");
+            rfmCustom.setCustomRfmDesc("RFM ...");
 
             ObjectMapper mapper = new ObjectMapper();
             try {

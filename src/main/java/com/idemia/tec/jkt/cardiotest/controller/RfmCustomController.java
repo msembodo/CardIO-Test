@@ -1,6 +1,5 @@
 package com.idemia.tec.jkt.cardiotest.controller;
 
-import com.idemia.tec.jkt.cardiotest.CardiotestApplication;
 import com.idemia.tec.jkt.cardiotest.model.SCP80Keyset;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -55,7 +54,7 @@ public class RfmCustomController {
 
     public RfmCustomController() {}
 
-    @FXML private void initialize() {
+    @FXML public void initialize() {
         chkIncludeRfmCustom.setSelected(root.getRunSettings().getRfmCustom().isIncludeRfmCustom());
         handleIncludeRfmCustomCheck();
 
@@ -145,11 +144,8 @@ public class RfmCustomController {
 
         txtRfmCustomTar.setText(root.getRunSettings().getRfmCustom().getTar());
 
-
         txtRfmCustomTargetDf.setText(root.getRunSettings().getRfmCustom().getTargetDf());
         txtCustomRfmDesc.setText(root.getRunSettings().getRfmCustom().getCustomRfmDesc());
-
-
 
         txtRfmCustomTargetEf.setText(root.getRunSettings().getRfmCustom().getTargetEf());
         txtRfmCustomTargetEfBadCase.setText(root.getRunSettings().getRfmCustom().getTargetEfBadCase());
@@ -161,7 +157,6 @@ public class RfmCustomController {
 
         if (root.getRunSettings().getRfmCustom().getCustomRfmDesc() != null)
             txtCustomRfmDesc.setText(root.getRunSettings().getRfmCustom().getCustomRfmDesc());
-
 
         if (root.getRunSettings().getRfmCustom().getCustomTargetEf() != null)
             txtRfmCustomCustomTargetEf.setText(root.getRunSettings().getRfmCustom().getCustomTargetEf());
@@ -320,7 +315,6 @@ public class RfmCustomController {
     @FXML private void handleButtonSetRfmCustomMsl() {
         String mslHexStr = txtRfmCustomMslByte.getText();
         int mslInteger = Integer.parseInt(mslHexStr, 16);
-//        logger.info("MSL integer: " + mslInteger);
         if (mslInteger > 31) {
             // MSL integer shoould not be higher than 31 (0x1F)
             Alert mslAlert = new Alert(Alert.AlertType.ERROR);
@@ -540,7 +534,6 @@ public class RfmCustomController {
 
         root.getRunSettings().getRfmCustom().setCustomRfmDesc(txtCustomRfmDesc.getText());
 
-
         root.getRunSettings().getRfmCustom().setTargetEf(txtRfmCustomTargetEf.getText());
         root.getRunSettings().getRfmCustom().setTargetEfBadCase(txtRfmCustomTargetEfBadCase.getText());
         root.getRunSettings().getRfmCustom().setFullAccess(chkRfmCustomFullAccess.isSelected());
@@ -549,7 +542,6 @@ public class RfmCustomController {
             root.getRunSettings().getRfmCustom().setTargetDf(txtRfmCustomTargetDf.getText());
 
             root.getRunSettings().getRfmCustom().setCustomRfmDesc(txtCustomRfmDesc.getText());
-
 
             root.getRunSettings().getRfmCustom().setCustomTargetEf(txtRfmCustomCustomTargetEf.getText());
             root.getRunSettings().getRfmCustom().setCustomTargetAccBadCase(cmbRfmCustomCustomTargetAccBadCase.getSelectionModel().getSelectedItem());

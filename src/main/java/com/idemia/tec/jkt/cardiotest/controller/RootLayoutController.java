@@ -55,19 +55,15 @@ public class RootLayoutController {
     private boolean runRfmUsimOk;
     private boolean runRfmUsimUpdateRecordOk;
     private boolean runRfmUsimExpandedModeOk;
-
     private boolean runRfmGsmOk;
     private boolean runRfmGsmUpdateRecordOk;
     private boolean runRfmGsmExpandedModeOk;
-
     private boolean runRfmIsimOk;
     private boolean runRfmIsimUpdateRecordOk;
     private boolean runRfmIsimExpandedModeOk;
-
     private boolean runRfmCustomOk;
     private boolean runRfmCustomUpdateRecordOk;
     private boolean runRfmCustomExpandedModeOk;
-
     private boolean runCodes3gOk;
     private boolean runCodes2gOk;
 
@@ -77,6 +73,7 @@ public class RootLayoutController {
     @Autowired private RfmGsmController rfmGsmController;
     @Autowired private RfmUsimController rfmUsimController;
     @Autowired private RfmIsimController rfmIsimController;
+    @Autowired private RfmCustomController rfmCustomController;
     @Autowired private CustomTabController customTabController;
     @Autowired private CardioConfigService cardioConfigService;
     @Autowired private RunService runService;
@@ -228,16 +225,6 @@ public class RootLayoutController {
 
     private void reinitConfig() {
         runSettings = cardioConfigService.initConfig();
-//        try {
-//            List<CardTerminal> terminals = terminalFactory.terminals().list();
-//            if (terminals.isEmpty()) lblTerminalInfo.setText("(no terminal/reader detected)");
-//            else if (runSettings.getReaderNumber() != -1)
-//                lblTerminalInfo.setText(terminals.get(runSettings.getReaderNumber()).getName());
-//        } catch (CardException e) {
-//            logger.error("Failed to list PCSC terminals");
-//            lblTerminalInfo.setText("(no terminal/reader detected)");
-//            lblTerminalInfo.setTextFill(Color.RED);
-//        }
         application.getAdvSaveVariables().clear();
         application.getMappings().clear();
         cardiotest.getCmbMccVar().getItems().clear();
@@ -252,6 +239,7 @@ public class RootLayoutController {
         rfmGsmController.initialize();
         rfmUsimController.initialize();
         rfmIsimController.initialize();
+        rfmCustomController.initialize();
         secretCodesController.initialize();
         customTabController.initialize();
     }

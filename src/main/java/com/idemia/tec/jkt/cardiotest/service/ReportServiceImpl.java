@@ -59,21 +59,95 @@ public class ReportServiceImpl implements ReportService {
             + createTableFooter()
         );
 
+        // testing configurations
+        html.append("\n<div><h2>Testing Configurations</h2></div>");
+
         // variable mappings
-//        html.append("\n<div><h2><b>Variable Mappings</b></h2></div>");
-//        html.append(createTableHeaderModule());
-//        html.append(
-//            "\n<tr><th>Mapped variable</th>"
-//            + "<th>Value / MCC variable</th></tr>"
-//        );
-//        for (VariableMapping mapping : runSettings.getVariableMappings()) {
-//            html.append("\n<tr id=\"" + mapping.getMappedVariable() + "\"><td>" + mapping.getMappedVariable() + "</td>");
-//            if (mapping.isFixed())
-//                html.append("<td>" + mapping.getValue() + "</td></tr>");
-//            else
-//                html.append("<td>%" + mapping.getMccVariable() + "</td></tr>");
-//        }
-//        html.append(createTableFooter());
+        html.append("\n<div><h3>Variable Mappings</h3></div>");
+        html.append(createTableHeaderModule());
+        html.append(
+            "\n<tr><th class=\"item\">Mapped variable</th>"
+            + "<th>Value / MCC variable</th></tr>"
+        );
+        for (VariableMapping mapping : runSettings.getVariableMappings()) {
+            html.append("\n<tr><td class=\"item\">" + mapping.getMappedVariable() + "</td>");
+            if (mapping.isFixed())
+                html.append("<td>" + mapping.getValue() + "</td></tr>");
+            else
+                html.append("<td>%" + mapping.getMccVariable() + "</td></tr>");
+        }
+        html.append(createTableFooter());
+
+        // OTA settings
+        html.append("\n<div><h3>SCP-80 Keysets</h3></div>");
+        for (SCP80Keyset keyset : runSettings.getScp80Keysets()) {
+            html.append("\n<div><h4>" + keyset.getKeysetName() + "</h4></div>");
+            html.append(createTableHeaderModule());
+            html.append(
+                "\n<tr><td class=\"item\">Version</td>"
+                + "<td>" + keyset.getKeysetVersion() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td class=\"item\">Type</td>"
+                + "<td>" + keyset.getKeysetType() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td class=\"item\">KIC valuation</td>"
+                + "<td>" + getValue(keyset.getKicValuation()) + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td class=\"item\">KIC key length</td>"
+                + "<td>" + keyset.getKicKeyLength() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td class=\"item\">KIC mode</td>"
+                + "<td>" + keyset.getKicMode() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td class=\"item\">KID valuation</td>"
+                + "<td>" + getValue(keyset.getKidValuation()) + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td class=\"item\">KID key length</td>"
+                + "<td>" + keyset.getKidKeyLength() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td class=\"item\">KID mode</td>"
+                + "<td>" + keyset.getKidMode() + "</td></tr>"
+            );
+            if (keyset.getKidMode().equals("AES - CMAC")) {
+                html.append(
+                    "\n<tr><td class=\"item\">CMAC length</td>"
+                    + "<td>" + keyset.getCmacLength() + "</td></tr>"
+                );
+            }
+            html.append(createTableFooter());
+        }
+        html.append("\n<div><h3>Envelope & SMS Update Parameters</h3></div>");
+        html.append(createTableHeaderModule());
+        html.append(
+            "\n<tr><td class=\"item\">UDHI first byte</td>"
+            + "<td>" + runSettings.getSmsUpdate().getUdhiFirstByte() + "</td></tr>"
+        );
+        html.append(
+            "\n<tr><td class=\"item\">SC address</td>"
+            + "<td>" + runSettings.getSmsUpdate().getScAddress() + "</td></tr>"
+        );
+        html.append(
+            "\n<tr><td class=\"item\">TP-PID</td>"
+            + "<td>" + runSettings.getSmsUpdate().getTpPid() + "</td></tr>"
+        );
+        if (runSettings.getSmsUpdate().isUseWhiteList()) {
+            html.append(
+                "\n<tr><td class=\"item\">TP-OA</td>"
+                + "<td>" + runSettings.getSmsUpdate().getTpOa() + "</td></tr>"
+            );
+        }
+        html.append(
+            "\n<tr><td class=\"item\">PoR format</td>"
+            + "<td>" + runSettings.getSmsUpdate().getPorFormat() + "</td></tr>"
+        );
+        html.append(createTableFooter());
 
         // card parameters
 //        html.append("\n<div><h2><b>Card Parameters</b></h2></div>");
@@ -255,76 +329,7 @@ public class ReportServiceImpl implements ReportService {
             html.append(createTableFooter());
         }
 
-        // OTA settings
-        html.append("\n<div><h2>SCP-80 Keysets</h2></div>");
-        for (SCP80Keyset keyset : runSettings.getScp80Keysets()) {
-            html.append("\n<div><h3>" + keyset.getKeysetName() + "</h3></div>");
-            html.append(createTableHeaderModule());
-            html.append(
-                "\n<tr><td class=\"item\">Version</td>"
-                + "<td>" + keyset.getKeysetVersion() + "</td></tr>"
-            );
-            html.append(
-                "\n<tr><td class=\"item\">Type</td>"
-                + "<td>" + keyset.getKeysetType() + "</td></tr>"
-            );
-            html.append(
-                "\n<tr><td class=\"item\">KIC valuation</td>"
-                + "<td>" + getValue(keyset.getKicValuation()) + "</td></tr>"
-            );
-            html.append(
-                "\n<tr><td class=\"item\">KIC key length</td>"
-                + "<td>" + keyset.getKicKeyLength() + "</td></tr>"
-            );
-            html.append(
-                "\n<tr><td class=\"item\">KIC mode</td>"
-                + "<td>" + keyset.getKicMode() + "</td></tr>"
-            );
-            html.append(
-                "\n<tr><td class=\"item\">KID valuation</td>"
-                + "<td>" + getValue(keyset.getKidValuation()) + "</td></tr>"
-            );
-            html.append(
-                "\n<tr><td class=\"item\">KID key length</td>"
-                + "<td>" + keyset.getKidKeyLength() + "</td></tr>"
-            );
-            html.append(
-                "\n<tr><td class=\"item\">KID mode</td>"
-                + "<td>" + keyset.getKidMode() + "</td></tr>"
-            );
-            if (keyset.getKidMode().equals("AES - CMAC")) {
-                html.append(
-                    "\n<tr><td class=\"item\">CMAC length</td>"
-                    + "<td>" + keyset.getCmacLength() + "</td></tr>"
-                );
-            }
-            html.append(createTableFooter());
-        }
-        html.append("\n<div><h2>Envelope & SMS Update Parameters</h2></div>");
-        html.append(createTableHeaderModule());
-        html.append(
-            "\n<tr><td class=\"item\">UDHI first byte</td>"
-            + "<td>" + runSettings.getSmsUpdate().getUdhiFirstByte() + "</td></tr>"
-        );
-        html.append(
-            "\n<tr><td class=\"item\">SC address</td>"
-            + "<td>" + runSettings.getSmsUpdate().getScAddress() + "</td></tr>"
-        );
-        html.append(
-            "\n<tr><td class=\"item\">TP-PID</td>"
-            + "<td>" + runSettings.getSmsUpdate().getTpPid() + "</td></tr>"
-        );
-        if (runSettings.getSmsUpdate().isUseWhiteList()) {
-            html.append(
-                "\n<tr><td class=\"item\">TP-OA</td>"
-                + "<td>" + runSettings.getSmsUpdate().getTpOa() + "</td></tr>"
-            );
-        }
-        html.append(
-            "\n<tr><td class=\"item\">PoR format</td>"
-            + "<td>" + runSettings.getSmsUpdate().getPorFormat() + "</td></tr>"
-        );
-        html.append(createTableFooter());
+
 
         // secret codes
         if (runSettings.getSecretCodes().isInclude3gScript() || runSettings.getSecretCodes().isInclude2gScript()) {
@@ -567,16 +572,18 @@ public class ReportServiceImpl implements ReportService {
             "table {\n" +
             "\tborder-collapse: collapse;\n" +
 //            "\twidth: 100%;\n" +
+            "\tborder: 2px solid #430099;\n" +
             "}\n" +
             "table.module {\n" +
-            "\twidth: 100%;\n" +
+            "\twidth: 80%;\n" +
             "}\n" +
             "th,\n" +
             "td {\n" +
             "\twidth: 50%;\n" +
             "\ttext-align: left;\n" +
             "\tpadding: 4px;\n" +
-            "\tborder-bottom: 1px solid #ddd;\n" +
+//            "\tborder-bottom: 1px solid #ddd;\n" +
+            "\tborder-bottom: 1px solid #430099;\n" +
             "}\n" +
             "th.error {\n" +
             "\twidth: 50%;\n" +
@@ -589,6 +596,11 @@ public class ReportServiceImpl implements ReportService {
             "\tcolor: #F9F9F9;\n" +
             "}\n" +
 //            "tr:hover {background-color: #f5f5f5;}\n" +
+            "th.item {\n" +
+            "\twidth: 50%;\n" +
+            "\tbackground-color: #EEE8FB;\n" +
+            "\tcolor: #17202A;\n" +
+            "}\n" +
             "td.item {\n" +
             "\twidth: 50%;\n" +
 //            "\tfont-weight: bold;\n" +

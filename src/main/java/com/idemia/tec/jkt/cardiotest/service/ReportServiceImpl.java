@@ -255,6 +255,25 @@ public class ReportServiceImpl implements ReportService {
             html.append(createTableFooter());
         }
 
+        // ------------------------------------------
+        // file management
+        if (runSettings.getFileManagement().isIncludeLinkFileTest() ) {
+            html.append("\n<div><h2>File Management</h2></div>");
+            html.append("\n<div><h3>Test modules</h3></div>");
+            html.append(createTableHeaderModule());
+            if (runSettings.getFileManagement().isIncludeLinkFileTest()) {
+                html.append("\n<tr><td class=\"item\">Link File Test</td>");
+                if (runSettings.getFileManagement().isTestLinkFileOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
+                else {
+                    String[] messages = runSettings.getFileManagement().getTestLinkFileMessage().split(";");
+                    html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
+                }
+            }
+            else html.append("\n<tr><td class=\"item\">Link File Test</td><td>(not included)</td></tr>");
+            html.append(createTableFooter());
+        }
+        // ------------------------------------------
+
         // OTA settings
         html.append("\n<div><h2>SCP-80 Keysets</h2></div>");
         for (SCP80Keyset keyset : runSettings.getScp80Keysets()) {

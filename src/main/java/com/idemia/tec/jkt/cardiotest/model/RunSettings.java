@@ -31,7 +31,9 @@ public class RunSettings {
     private List<CustomScript> customScriptsSection3;
     private RfmCustom rfmCustom;
 
+    // -----------------
     private FileManagement fileManagement;
+    // -----------------
 
 
     public RunSettings() {
@@ -44,7 +46,7 @@ public class RunSettings {
                        CardParameters cardParameters, Authentication authentication, List<SCP80Keyset> scp80Keysets,
                        SmsUpdate smsUpdate, RfmUsim rfmUsim, RfmGsm rfmGsm, RfmIsim rfmIsim,
                        List<CustomScript> customScriptsSection1, List<CustomScript> customScriptsSection2,
-                       List<CustomScript> customScriptsSection3, RfmCustom rfmCustom) {
+                       List<CustomScript> customScriptsSection3, RfmCustom rfmCustom, FileManagement fileManagement) {
 
         this.projectPath = projectPath;
         this.advSaveVariablesPath = advSaveVariablesPath;
@@ -73,6 +75,9 @@ public class RunSettings {
         this.customScriptsSection3 = customScriptsSection3;
         this.rfmCustom = rfmCustom;
 
+        // -----------------
+        this.fileManagement = fileManagement;
+        // -----------------
     }
 
     public String getProjectPath() {
@@ -211,15 +216,6 @@ public class RunSettings {
         this.authentication = authentication;
     }
 
-    public FileManagement getFileManagement() {
-        return fileManagement;
-    }
-
-    public void setFileManagement(FileManagement fileManagement) {
-        this.fileManagement = fileManagement;
-    }
-
-
     public List<SCP80Keyset> getScp80Keysets() {
         return scp80Keysets;
     }
@@ -291,5 +287,14 @@ public class RunSettings {
 
     public void setRfmCustom(RfmCustom rfmCustom) {
         this.rfmCustom = rfmCustom; }
+
+    // ----------------
+    public FileManagement getFileManagement() {
+        return fileManagement;
+    }
+    public void setFileManagement(FileManagement fileManagement) {
+        this.fileManagement = fileManagement;
+    }
+    // ----------------
 
 }

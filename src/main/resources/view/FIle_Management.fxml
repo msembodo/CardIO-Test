@@ -9,7 +9,7 @@
             <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="630.0" prefWidth="1530.0">
                     <children>
-                        <CheckBox fx:id="chkIncludeLinkFile" layoutX="12.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleIncludeLinkFileCheck" selected="true" text="Include 'Link File'" AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="12.0" />
+                        <CheckBox fx:id="chkIncludeLinkFileTest" layoutX="12.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleIncludeLinkFileCheck" selected="true" text="Include 'Link File'" AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="12.0" />
                         <CheckBox layoutX="1050.0" layoutY="12.0" mnemonicParsing="false" selected="true" text="Include 'SFI Check'" AnchorPane.leftAnchor="1010.0" AnchorPane.topAnchor="12.0" />
                         <CheckBox layoutX="653.0" layoutY="13.0" mnemonicParsing="false" selected="true" text="Include 'Readable &amp; Updateable when Invalidated'" AnchorPane.leftAnchor="660.0" AnchorPane.topAnchor="12.0" />
                         <TitledPane animated="false" collapsible="false" focusTraversable="false" layoutX="530.0" layoutY="300.0" prefHeight="540.0" prefWidth="590.0" text="Linked File Test" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="890.0" AnchorPane.topAnchor="50.0">

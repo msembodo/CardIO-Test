@@ -19,6 +19,10 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
     @Autowired private RfmIsimService rfmIsimService;
     @Autowired private RfmCustomService rfmCustomService;
 
+    //-------------------
+    @Autowired private FileManagementService fileManagementService;
+    //-------------------
+
     @Override public StringBuilder generateAtr() {
         String composeAtrScript = ".CALL Mapping.txt\n"
             + ".CALL Options.txt\n\n"
@@ -150,18 +154,15 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
         return secretCodesService.generateSecretCodes3g(secretCodes);
     }
 
-    @Override
-    public StringBuilder generateRfmCustom(RfmCustom rfmCustom) {
+    @Override public StringBuilder generateRfmCustom(RfmCustom rfmCustom) {
         return rfmCustomService.generateRfmCustom(rfmCustom);
     }
 
-    @Override
-    public StringBuilder generateRfmCustomUpdateRecord(RfmCustom rfmCustom) {
+    @Override public StringBuilder generateRfmCustomUpdateRecord(RfmCustom rfmCustom) {
         return rfmCustomService.generateRfmCustomUpdateRecord(rfmCustom);
     }
 
-    @Override
-    public StringBuilder generateRfmCustomExpandedMode(RfmCustom rfmCustom) {
+    @Override public StringBuilder generateRfmCustomExpandedMode(RfmCustom rfmCustom) {
         StringBuilder rfmCustomExpandedModeBuffer = new StringBuilder();
         rfmCustomExpandedModeBuffer.append(
                 ".CALL Mapping.txt /LIST_OFF\n"
@@ -175,5 +176,11 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
         rfmCustomExpandedModeBuffer.append(".POWER_OFF\n");
         return rfmCustomExpandedModeBuffer;
     }
+
+    //-------------------
+    @Override public StringBuilder generateFilemanagementLinkFile(FileManagement fileManagement) {
+        return fileManagementService.generateFilemanagementLinkFile(fileManagement);
+    }
+    //-------------------
 
 }

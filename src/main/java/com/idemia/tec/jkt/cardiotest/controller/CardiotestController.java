@@ -121,6 +121,10 @@ public class CardiotestController {
     @Autowired private RfmIsimController rfmIsimController;
     @Autowired private RfmCustomController rfmCustomController;
 
+    //----------------------------------
+    @Autowired private FileManagementController fileManagementController;
+    //----------------------------------
+
     public CardiotestController() {}
 
     public void setMainApp(CardiotestApplication application) {
@@ -670,6 +674,12 @@ public class CardiotestController {
 
         //Custom RFM --------------------------------------
         rfmCustomController.saveControlState();
+
+        // ------------------------------
+        // file management settings
+        fileManagementController.saveControlState();
+        // ------------------------------
+
     }
 
 }

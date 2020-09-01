@@ -78,6 +78,12 @@ public class RunServiceImpl implements RunService {
         if (root.getRunSettings().getAuthentication().isIncludeDeltaTest() || root.getRunSettings().getAuthentication().isIncludeSqnMax())
             runAllBuffer.append(addAuthentication(root.getRunSettings().getAuthentication()));
 
+        //-------------------
+        // file management
+        if (root.getRunSettings().getFileManagement().isIncludeLinkFileTest())
+            runAllBuffer.append(addFileManagement(root.getRunSettings().getFileManagement()));
+        //-------------------
+
         // custom scripts section 2
         if (root.getRunSettings().getCustomScriptsSection2().size() > 0) {
             runAllBuffer.append(addCustomScripts(root.getRunSettings().getCustomScriptsSection2()));
@@ -413,6 +419,26 @@ public class RunServiceImpl implements RunService {
         return rfmCustomRunAllString.toString();
     }
 
+    // ----------------------
+    private String addFileManagement(FileManagement fileManagement) {
+
+        StringBuilder flmngmtRunAllString = new StringBuilder();
+        flmngmtRunAllString.append("; File Management\n");
+
+        // add file management script to structure
+        if (fileManagement.isIncludeLinkFileTest()) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "FileManagement_LINK_FILE_TEST.txt"))) {
+                bw.append(scriptGenerator.generateFilemanagementLinkFile(fileManagement));
+            }
+            catch (IOException e) { logger.error("Failed writing FileManagement_LINK_FILE_TEST script"); }
+            flmngmtRunAllString.append(".EXECUTE scripts\\FileManagement_LINK_FILE_TEST.txt /PATH logs\n");
+            flmngmtRunAllString.append(".ALLUNDEFINE\n\n");
+        }
+
+        return flmngmtRunAllString.toString();
+    }
+    // ----------------------
+
     private String addSecretCodes(SecretCodes secretCodes) {
         StringBuilder secretCodesRunAll = new StringBuilder();
         secretCodesRunAll.append("; Secret Codes\n");
@@ -585,6 +611,14 @@ public class RunServiceImpl implements RunService {
         runShellCommand("pcomconsole", scriptsDirectory + "RFM_CUSTOM_3G_ExpandedMode.txt");
         return exitVal == 0;
     }
+
+    // ------------------------------
+    @Override public boolean runLinkFileTest() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "FileManagement_LINK_FILE_TEST.txt");
+        return exitVal == 0;
+    }
+    // ------------------------------
 
     @Override public boolean runSecretCodes3g() {
         composeScripts();

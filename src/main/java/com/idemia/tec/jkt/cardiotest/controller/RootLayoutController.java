@@ -51,6 +51,11 @@ public class RootLayoutController {
     private TestSuiteResponse tsResponse;
     private boolean runAtrOk;
     private boolean runDeltaTestOk;
+
+    // --------------------
+    private boolean runLinkFileTestOk;
+    // --------------------
+
     private boolean runSqnMaxOk;
     private boolean runRfmUsimOk;
     private boolean runRfmUsimUpdateRecordOk;
@@ -78,8 +83,9 @@ public class RootLayoutController {
     @Autowired private RunService runService;
     @Autowired private ReportService reportService;
     @Autowired private ExportImportService eximService;
+    //-------------
     @Autowired private FileManagementController fileManagementController;
-
+    //-------------
     @FXML private BorderPane rootBorderPane;
     @FXML private MenuBar menuBar;
 
@@ -251,7 +257,9 @@ public class RootLayoutController {
         rfmIsimController.initialize();
         secretCodesController.initialize();
         customTabController.initialize();
+        //-------------
         fileManagementController.initialize();
+        //-------------
     }
 
     @FXML private void handleMenuExportSettings() {
@@ -575,9 +583,6 @@ public class RootLayoutController {
             setCustomScriptsTestStatus(module, runSettings.getCustomScriptsSection2());
         if (runSettings.getCustomScriptsSection3().size() > 0)
             setCustomScriptsTestStatus(module, runSettings.getCustomScriptsSection3());
-
-
-        //Custom RFM --------------------------------------
         if (module.getName().equals("RFM_CUSTOM")) {
             runSettings.getRfmCustom().setTestRfmCustomOk(true);
             runSettings.getRfmCustom().setTestRfmCustomMessage("OK");
@@ -624,6 +629,23 @@ public class RootLayoutController {
             }
         }
 
+        //--------------------------------------
+        if (module.getName().equals("FileManagement_LINK_FILE_TEST")) {
+            runSettings.getFileManagement().setTestLinkFileOk(true);
+            runSettings.getFileManagement().setTestLinkFileMessage("OK");
+            String errFailure = "";
+            if (module.getError() != null) {
+                runSettings.getFileManagement().setTestLinkFileOk(false);
+                errFailure += module.getError().replace("\n", ";");
+                runSettings.getFileManagement().setTestLinkFileMessage(errFailure);
+            }
+            if (module.getFailure() != null) {
+                runSettings.getFileManagement().setTestLinkFileOk(false);
+                errFailure += module.getFailure().replace("\n", ";");
+                runSettings.getFileManagement().setTestLinkFileMessage(errFailure);
+            }
+        }
+        //--------------------------------------
         cardioConfigService.saveConfig(runSettings);
     }
 
@@ -787,6 +809,55 @@ public class RootLayoutController {
         Thread runSqnMaxThread = new Thread(task);
         runSqnMaxThread.start();
     }
+
+    //-------------------------
+    @FXML private void handleMenuLinkFileTest() {
+        handleMenuSaveSettings();
+        // make user wait as verification executes
+        cardiotest.getMaskerPane().setText("Executing FILE_MANAGEMENT_LINK_FILE_TEST. Please wait..");
+        cardiotest.getMaskerPane().setVisible(true); // display masker pane
+        menuBar.setDisable(true);
+        appStatusBar.setDisable(true);
+
+        cardiotest.getTxtInterpretedLog().getChildren().clear();
+        appendTextFlow("Executing FILE_MANAGEMENT_LINK_FILE_TEST..\n\n");
+
+        // use threads to avoid application freeze
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                runLinkFileTestOk = runService.runLinkFileTest();
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                // dismiss masker pane
+                cardiotest.getMaskerPane().setVisible(false);
+                menuBar.setDisable(false);
+                appStatusBar.setDisable(false);
+                // update status bar
+                if (runLinkFileTestOk) {
+                    appStatusBar.setText("Executed FileManagement_LINK_FILE_TEST: OK");
+                    Notifications.create().title("CardIO").text("Executed FileManagement_LINK_FILE_TEST: OK").showInformation();
+                    appendTextFlow(">> OK\n\n", 0);
+                }
+                else {
+                    appStatusBar.setText("Executed FileManagement_LINK_FILE_TEST: NOK");
+                    Notifications.create().title("CardIO").text("Executed FileManagement_LINK_FILE_TEST: NOK").showError();
+                    appendTextFlow(">> NOT OK\n", 1);
+                }
+                // display commmand-response
+                cardiotest.getTxtCommandResponse().setDisable(false);
+                String logFileName = runSettings.getProjectPath() + "\\scripts\\FileManagement_LINK_FILE_TEST.L00";
+                showCommandResponseLog(logFileName);
+            }
+        };
+        Thread runDeltaTestThread = new Thread(task);
+        runDeltaTestThread.start();
+    }
+    //-------------------------
 
     @FXML private void handleMenuRfmUsim() {
         handleMenuSaveSettings();

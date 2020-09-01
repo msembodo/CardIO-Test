@@ -10,15 +10,17 @@ public class FileManagementService {
 
     @Autowired private RootLayoutController root;
 
-    public StringBuilder generateLinkFileTest(FileManagement fileManagement) {
-        StringBuilder linkFileBuffer = new StringBuilder();
-        linkFileBuffer.append(
-            ".CALL Mapping.txt /LIST_OFF\n"
-            + ".CALL Options.txt /LIST_OFF\n\n"
-            + ".POWER_ON\n"
+    public StringBuilder generateFilemanagementLinkFile(FileManagement fileManagement) {
+        StringBuilder deltaTestBuffer = new StringBuilder();
+        deltaTestBuffer.append(
+                ".SET_BUFFER L " + "\n\n"
+                        + ".CALL Mapping.txt /LIST_OFF\n"
+                        + ".CALL Options.txt /LIST_OFF\n\n"
+                        + ".DEFINE %RAND "+ "\n\n"
+                        + ".POWER_ON\n"
         );
-        linkFileBuffer.append(".POWER_OFF\n");
-        return linkFileBuffer;
+        deltaTestBuffer.append(".POWER_OFF\n");
+        return deltaTestBuffer;
     }
 
 }

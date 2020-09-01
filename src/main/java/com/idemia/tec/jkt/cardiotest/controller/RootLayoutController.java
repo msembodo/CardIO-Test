@@ -292,7 +292,7 @@ public class RootLayoutController {
                 if (tsResponse.isSuccess()) {
                     appStatusBar.setText(tsResponse.getMessage());
                     // show notification
-                    Notifications.create().title("CardIO").text(tsResponse.getMessage()).showInformation();
+                    Notifications.create().title("CARDIO").text(tsResponse.getMessage()).showInformation();
 
                     // display log
                     int testModules = Integer.parseInt(tsResponse.getTestSuite().getTests());

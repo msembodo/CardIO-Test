@@ -8,6 +8,7 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.tool.xml.XMLWorkerHelper;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -17,10 +18,20 @@ import java.util.List;
 @Service
 public class ReportServiceImpl implements ReportService {
 
+    Logger logger = Logger.getLogger(ReportServiceImpl.class);
+
     private RunSettings runSettings;
+    private int testPass;
+    private int testFail;
+    private boolean testResultOk;
 
     @Override public void createReportFromSettings(RunSettings runSettings) {
         this.runSettings = runSettings;
+        setTestResult(runSettings);
+        logger.info("Test OK: " + testPass);
+        logger.info("Test NOK: " + testFail);
+        if (testResultOk) logger.info("Test result: PASSED");
+        else logger.info("Test result: FAILED");
         try {
             Document document = new Document();
             PdfWriter writer = PdfWriter.getInstance(document,
@@ -56,6 +67,26 @@ public class ReportServiceImpl implements ReportService {
             + "<td>" + runSettings.getDeveloperName() + "</td></tr>"
             + "\n<tr><td class=\"item\">Tester</td>"
             + "<td>" + runSettings.getTesterName() + "</td></tr>"
+            + createTableFooter()
+        );
+
+        // test summary
+        html.append(
+            "\n<div><h2>Test Summary</h2></div>"
+            + createTableHeaderModule()
+            + "\n<tr><td class=\"item\">Test modules</td>"
+            + "<td>" + Integer.toString(testPass + testFail) + "</td></tr>"
+            + "\n<tr><td class=\"item\">OK</td>"
+            + "<td>" + testPass + "</td></tr>"
+            + "\n<tr><td class=\"item\">NOK</td>"
+            + "<td>" + testFail + "</td></tr>"
+            + "\n<tr><td class=\"item\">Test result</td>"
+        );
+        if (testResultOk) html.append("<td class=\"ok\">PASSED</td></tr>");
+        else html.append("<td class=\"error\">FAILED</td></tr>");
+        html.append(
+            "\n<tr><td class=\"item\">Completed on</td>"
+            + "<td>" + new Timestamp(System.currentTimeMillis()) + "</td></tr>"
             + createTableFooter()
         );
 
@@ -329,7 +360,314 @@ public class ReportServiceImpl implements ReportService {
             html.append(createTableFooter());
         }
 
+        // RFM USIM
+        if (runSettings.getRfmUsim().isIncludeRfmUsim() || runSettings.getRfmUsim().isIncludeRfmUsimUpdateRecord() || runSettings.getRfmUsim().isIncludeRfmUsimExpandedMode()) {
+            html.append("\n<div><h2>RFM USIM</h2></div>");
+            html.append("\n<div><h3>Test modules</h3></div>");
+            html.append(createTableHeaderModule());
+            if (runSettings.getRfmUsim().isIncludeRfmUsim()) {
+                html.append("\n<tr><td class=\"item\">RFM USIM</td>");
+                if (runSettings.getRfmUsim().isTestRfmUsimOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
+                else {
+                    String[] messages = runSettings.getRfmUsim().getTestRfmUsimMessage().split(";");
+                    html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
+                }
+            }
+            else html.append("\n<tr><td class=\"item\">RFM USIM</td><td>(not included)</td></tr>");
+            if (runSettings.getRfmUsim().isIncludeRfmUsimUpdateRecord()) {
+                html.append("\n<tr><td class=\"item\">RFM USIM update record</td>");
+                if (runSettings.getRfmUsim().isTestRfmUsimUpdateRecordOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
+                else {
+                    String[] messages = runSettings.getRfmUsim().getTestRfmUsimUpdateRecordMessage().split(";");
+                    html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
+                }
+            }
+            else html.append("\n<tr><td class=\"item\">RFM USIM update record</td><td>(not included)</td></tr>");
+            if (runSettings.getRfmUsim().isIncludeRfmUsimExpandedMode()) {
+                html.append("\n<tr><td class=\"item\">RFM USIM expanded mode</td>");
+                if (runSettings.getRfmUsim().isTestRfmUsimExpandedModeOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
+                else {
+                    String[] messages = runSettings.getRfmUsim().getTestRfmUsimExpandedModeMessage().split(";");
+                    html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
+                }
+            }
+            else html.append("\n<tr><td class=\"item\">RFM USIM expanded mode</td><td>(not included)</td></tr>");
+            html.append(createTableFooter());
 
+            html.append("\n<div><h3>Test parameters</h3></div>");
+            html.append(createTableHeaderModule());
+            html.append(
+                "\n<tr><td class=\"item\">TAR</td>"
+                + "<td>" + runSettings.getRfmUsim().getTar() + "</td></tr>"
+            );
+            if (runSettings.getRfmUsim().isFullAccess()) {
+                html.append(
+                    "\n<tr><td class=\"item\">Target EF</td>"
+                    + "<td>" + runSettings.getRfmUsim().getTargetEf() + "</td></tr>"
+                );
+            }
+            else {
+                html.append(
+                    "\n<tr><td class=\"item\">Target EF</td>"
+                    + "<td>" + runSettings.getRfmUsim().getCustomTargetEf() + "&nbsp;(" + runSettings.getRfmUsim().getCustomTargetAcc() + ")</td></tr>"
+                    + "\n<tr><td class=\"item\">Target EF (negative case)</td>"
+                    + "<td>" + runSettings.getRfmUsim().getCustomTargetEfBadCase() + "&nbsp;(" + runSettings.getRfmUsim().getCustomTargetAccBadCase() + ")</td></tr>"
+                );
+            }
+            if (runSettings.getRfmUsim().isUseSpecificKeyset()) {
+                html.append(
+                    "\n<tr><td class=\"item\">Specific cipher keyset</td>"
+                    + "<td>" + runSettings.getRfmUsim().getCipheringKeyset().getKeysetName() + "</td></tr>"
+                    + "\n<tr><td class=\"item\">Specific auth keyset</td>"
+                    + "<td>" + runSettings.getRfmUsim().getAuthKeyset().getKeysetName() + "</td></tr>"
+                );
+            }
+            html.append(createTableFooter());
+
+            html.append("\n<div><h3>Minimum Security Level</h3></div>");
+            html.append(createTableHeaderModule());
+            html.append(
+                "\n<tr><td class=\"item\">Computed MSL</td>"
+                + "<td>" + runSettings.getRfmUsim().getMinimumSecurityLevel().getComputedMsl() + "</td></tr>"
+            );
+            html.append("\n<tr><td class=\"item\">Use cipher</td>");
+            if (runSettings.getRfmUsim().getMinimumSecurityLevel().isUseCipher()) html.append("<td>YES</td></tr>");
+            else html.append("<td>NO</td></tr>");
+            html.append(
+                "\n<tr><td class=\"item\">Cipher algo</td>"
+                + "<td>" + runSettings.getRfmUsim().getMinimumSecurityLevel().getCipherAlgo() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td class=\"item\">Auth verification</td>"
+                + "<td>" + runSettings.getRfmUsim().getMinimumSecurityLevel().getAuthVerification() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td class=\"item\">Signing algo</td>"
+                + "<td>" + runSettings.getRfmUsim().getMinimumSecurityLevel().getSigningAlgo() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td class=\"item\">Counter checking</td>"
+                + "<td>" + runSettings.getRfmUsim().getMinimumSecurityLevel().getCounterChecking() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td class=\"item\">PoR requirement</td>"
+                + "<td>" + runSettings.getRfmUsim().getMinimumSecurityLevel().getPorRequirement() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td class=\"item\">PoR security</td>"
+                + "<td>" + runSettings.getRfmUsim().getMinimumSecurityLevel().getPorSecurity() + "</td></tr>"
+            );
+            html.append("\n<tr><td class=\"item\">Cipher PoR</td>");
+            if (runSettings.getRfmUsim().getMinimumSecurityLevel().isCipherPor()) html.append("<td>YES</td></tr>");
+            else html.append("<td>NO</td></tr>");
+            html.append(createTableFooter());
+        }
+
+        // RFM GSM
+        if (runSettings.getRfmGsm().isIncludeRfmGsm() || runSettings.getRfmGsm().isIncludeRfmGsmUpdateRecord() || runSettings.getRfmGsm().isIncludeRfmGsmExpandedMode()) {
+            html.append("\n<div><h2>RFM GSM</h2></div>");
+            html.append("\n<div><h3>Test modules</h3></div>");
+            html.append(createTableHeaderModule());
+            if (runSettings.getRfmGsm().isIncludeRfmGsm()) {
+                html.append("\n<tr><td class=\"item\">RFM GSM</td>");
+                if (runSettings.getRfmGsm().isTestRfmGsmOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
+                else {
+                    String[] messages = runSettings.getRfmGsm().getTestRfmGsmMessage().split(";");
+                    html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
+                }
+            }
+            else html.append("\n<tr><td class=\"item\">RFM GSM</td><td>(not included)</td></tr>");
+            if (runSettings.getRfmGsm().isIncludeRfmGsmUpdateRecord()) {
+                html.append("\n<tr><td class=\"item\">RFM GSM update record</td>");
+                if (runSettings.getRfmGsm().isTestRfmGsmUpdateRecordOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
+                else {
+                    String[] messages = runSettings.getRfmGsm().getTestRfmGsmUpdateRecordMessage().split(";");
+                    html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
+                }
+            }
+            else html.append("\n<tr><td class=\"item\">RFM GSM update record</td><td>(not included)</td></tr>");
+            if (runSettings.getRfmGsm().isIncludeRfmGsmExpandedMode()) {
+                html.append("\n<tr><td class=\"item\">RFM GSM expanded mode</td>");
+                if (runSettings.getRfmGsm().isTestRfmGsmExpandedModeOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
+                else {
+                    String[] messages = runSettings.getRfmGsm().getTestRfmGsmExpandedModeMessage().split(";");
+                    html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
+                }
+            }
+            else html.append("\n<tr><td class=\"item\">RFM GSM expanded mode</td><td>(not included)</td></tr>");
+            html.append(createTableFooter());
+
+            html.append("\n<div><h3>Test parameters</h3></div>");
+            html.append(createTableHeaderModule());
+            html.append(
+                "\n<tr><td class=\"item\">TAR</td>"
+                + "<td>" + runSettings.getRfmGsm().getTar() + "</td></tr>"
+            );
+            if (runSettings.getRfmGsm().isFullAccess()) {
+                html.append(
+                    "\n<tr><td class=\"item\">Target EF</td>"
+                    + "<td>" + runSettings.getRfmGsm().getTargetEf() + "</td></tr>"
+                );
+            }
+            else {
+                html.append(
+                    "\n<tr><td class=\"item\">Target EF</td>"
+                    + "<td>" + runSettings.getRfmGsm().getCustomTargetEf() + "&nbsp;(" + runSettings.getRfmGsm().getCustomTargetAcc() + ")</td></tr>"
+                    + "\n<tr><td class=\"item\">Target EF (negative case)</td>"
+                    + "<td>" + runSettings.getRfmGsm().getCustomTargetEfBadCase() + "&nbsp;(" + runSettings.getRfmGsm().getCustomTargetAccBadCase() + ")</td></tr>"
+                );
+            }
+            if (runSettings.getRfmGsm().isUseSpecificKeyset()) {
+                html.append(
+                    "\n<tr><td class=\"item\">Specific cipher keyset</td>"
+                    + "<td>" + runSettings.getRfmGsm().getCipheringKeyset().getKeysetName() + "</td></tr>"
+                    + "\n<tr><td class=\"item\">Specific auth keyset</td>"
+                    + "<td>" + runSettings.getRfmGsm().getAuthKeyset().getKeysetName() + "</td></tr>"
+                );
+            }
+            html.append(createTableFooter());
+
+            html.append("\n<div><h3>Minimum Security Level</h3></div>");
+            html.append(createTableHeaderModule());
+            html.append(
+                "\n<tr><td class=\"item\">Computed MSL</td>"
+                + "<td>" + runSettings.getRfmGsm().getMinimumSecurityLevel().getComputedMsl() + "</td></tr>"
+            );
+            html.append("\n<tr><td class=\"item\">Use cipher</td>");
+            if (runSettings.getRfmGsm().getMinimumSecurityLevel().isUseCipher()) html.append("<td>YES</td></tr>");
+            else html.append("<td>NO</td></tr>");
+            html.append(
+                "\n<tr><td class=\"item\">Cipher algo</td>"
+                + "<td>" + runSettings.getRfmGsm().getMinimumSecurityLevel().getCipherAlgo() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td class=\"item\">Auth verification</td>"
+                + "<td>" + runSettings.getRfmGsm().getMinimumSecurityLevel().getAuthVerification() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td class=\"item\">Signing algo</td>"
+                + "<td>" + runSettings.getRfmGsm().getMinimumSecurityLevel().getSigningAlgo() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td class=\"item\">Counter checking</td>"
+                + "<td>" + runSettings.getRfmGsm().getMinimumSecurityLevel().getCounterChecking() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td class=\"item\">PoR requirement</td>"
+                + "<td>" + runSettings.getRfmGsm().getMinimumSecurityLevel().getPorRequirement() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td class=\"item\">PoR security</td>"
+                + "<td>" + runSettings.getRfmGsm().getMinimumSecurityLevel().getPorSecurity() + "</td></tr>"
+            );
+            html.append("\n<tr><td class=\"item\">Cipher PoR</td>");
+            if (runSettings.getRfmGsm().getMinimumSecurityLevel().isCipherPor()) html.append("<td>YES</td></tr>");
+            else html.append("<td>NO</td></tr>");
+            html.append(createTableFooter());
+        }
+
+        // RFM ISIM
+        if (runSettings.getRfmIsim().isIncludeRfmIsim() || runSettings.getRfmIsim().isIncludeRfmIsimUpdateRecord() || runSettings.getRfmIsim().isIncludeRfmIsimExpandedMode()) {
+            html.append("\n<div><h2>RFM ISIM</h2></div>");
+            html.append("\n<div><h3>Test modules</h3></div>");
+            html.append(createTableHeaderModule());
+            if (runSettings.getRfmIsim().isIncludeRfmIsim()) {
+                html.append("\n<tr><td class=\"item\">RFM ISIM</td>");
+                if (runSettings.getRfmIsim().isTestRfmIsimOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
+                else {
+                    String[] messages = runSettings.getRfmIsim().getTestRfmIsimMessage().split(";");
+                    html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
+                }
+            }
+            else html.append("\n<tr><td class=\"item\">RFM ISIM</td><td>(not included)</td></tr>");
+            if (runSettings.getRfmIsim().isIncludeRfmIsimUpdateRecord()) {
+                html.append("\n<tr><td class=\"item\">RFM ISIM update record</td>");
+                if (runSettings.getRfmIsim().isTestRfmIsimUpdateRecordOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
+                else {
+                    String[] messages = runSettings.getRfmIsim().getTestRfmIsimUpdateRecordMessage().split(";");
+                    html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
+                }
+            }
+            else html.append("\n<tr><td class=\"item\">RFM ISIM update record</td><td>(not included)</td></tr>");
+            if (runSettings.getRfmIsim().isIncludeRfmIsimExpandedMode()) {
+                html.append("\n<tr><td class=\"item\">RFM ISIM expanded mode</td>");
+                if (runSettings.getRfmIsim().isTestRfmIsimExpandedModeOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
+                else {
+                    String[] messages = runSettings.getRfmIsim().getTestRfmIsimExpandedModeMessage().split(";");
+                    html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
+                }
+            }
+            else html.append("\n<tr><td class=\"item\">RFM ISIM expanded mode</td><td>(not included)</td></tr>");
+            html.append(createTableFooter());
+
+            html.append("\n<div><h3>Test parameters</h3></div>");
+            html.append(createTableHeaderModule());
+            html.append(
+                "\n<tr><td class=\"item\">TAR</td>"
+                + "<td>" + runSettings.getRfmIsim().getTar() + "</td></tr>"
+            );
+            if (runSettings.getRfmIsim().isFullAccess()) {
+                html.append(
+                    "\n<tr><td class=\"item\">Target EF</td>"
+                    + "<td>" + runSettings.getRfmIsim().getTargetEf() + "</td></tr>"
+                );
+            }
+            else {
+                html.append(
+                    "\n<tr><td class=\"item\">Target EF</td>"
+                    + "<td>" + runSettings.getRfmIsim().getCustomTargetEf() + "&nbsp;(" + runSettings.getRfmIsim().getCustomTargetAcc() + ")</td></tr>"
+                    + "\n<tr><td class=\"item\">Target EF (negative case)</td>"
+                    + "<td>" + runSettings.getRfmIsim().getCustomTargetEfBadCase() + "&nbsp;(" + runSettings.getRfmIsim().getCustomTargetAccBadCase() + ")</td></tr>"
+                );
+            }
+            if (runSettings.getRfmIsim().isUseSpecificKeyset()) {
+                html.append(
+                    "\n<tr><td class=\"item\">Specific cipher keyset</td>"
+                    + "<td>" + runSettings.getRfmIsim().getCipheringKeyset().getKeysetName() + "</td></tr>"
+                    + "\n<tr><td class=\"item\">Specific auth keyset</td>"
+                    + "<td>" + runSettings.getRfmIsim().getAuthKeyset().getKeysetName() + "</td></tr>"
+                );
+            }
+            html.append(createTableFooter());
+
+            html.append("\n<div><h3>Minimum Security Level</h3></div>");
+            html.append(createTableHeaderModule());
+            html.append(
+                "\n<tr><td class=\"item\">Computed MSL</td>"
+                + "<td>" + runSettings.getRfmIsim().getMinimumSecurityLevel().getComputedMsl() + "</td></tr>"
+            );
+            html.append("\n<tr><td class=\"item\">Use cipher</td>");
+            if (runSettings.getRfmIsim().getMinimumSecurityLevel().isUseCipher()) html.append("<td>YES</td></tr>");
+            else html.append("<td>NO</td></tr>");
+            html.append(
+                "\n<tr><td class=\"item\">Cipher algo</td>"
+                + "<td>" + runSettings.getRfmIsim().getMinimumSecurityLevel().getCipherAlgo() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td class=\"item\">Auth verification</td>"
+                + "<td>" + runSettings.getRfmIsim().getMinimumSecurityLevel().getAuthVerification() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td class=\"item\">Signing algo</td>"
+                + "<td>" + runSettings.getRfmIsim().getMinimumSecurityLevel().getSigningAlgo() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td class=\"item\">Counter checking</td>"
+                + "<td>" + runSettings.getRfmIsim().getMinimumSecurityLevel().getCounterChecking() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td class=\"item\">PoR requirement</td>"
+                + "<td>" + runSettings.getRfmIsim().getMinimumSecurityLevel().getPorRequirement() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td class=\"item\">PoR security</td>"
+                + "<td>" + runSettings.getRfmIsim().getMinimumSecurityLevel().getPorSecurity() + "</td></tr>"
+            );
+            html.append("\n<tr><td class=\"item\">Cipher PoR</td>");
+            if (runSettings.getRfmIsim().getMinimumSecurityLevel().isCipherPor()) html.append("<td>YES</td></tr>");
+            else html.append("<td>NO</td></tr>");
+            html.append(createTableFooter());
+        }
 
         // secret codes
         if (runSettings.getSecretCodes().isInclude3gScript() || runSettings.getSecretCodes().isInclude2gScript()) {
@@ -638,7 +976,7 @@ public class ReportServiceImpl implements ReportService {
         return header.toString();
     }
 
-    private String createDocumentFooter() { return "\n<div><i>Created by CARDIO on " + new Timestamp(System.currentTimeMillis()) + "</i></div>\n</body>\n</html>"; }
+    private String createDocumentFooter() { return "\n<div><i>Created by CARDIO</i></div>\n</body>\n</html>"; }
 
     private String createTableHeader() { return "\n<div>\n" + "<table>\n" + "<tbody>"; }
 
@@ -656,6 +994,100 @@ public class ReportServiceImpl implements ReportService {
             }
         }
         return value;
+    }
+
+    private void setTestResult(RunSettings runSettings) {
+        testPass = 0;
+        testFail = 0;
+        testResultOk = true;
+
+        if (runSettings.getAtr().isIncludeAtr()) {
+            if (runSettings.getAtr().isTestAtrOk()) testPass++;
+            else testFail++;
+        }
+        if (runSettings.getAuthentication().isIncludeDeltaTest()) {
+            if (runSettings.getAuthentication().isTestDeltaOk()) testPass++;
+            else testFail++;
+        }
+        if (runSettings.getAuthentication().isIncludeSqnMax()) {
+            if (runSettings.getAuthentication().isTestSqnMaxOk()) testPass++;
+            else testFail++;
+        }
+        if (runSettings.getRfmUsim().isIncludeRfmUsim()) {
+            if (runSettings.getRfmUsim().isTestRfmUsimOk()) testPass++;
+            else testFail++;
+        }
+        if (runSettings.getRfmUsim().isIncludeRfmUsimUpdateRecord()) {
+            if (runSettings.getRfmUsim().isTestRfmUsimUpdateRecordOk()) testPass++;
+            else testFail++;
+        }
+        if (runSettings.getRfmUsim().isIncludeRfmUsimExpandedMode()) {
+            if (runSettings.getRfmUsim().isTestRfmUsimExpandedModeOk()) testPass++;
+            else testFail++;
+        }
+        if (runSettings.getRfmGsm().isIncludeRfmGsm()) {
+            if (runSettings.getRfmGsm().isTestRfmGsmOk()) testPass++;
+            else testFail++;
+        }
+        if (runSettings.getRfmGsm().isIncludeRfmGsmUpdateRecord()) {
+            if (runSettings.getRfmGsm().isTestRfmGsmUpdateRecordOk()) testPass++;
+            else testFail++;
+        }
+        if (runSettings.getRfmGsm().isIncludeRfmGsmExpandedMode()) {
+            if (runSettings.getRfmGsm().isTestRfmGsmExpandedModeOk()) testPass++;
+            else testFail++;
+        }
+        if (runSettings.getRfmIsim().isIncludeRfmIsim()) {
+            if (runSettings.getRfmIsim().isTestRfmIsimOk()) testPass++;
+            else testFail++;
+        }
+        if (runSettings.getRfmIsim().isIncludeRfmIsimUpdateRecord()) {
+            if (runSettings.getRfmIsim().isTestRfmIsimUpdateRecordOk()) testPass++;
+            else testFail++;
+        }
+        if (runSettings.getRfmIsim().isIncludeRfmIsimExpandedMode()) {
+            if (runSettings.getRfmIsim().isTestRfmIsimExpandedModeOk()) testPass++;
+            else testFail++;
+        }
+        if (runSettings.getRfmCustom().isIncludeRfmCustom()) {
+            if (runSettings.getRfmCustom().isTestRfmCustomOk()) testPass++;
+            else testFail++;
+        }
+        if (runSettings.getRfmCustom().isIncludeRfmCustomUpdateRecord()) {
+            if (runSettings.getRfmCustom().isTestRfmCustomUpdateRecordOk()) testPass++;
+            else testFail++;
+        }
+        if (runSettings.getRfmCustom().isIncludeRfmCustomExpandedMode()) {
+            if (runSettings.getRfmCustom().isTestRfmCustomExpandedModeOk()) testPass++;
+            else testFail++;
+        }
+        if (runSettings.getSecretCodes().isInclude3gScript()) {
+            if (runSettings.getSecretCodes().isTestCodes3gOk()) testPass++;
+            else testFail++;
+        }
+        if (runSettings.getSecretCodes().isInclude2gScript()) {
+            if (runSettings.getSecretCodes().isTestCodes2gOk()) testPass++;
+            else testFail++;
+        }
+        if (runSettings.getCustomScriptsSection1().size() > 0) {
+            for (CustomScript customScript : runSettings.getCustomScriptsSection1()) {
+                if (customScript.isRunCustomScriptOk()) testPass++;
+                else testFail++;
+            }
+        }
+        if (runSettings.getCustomScriptsSection2().size() > 0) {
+            for (CustomScript customScript : runSettings.getCustomScriptsSection2()) {
+                if (customScript.isRunCustomScriptOk()) testPass++;
+                else testFail++;
+            }
+        }
+        if (runSettings.getCustomScriptsSection3().size() > 0) {
+            for (CustomScript customScript : runSettings.getCustomScriptsSection3()) {
+                if (customScript.isRunCustomScriptOk()) testPass++;
+                else testFail++;
+            }
+        }
+        if (testFail > 0) testResultOk = false;
     }
 
 }

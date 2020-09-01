@@ -12,20 +12,20 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.idemia.tec.jkt.cardiotest.controller.RfmCustomController">
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.idemia.tec.jkt.cardiotest.controller.RfmCustomController">
   <children>
     <ScrollPane prefHeight="630.0" prefWidth="1530.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <content>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="630.0" prefWidth="1530.0">
           <children>
-            <CheckBox fx:id="chkIncludeRfmCustom" layoutX="12.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleIncludeRfmCustomCheck" text="Include 'CUSTOM RFM'" AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="12.0" />
-            <CheckBox fx:id="chkIncludeRfmCustomUpdateRecord" layoutX="201.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleIncludeRfmCustomUpdateRecordCheck" text="Include 'CUSTOM RFM - update record'" AnchorPane.topAnchor="12.0" />
-            <CheckBox fx:id="chkIncludeRfmCustomExpandedMode" layoutX="495.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleIncludeRfmCustomExpandedModeCheck" text="Include 'CUSTOM RFM - expanded mode'" AnchorPane.topAnchor="12.0" />
-            <TitledPane animated="false" collapsible="false" focusTraversable="false" layoutX="530.0" layoutY="300.0" prefHeight="320.0" prefWidth="670.0" text="RFM Options &amp; Parameters" AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="50.0">
+            <CheckBox fx:id="chkIncludeRfmCustom" layoutX="12.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleIncludeRfmCustomCheck" text="Include 'Custom RFM'" AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="12.0" />
+            <CheckBox fx:id="chkIncludeRfmCustomUpdateRecord" layoutX="201.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleIncludeRfmCustomUpdateRecordCheck" text="Include 'Custom RFM - update record'" AnchorPane.topAnchor="12.0" />
+            <CheckBox fx:id="chkIncludeRfmCustomExpandedMode" layoutX="495.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleIncludeRfmCustomExpandedModeCheck" text="Include 'Custom RFM - expanded mode'" AnchorPane.topAnchor="12.0" />
+            <TitledPane animated="false" collapsible="false" focusTraversable="false" layoutX="530.0" layoutY="300.0" prefHeight="310.0" prefWidth="670.0" text="RFM Options &amp; Parameters" AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="50.0">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                   <children>
-                    <GridPane layoutX="32.0" layoutY="32.0" prefHeight="132.0" prefWidth="240.0" AnchorPane.bottomAnchor="145.0" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="8.0">
+                    <GridPane hgap="4.0" layoutX="32.0" layoutY="32.0" prefHeight="132.0" prefWidth="240.0" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="8.0">
                       <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="151.0" minWidth="10.0" prefWidth="111.0" />
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="152.0" minWidth="10.0" prefWidth="130.0" />
@@ -47,9 +47,22 @@
                         <TextField fx:id="txtRfmCustomTargetEfBadCase" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                       </children>
                     </GridPane>
-                    <GridPane hgap="4.0" layoutX="289.6" layoutY="27.6" AnchorPane.bottomAnchor="145.0" AnchorPane.leftAnchor="290.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="40.0">
+                    <GridPane hgap="8.0" AnchorPane.leftAnchor="270.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="8.0">
                       <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="213.0" minWidth="10.0" prefWidth="109.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="162.0" minWidth="10.0" prefWidth="140.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="240.0" minWidth="10.0" prefWidth="240.0" />
+                      </columnConstraints>
+                      <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      </rowConstraints>
+                      <children>
+                        <Label text="Description" />
+                        <TextField fx:id="txtCustomRfmDesc" GridPane.columnIndex="1" />
+                      </children>
+                    </GridPane>
+                    <GridPane hgap="4.0" layoutX="289.6" layoutY="64.0" prefHeight="100.0" prefWidth="353.0" AnchorPane.leftAnchor="270.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="40.0">
+                      <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="213.0" minWidth="10.0" prefWidth="140.0" />
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="213.0" minWidth="10.0" prefWidth="105.0" />
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="213.0" minWidth="10.0" prefWidth="131.0" />
                       </columnConstraints>
@@ -94,24 +107,11 @@
                         <TextField fx:id="txtRfmCustomCustomKid" disable="true" GridPane.columnIndex="4" GridPane.rowIndex="1" />
                       </children>
                     </GridPane>
-                              <GridPane AnchorPane.bottomAnchor="240.0" AnchorPane.leftAnchor="290.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="8.0">
-                                <columnConstraints>
-                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="162.0" minWidth="10.0" prefWidth="111.0" />
-                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="240.0" minWidth="10.0" prefWidth="240.0" />
-                                </columnConstraints>
-                                <rowConstraints>
-                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                </rowConstraints>
-                                 <children>
-                                   <Label text="Description" />
-                                   <TextField fx:id="txtCustomRfmDesc" GridPane.columnIndex="1" />
-                                 </children>
-                              </GridPane>
                   </children>
                 </AnchorPane>
               </content>
             </TitledPane>
-            <TitledPane animated="false" collapsible="false" focusTraversable="false" layoutX="705.0" layoutY="50.0" prefHeight="320.0" prefWidth="640.0" text="Minimum Security Level" AnchorPane.leftAnchor="710.0" AnchorPane.topAnchor="50.0">
+            <TitledPane animated="false" collapsible="false" focusTraversable="false" layoutX="705.0" layoutY="50.0" prefHeight="310.0" prefWidth="640.0" text="Minimum Security Level" AnchorPane.leftAnchor="710.0" AnchorPane.topAnchor="50.0">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                   <children>

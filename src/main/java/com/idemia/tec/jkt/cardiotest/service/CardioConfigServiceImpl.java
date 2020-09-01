@@ -169,7 +169,7 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             rfmCustom.setFullAccess(true);
             rfmCustom.setMinimumSecurityLevel(rfmCustomMsl);
             defaultSettings.setRfmCustom(rfmCustom);
-            rfmCustom.setCustomRfmDesc("RFM - X");
+            rfmCustom.setCustomRfmDesc("RFM ...");
 
             // --------------------------------
             FileManagement fileManagement = new FileManagement(true, false, null);

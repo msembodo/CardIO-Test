@@ -26,27 +26,24 @@ public class RunSettings {
     private RfmUsim rfmUsim;
     private RfmGsm rfmGsm;
     private RfmIsim rfmIsim;
+    private RfmCustom rfmCustom;
     private List<CustomScript> customScriptsSection1;
     private List<CustomScript> customScriptsSection2;
     private List<CustomScript> customScriptsSection3;
-    private RfmCustom rfmCustom;
-
-    // -----------------
     private FileManagement fileManagement;
-    // -----------------
 
 
-    public RunSettings() {
-    }
+    public RunSettings() { }
 
     public RunSettings(String projectPath, String advSaveVariablesPath, int readerNumber, boolean stopOnError,
                        String requestId, String requestName, String profileName, int profileVersion,
                        String cardImageItemId, String customer, String developerName, String testerName,
                        List<VariableMapping> variableMappings, ATR atr, SecretCodes secretCodes,
                        CardParameters cardParameters, Authentication authentication, List<SCP80Keyset> scp80Keysets,
-                       SmsUpdate smsUpdate, RfmUsim rfmUsim, RfmGsm rfmGsm, RfmIsim rfmIsim,
+                       SmsUpdate smsUpdate, RfmUsim rfmUsim, RfmGsm rfmGsm, RfmIsim rfmIsim, RfmCustom rfmCustom,
                        List<CustomScript> customScriptsSection1, List<CustomScript> customScriptsSection2,
-                       List<CustomScript> customScriptsSection3, RfmCustom rfmCustom, FileManagement fileManagement) {
+                       List<CustomScript> customScriptsSection3, FileManagement fileManagement) {
+
 
         this.projectPath = projectPath;
         this.advSaveVariablesPath = advSaveVariablesPath;
@@ -70,14 +67,12 @@ public class RunSettings {
         this.rfmUsim = rfmUsim;
         this.rfmGsm = rfmGsm;
         this.rfmIsim = rfmIsim;
+        this.rfmCustom = rfmCustom;
         this.customScriptsSection1 = customScriptsSection1;
         this.customScriptsSection2 = customScriptsSection2;
         this.customScriptsSection3 = customScriptsSection3;
-        this.rfmCustom = rfmCustom;
-
-        // -----------------
         this.fileManagement = fileManagement;
-        // -----------------
+
     }
 
     public String getProjectPath() {
@@ -256,6 +251,13 @@ public class RunSettings {
         this.rfmIsim = rfmIsim;
     }
 
+    public RfmCustom getRfmCustom() {
+        return rfmCustom;
+    }
+
+    public void setRfmCustom(RfmCustom rfmCustom) {
+        this.rfmCustom = rfmCustom; }
+
     public List<CustomScript> getCustomScriptsSection1() {
         return customScriptsSection1;
     }
@@ -281,20 +283,12 @@ public class RunSettings {
 
     }
 
-    public RfmCustom getRfmCustom() {
-        return rfmCustom;
-    }
 
-    public void setRfmCustom(RfmCustom rfmCustom) {
-        this.rfmCustom = rfmCustom; }
-
-    // ----------------
     public FileManagement getFileManagement() {
         return fileManagement;
     }
     public void setFileManagement(FileManagement fileManagement) {
         this.fileManagement = fileManagement;
     }
-    // ----------------
 
 }

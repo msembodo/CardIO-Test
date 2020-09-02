@@ -1179,7 +1179,7 @@ public class RootLayoutController {
     private void handleMenuRam() {
         handleMenuSaveSettings();
         // make user wait as verification executes
-        cardiotest.getMaskerPane().setText("Executing RFM_ISIM. Please wait..");
+        cardiotest.getMaskerPane().setText("Executing RAM. Please wait..");
         // display masker pane
         cardiotest.getMaskerPane().setVisible(true);
         menuBar.setDisable(true);
@@ -1187,7 +1187,7 @@ public class RootLayoutController {
 
         cardiotest.getTxtInterpretedLog().getChildren().clear();
 
-        appendTextFlow("Executing RFM_ISIM..\n\n");
+        appendTextFlow("Executing RAM..\n\n");
 
         // use threads to avoid application freeze
         Task<Void> task = new Task<Void>() {
@@ -1205,18 +1205,18 @@ public class RootLayoutController {
                 appStatusBar.setDisable(false);
                 // update status bar=
                 if (runRamOk) {
-                    appStatusBar.setText("Executed RFM_ISIM: OK");
-                    Notifications.create().title("CardIO").text("Executed RFM_ISIM: OK").showInformation();
+                    appStatusBar.setText("Executed RAM: OK");
+                    Notifications.create().title("CardIO").text("Executed RAM: OK").showInformation();
                     appendTextFlow(">> OK\n\n", 0);
                 }
                 else {
-                    appStatusBar.setText("Executed RFM_ISIM: NOK");
-                    Notifications.create().title("CardIO").text("Executed RFM_ISIM: NOK").showError();
+                    appStatusBar.setText("Executed RAM: NOK");
+                    Notifications.create().title("CardIO").text("Executed RAM: NOK").showError();
                     appendTextFlow(">> NOT OK\n", 1);
                 }
                 // display commmand-response
                 cardiotest.getTxtCommandResponse().setDisable(false);
-                String logFileName = runSettings.getProjectPath() + "\\scripts\\RFM_ISIM.L00";
+                String logFileName = runSettings.getProjectPath() + "\\scripts\\RAM.L00";
                 showCommandResponseLog(logFileName);
             }
         };
@@ -1228,14 +1228,14 @@ public class RootLayoutController {
     private void handleMenuRamUpdateRecord() {
         handleMenuSaveSettings();
         // make user wait as verification executes
-        cardiotest.getMaskerPane().setText("Executing RFM_ISIM_UpdateRecord. Please wait..");
+        cardiotest.getMaskerPane().setText("Executing RAM_UpdateRecord. Please wait..");
         // display masker pane
         cardiotest.getMaskerPane().setVisible(true);
         menuBar.setDisable(true);
         appStatusBar.setDisable(true);
 
         cardiotest.getTxtInterpretedLog().getChildren().clear();
-        appendTextFlow("Executing RFM_ISIM_UpdateRecord..\n\n");
+        appendTextFlow("Executing RAM_UpdateRecord..\n\n");
 
         // use threads to avoid application freeze
         Task<Void> task = new Task<Void>() {
@@ -1253,18 +1253,18 @@ public class RootLayoutController {
                 appStatusBar.setDisable(false);
                 // update status bar
                 if (runRamUpdateRecordOk) {
-                    appStatusBar.setText("Executed RFM_ISIM_UpdateRecord: OK");
-                    Notifications.create().title("CardIO").text("Executed RFM_ISIM_UpdateRecord: OK").showInformation();
+                    appStatusBar.setText("Executed RAM_UpdateRecord: OK");
+                    Notifications.create().title("CardIO").text("Executed RAM_UpdateRecord: OK").showInformation();
                     appendTextFlow(">> OK\n\n", 0);
                 }
                 else {
-                    appStatusBar.setText("Executed RFM_ISIM_UpdateRecord: NOK");
-                    Notifications.create().title("CardIO").text("Executed RFM_ISIM_UpdateRecord: NOK").showError();
+                    appStatusBar.setText("Executed RAM_UpdateRecord: NOK");
+                    Notifications.create().title("CardIO").text("Executed RAM_UpdateRecord: NOK").showError();
                     appendTextFlow(">> NOT OK\n", 1);
                 }
                 // display commmand-response
                 cardiotest.getTxtCommandResponse().setDisable(false);
-                String logFileName = runSettings.getProjectPath() + "\\scripts\\RFM_ISIM_UpdateRecord.L00";
+                String logFileName = runSettings.getProjectPath() + "\\scripts\\RAM_UpdateRecord.L00";
                 showCommandResponseLog(logFileName);
             }
         };
@@ -1276,7 +1276,7 @@ public class RootLayoutController {
     private void handleMenuRamExpandedMode() {
         handleMenuSaveSettings();
         // make user wait as verification executes
-        cardiotest.getMaskerPane().setText("Executing RFM_ISIM_3G_ExpandedMode. Please wait..");
+        cardiotest.getMaskerPane().setText("Executing RAM_3G_ExpandedMode. Please wait..");
         // display masker pane
         cardiotest.getMaskerPane().setVisible(true);
         menuBar.setDisable(true);
@@ -1284,7 +1284,7 @@ public class RootLayoutController {
 
         cardiotest.getTxtInterpretedLog().getChildren().clear();
 
-        appendTextFlow("Executing RFM_ISIM_3G_ExpandedMode..\n\n");
+        appendTextFlow("Executing RAM_3G_ExpandedMode..\n\n");
 
         // use threads to avoid application freeze
         Task<Void> task = new Task<Void>() {
@@ -1302,18 +1302,18 @@ public class RootLayoutController {
                 appStatusBar.setDisable(false);
                 // update status bar
                 if (runRamExpandedModeOk) {
-                    appStatusBar.setText("Executed RFM_ISIM_3G_ExpandedMode: OK");
-                    Notifications.create().title("CardIO").text("Executed RFM_ISIM_3G_ExpandedMode: OK").showInformation();
+                    appStatusBar.setText("Executed RAM_3G_ExpandedMode: OK");
+                    Notifications.create().title("CardIO").text("Executed RAM_3G_ExpandedMode: OK").showInformation();
                     appendTextFlow(">> OK\n\n", 0);
                 }
                 else {
-                    appStatusBar.setText("Executed RFM_ISIM_3G_ExpandedMode: NOK");
-                    Notifications.create().title("CardIO").text("Executed RFM_ISIM_3G_ExpandedMode: NOK").showError();
+                    appStatusBar.setText("Executed RAM_3G_ExpandedMode: NOK");
+                    Notifications.create().title("CardIO").text("Executed RAM_3G_ExpandedMode: NOK").showError();
                     appendTextFlow(">> NOT OK\n", 1);
                 }
                 // display commmand-response
                 cardiotest.getTxtCommandResponse().setDisable(false);
-                String logFileName = runSettings.getProjectPath() + "\\scripts\\RFM_ISIM_3G_ExpandedMode.L00";
+                String logFileName = runSettings.getProjectPath() + "\\scripts\\RAM_3G_ExpandedMode.L00";
                 showCommandResponseLog(logFileName);
             }
         };

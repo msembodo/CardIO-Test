@@ -62,7 +62,7 @@ public class RamController {
         chkIncludeRamExpandedMode.setSelected(root.getRunSettings().getRam().isIncludeRamExpandedMode());
         handleIncludeRamExpandedModeCheck();
 
-        // RFM USIM MSL
+        // RAM MSL
 
         txtRamMslByte.setText(root.getRunSettings().getRam().getMinimumSecurityLevel().getComputedMsl());
 
@@ -161,6 +161,10 @@ public class RamController {
 
         txtRamTar.setText(root.getRunSettings().getRam().getTar());
         txtRamScpMode.setText(root.getRunSettings().getRam().getIsd().getScpMode());
+        cmbIsdMac.setValue(root.getRunSettings().getRam().getIsd().getCardManagerMac());
+        cmbIsdEnc.setValue(root.getRunSettings().getRam().getIsd().getCardManagerEnc());
+        cmbIsdKey.setValue(root.getRunSettings().getRam().getIsd().getCardManagerKey());
+
 
         // initialize list of available keysets for RAM
 

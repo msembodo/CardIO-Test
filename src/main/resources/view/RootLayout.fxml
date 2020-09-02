@@ -34,9 +34,9 @@
                         <MenuItem fx:id="menuRfmIsim" mnemonicParsing="false" onAction="#handleMenuRfmIsim" text="RFM ISIM" />
                         <MenuItem fx:id="menuRfmIsimUpdateRecord" mnemonicParsing="false" onAction="#handleMenuRfmIsimUpdateRecord" text="RFM ISIM update record" />
                         <MenuItem fx:id="menuRfmIsimExpandedMode" mnemonicParsing="false" onAction="#handleMenuRfmIsimExpandedMode" text="RFM ISIM expanded mode" />
-                        <MenuItem fx:id="menuRam" mnemonicParsing="false" onAction="#handleMenuRam" text="RFM ISIM" />
-                        <MenuItem fx:id="menuRamUpdateRecord" mnemonicParsing="false" onAction="#handleMenuRamUpdateRecord" text="RFM ISIM update record" />
-                        <MenuItem fx:id="menuRamExpandedMode" mnemonicParsing="false" onAction="#handleMenuRamExpandedMode" text="RFM ISIM expanded mode" />
+                        <MenuItem fx:id="menuRam" mnemonicParsing="false" onAction="#handleMenuRam" text="RAM" />
+                        <MenuItem fx:id="menuRamUpdateRecord" mnemonicParsing="false" onAction="#handleMenuRamUpdateRecord" text="RAM update record" />
+                        <MenuItem fx:id="menuRamExpandedMode" mnemonicParsing="false" onAction="#handleMenuRamExpandedMode" text="RAM expanded mode" />
                         <MenuItem fx:id="menuCodes3g" mnemonicParsing="false" onAction="#handleMenuCodes3g" text="Secret Codes 3G" />
                         <MenuItem fx:id="menuCodes2g" mnemonicParsing="false" onAction="#handleMenuCodes2g" text="Secret Codes 2G" />
                     </items>

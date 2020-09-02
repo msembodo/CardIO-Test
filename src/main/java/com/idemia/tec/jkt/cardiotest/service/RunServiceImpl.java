@@ -405,12 +405,12 @@ public class RunServiceImpl implements RunService {
         // TODO: options buffer (if required)
 
         StringBuilder ramRunAllString = new StringBuilder();
-        ramRunAllString.append("; RFM ISIM\n");
+        ramRunAllString.append("; RAM\n");
 
         // add RAM script to structure
 
         if (ram.isIncludeRam()) {
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RFM_ISIM.txt"))) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RAM.txt"))) {
                 bw.append(scriptGenerator.generateRam(ram));
             } catch (IOException e) {
                 logger.error("Failed writing RAM script");
@@ -420,7 +420,7 @@ public class RunServiceImpl implements RunService {
         }
 
         if (ram.isIncludeRamUpdateRecord()) {
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RFM_ISIM_UpdateRecord.txt"))) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RAM_UpdateRecord.txt"))) {
                 bw.append(scriptGenerator.generateRamUpdateRecord(ram));
             } catch (IOException e) {
                 logger.error("Failed writing RAM_UpdateRecord script");
@@ -430,7 +430,7 @@ public class RunServiceImpl implements RunService {
         }
 
         if (ram.isIncludeRamExpandedMode()) {
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RFM_ISIM_3G_ExpandedMode.txt"))) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RAM_3G_ExpandedMode.txt"))) {
                 bw.append(scriptGenerator.generateRamExpandedMode(ram));
             } catch (IOException e) {
                 logger.error("Failed writing RAM_3G_ExpandedMode script");

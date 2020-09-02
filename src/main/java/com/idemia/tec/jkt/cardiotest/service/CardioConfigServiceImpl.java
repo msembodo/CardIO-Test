@@ -72,6 +72,7 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             cardParameters.setDfIsim("7FF2");
             cardParameters.setCsimAid("A0000000871006FFFFFFFF89");
             cardParameters.setDfCsim("7FF3");
+            cardParameters.setIccid("ICCID");
             defaultSettings.setCardParameters(cardParameters);
 
             Authentication authentication = new Authentication();

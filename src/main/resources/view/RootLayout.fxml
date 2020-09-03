@@ -28,7 +28,9 @@
                       <MenuItem fx:id="menuAtr" mnemonicParsing="false" onAction="#handleMenuAtr" text="ATR" />
                         <MenuItem fx:id="menuDeltaTest" mnemonicParsing="false" onAction="#handleMenuDeltaTest" text="Milenage Delta Test" />
                         <MenuItem fx:id="menuSqnMax" mnemonicParsing="false" onAction="#handleMenuSqnMax" text="Milenage SQN Max" />
-                        <MenuItem fx:id="menuLinkFile" mnemonicParsing="false" onAction="#handleMenuLinkFileTest" text="Link File Test" />
+                        <MenuItem fx:id="menuLinkFiles" mnemonicParsing="false" onAction="#handleMenuLinkFilesTest" text="Link File Test" />
+                        <MenuItem fx:id="menuRuwi" mnemonicParsing="false" onAction="#handleMenuRuwiTest" text="Readable &amp; Updateable when Invalidated" />
+                        <MenuItem fx:id="menuSfi" mnemonicParsing="false" onAction="#handleMenuSfiTest" text="SFI Check" />
                         <MenuItem fx:id="menuRfmUsim" mnemonicParsing="false" onAction="#handleMenuRfmUsim" text="RFM USIM" />
                         <MenuItem fx:id="menuRfmUsimUpdateRecord" mnemonicParsing="false" onAction="#handleMenuRfmUsimUpdateRecord" text="RFM USIM update record" />
                         <MenuItem fx:id="menuRfmUsimExpandedMode" mnemonicParsing="false" onAction="#handleMenuRfmUsimExpandedMode" text="RFM USIM expanded mode" />

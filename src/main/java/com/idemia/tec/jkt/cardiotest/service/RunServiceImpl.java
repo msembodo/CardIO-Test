@@ -80,7 +80,7 @@ public class RunServiceImpl implements RunService {
 
         //-------------------
         // file management
-        if (root.getRunSettings().getFileManagement().isIncludeLinkFileTest())
+        if (root.getRunSettings().getFileManagement().isIncludeLinkFilesTest())
             runAllBuffer.append(addFileManagement(root.getRunSettings().getFileManagement()));
         //-------------------
 
@@ -425,13 +425,33 @@ public class RunServiceImpl implements RunService {
         StringBuilder flmngmtRunAllString = new StringBuilder();
         flmngmtRunAllString.append("; File Management\n");
 
-        // add file management script to structure
-        if (fileManagement.isIncludeLinkFileTest()) {
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "FileManagement_LINK_FILE_TEST.txt"))) {
-                bw.append(scriptGenerator.generateFilemanagementLinkFile(fileManagement));
+        // add link file script to structure
+        if (fileManagement.isIncludeLinkFilesTest()) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "FileManagement_LinkFiles_TEST.txt"))) {
+                bw.append(scriptGenerator.generateFilemanagementLinkFiles(fileManagement));
             }
-            catch (IOException e) { logger.error("Failed writing FileManagement_LINK_FILE_TEST script"); }
-            flmngmtRunAllString.append(".EXECUTE scripts\\FileManagement_LINK_FILE_TEST.txt /PATH logs\n");
+            catch (IOException e) { logger.error("Failed writing FileManagement_LinkFiles_TEST script"); }
+            flmngmtRunAllString.append(".EXECUTE scripts\\FileManagement_LinkFiles_TEST.txt /PATH logs\n");
+            flmngmtRunAllString.append(".ALLUNDEFINE\n\n");
+        }
+
+        // add ruwi script to structure
+        if (fileManagement.isIncludeRuwiTest()) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "FileManagement_Readable&UpdateablewhenInvalidated_TEST.txt"))) {
+                bw.append(scriptGenerator.generateFilemanagementRuwi(fileManagement));
+            }
+            catch (IOException e) { logger.error("Failed FileManagement_Readable&UpdateablewhenInvalidated_TEST script"); }
+            flmngmtRunAllString.append(".EXECUTE scripts\\FileManagement_Readable&UpdateablewhenInvalidated_TEST.txt /PATH logs\n");
+            flmngmtRunAllString.append(".ALLUNDEFINE\n\n");
+        }
+
+        // add sfi script to structure
+        if (fileManagement.isIncludeSfiTest()) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "FileManagement_SFI_TEST.txt"))) {
+                bw.append(scriptGenerator.generateFilemanagementSfi(fileManagement));
+            }
+            catch (IOException e) { logger.error("Failed FileManagement_SFI_TEST script"); }
+            flmngmtRunAllString.append(".EXECUTE scripts\\FileManagement_SFI_TEST.txt /PATH logs\n");
             flmngmtRunAllString.append(".ALLUNDEFINE\n\n");
         }
 
@@ -613,9 +633,21 @@ public class RunServiceImpl implements RunService {
     }
 
     // ------------------------------
-    @Override public boolean runLinkFileTest() {
+    @Override public boolean runLinkFilesTest() {
         composeScripts();
-        runShellCommand("pcomconsole", scriptsDirectory + "FileManagement_LINK_FILE_TEST.txt");
+        runShellCommand("pcomconsole", scriptsDirectory + "FileManagement_LinkFiles_TEST.txt");
+        return exitVal == 0;
+    }
+
+    @Override public boolean runRuwiTest() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "FileManagement_Readable&UpdateablewhenInvalidated_TEST.txt");
+        return exitVal == 0;
+    }
+
+    @Override public boolean runSfiTest() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "FileManagement_SFI_TEST.txt");
         return exitVal == 0;
     }
     // ------------------------------

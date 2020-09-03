@@ -178,8 +178,16 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
     }
 
     //-------------------
-    @Override public StringBuilder generateFilemanagementLinkFile(FileManagement fileManagement) {
-        return fileManagementService.generateFilemanagementLinkFile(fileManagement);
+    @Override public StringBuilder generateFilemanagementLinkFiles(FileManagement fileManagement) {
+        return fileManagementService.generateFilemanagementLinkFiles(fileManagement);
+    }
+
+    @Override public StringBuilder generateFilemanagementRuwi(FileManagement fileManagement) {
+        return fileManagementService.generateFilemanagementRuwi(fileManagement);
+    }
+
+    @Override public StringBuilder generateFilemanagementSfi(FileManagement fileManagement) {
+        return fileManagementService.generateFilemanagementSfi(fileManagement);
     }
     //-------------------
 

@@ -1,8 +1,8 @@
 package com.idemia.tec.jkt.cardiotest.controller;
 
+import com.idemia.tec.jkt.cardiotest.model.Ruwi;
 import javafx.scene.control.CheckBox;
-import com.idemia.tec.jkt.cardiotest.model.FileManagement;
-import com.idemia.tec.jkt.cardiotest.model.LinkFile;
+import com.idemia.tec.jkt.cardiotest.model.LinkFiles;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -13,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import javafx.scene.control.TextField;
 
-
-
 @Component
 public class FileManagementController  {
 
@@ -22,44 +20,54 @@ public class FileManagementController  {
     @Autowired private CardiotestController cardiotest;
 
     @FXML private CheckBox chkIncludeLinkFileTest;
-
-    //[LINK FILE TEST] configure the table
-    @FXML private TableView<LinkFile> tblLinkFileTest;
-    @FXML private TableColumn<LinkFile, String> clmMaster;
-    @FXML private TableColumn<LinkFile, String> clmGhost;
-
-    //[LINK FILE TEST] These instance variables ure used tadd a new path link file
+    @FXML private TableView<LinkFiles> tblLinkFileTest;
+    @FXML private TableColumn<LinkFiles, String> clmMaster;
+    @FXML private TableColumn<LinkFiles, String> clmGhost;
     @FXML private TextField path_MasterTextField;
     @FXML private TextField path_GhostTextField;
 
+    @FXML private CheckBox chkIncludeRuwiTest;
+    @FXML private TableView<Ruwi> tblRuwi;
+    @FXML private TableColumn<Ruwi, String> clmRuwi;
+    @FXML private TextField path_RuwiTextField;
+
+    @FXML private CheckBox chkIncludeSfiTest;
+    @FXML private CheckBox SFI_Iccid_2FE2_02_Checkbox , SFI_ARR_2F06_06_Checkbox ;
+    @FXML private CheckBox SFI_PL_2F05_05_Checkbox , SFI_Dir_2F00_1E_Checkbox;
+    @FXML private CheckBox SFI_ECC_6F7B_01_Checkbox , SFI_StartHFN_6F5B_0F_Checkbox;
+    @FXML private CheckBox SFI_LI_6F05_02_Checkbox , SFI_TRESHOLD_6F5C_10_Checkbox;
+    @FXML private CheckBox SFI_AD_6FAD_03_Checkbox , SFI_OPLMNwACT_6F61_11_Checkbox;
+    @FXML private CheckBox SFI_UST_6F38_04_Checkbox , SFI_HPPLMN_6F31_12_Checkbox;
+    @FXML private CheckBox SFI_EST_6F56_05_Checkbox , SFI_HPLMNwACT_6F62_13_Checkbox;
+    @FXML private CheckBox SFI_ACC_6F78_06_Checkbox , SFI_ICI_6F80_14_Checkbox;
+    @FXML private CheckBox SFI_IMSI_6F07_07_Checkbox , SFI_OCI_6F81_15_Checkbox;
+    @FXML private CheckBox SFI_KEYS_6F08_08_Checkbox , SFI_CCP2_6F4F_16_Checkbox;
+    @FXML private CheckBox SFI_KEYSPS_6F09_09_Checkbox , SFI_ARR_6F06_17_Checkbox;
+    @FXML private CheckBox SFI_PLMNwACT_6F60_0A_Checkbox , SFI_ePDGIdEm_6F65_18_Checkbox;
+    @FXML private CheckBox SFI_LOCI_6F7E_0B_Checkbox , SFI_PNN_6FC5_19_Checkbox;
+    @FXML private CheckBox SFI_PSLOCI_6F73_0C_Checkbox , SFI_OPL_6FC6_1A_Checkbox;
+    @FXML private CheckBox SFI_FPLMN_6F7B_0D_Checkbox , SFI_SPDI_6FCD_1B_Checkbox;
+    @FXML private CheckBox SFI_CBMID_6F48_0E_Checkbox , SFI_ACM_6F39_1C_Checkbox;
+    @FXML private CheckBox SFI_Kc_4F20_01_Checkbox , SFI_KcGPRS_4F52_02_Checkbox;
+
+    private ObservableList<LinkFiles> linkfiles = FXCollections.observableArrayList();
+    private ObservableList<Ruwi> ruwiandSfi = FXCollections.observableArrayList();
+
     public FileManagementController() {}
-
-
-     //[LINK FILE TEST] This method will allow to user to double click on a cell and update
-    public void changePath_MasterCellEvent(TableColumn.CellEditEvent edittedCell)
-    {
-        LinkFile pathSelected = tblLinkFileTest.getSelectionModel().getSelectedItem();
-        pathSelected.setPath_Master( edittedCell.getNewValue().toString());
-    }
-
-    public void changePath_GhostCellEvent(TableColumn.CellEditEvent edittedCell)
-    {
-        LinkFile pathSelected = tblLinkFileTest.getSelectionModel().getSelectedItem();
-        pathSelected.setPath_Ghost( edittedCell.getNewValue().toString());
-    }
-
 
     public void initialize() {
 
-        chkIncludeLinkFileTest.setSelected(root.getRunSettings().getFileManagement().isIncludeLinkFileTest());
+        // ============================================================
+
+        chkIncludeLinkFileTest.setSelected(root.getRunSettings().getFileManagement().isIncludeLinkFilesTest());
         handleIncludeLinkFileCheck();
 
         //[LINK FILE TEST] setup for columns
-        clmMaster.setCellValueFactory(new PropertyValueFactory<LinkFile, String>("path_Master"));
-        clmGhost.setCellValueFactory(new PropertyValueFactory<LinkFile, String> ("path_Ghost"));
+        clmMaster.setCellValueFactory(new PropertyValueFactory<LinkFiles, String>("path_Master"));
+        clmGhost.setCellValueFactory(new PropertyValueFactory<LinkFiles, String> ("path_Ghost"));
 
         //[LINK FILE TEST] load the data
-        tblLinkFileTest.setItems(getLinkPath());
+        tblLinkFileTest.setItems(initLinkFiles());
 
         //[LINK FILE TEST] Update the table to allow for the path to be edittable
         tblLinkFileTest.setEditable(true);
@@ -67,97 +75,185 @@ public class FileManagementController  {
         clmGhost.setCellFactory(TextFieldTableCell.forTableColumn());
 
         //[LINK FILE TEST] This will allowed to select multiple table
-        tblLinkFileTest.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        //tblLinkFileTest.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+        // ============================================================
+
+        chkIncludeRuwiTest.setSelected(root.getRunSettings().getFileManagement().isIncludeRuwiTest());
+        handleIncludeRuwiCheck();
+
+        clmRuwi.setCellValueFactory(new PropertyValueFactory<Ruwi, String>("path_Ruwi"));
+
+        tblRuwi.setEditable(true);
+        clmRuwi.setCellFactory(TextFieldTableCell.forTableColumn());
+
+        // ============================================================
+
+        chkIncludeSfiTest.setSelected(root.getRunSettings().getFileManagement().isIncludeSfiTest());
+        handleIncludeSfiCheck();
+
+        // ============================================================
     }
 
-    /**
-     * [LINK FILE TEST] This method will remove the selected row(s) from the table
-     */
-    public void deletePathButtonPusshed()
-    {
-        ObservableList<LinkFile> selectedRows, allPath;
-        allPath = tblLinkFileTest.getItems();
+    // ============================================================
+
+    public void changePath_MasterCellEvent(TableColumn.CellEditEvent edittedCell) {
+        LinkFiles pathSelected = tblLinkFileTest.getSelectionModel().getSelectedItem();
+        pathSelected.setPath_Master( edittedCell.getNewValue().toString());
+    }
+    public void changePath_GhostCellEvent(TableColumn.CellEditEvent edittedCell) {
+        LinkFiles pathSelected = tblLinkFileTest.getSelectionModel().getSelectedItem();
+        pathSelected.setPath_Ghost( edittedCell.getNewValue().toString());
+    }
+
+    public void deletePathButtonPusshed() {
+
+        ObservableList<LinkFiles> selectedRows, allPath;
 
         //[LINK FILE TEST] This gives us the rows that were selected
         selectedRows = tblLinkFileTest.getSelectionModel().getSelectedItems();
 
+        allPath = tblLinkFileTest.getItems();
+
         //[LINK FILE TEST] loop over the selected rows and remove the path from table
-        for (LinkFile linkFile : selectedRows)
+        for (LinkFiles linkFiles : selectedRows)
         {
-            allPath.remove(linkFile);
+            allPath.remove(linkFiles);
         }
 
     }
-
-
-    /**
-     * [LINK FILE TEST] This method will create a new linked file path to the table
-     */
-    public void newPathButtonPushed ()
-    {
-        LinkFile newLinkFile = new LinkFile(path_MasterTextField.getText(),
+    public void newPathButtonPushed () {
+        LinkFiles newLinkFiles = new LinkFiles(path_MasterTextField.getText(),
                                             path_GhostTextField.getText());
 
         //[LINK FILE TEST] Get all the items from the table, then add a new path link file
-        tblLinkFileTest.getItems().add(newLinkFile);
+        tblLinkFileTest.getItems().add(newLinkFiles);
+        path_MasterTextField.clear();
+        path_GhostTextField.clear();
     }
-
-
-    //[LINK FILE TEST] This method will return an observable List of link path data
-    public ObservableList<LinkFile> getLinkPath()
-    {
-        ObservableList<LinkFile> linkfile = FXCollections.observableArrayList();
-
-        //USIM-GSM
-        linkfile.add(new LinkFile("3F007FF06F37" , "3F007F206F37"));
-        linkfile.add(new LinkFile("3F007FF06F32" , "3F007F206F32"));
-        linkfile.add(new LinkFile("3F007FF06F07" , "3F007F206F07"));
-        linkfile.add(new LinkFile("3F007FF06F31" , "3F007F206F31"));
-        linkfile.add(new LinkFile("3F007FF06F39" , "3F007F206F39"));
-        linkfile.add(new LinkFile("3F007FF06F3E" , "3F007F206F3E"));
-        linkfile.add(new LinkFile("3F007FF06F3F" , "3F007F206F3F"));
-        linkfile.add(new LinkFile("3F007FF06F41" , "3F007F206F41"));
-        linkfile.add(new LinkFile("3F007FF06F45" , "3F007F206F45"));
-        linkfile.add(new LinkFile("3F007FF06F46" , "3F007F206F46"));
-        linkfile.add(new LinkFile("3F007FF06F50" , "3F007F206F50"));
-        linkfile.add(new LinkFile("3F007FF06F61" , "3F007F206F61"));
-        linkfile.add(new LinkFile("3F007FF06F62" , "3F007F206F62"));
-        linkfile.add(new LinkFile("3F007FF06F73" , "3F007F206F53"));
-        linkfile.add(new LinkFile("3F007FF06F78" , "3F007F206F78"));
-        linkfile.add(new LinkFile("3F007FF06F7B" , "3F007F206F7B"));
-        linkfile.add(new LinkFile("3F007FF06F7E" , "3F007F206F7E"));
-
-        //ACCESS-GSM
-        linkfile.add(new LinkFile("3F007FF055F3B4F20" , "3F007F206F20"));
-        linkfile.add(new LinkFile("3F007FF055F3B4F52" , "3F007F206F52"));
-        linkfile.add(new LinkFile("3F007FF055F3B4F63" , "3F007F206F63"));
-        linkfile.add(new LinkFile("3F007FF055F3B4F64" , "3F007F206F64"));
-
-        //TELCO-GSM
-        linkfile.add(new LinkFile("3F007F106F54" , "3F007F206F54"));
-
-        //TELCO-PHONEBOOK
-        linkfile.add(new LinkFile("3F007F106F3A" , "3F007F105F3A4F3A"));
-        linkfile.add(new LinkFile("3F007F106F4A" , "3F007F105F3A4F4A"));
-        linkfile.add(new LinkFile("3F007F106F4F" , "3F007F105F3A4F4F"));
-
-        //USIM-TELCO
-        linkfile.add(new LinkFile("3F007FF06F3B" , "3F007F106F3B"));
-        linkfile.add(new LinkFile("3F007FF06F3C" , "3F007F106F3C"));
-        linkfile.add(new LinkFile("3F007FF06F42" , "3F007F106F42"));
-        linkfile.add(new LinkFile("3F007FF06F43" , "3F007F106F43"));
-        linkfile.add(new LinkFile("3F007FF06F47" , "3F007F106F47"));
-        linkfile.add(new LinkFile("3F007FF06F49" , "3F007F106F49"));
-        linkfile.add(new LinkFile("3F007FF06F4B" , "3F007F106F4B"));
-        linkfile.add(new LinkFile("3F007FF06F4C" , "3F007F106F4C"));
-
-        return linkfile;
-    }
-
     @FXML private void handleIncludeLinkFileCheck() { root.getMenuLinkFile().setDisable(!chkIncludeLinkFileTest.isSelected()); }
 
-    public void saveControlState() {
-        root.getRunSettings().getFileManagement().setIncludeLinkFileTest(chkIncludeLinkFileTest.isSelected());
+    public ObservableList<LinkFiles> initLinkFiles() {
+
+        //USIM-GSM
+        linkfiles.add(new LinkFiles("3F007FF06F37" , "3F007F206F37"));
+        linkfiles.add(new LinkFiles("3F007FF06F32" , "3F007F206F32"));
+        linkfiles.add(new LinkFiles("3F007FF06F07" , "3F007F206F07"));
+        linkfiles.add(new LinkFiles("3F007FF06F31" , "3F007F206F31"));
+        linkfiles.add(new LinkFiles("3F007FF06F39" , "3F007F206F39"));
+        linkfiles.add(new LinkFiles("3F007FF06F3E" , "3F007F206F3E"));
+        linkfiles.add(new LinkFiles("3F007FF06F3F" , "3F007F206F3F"));
+        linkfiles.add(new LinkFiles("3F007FF06F41" , "3F007F206F41"));
+        linkfiles.add(new LinkFiles("3F007FF06F45" , "3F007F206F45"));
+        linkfiles.add(new LinkFiles("3F007FF06F46" , "3F007F206F46"));
+        linkfiles.add(new LinkFiles("3F007FF06F50" , "3F007F206F50"));
+        linkfiles.add(new LinkFiles("3F007FF06F61" , "3F007F206F61"));
+        linkfiles.add(new LinkFiles("3F007FF06F62" , "3F007F206F62"));
+        linkfiles.add(new LinkFiles("3F007FF06F73" , "3F007F206F53"));
+        linkfiles.add(new LinkFiles("3F007FF06F78" , "3F007F206F78"));
+        linkfiles.add(new LinkFiles("3F007FF06F7B" , "3F007F206F7B"));
+        linkfiles.add(new LinkFiles("3F007FF06F7E" , "3F007F206F7E"));
+
+        //ACCESS-GSM
+        linkfiles.add(new LinkFiles("3F007FF055F3B4F20" , "3F007F206F20"));
+        linkfiles.add(new LinkFiles("3F007FF055F3B4F52" , "3F007F206F52"));
+        linkfiles.add(new LinkFiles("3F007FF055F3B4F63" , "3F007F206F63"));
+        linkfiles.add(new LinkFiles("3F007FF055F3B4F64" , "3F007F206F64"));
+
+        //TELCO-GSM
+        linkfiles.add(new LinkFiles("3F007F106F54" , "3F007F206F54"));
+
+        //TELCO-PHONEBOOK
+        linkfiles.add(new LinkFiles("3F007F106F3A" , "3F007F105F3A4F3A"));
+        linkfiles.add(new LinkFiles("3F007F106F4A" , "3F007F105F3A4F4A"));
+        linkfiles.add(new LinkFiles("3F007F106F4F" , "3F007F105F3A4F4F"));
+
+        //USIM-TELCO
+        linkfiles.add(new LinkFiles("3F007FF06F3B" , "3F007F106F3B"));
+        linkfiles.add(new LinkFiles("3F007FF06F3C" , "3F007F106F3C"));
+        linkfiles.add(new LinkFiles("3F007FF06F42" , "3F007F106F42"));
+        linkfiles.add(new LinkFiles("3F007FF06F43" , "3F007F106F43"));
+        linkfiles.add(new LinkFiles("3F007FF06F47" , "3F007F106F47"));
+        linkfiles.add(new LinkFiles("3F007FF06F49" , "3F007F106F49"));
+        linkfiles.add(new LinkFiles("3F007FF06F4B" , "3F007F106F4B"));
+        linkfiles.add(new LinkFiles("3F007FF06F4C" , "3F007F106F4C"));
+
+        return linkfiles;
     }
 
+    // ============================================================
+
+    public void changePath_RuwiCellEvent(TableColumn.CellEditEvent edittedCell) {
+        Ruwi pathSelected = tblRuwi.getSelectionModel().getSelectedItem();
+        pathSelected.setPath_Ruwi( edittedCell.getNewValue().toString());
+    }
+
+    public void deletePathButtonRuwiPusshed() {
+
+        ObservableList<Ruwi> selectedRows, allPath;
+        selectedRows = tblRuwi.getSelectionModel().getSelectedItems();
+
+        allPath = tblRuwi.getItems();
+
+        for (Ruwi ruwiandSfi : selectedRows)
+        {
+            allPath.remove(ruwiandSfi);
+        }
+
+    }
+    public void newPathButtonRuwiPushed () {
+        Ruwi newruwi = new Ruwi(path_RuwiTextField.getText());
+
+        tblRuwi.getItems().add(newruwi);
+        path_RuwiTextField.clear();
+    }
+    @FXML private void handleIncludeRuwiCheck() { root.getMenuRuwi().setDisable(!chkIncludeRuwiTest.isSelected()); }
+
+    // ============================================================
+
+    @FXML private void handleIncludeSfiCheck() { root.getMenuSfi().setDisable(!chkIncludeSfiTest.isSelected()); }
+
+    // ============================================================
+
+    public void saveControlState() {
+        root.getRunSettings().getFileManagement().setIncludeLinkFilesTest(chkIncludeLinkFileTest.isSelected());
+        root.getRunSettings().getFileManagement().setIncludeRuwiTest(chkIncludeRuwiTest.isSelected());
+        root.getRunSettings().getFileManagement().setIncludeSfiTest(chkIncludeSfiTest.isSelected());
+
+        root.getRunSettings().getFileManagement().setSFI_Iccid_2FE2_02_bool(SFI_Iccid_2FE2_02_Checkbox.isSelected());
+        root.getRunSettings().getFileManagement().setSFI_PL_2F05_05_bool(SFI_PL_2F05_05_Checkbox.isSelected());
+        root.getRunSettings().getFileManagement().setSFI_ECC_6F7B_01_bool(SFI_ECC_6F7B_01_Checkbox.isSelected());
+        root.getRunSettings().getFileManagement().setSFI_LI_6F05_02_bool(SFI_LI_6F05_02_Checkbox.isSelected());
+        root.getRunSettings().getFileManagement().setSFI_AD_6FAD_03_bool(SFI_AD_6FAD_03_Checkbox.isSelected());
+        root.getRunSettings().getFileManagement().setSFI_UST_6F38_04_bool(SFI_UST_6F38_04_Checkbox.isSelected());
+        root.getRunSettings().getFileManagement().setSFI_EST_6F56_05_bool(SFI_EST_6F56_05_Checkbox.isSelected());
+        root.getRunSettings().getFileManagement().setSFI_ACC_6F78_06_bool(SFI_ACC_6F78_06_Checkbox.isSelected());
+        root.getRunSettings().getFileManagement().setSFI_IMSI_6F07_07_bool(SFI_IMSI_6F07_07_Checkbox.isSelected());
+        root.getRunSettings().getFileManagement().setSFI_KEYS_6F08_08_bool(SFI_KEYS_6F08_08_Checkbox.isSelected());
+        root.getRunSettings().getFileManagement().setSFI_KEYSPS_6F09_09_bool(SFI_KEYSPS_6F09_09_Checkbox.isSelected());
+        root.getRunSettings().getFileManagement().setSFI_PLMNwACT_6F60_0A_bool(SFI_PLMNwACT_6F60_0A_Checkbox.isSelected());
+        root.getRunSettings().getFileManagement().setSFI_LOCI_6F7E_0B_bool(SFI_LOCI_6F7E_0B_Checkbox.isSelected());
+        root.getRunSettings().getFileManagement().setSFI_PSLOCI_6F73_0C_bool(SFI_PSLOCI_6F73_0C_Checkbox.isSelected());
+        root.getRunSettings().getFileManagement().setSFI_FPLMN_6F7B_0D_bool(SFI_FPLMN_6F7B_0D_Checkbox.isSelected());
+        root.getRunSettings().getFileManagement().setSFI_CBMID_6F48_0E_bool(SFI_CBMID_6F48_0E_Checkbox.isSelected());
+        root.getRunSettings().getFileManagement().setSFI_Kc_4F20_01_bool(SFI_Kc_4F20_01_Checkbox.isSelected());
+        root.getRunSettings().getFileManagement().setSFI_ARR_2F06_06_bool(SFI_ARR_2F06_06_Checkbox.isSelected());
+        root.getRunSettings().getFileManagement().setSFI_Dir_2F00_1E_bool(SFI_Dir_2F00_1E_Checkbox.isSelected());
+        root.getRunSettings().getFileManagement().setSFI_StartHFN_6F5B_0F_bool(SFI_StartHFN_6F5B_0F_Checkbox.isSelected());
+        root.getRunSettings().getFileManagement().setSFI_TRESHOLD_6F5C_10_bool(SFI_TRESHOLD_6F5C_10_Checkbox.isSelected());
+        root.getRunSettings().getFileManagement().setSFI_OPLMNwACT_6F61_11_bool(SFI_OPLMNwACT_6F61_11_Checkbox.isSelected());
+        root.getRunSettings().getFileManagement().setSFI_HPPLMN_6F31_12_bool(SFI_HPPLMN_6F31_12_Checkbox.isSelected());
+        root.getRunSettings().getFileManagement().setSFI_HPLMNwACT_6F62_13_bool(SFI_HPLMNwACT_6F62_13_Checkbox.isSelected());
+        root.getRunSettings().getFileManagement().setSFI_ICI_6F80_14_bool(SFI_ICI_6F80_14_Checkbox.isSelected());
+        root.getRunSettings().getFileManagement().setSFI_OCI_6F81_15_bool(SFI_OCI_6F81_15_Checkbox.isSelected());
+        root.getRunSettings().getFileManagement().setSFI_CCP2_6F4F_16_bool(SFI_CCP2_6F4F_16_Checkbox.isSelected());
+        root.getRunSettings().getFileManagement().setSFI_ARR_6F06_17_bool(SFI_ARR_6F06_17_Checkbox.isSelected());
+        root.getRunSettings().getFileManagement().setSFI_ePDGIdEm_6F65_18_bool(SFI_ePDGIdEm_6F65_18_Checkbox.isSelected());
+        root.getRunSettings().getFileManagement().setSFI_PNN_6FC5_19_bool(SFI_PNN_6FC5_19_Checkbox.isSelected());
+        root.getRunSettings().getFileManagement().setSFI_OPL_6FC6_1A_bool(SFI_OPL_6FC6_1A_Checkbox.isSelected());
+        root.getRunSettings().getFileManagement().setSFI_SPDI_6FCD_1B_bool(SFI_SPDI_6FCD_1B_Checkbox.isSelected());
+        root.getRunSettings().getFileManagement().setSFI_ACM_6F39_1C_bool(SFI_ACM_6F39_1C_Checkbox.isSelected());
+        root.getRunSettings().getFileManagement().setSFI_KcGPRS_4F52_02_bool(SFI_KcGPRS_4F52_02_Checkbox.isSelected());
+
+    }
 }

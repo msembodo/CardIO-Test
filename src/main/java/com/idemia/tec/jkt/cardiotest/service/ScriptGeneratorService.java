@@ -25,7 +25,9 @@ public interface ScriptGeneratorService {
 
 
     // ------------------------------------------------
-    StringBuilder generateFilemanagementLinkFile(FileManagement fileManagement);
+    StringBuilder generateFilemanagementLinkFiles(FileManagement fileManagement);
+    StringBuilder generateFilemanagementRuwi(FileManagement fileManagement);
+    StringBuilder generateFilemanagementSfi(FileManagement fileManagement);
     // ------------------------------------------------
 
 }

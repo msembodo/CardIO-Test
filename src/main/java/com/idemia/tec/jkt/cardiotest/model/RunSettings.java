@@ -287,6 +287,7 @@ public class RunSettings {
     public FileManagement getFileManagement() {
         return fileManagement;
     }
+
     public void setFileManagement(FileManagement fileManagement) {
         this.fileManagement = fileManagement;
     }

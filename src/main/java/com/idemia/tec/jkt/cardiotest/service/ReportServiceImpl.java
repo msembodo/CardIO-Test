@@ -255,24 +255,49 @@ public class ReportServiceImpl implements ReportService {
             html.append(createTableFooter());
         }
 
-        // ------------------------------------------
         // file management
-        if (runSettings.getFileManagement().isIncludeLinkFileTest() ) {
+
+        if (runSettings.getFileManagement().isIncludeLinkFilesTest() || runSettings.getFileManagement().isIncludeRuwiTest() || runSettings.getFileManagement().isIncludeSfiTest()) {
             html.append("\n<div><h2>File Management</h2></div>");
             html.append("\n<div><h3>Test modules</h3></div>");
+             /*
+
             html.append(createTableHeaderModule());
-            if (runSettings.getFileManagement().isIncludeLinkFileTest()) {
+            if (runSettings.getFileManagement().isIncludeLinkFilesTest()) {
                 html.append("\n<tr><td class=\"item\">Link File Test</td>");
-                if (runSettings.getFileManagement().isTestLinkFileOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
+                if (runSettings.getFileManagement().isTestLinkFilesOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
                 else {
-                    String[] messages = runSettings.getFileManagement().getTestLinkFileMessage().split(";");
+                    String[] messages = runSettings.getFileManagement().getTestLinkFilesMessage().split(";");
                     html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
                 }
             }
             else html.append("\n<tr><td class=\"item\">Link File Test</td><td>(not included)</td></tr>");
+
+
+            if (runSettings.getFileManagement().isIncludeRuwiTest()) {
+                html.append("\n<tr><td class=\"item\">Readable & Updateable when Invalidated</td>");
+                if (runSettings.getFileManagement().isTestRuwiOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
+                else {
+                    String[] messages = runSettings.getFileManagement().getTestRuwiMessage().split(";");
+                    html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
+                }
+            }
+            else html.append("\n<tr><td class=\"item\">Readable & Updateable when Invalidated</td><td>(not included)</td></tr>");
+            if (runSettings.getFileManagement().isIncludeSfiTest()) {
+                html.append("\n<tr><td class=\"item\">SFI TEST</td>");
+                if (runSettings.getFileManagement().isTestSfiOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
+                else {
+                    String[] messages = runSettings.getFileManagement().getTestSfiMessage().split(";");
+                    html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
+                }
+            }
+            else html.append("\n<tr><td class=\"item\">SFI Check</td><td>(not included)</td></tr>");
             html.append(createTableFooter());
+
+             */
         }
-        // ------------------------------------------
+
+
 
         // OTA settings
         html.append("\n<div><h2>SCP-80 Keysets</h2></div>");

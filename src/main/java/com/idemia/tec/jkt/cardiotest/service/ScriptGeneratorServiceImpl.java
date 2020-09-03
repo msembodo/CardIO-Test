@@ -115,18 +115,7 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
     @Override public StringBuilder generateRfmIsim(RfmIsim rfmIsim) { return rfmIsimService.generateRfmIsim(rfmIsim); }
 
     @Override public StringBuilder generateRfmIsimUpdateRecord(RfmIsim rfmIsim) {
-        StringBuilder rfmIsimUpdateRecordBuffer = new StringBuilder();
-        rfmIsimUpdateRecordBuffer.append(
-            ".CALL Mapping.txt /LIST_OFF\n"
-            + ".CALL Options.txt /LIST_OFF\n\n"
-            + ".POWER_ON\n"
-        );
-
-        // TODO
-        rfmIsimUpdateRecordBuffer.append("; TODO\n\n");
-
-        rfmIsimUpdateRecordBuffer.append(".POWER_OFF\n");
-        return rfmIsimUpdateRecordBuffer;
+        return rfmIsimService.generateRfmIsimUpdateRecord(rfmIsim);
     }
 
     @Override public StringBuilder generateRfmIsimExpandedMode(RfmIsim rfmIsim) {

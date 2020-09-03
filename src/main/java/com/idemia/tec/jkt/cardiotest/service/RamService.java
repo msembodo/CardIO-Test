@@ -45,6 +45,7 @@ public class RamService {
                         + ".DISPLAY L\n"
                         + "\n; setup TAR\n"
                         + ".DEFINE %TAR " + ram.getTar() + "\n"
+                        + ".DEFINE %RAM_MSL " + ram.getMinimumSecurityLevel().getComputedMsl() + "\n"
         );
         // enable pin if required
         if (root.getRunSettings().getSecretCodes().isPin1disabled())
@@ -100,7 +101,7 @@ public class RamService {
             ramBuffer.append("\n; MSL: " + ram.getMinimumSecurityLevel().getComputedMsl() + " -- no need to check counter\n");
         else {
             if (ram.isUseSpecificKeyset())
-                ramBuffer.append(ramCase5(ram.getCipheringKeyset(), ram.getAuthKeyset(), ram.getMinimumSecurityLevel()));
+                ramBuffer.append(ramCase4(ram.getCipheringKeyset(), ram.getAuthKeyset(), ram.getMinimumSecurityLevel()));
             else {
                 for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets()) {
                     ramBuffer.append("\n; using keyset: " + keyset.getKeysetName() + "\n");
@@ -250,12 +251,12 @@ public class RamService {
                         + ".CLEAR_SCRIPT\n"
                         + "A0 C0 00 00 W(2;1) [XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX0161XX]\n"
                         + ".EXPORT_BUFFER L COUNTER.bin\n\n\n"
-                        + " CHECK LOADED PACKAGE\n"
+                        + ";CHECK LOADED PACKAGE\n"
                         + ".POWER_ON\n"
                         + proactiveInitialization()
-                        + openChannel(isd)
-                        + "80F22000124F10A0000000770107601100020000000070 (61 13)\n"
-                        + "00C0000013 [10  A0000000770107601100020000000070 0100]\n"
+                        + openChannel(isd) +
+                        "80F2 2000 0E 4F 0C  A00000001853020000000010 (61 0F)\n" +
+                        "00C000000F [0C  A00000001853020000000010 0100]\n"
                         + ";===========================================================\n" +
                         ";Buffer L contains the anti replay counter for OTA message\n" +
                         ";===========================================================\n" +
@@ -267,7 +268,7 @@ public class RamService {
                         ";delete package\n" +
                         ";==================================================================\n" +
                         ".POWER_ON\n" +
-                        ".SET_BUFFER I %RAM_MSL" +
+                        ".SET_BUFFER I %RAM_MSL \n" +
                         proactiveInitialization() +
                         "\n.POWER_ON\n"
                         + proactiveInitialization()
@@ -630,7 +631,7 @@ public class RamService {
     private String getNextMessage(MinimumSecurityLevel msl) {
         StringBuilder routine = new StringBuilder();
         String auth_verif = msl.getAuthVerification();
-        if(auth_verif.equals("Redundancy Check") || auth_verif.equals("Cryptographic Checksum")) {
+        if(auth_verif.equals("Cryptographic Checksum")) {
             routine.append(
                     "A0 C2 00 00 G J (9000)\n"
                         + ".GET_NEXT_MESSAGE G J \n"
@@ -641,273 +642,277 @@ public class RamService {
 
     private String openChannel(Isd isd) {
         StringBuilder routine = new StringBuilder();
-        if(!isd.isSecuredState()) {
-            routine.append(
-                    ".ASCIITOHEX I OT.TEST.GT1000.3GKEY16.01\n"
-                            + ".DEFINE %MKEY_LABEL I\n"
-                            + ".DEFINE %SCP81_KEY_MASTER 1D8A0C5CB0EBBA42E7AA1E83B0F19217\n"
-                            + ".DEFINE %PSK_DEK 11 22 33 44 55 66 77 88 99 00 AA BB CC DD EE FF\n"
-                            + ".DEFINE %PSK_DEK_KEY_TYPE 80\n"
-                            + ".DEFINE %LEN_CARD_MANAGER_AID 08\n"
-                            + ".DEFINE %AID_CARD_MANAGER " + root.getRunSettings().getCardParameters().getCardManagerAid() + "\n"
-                            + ".DEFINE %CST_DERIVATION_ENC 0182\n"
-                            + ".DEFINE %CST_DERIVATION_RMAC 0102\n"
-                            + ".DEFINE %CST_DERIVATION_CMAC 0101\n"
-                            + ".DEFINE %CST_DERIVATION_DEK 0181\n" +
-                            ".DEFINE %ENC_SECRET_KEY" + root.getRunSettings().getRam().getIsd().getCardManagerEnc() + "\n" +
-                            "\n" +
-                            ".DEFINE %MAC_SECRET_KEY" + root.getRunSettings().getRam().getIsd().getCardManagerMac() + "\n" +
-                            "\n" +
-                            ".DEFINE %KEY_ENCRYPT_KEY" + root.getRunSettings().getRam().getIsd().getCardManagerKey() + "\n" +
+        if (isd.getMethodForGpCommand().equals("with Card Manager Keyset")) {
+            if (!isd.isSecuredState()) {
+                routine.append(
+                        ".ASCIITOHEX I OT.TEST.GT1000.3GKEY16.01\n"
+                                + ".DEFINE %MKEY_LABEL I\n"
+                                + ".DEFINE %SCP81_KEY_MASTER 1D8A0C5CB0EBBA42E7AA1E83B0F19217\n"
+                                + ".DEFINE %PSK_DEK 11 22 33 44 55 66 77 88 99 00 AA BB CC DD EE FF\n"
+                                + ".DEFINE %PSK_DEK_KEY_TYPE 80\n"
+                                + ".DEFINE %LEN_CARD_MANAGER_AID 08\n"
+                                + ".DEFINE %AID_CARD_MANAGER " + root.getRunSettings().getCardParameters().getCardManagerAid() + "\n"
+                                + ".DEFINE %CST_DERIVATION_ENC 0182\n"
+                                + ".DEFINE %CST_DERIVATION_RMAC 0102\n"
+                                + ".DEFINE %CST_DERIVATION_CMAC 0101\n"
+                                + ".DEFINE %CST_DERIVATION_DEK 0181\n" +
+                                ".DEFINE %ENC_SECRET_KEY %" + isd.getCardManagerEnc() + "\n" +
+                                "\n" +
+                                ".DEFINE %MAC_SECRET_KEY %" + isd.getCardManagerMac() + "\n" +
+                                "\n" +
+                                ".DEFINE %KEY_ENCRYPT_KEY %" + isd.getCardManagerKey() + "\n" +
+                                ".DEFINE %OK 9000\n" +
+                                ".DEFINE %PUT_KEY 80 D8 #1c #1c #1c #Nc ;(key version; mode and key index; Length, data)\n" +
+                                ".DEFINE %GET_RESPONSE_61 61\n" +
+                                ".DEFINE %GET_response 00 C0 00 00 #1c \n" +
+//                            "\t;--------------------------------------------------------------------------------------\n" +
+//                            "\t; PSKID derivation\n" +
+//                            "\t;--------------------------------------------------------------------------------------\n" +
+//                            "\t\n" +
+//                            "\t.ASCIITOHEX J %" + root.getRunSettings().getCardParameters().getIccid() + "\n" +
+//                            "\t.DEFINE %ICCID_ASCII J\n" +
+//                            "\t\n" +
+//                            "\t.SET_DATA %MKEY_LABEL\n" +
+//                            "\t.SHA I\n" +
+//                            "\t\n" +
+//                            "\t.DEFINE %MKEY_LABEL_HASH I\n" +
+//                            "\t.ASCIITOHEX I %MKEY_LABEL_HASH\n" +
+//                            "\t\n" +
+//                            "\t.DEFINE %MKEY_LABEL_HASH_ASCII I\n" +
+//                            "\t\n" +
+//                            "\t.DEFINE %SCP81_KEY_ID 4F544132\n" +
+//
+//
+//                            "\t;--------------------------------------------------------------------------------------\n" +
+//                            "\t; PSK derivation\n" +
+//                            "\t;--------------------------------------------------------------------------------------\n" +
+//                            "\n" +
+//                            "\t; we take the 8 last bytes of the ICCID_SWAPPED\n" +
+//                            "\t.SET_BUFFER I %" + root.getRunSettings().getCardParameters().getIccid() + "\n" +
+//                            "\t.DEFINE %8_LAST_ICCID  I(3;8)\n" +
+//                            "\t; set KM0 and KM1\n" +
+//                            "\t.DEFINE %KM0 %SCP81_KEY_MASTER\n" +
+//                            "\t.SET_BUFFER I %KM0\n" +
+//                            "\t.DEFINE %KM1 I(9;8) I(1;8)\n" +
+//                            "\n" +
+//                            "\t; compute R1\n" +
+//                            "\t.SET_DATA %8_LAST_ICCID\n" +
+//                            "\t.SET_KEY %KM0\n" +
+//                            "\t.DES3 I 00\n" +
+//                            "\n" +
+//                            "\t.DEFINE %B1 I\n" +
+//                            "\n" +
+//                            "\t; compute R2\n" +
+//                            "\t.SET_DATA %8_LAST_ICCID\n" +
+//                            "\t.SET_KEY %KM1\n" +
+//                            "\t.DES3 I 00\n" +
+//                            "\n" +
+//                            "\t.DEFINE %B2 I\n" +
+//                            "\n" +
+//                            "\t; psk\n" +
+//                            "\t.DEFINE %SCP81_KEY %B1 %B2\n" +
+//                            "\t\n" +
+//                            "\t.UNDEFINE %8_LAST_ICCID\n" +
+//                            "\t.UNDEFINE %KM0\n" +
+//                            "\t.UNDEFINE %KM1\n" +
+//                            "\t.UNDEFINE %B1\n" +
+//                            "\t.UNDEFINE %B2\n" +
+//                            "\t.UNDEFINE %SCP81_KEY_MASTER\n" +
+//                            "\t\n" +
+                                "\t.POWER_ON\n" +
+//
+//                            "\t;--------------------------------------------------------------------------------------------------------------------\n" +
+//                            "\t; Create a default SCP81 keyset for the ISD\n" +
+//                            "\t;--------------------------------------------------------------------------------------------------------------------\n" +
+                                "00 A4 04 00 <?> " + root.getRunSettings().getCardParameters().getCardManagerAid() + "\n" +
+                                "\t.SET_BUFFER I %ENC_SECRET_KEY\n" +
+                                "\t.SET_BUFFER J %MAC_SECRET_KEY\n" +
+                                "\t.SET_BUFFER K %KEY_ENCRYPT_KEY\n" +
+                                "\t.SET_BUFFER M 00 00 00 ;Open in clear mode\n" +
+                                "\t\n" +
+                                "\t.IFNDEF T1_PROTOCOL\n" +
+                                "\t\t.AUTOMATIC_PROTOCOL_OFF\n" +
+                                "\t.ENDIF\n" +
+                                "\t.IFNDEF FIRST_OPEN_CHANNEL;\n" +
+                                "\t\t; first initialization of variables\n" +
+                                "\t\t.APPEND_IFDEF FIRST_OPEN_CHANNEL;\n" +
+                                "\t.ELSE\n" +
+                                "\t\t; these variables are presistent, and may be used by compute_command.cmd script\n" +
+                                "\t\t.UNDEFINE %SECURITY_LEVEL \n" +
+                                "\t\t.UNDEFINE %SESSION_KIC\n" +
+                                "\t\t.UNDEFINE %SESSION_CMAC\n" +
+                                "\t\t.UNDEFINE %SESSION_RMAC\n" +
+                                "\t\t.UNDEFINE %SESSION_KIK\n" +
+                                "\t\t.UNDEFINE %LAST_COMPUTED_MAC\n" +
+                                "\t\t.UNDEFINE %SEQUENCE_COUNTER\n" +
+                                "\t\t\n" +
+                                "\t.ENDIF\n" +
+                                "\t\n" +
+                                "\t; set input variables\n" +
+                                "\t.DEFINE %KIC_ I\n" +
+                                "\t.DEFINE %KID_ J\n" +
+                                "\t.DEFINE %KIK_ K\n" +
+                                "\t.DEFINE %KEY_VERSION M(2;1)\n" +
+                                "\t.DEFINE %SECURITY_LEVEL M(1;1)\n" +
+                                "\t.DEFINE %CHANNEL_NB M(3;1)" +
 
-                            "\t;--------------------------------------------------------------------------------------\n" +
-                            "\t; PSKID derivation\n" +
-                            "\t;--------------------------------------------------------------------------------------\n" +
-                            "\t\n" +
-                            "\t.ASCIITOHEX J" + root.getRunSettings().getCardParameters().getIccid() + "\n" +
-                            "\t.DEFINE %ICCID_ASCII J\n" +
-                            "\t\n" +
-                            "\t.SET_DATA %MKEY_LABEL\n" +
-                            "\t.SHA I\n" +
-                            "\t\n" +
-                            "\t.DEFINE %MKEY_LABEL_HASH I\n" +
-                            "\t.ASCIITOHEX I %MKEY_LABEL_HASH\n" +
-                            "\t\n" +
-                            "\t.DEFINE %MKEY_LABEL_HASH_ASCII I\n" +
-                            "\t\n" +
-                            "\t.DEFINE %SCP81_KEY_ID 4F544132\n" +
+                                "\t*----------------------------------------------\n" +
+                                "\t*2 step 1 : prepare INITIALIZE_UPDATE  command\n" +
+                                "\t*----------------------------------------------  \n" +
+                                "\t.ASCIITOHEX J HostRand     * host challenge\n" +
+                                "\t.DEFINE %HOST_CHALLENGE J\n" +
+                                "\t\n" +
+                                "\t.DEFINE %SAV_I_ I\n" +
+                                "\t.DEFINE %SAV_J_ J\n" +
+                                "\t\n" +
+                                "\t; compute channel number\n" +
+                                "\t.SET_BUFFER I %CHANNEL_NB\n" +
+                                "\t.INCREASE_BUFFER I 80\n" +
+                                "\t\n" +
+                                "\t;* prepare Initialize Update command\n" +
+                                "\t.DEFINE %INIT_UPDATE_CMD I \\; channel number\n" +
+                                "\t\t\t\t\t\t\t50 \\; INS\n" +
+                                "\t\t\t\t\t\t\t%KEY_VERSION \\; key version \n" +
+                                "\t\t\t\t\t\t\t00 08 \\; P2 = 00 LE = 08 (mandatory)\n" +
+                                "\t\t\t\t\t\t\t%HOST_CHALLENGE ; host challenge\n" +
+                                "\t\t\t\n" +
+                                "\t.SET_BUFFER I %SAV_I_\n" +
+                                "\t.SET_BUFFER J %SAV_J_\t\n" +
+                                "\t\t\t\n" +
+                                "\t.UNDEFINE %SAV_I_\n" +
+                                "\t.UNDEFINE %SAV_J_\n" +
+                                "\t\t\n" +
+                                "\t\n" +
+                                "\t%INIT_UPDATE_CMD 1C (%OK)\n" +
+                                "\t\n" +
+                                "\t.DEFINE %SEQUENCE_COUNTER R(13;2)     \t;Sequence Counter ;\n" +
+                                "\t; don't check card cryptogram\n" +
+                                "\t.DEFINE %CARD_CRYPTOGRAM  R(21;8)   \t\t; card cryptogramme\n" +
+                                "\t.DEFINE %CARD_CHALLENGE   R(15;6)\t\t\t; card CHALLENGE\n" +
 
-
-                            "\t;--------------------------------------------------------------------------------------\n" +
-                            "\t; PSK derivation\n" +
-                            "\t;--------------------------------------------------------------------------------------\n" +
-                            "\n" +
-                            "\t; we take the 8 last bytes of the ICCID_SWAPPED\n" +
-                            "\t.SET_BUFFER I" + root.getRunSettings().getCardParameters().getIccid() + "\n" +
-                            "\t.DEFINE %8_LAST_ICCID  I(3;8)\n" +
-                            "\t; set KM0 and KM1\n" +
-                            "\t.DEFINE %KM0 %SCP81_KEY_MASTER\n" +
-                            "\t.SET_BUFFER I %KM0\n" +
-                            "\t.DEFINE %KM1 I(9;8) I(1;8)\n" +
-                            "\n" +
-                            "\t; compute R1\n" +
-                            "\t.SET_DATA %8_LAST_ICCID\n" +
-                            "\t.SET_KEY %KM0\n" +
-                            "\t.DES3 I 00\n" +
-                            "\n" +
-                            "\t.DEFINE %B1 I\n" +
-                            "\n" +
-                            "\t; compute R2\n" +
-                            "\t.SET_DATA %8_LAST_ICCID\n" +
-                            "\t.SET_KEY %KM1\n" +
-                            "\t.DES3 I 00\n" +
-                            "\n" +
-                            "\t.DEFINE %B2 I\n" +
-                            "\n" +
-                            "\t; psk\n" +
-                            "\t.DEFINE %SCP81_KEY %B1 %B2\n" +
-                            "\t\n" +
-                            "\t.UNDEFINE %8_LAST_ICCID\n" +
-                            "\t.UNDEFINE %KM0\n" +
-                            "\t.UNDEFINE %KM1\n" +
-                            "\t.UNDEFINE %B1\n" +
-                            "\t.UNDEFINE %B2\n" +
-                            "\t.UNDEFINE %SCP81_KEY_MASTER\n" +
-                            "\t\n" +
-                            "\t.POWER_ON\n" +
-
-                            "\t;--------------------------------------------------------------------------------------------------------------------\n" +
-                            "\t; Create a default SCP81 keyset for the ISD\n" +
-                            "\t;--------------------------------------------------------------------------------------------------------------------\n" +
-                            "00 A4 04 00 <?> " + root.getRunSettings().getCardParameters().getCardManagerAid() + "\n" +
-                            "\t.SET_BUFFER I %ENC_SECRET_KEY\n" +
-                            "\t.SET_BUFFER J %MAC_SECRET_KEY\n" +
-                            "\t.SET_BUFFER K %KEY_ENCRYPT_KEY\n" +
-                            "\t.SET_BUFFER M 00 00 00 ;Open in clear mode\n" +
-                            "\t\n" +
-                            "\t.IFNDEF T1_PROTOCOL\n" +
-                            "\t\t.AUTOMATIC_PROTOCOL_OFF\n" +
-                            "\t.ENDIF" +
-                            "\t.IFNDEF FIRST_OPEN_CHANNEL;\n" +
-                            "\t\t; first initialization of variables\n" +
-                            "\t\t.APPEND_IFDEF FIRST_OPEN_CHANNEL;\n" +
-                            "\t.ELSE\n" +
-                            "\t\t; these variables are presistent, and may be used by compute_command.cmd script\n" +
-                            "\t\t.UNDEFINE %SECURITY_LEVEL \n" +
-                            "\t\t.UNDEFINE %SESSION_KIC\n" +
-                            "\t\t.UNDEFINE %SESSION_CMAC\n" +
-                            "\t\t.UNDEFINE %SESSION_RMAC\n" +
-                            "\t\t.UNDEFINE %SESSION_KIK\n" +
-                            "\t\t.UNDEFINE %LAST_COMPUTED_MAC\n" +
-                            "\t\t.UNDEFINE %SEQUENCE_COUNTER\n" +
-                            "\t\t\n" +
-                            "\t.ENDIF\n" +
-                            "\t\n" +
-                            "\t; set input variables\n" +
-                            "\t.DEFINE %KIC_ I\n" +
-                            "\t.DEFINE %KID_ J\n" +
-                            "\t.DEFINE %KIK_ K\n" +
-                            "\t.DEFINE %KEY_VERSION M(2;1)\n" +
-                            "\t.DEFINE %SECURITY_LEVEL M(1;1)\n" +
-                            "\t.DEFINE %CHANNEL_NB M(3;1)" +
-
-                            "\t*----------------------------------------------\n" +
-                            "\t*2 step 1 : prepare INITIALIZE_UPDATE  command\n" +
-                            "\t*----------------------------------------------  \n" +
-                            "\t.ASCIITOHEX J HostRand     * host challenge\n" +
-                            "\t.DEFINE %HOST_CHALLENGE J\n" +
-                            "\t\n" +
-                            "\t.DEFINE %SAV_I_ I\n" +
-                            "\t.DEFINE %SAV_J_ J\n" +
-                            "\t\n" +
-                            "\t; compute channel number\n" +
-                            "\t.SET_BUFFER I %CHANNEL_NB\n" +
-                            "\t.INCREASE_BUFFER I 80\n" +
-                            "\t\n" +
-                            "\t;* prepare Initialize Update command\n" +
-                            "\t.DEFINE %INIT_UPDATE_CMD I \\; channel number\n" +
-                            "\t\t\t\t\t\t\t50 \\; INS\n" +
-                            "\t\t\t\t\t\t\t%KEY_VERSION \\; key version \n" +
-                            "\t\t\t\t\t\t\t00 08 \\; P2 = 00 LE = 08 (mandatory)\n" +
-                            "\t\t\t\t\t\t\t%HOST_CHALLENGE ; host challenge\n" +
-                            "\t\t\t\n" +
-                            "\t.SET_BUFFER I %SAV_I_\n" +
-                            "\t.SET_BUFFER J %SAV_J_\t\n" +
-                            "\t\t\t\n" +
-                            "\t.UNDEFINE %SAV_I_\n" +
-                            "\t.UNDEFINE %SAV_J_\n" +
-                            "\t\t\n" +
-                            "\t\n" +
-                            "\t%INIT_UPDATE_CMD 1C (%OK)\n" +
-                            "\t\n" +
-                            "\t.DEFINE %SEQUENCE_COUNTER R(13;2)     \t;Sequence Counter ;\n" +
-                            "\t; don't check card cryptogram\n" +
-                            "\t.DEFINE %CARD_CRYPTOGRAM  R(21;8)   \t\t; card cryptogramme\n" +
-                            "\t.DEFINE %CARD_CHALLENGE   R(15;6)\t\t\t; card CHALLENGE\n" +
-
-                            "\t*----------------------------------------------\n" +
-                            "\t*2 step 2 : precompute sessions keys\n" +
-                            "\t*----------------------------------------------  \n" +
-                            "\t.DEFINE %SAV_K__ K\n" +
-                            "\t.DEFINE %SAV_I__ I\n" +
-                            "\t" +
-                            "*Buffer K contains a authentication/encryption  derivation data\n" +
-                            "\t\t.SET_BUFFER K %CST_DERIVATION_ENC %SEQUENCE_COUNTER 00000000 00000000 00000000\n" +
-                            "\t\t.SET_DATA K\n" +
-                            "\t\t.SET_VECT_INI 00000000 00000000\n" +
-                            "\t\t;* static Authentication/Encryption Key\n" +
-                            "\t\t.SET_KEY %KIC_\n" +
-                            "\t\t;* session Authentication/Encryption Key\n" +
-                            "\t\t.DES3CBC I 00\n" +
-                            "\t\t.DEFINE %SESSION_KIC I\n" +
-                            "\t\t.DISPLAY %SESSION_KIC\n" +
-                            "\t\n" +
-                            "\t;* compute C_Mac session key\n" +
-                            "\t*Buffer K contains a CMAC  derivation data\n" +
-                            "\t\t.SET_BUFFER  K %CST_DERIVATION_CMAC %SEQUENCE_COUNTER 00000000 00000000 00000000\n" +
-                            "\t\t.SET_DATA K\n" +
-                            "\t\t.SET_VECT_INI 00000000 00000000\n" +
-                            "\t\t;* static CMac Key\n" +
-                            "\t\t.SET_KEY %KID_\n" +
-                            "\t\t;* C_Mac session\n" +
-                            "\t\t.DES3CBC I 00\n" +
-                            "\t\t.DEFINE %SESSION_CMAC I\n" +
-                            "\t\t.DISPLAY %SESSION_CMAC\n" +
-                            "\t\n" +
-                            "\t;* compute R_Mac session key\n" +
-                            "\t*Buffer K contains a RMAC  derivation data\n" +
-                            "\t\t.SET_BUFFER  K %CST_DERIVATION_RMAC %SEQUENCE_COUNTER 00000000 00000000 00000000\n" +
-                            "\t\t.SET_DATA K\n" +
-                            "\t\t.SET_VECT_INI 00000000 00000000\n" +
-                            "\t\t;* static static Key Encryption Key\n" +
-                            "\t\n" +
-                            "\t\t.SET_KEY %KID_ ; SAVE_STATIC_MAC_KEY\n" +
-                            "\t\t;* session RMac session Key\n" +
-                            "\t\t.DES3CBC I 00\n" +
-                            "\t\t.DEFINE %SESSION_RMAC I\n" +
-                            "\t\t.DISPLAY %SESSION_RMAC\n" +
-                            "\t\n" +
-                            "\t;* compute DEK session key\n" +
-                            "\t*Buffer K contains a DEK  derivation data\n" +
-                            "\t\t.SET_BUFFER  K %CST_DERIVATION_DEK %SEQUENCE_COUNTER 00000000 00000000 00000000\n" +
-                            "\t\t.SET_DATA K\n" +
-                            "\t\t.SET_VECT_INI 00000000 00000000\n" +
-                            "\t\t;* static DEK Key\n" +
-                            "\t\t.SET_KEY %KIK_\n" +
-                            "\t\t;* session DEK Key\n" +
-                            "\t\t.DES3CBC I 00\n" +
-                            "\t\t.DEFINE %SESSION_KIK I\n" +
-                            "\t\t.DISPLAY %SESSION_KIK\n" +
-                            "\t\t\t\n" +
-                            "\t\t\t\n" +
-                            "\t.SET_BUFFER K %SAV_K__\n" +
-                            "\t.SET_BUFFER I %SAV_I__\n" +
-                            "\t\n" +
-                            "\t.UNDEFINE %SAV_K__\n" +
-                            "\t.UNDEFINE %SAV_I__\n" +
-                            "\t\n" +
-
-
-                            "\t*----------------------------------------------\n" +
-                            "\t*2 step 3 : precompute host cryptogram\n" +
-                            "\t*----------------------------------------------  \n" +
-                            "\t.SET_BUFFER G %SEQUENCE_COUNTER %CARD_CHALLENGE %HOST_CHALLENGE\n" +
-                            "\t\t\t.SET_DATA G\n" +
-                            "\t\t\t.SET_VECT_INI 00000000 00000000\n" +
-                            "\t\t\t.SET_KEY %SESSION_KIC\n" +
-                            "\t\t\t.MAC33 N 80 /P\n" +
-                            "\t\t\t.DEFINE %HOST_CRYPTOGRAM N\n" +
-                            "\t\t\t.DISPLAY N\n" +
-                            "\t\t\t\n" +
-                            "\t\n" +
+                                "\t*----------------------------------------------\n" +
+                                "\t*2 step 2 : precompute sessions keys\n" +
+                                "\t*----------------------------------------------  \n" +
+                                "\t.DEFINE %SAV_K__ K\n" +
+                                "\t.DEFINE %SAV_I__ I\n" +
+                                "\t" +
+                                "*Buffer K contains a authentication/encryption  derivation data\n" +
+                                "\t\t.SET_BUFFER K %CST_DERIVATION_ENC %SEQUENCE_COUNTER 00000000 00000000 00000000\n" +
+                                "\t\t.SET_DATA K\n" +
+                                "\t\t.SET_VECT_INI 00000000 00000000\n" +
+                                "\t\t;* static Authentication/Encryption Key\n" +
+                                "\t\t.SET_KEY %KIC_\n" +
+                                "\t\t;* session Authentication/Encryption Key\n" +
+                                "\t\t.DES3CBC I 00\n" +
+                                "\t\t.DEFINE %SESSION_KIC I\n" +
+                                "\t\t.DISPLAY %SESSION_KIC\n" +
+                                "\t\n" +
+                                "\t;* compute C_Mac session key\n" +
+                                "\t*Buffer K contains a CMAC  derivation data\n" +
+                                "\t\t.SET_BUFFER  K %CST_DERIVATION_CMAC %SEQUENCE_COUNTER 00000000 00000000 00000000\n" +
+                                "\t\t.SET_DATA K\n" +
+                                "\t\t.SET_VECT_INI 00000000 00000000\n" +
+                                "\t\t;* static CMac Key\n" +
+                                "\t\t.SET_KEY %KID_\n" +
+                                "\t\t;* C_Mac session\n" +
+                                "\t\t.DES3CBC I 00\n" +
+                                "\t\t.DEFINE %SESSION_CMAC I\n" +
+                                "\t\t.DISPLAY %SESSION_CMAC\n" +
+                                "\t\n" +
+                                "\t;* compute R_Mac session key\n" +
+                                "\t*Buffer K contains a RMAC  derivation data\n" +
+                                "\t\t.SET_BUFFER  K %CST_DERIVATION_RMAC %SEQUENCE_COUNTER 00000000 00000000 00000000\n" +
+                                "\t\t.SET_DATA K\n" +
+                                "\t\t.SET_VECT_INI 00000000 00000000\n" +
+                                "\t\t;* static static Key Encryption Key\n" +
+                                "\t\n" +
+                                "\t\t.SET_KEY %KID_ ; SAVE_STATIC_MAC_KEY\n" +
+                                "\t\t;* session RMac session Key\n" +
+                                "\t\t.DES3CBC I 00\n" +
+                                "\t\t.DEFINE %SESSION_RMAC I\n" +
+                                "\t\t.DISPLAY %SESSION_RMAC\n" +
+                                "\t\n" +
+                                "\t;* compute DEK session key\n" +
+                                "\t*Buffer K contains a DEK  derivation data\n" +
+                                "\t\t.SET_BUFFER  K %CST_DERIVATION_DEK %SEQUENCE_COUNTER 00000000 00000000 00000000\n" +
+                                "\t\t.SET_DATA K\n" +
+                                "\t\t.SET_VECT_INI 00000000 00000000\n" +
+                                "\t\t;* static DEK Key\n" +
+                                "\t\t.SET_KEY %KIK_\n" +
+                                "\t\t;* session DEK Key\n" +
+                                "\t\t.DES3CBC I 00\n" +
+                                "\t\t.DEFINE %SESSION_KIK I\n" +
+                                "\t\t.DISPLAY %SESSION_KIK\n" +
+                                "\t\t\t\n" +
+                                "\t\t\t\n" +
+                                "\t.SET_BUFFER K %SAV_K__\n" +
+                                "\t.SET_BUFFER I %SAV_I__\n" +
+                                "\t\n" +
+                                "\t.UNDEFINE %SAV_K__\n" +
+                                "\t.UNDEFINE %SAV_I__\n" +
+                                "\t\n" +
 
 
-                            "\t*----------------------------------------------\n" +
-                            "\t*2 step 4 : compute command mac\n" +
-                            "\t*---------------------------------------------- \n" +
-                            "\t;* compute command MAC\n" +
-                            "\t.SET_BUFFER G 84 82 %SECURITY_LEVEL 00 10 %HOST_CRYPTOGRAM\n" +
-                            "\t.SET_DATA G\n" +
-                            "\t.SET_VECT_INI 00000000 00000000 ; ICV set to 00\n" +
-                            "\t\n" +
-                            "\t* session CMac Key\n" +
-                            "\t.SET_KEY %SESSION_CMAC\n" +
-                            "\t.MAC3 I 80 /P\n" +
-                            "\t.DEFINE %LAST_COMPUTED_MAC I\n" +
-                            "\t.DISPLAY I\n" +
-                            "\t\n" +
-                            "\t;* External Authenticate\n" +
-                            "\t.DEFINE %EXTERNAL_AUTH_CMD 84 82 %SECURITY_LEVEL 00 10 %HOST_CRYPTOGRAM %LAST_COMPUTED_MAC (%OK)\n" +
-                            "\t\n" +
-                            "\t\n" +
-                            "\t%EXTERNAL_AUTH_CMD (%OK)\n" +
-                            "\t\n" +
-                            "\t;set output variables and buffers\n" +
-                            "\t.SET_BUFFER I %SESSION_KIC\n" +
-                            "\t.SET_BUFFER J %SESSION_CMAC\n" +
-                            "\t.SET_BUFFER K %SESSION_KIK\n" +
-                            "\t.SET_BUFFER M %LAST_COMPUTED_MAC\n" +
-                            "\t\n" +
-                            "\t.UNDEFINE %KIC_ \n" +
-                            "\t.UNDEFINE %KID_ \n" +
-                            "\t.UNDEFINE %KIK_\n" +
-                            "\t.UNDEFINE %KEY_VERSION \n" +
-                            "\t\n" +
-                            "\t.UNDEFINE %CHANNEL_NB \n" +
-                            "\t\n" +
-                            "\t.UNDEFINE %INIT_UPDATE_CMD\n" +
-                            "\t.UNDEFINE %EXTERNAL_AUTH_CMD\n" +
-                            "\t\n" +
-                            "\t.UNDEFINE %HOST_CHALLENGE\n" +
-                            "\t\n" +
-                            "\t.UNDEFINE %CARD_CRYPTOGRAM\n" +
-                            "\t.UNDEFINE %CARD_CHALLENGE\n" +
-                            "\t.UNDEFINE %HOST_CRYPTOGRAM\n" +
-                            "\t\n" +
-                            "\t.IFNDEF T1_PROTOCOL\n" +
-                            "\t\t.AUTOMATIC_PROTOCOL_ON\n" +
-                            "\t.ENDIF\n" +
-                            "\n" +
+                                "\t*----------------------------------------------\n" +
+                                "\t*2 step 3 : precompute host cryptogram\n" +
+                                "\t*----------------------------------------------  \n" +
+                                "\t.SET_BUFFER G %SEQUENCE_COUNTER %CARD_CHALLENGE %HOST_CHALLENGE\n" +
+                                "\t\t\t.SET_DATA G\n" +
+                                "\t\t\t.SET_VECT_INI 00000000 00000000\n" +
+                                "\t\t\t.SET_KEY %SESSION_KIC\n" +
+                                "\t\t\t.MAC33 N 80 /P\n" +
+                                "\t\t\t.DEFINE %HOST_CRYPTOGRAM N\n" +
+                                "\t\t\t.DISPLAY N\n" +
+                                "\t\t\t\n" +
+                                "\t\n" +
+
+
+                                "\t*----------------------------------------------\n" +
+                                "\t*2 step 4 : compute command mac\n" +
+                                "\t*---------------------------------------------- \n" +
+                                "\t;* compute command MAC\n" +
+                                "\t.SET_BUFFER G 84 82 %SECURITY_LEVEL 00 10 %HOST_CRYPTOGRAM\n" +
+                                "\t.SET_DATA G\n" +
+                                "\t.SET_VECT_INI 00000000 00000000 ; ICV set to 00\n" +
+                                "\t\n" +
+                                "\t* session CMac Key\n" +
+                                "\t.SET_KEY %SESSION_CMAC\n" +
+                                "\t.MAC3 I 80 /P\n" +
+                                "\t.DEFINE %LAST_COMPUTED_MAC I\n" +
+                                "\t.DISPLAY I\n" +
+                                "\t\n" +
+                                "\t;* External Authenticate\n" +
+                                "\t.DEFINE %EXTERNAL_AUTH_CMD 84 82 %SECURITY_LEVEL 00 10 %HOST_CRYPTOGRAM %LAST_COMPUTED_MAC (%OK)\n" +
+                                "\t\n" +
+                                "\t\n" +
+                                "\t%EXTERNAL_AUTH_CMD (%OK)\n" +
+                                "\t\n" +
+                                "\t;set output variables and buffers\n" +
+                                "\t.SET_BUFFER I %SESSION_KIC\n" +
+                                "\t.SET_BUFFER J %SESSION_CMAC\n" +
+                                "\t.SET_BUFFER K %SESSION_KIK\n" +
+                                "\t.SET_BUFFER M %LAST_COMPUTED_MAC\n" +
+                                "\t\n" +
+                                "\t.UNDEFINE %KIC_ \n" +
+                                "\t.UNDEFINE %KID_ \n" +
+                                "\t.UNDEFINE %KIK_\n" +
+                                "\t.UNDEFINE %KEY_VERSION \n" +
+                                "\t\n" +
+                                "\t.UNDEFINE %CHANNEL_NB \n" +
+                                "\t\n" +
+                                "\t.UNDEFINE %INIT_UPDATE_CMD\n" +
+                                "\t.UNDEFINE %EXTERNAL_AUTH_CMD\n" +
+                                "\t\n" +
+                                "\t.UNDEFINE %HOST_CHALLENGE\n" +
+                                "\t\n" +
+                                "\t.UNDEFINE %CARD_CRYPTOGRAM\n" +
+                                "\t.UNDEFINE %CARD_CHALLENGE\n" +
+                                "\t.UNDEFINE %HOST_CRYPTOGRAM\n" +
+                                "\t\n" +
+                                "\t.IFNDEF T1_PROTOCOL\n" +
+                                "\t\t.AUTOMATIC_PROTOCOL_ON\n" +
+                                "\t.ENDIF\n" +
+                                "\n" +
 
 
 //                            "\t;--------------------------------------------------------------------------------------------------------\n" +
@@ -923,70 +928,216 @@ public class RamService {
 //                            "\n" +
 
 
-                            "\t;-----------------------------------------------\n" +
-                            "\t; RESET PREDEFINED VARIABLE\n" +
-                            "\t;-----------------------------------------------\n" +
-                            "\t\n" +
-                            "\t.UNDEFINE %MKEY_LABEL \n" +
-                            "\t\n" +
-                            "\t.UNDEFINE %SCP81_KEY \n" +
-                            "\t\n" +
-                            "\t.UNDEFINE %PSK_DEK\t\n" +
-                            "\t\n" +
-                            "\t.UNDEFINE %PSK_DEK_KEY_TYPE\t\t\t\n" +
-                            "\t\n" +
-                            "\t.UNDEFINE %LEN_CARD_MANAGER_AID         \n" +
-                            "\t\n" +
-                            "\t.UNDEFINE %AID_CARD_MANAGER\t\t\t\t\n" +
-                            "\t\n" +
-                            "\t.UNDEFINE %AID_CARD_MANAGER_WITH_LENGTH \n" +
-                            "\t\t\t\t\t\t\t\t\t\t\n" +
-                            "\t.UNDEFINE %SELECT_AID_CARD_MANAGER\t    \n" +
-                            "\t                  \n" +
-                            "\t.UNDEFINE %CST_DERIVATION_ENC           \n" +
-                            "\t.UNDEFINE %CST_DERIVATION_RMAC          \n" +
-                            "\t.UNDEFINE %CST_DERIVATION_CMAC          \n" +
-                            "\t.UNDEFINE %CST_DERIVATION_DEK           \n" +
-                            "\n" +
-                            "\t;.UNDEFINE %ISD_ENC_SECRET_KEY\t \n" +
-                            "\t;.UNDEFINE %ISD_MAC_SECRET_KEY\t \n" +
-                            "\t;.UNDEFINE %ISD_KEY_ENCRYPT_KEY \t\n" +
-                            "\t\n" +
-                            "\t.UNDEFINE %ENC_SECRET_KEY\t\t\t\n" +
-                            "\t\n" +
-                            "\t.UNDEFINE %MAC_SECRET_KEY\t\t\t\n" +
-                            "\t\n" +
-                            "\t.UNDEFINE %KEY_ENCRYPT_KEY\t\t\n" +
-                            "\t\n" +
-                            "\t.UNDEFINE %OK \n" +
-                            "\t\n" +
-                            "\t.UNDEFINE %ICCID_ASCII \n" +
-                            "\t\n" +
-                            "\t.UNDEFINE %MKEY_LABEL_HASH \n" +
-                            "\t\n" +
-                            "\t.UNDEFINE %MKEY_LABEL_HASH_ASCII \n" +
-                            "\t\n" +
-                            "\t.UNDEFINE %SCP81_KEY_ID  \n" +
-                            "\t\n" +
-                            "\t.UNDEFINE %PUT_KEY  \n" +
-                            "\t.UNDEFINE %GET_RESPONSE_61 \n" +
-                            "\t.UNDEFINE %GET_response \n" +
-                            "\t\n" +
-                            "\t.UNDEFINE %SCP81_KEY_MASTER\n" +
-                            "\n" +
-                            "\t.BREAK\n" +
+                                "\t;-----------------------------------------------\n" +
+                                "\t; RESET PREDEFINED VARIABLE\n" +
+                                "\t;-----------------------------------------------\n" +
+                                "\t\n" +
+                                "\t.UNDEFINE %MKEY_LABEL \n" +
+                                "\t\n" +
+                                "\t.UNDEFINE %SCP81_KEY \n" +
+                                "\t\n" +
+                                "\t.UNDEFINE %PSK_DEK\t\n" +
+                                "\t\n" +
+                                "\t.UNDEFINE %PSK_DEK_KEY_TYPE\t\t\t\n" +
+                                "\t\n" +
+                                "\t.UNDEFINE %LEN_CARD_MANAGER_AID         \n" +
+                                "\t\n" +
+                                "\t.UNDEFINE %AID_CARD_MANAGER\t\t\t\t\n" +
+                                "\t\n" +
+                                "\t.UNDEFINE %AID_CARD_MANAGER_WITH_LENGTH \n" +
+                                "\t\t\t\t\t\t\t\t\t\t\n" +
+                                "\t.UNDEFINE %SELECT_AID_CARD_MANAGER\t    \n" +
+                                "\t                  \n" +
+                                "\t.UNDEFINE %CST_DERIVATION_ENC           \n" +
+                                "\t.UNDEFINE %CST_DERIVATION_RMAC          \n" +
+                                "\t.UNDEFINE %CST_DERIVATION_CMAC          \n" +
+                                "\t.UNDEFINE %CST_DERIVATION_DEK           \n" +
+                                "\n" +
+                                "\t;.UNDEFINE %ISD_ENC_SECRET_KEY\t \n" +
+                                "\t;.UNDEFINE %ISD_MAC_SECRET_KEY\t \n" +
+                                "\t;.UNDEFINE %ISD_KEY_ENCRYPT_KEY \t\n" +
+                                "\t\n" +
+                                "\t.UNDEFINE %ENC_SECRET_KEY\t\t\t\n" +
+                                "\t\n" +
+                                "\t.UNDEFINE %MAC_SECRET_KEY\t\t\t\n" +
+                                "\t\n" +
+                                "\t.UNDEFINE %KEY_ENCRYPT_KEY\t\t\n" +
+                                "\t\n" +
+                                "\t.UNDEFINE %OK \n" +
+                                "\t\n" +
+                                "\t.UNDEFINE %ICCID_ASCII \n" +
+                                "\t\n" +
+                                "\t.UNDEFINE %MKEY_LABEL_HASH \n" +
+                                "\t\n" +
+                                "\t.UNDEFINE %MKEY_LABEL_HASH_ASCII \n" +
+                                "\t\n" +
+                                "\t.UNDEFINE %SCP81_KEY_ID  \n" +
+                                "\t\n" +
+                                "\t.UNDEFINE %PUT_KEY  \n" +
+                                "\t.UNDEFINE %GET_RESPONSE_61 \n" +
+                                "\t.UNDEFINE %GET_response \n" +
+                                "\t\n" +
+                                "\t.UNDEFINE %SCP81_KEY_MASTER\n" +
+                                "\n"
 
-                            "; Verify Code ADM1\n" +
-                            "\tA0 20 0000 08 %ADM1 (9000)\n" +
-                            "\t\n" +
-                            "\t; Select Card Manager AID\n" +
-                            "\t00 A4 0400 <?> %AID_CARD_MANAGER  (61 XX)\n" +
-                            "\t\n" +
-                            "\t; Get Response\n" +
-                            "\t00 C0 00 00   W(2;1) [] (9000)\n" +
-                            "\t\n" +
-                            "\t.BREAK"
-            );
+//                            "; Verify Code ADM1\n" +
+//                            "\tA0 20 0000 08 %ADM1 (9000)\n" +
+//                            "\t\n" +
+//                            "\t; Select Card Manager AID\n" +
+//                            "\t00 A4 0400 <?> %AID_CARD_MANAGER  (61 XX)\n" +
+//                            "\t\n" +
+//                            "\t; Get Response\n" +
+//                            "\t00 C0 00 00   W(2;1) [] (9000)\n" +
+//                            "\t\n"
+                );
+            } else {
+                routine.append(
+                        ".IFNDEF QUALIFICATION\n" +
+                                "\t\t.DEFINE %ISD_ENC %" + isd.getCardManagerEnc() + "\n"+
+                                "\t\t.DEFINE %ISD_DEK %" + isd.getCardManagerMac() + "\n" +
+                                "\t\t.DEFINE %ISD_MAC %" + isd.getCardManagerKey() + "\n" +
+                                "\t.ENDIF\n" +
+                                "\n" +
+                                "\t.PROTOCOL_LEVEL_APDU\n" +
+                                "\n" +
+                                "\t.POWER_ON\n" +
+                                "\n" +
+                                "\t.SET_BUFFER G %CARD_MANAGER_AID\n" +
+                                "\t.SET_BUFFER I %ISD_ENC\n" +
+                                "\t.SET_BUFFER J %ISD_MAC\n" +
+                                "\t.SET_BUFFER K %ISD_DEK\n" +
+                                "\n" +
+                                "\t.DEFINE %SC_LEVEL " + isd.getScLevel() + "\n" +
+                                "\n" +
+                                "\t; Select SD\n" +
+                                "\t00 A4 04 0C  <?> G (9000)\n" +
+                                "\n" +
+                                "*----------------------------------------------\n" +
+                                "* Initialize Update\n" +
+                                "*----------------------------------------------\n" +
+                                "\n" +
+                                ".ASCIITOHEX H HostRand\t* Host Challenge\n" +
+                                "\n" +
+                                "* Send the INITIALIZE UPDATE command\n" +
+                                ".SET_BUFFER N 80 50 0000 <?> H\n" +
+                                "\n" +
+                                ".IFDEF SIMULATOR\n" +
+                                "\t* Display the command\n" +
+                                "\t.LIST_ON\n" +
+                                "\t.DISPLAY N\n" +
+                                "\t.LIST_OFF\n" +
+                                ".ELSE\n" +
+                                "\t.IFDEF OTA\n" +
+                                "\t\t* Apprend the command to the OTA script\n" +
+                                "\t\t.APPEND_BUFFER Q N\n" +
+                                "\t.ELSE\n" +
+                                "\t\t* Sends the command to the card\n" +
+                                "\t\t.LIST_ON\n" +
+                                "\t\tN (9000)\n" +
+                                "\t\t.LIST_OFF\n" +
+                                "\t.ENDIF\n" +
+                                ".ENDIF \n" +
+                                "\n" +
+                                ".IFDEF (SIMULATOR || OTA)\n" +
+                                "    .SET_BUFFER O %COUNTER\n" +
+                                ".ELSE\n" +
+                                "    .SET_BUFFER O R(13;8)\t* SEQ Counter + Card Challenge\n" +
+                                "\t.DISPLAY O\n" +
+                                ".ENDIF\n" +
+                                "\n" +
+                                "*----------------------------------------------\n" +
+                                "* External Authenticate\n" +
+                                "*----------------------------------------------\n" +
+                                "\n" +
+                                "* Compute authentication/encryption session key\n" +
+                                ".SET_DATA 0182 O(1;2) 000000000000000000000000\n" +
+                                ".SET_VECT_INI 0000000000000000\n" +
+                                ".SET_KEY I\n" +
+                                ".DES3CBC I 00\n" +
+                                ".DISPLAY I\n" +
+                                "\n" +
+                                "* Compute C-MAC session key\n" +
+                                ".SET_DATA 0101 O(1;2) 000000000000000000000000\n" +
+                                ".SET_VECT_INI 0000000000000000\n" +
+                                ".SET_KEY J\n" +
+                                ".DES3CBC J 00\n" +
+                                ".DISPLAY J\n" +
+                                "\n" +
+                                "* Compute data encryption session key\n" +
+                                ".SET_DATA 0181 O(1;2) 000000000000000000000000\n" +
+                                ".SET_VECT_INI 0000000000000000\n" +
+                                ".SET_KEY K\n" +
+                                ".DES3CBC K 00\n" +
+                                ".DISPLAY K\n" +
+                                "\n" +
+                                "* Compute pseudo-random\n" +
+                                ".SET_DATA G\n" +
+                                ".SET_VECT_INI 0000000000000000\n" +
+                                ".SET_KEY J\n" +
+                                ".MAC3 L 80 /P\n" +
+                                "\n" +
+                                ".IFDEF (SIMULATOR || OTA)\n" +
+                                "    .APPEND_BUFFER O L(1;6)\n" +
+                                ".ELSE\n" +
+                                "    * Verify pseudo-random\n" +
+                                "    .SET_DATA L(1;6)\n" +
+                                "    .COMPARE O(3;6)\n" +
+                                ".ENDIF\n" +
+                                "\n" +
+                                "* Compute card cryptogram\n" +
+                                ".SET_DATA H O\n" +
+                                ".SET_VECT_INI 0000000000000000\n" +
+                                ".SET_KEY I\n" +
+                                ".MAC33 L 80 /P\n" +
+                                "\n" +
+                                ".IFNDEF (SIMULATOR || OTA)\n" +
+                                "    * Verify card cryptogram\n" +
+                                "    .SET_DATA R(21;8)\n" +
+                                "    .COMPARE L\n" +
+                                "    * (Card cryptogram incorrect => wrong keyset) if error\n" +
+                                ".ENDIF\n" +
+                                "\n" +
+                                "* Compute host cryptogram\n" +
+                                ".SET_DATA O H\n" +
+                                ".SET_VECT_INI 0000000000000000\n" +
+                                ".SET_KEY I\n" +
+                                ".MAC33 L 80 /P\n" +
+                                "\n" +
+                                "* Compute command MAC\n" +
+                                ".SET_DATA 84 82 %SC_LEVEL 00 10 L\n" +
+                                "\n" +
+                                ".SET_VECT_INI 0000000000000000\n" +
+                                ".SET_KEY J\n" +
+                                ".MAC3 M 80 /P\n" +
+                                "\n" +
+                                "* Send the EXTERNAL AUTHENTICATE command\n" +
+                                ".SET_BUFFER N 84 82 %SC_LEVEL 00 10 L M\n" +
+                                "\n" +
+                                ".IFDEF SIMULATOR\n" +
+                                "\t* Display the command\n" +
+                                "\t.DISPLAY N\n" +
+                                ".ELSE\n" +
+                                "\t.IFDEF OTA\n" +
+                                "\t\t* Apprend the command to the OTA script\n" +
+                                "\t\t.APPEND_BUFFER Q N\n" +
+                                "\t.ELSE\n" +
+                                "\t\t* Sends the command to the card\n" +
+                                "\t\tN (9000)\n" +
+                                "\t.ENDIF\n" +
+                                ".ENDIF \n" +
+                                "\n" +
+                                "\t.UNDEFINE %ISD_ENC\n" +
+                                "\t.UNDEFINE %ISD_DEK\n" +
+                                "\t.UNDEFINE %ISD_MAC\n" +
+                                "\t.UNDEFINE %SC_LEVEL\n"
+                );
+
+            }
+
+        } else if (isd.getMethodForGpCommand().equals("no Card Manager Keyset")) {
+            //TODO
+        } else if (isd.getMethodForGpCommand().equals("SIMBiOs")) {
+            //TODO
         }
         return routine.toString();
     }

@@ -360,20 +360,6 @@ public class RfmIsimService {
                 }
             }
         }
-        // case 8
-        rfmIsimUpdateRecordBuffer.append("\n*********\n; CASE 8: Bad TP-OA value\n*********\n");
-        if (!root.getRunSettings().getSmsUpdate().isUseWhiteList())
-            rfmIsimUpdateRecordBuffer.append("\n; profile does not have white list configuration -- case 8 is not executed\n");
-        else {
-            if (rfmIsim.isUseSpecificKeyset())
-                rfmIsimUpdateRecordBuffer.append(rfmIsimCase8(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), rfmIsim.getMinimumSecurityLevel()));
-            else {
-                for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets()) {
-                    rfmIsimUpdateRecordBuffer.append("\n; using keyset: " + keyset.getKeysetName() + "\n");
-                    rfmIsimUpdateRecordBuffer.append(rfmIsimCase8(keyset, keyset, rfmIsim.getMinimumSecurityLevel()));
-                }
-            }
-        }
         // save counter
         rfmIsimUpdateRecordBuffer.append(
                 "\n; save counter state\n"
@@ -488,8 +474,11 @@ public class RfmIsimService {
                         + ".SET_BUFFER Q %" + authKeyset.getKidValuation() + "\n"
                         + ".SET_BUFFER M " + cipherKeyset.getComputedKic() + "\n"
                         + ".SET_BUFFER N " + authKeyset.getComputedKid() + "\n"
-                        + ".INIT_ENV_0348\n"
+                        + ".INIT_SMS_0348\n"
+                        + ".CHANGE_FIRST_BYTE " +root.getRunSettings().getSmsUpdate().getUdhiFirstByte()+ "\n"
+                        + ".CHANGE_SC_ADDRESS " +root.getRunSettings().getSmsUpdate().getScAddress()+ "\n"
                         + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
+                        + ".CHANGE_POR_FORMAT " +this.porFormat(root.getRunSettings().getSmsUpdate().getPorFormat()) +"\n"
         );
         if (root.getRunSettings().getSmsUpdate().isUseWhiteList())
             routine.append(".CHANGE_TP_OA " + root.getRunSettings().getSmsUpdate().getTpOa() + "\n");
@@ -671,8 +660,11 @@ public class RfmIsimService {
                         + ".SET_BUFFER Q " + createFakeAuthKey(authKeyset) + " ; bad key\n"
                         + ".SET_BUFFER M 99 ; bad keyset\n"
                         + ".SET_BUFFER N 99 ; bad keyset\n"
-                        + ".INIT_ENV_0348\n"
+                        + ".INIT_SMS_0348\n"
+                        + ".CHANGE_FIRST_BYTE " +root.getRunSettings().getSmsUpdate().getUdhiFirstByte()+ "\n"
+                        + ".CHANGE_SC_ADDRESS " +root.getRunSettings().getSmsUpdate().getScAddress()+ "\n"
                         + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
+                        + ".CHANGE_POR_FORMAT " +this.porFormat(root.getRunSettings().getSmsUpdate().getPorFormat()) +"\n"
         );
         if (root.getRunSettings().getSmsUpdate().isUseWhiteList())
             routine.append(".CHANGE_TP_OA " + root.getRunSettings().getSmsUpdate().getTpOa() + "\n");
@@ -755,8 +747,11 @@ public class RfmIsimService {
                         + ".SET_BUFFER Q %" + authKeyset.getKidValuation() + "\n"
                         + ".SET_BUFFER M " + cipherKeyset.getComputedKic() + "\n"
                         + ".SET_BUFFER N " + authKeyset.getComputedKid() + "\n"
-                        + ".INIT_ENV_0348\n"
+                        + ".INIT_SMS_0348\n"
+                        + ".CHANGE_FIRST_BYTE " +root.getRunSettings().getSmsUpdate().getUdhiFirstByte()+ "\n"
+                        + ".CHANGE_SC_ADDRESS " +root.getRunSettings().getSmsUpdate().getScAddress()+ "\n"
                         + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
+                        + ".CHANGE_POR_FORMAT " +this.porFormat(root.getRunSettings().getSmsUpdate().getPorFormat()) +"\n"
         );
         if (root.getRunSettings().getSmsUpdate().isUseWhiteList())
             routine.append(".CHANGE_TP_OA " + root.getRunSettings().getSmsUpdate().getTpOa() + "\n");
@@ -839,8 +834,11 @@ public class RfmIsimService {
             + ".SET_BUFFER Q %" + authKeyset.getKidValuation() + "\n"
             + ".SET_BUFFER M " + cipherKeyset.getComputedKic() + "\n"
             + ".SET_BUFFER N " + authKeyset.getComputedKid() + "\n"
-            + ".INIT_ENV_0348\n"
+            + ".INIT_SMS_0348\n"
+            + ".CHANGE_FIRST_BYTE " +root.getRunSettings().getSmsUpdate().getUdhiFirstByte()+ "\n"
+            + ".CHANGE_SC_ADDRESS " +root.getRunSettings().getSmsUpdate().getScAddress()+ "\n"
             + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
+            + ".CHANGE_POR_FORMAT " +this.porFormat(root.getRunSettings().getSmsUpdate().getPorFormat()) +"\n"
         );
         if (root.getRunSettings().getSmsUpdate().isUseWhiteList())
             routine.append(".CHANGE_TP_OA " + root.getRunSettings().getSmsUpdate().getTpOa() + "\n");
@@ -862,7 +860,14 @@ public class RfmIsimService {
             + ".SET_BUFFER J 00 A4 00 00 02 3F00\n"
             + ".APPEND_SCRIPT J\n"
             + ".END_MESSAGE G J\n"
-            + updateSMSRecordRfmIsim("rfmIsimUpdateRecordCase4")
+            + "\n; update EF SMS record\n" // Case 4 (Bad Case) use unknown TAR, code manually
+            + "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000)\n"
+            + "A0 A4 00 00 02 7F10 (9F22) ;select DF Telecom\n"
+            + "A0 A4 00 00 02 6F3C (9F0F) ;select EF SMS\n"
+            + "A0 DC 01 04 G J (9000) ;update EF SMS\n"
+            + ".CLEAR_SCRIPT\n"
+            + "\n;Check SMS Content\n"
+            + "A0 B2 01 04 B0\n"
             + "\n; increment counter by one\n"
             + ".INCREASE_BUFFER L(04:05) 0001\n"
         );
@@ -923,8 +928,11 @@ public class RfmIsimService {
                         + ".SET_BUFFER Q %" + authKeyset.getKidValuation() + "\n"
                         + ".SET_BUFFER M " + cipherKeyset.getComputedKic() + "\n"
                         + ".SET_BUFFER N " + authKeyset.getComputedKid() + "\n"
-                        + ".INIT_ENV_0348\n"
+                        + ".INIT_SMS_0348\n"
+                        + ".CHANGE_FIRST_BYTE " +root.getRunSettings().getSmsUpdate().getUdhiFirstByte()+ "\n"
+                        + ".CHANGE_SC_ADDRESS " +root.getRunSettings().getSmsUpdate().getScAddress()+ "\n"
                         + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
+                        + ".CHANGE_POR_FORMAT " +this.porFormat(root.getRunSettings().getSmsUpdate().getPorFormat()) +"\n"
         );
         if (root.getRunSettings().getSmsUpdate().isUseWhiteList())
             routine.append(".CHANGE_TP_OA " + root.getRunSettings().getSmsUpdate().getTpOa() + "\n");
@@ -1007,8 +1015,11 @@ public class RfmIsimService {
                         + ".SET_BUFFER Q " + createFakeAuthKey(authKeyset) + " ; bad authentication key\n"
                         + ".SET_BUFFER M " + cipherKeyset.getComputedKic() + "\n"
                         + ".SET_BUFFER N " + authKeyset.getComputedKid() + "\n"
-                        + ".INIT_ENV_0348\n"
+                        + ".INIT_SMS_0348\n"
+                        + ".CHANGE_FIRST_BYTE " +root.getRunSettings().getSmsUpdate().getUdhiFirstByte()+ "\n"
+                        + ".CHANGE_SC_ADDRESS " +root.getRunSettings().getSmsUpdate().getScAddress()+ "\n"
                         + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
+                        + ".CHANGE_POR_FORMAT " +this.porFormat(root.getRunSettings().getSmsUpdate().getPorFormat()) +"\n"
         );
         if (root.getRunSettings().getSmsUpdate().isUseWhiteList())
             routine.append(".CHANGE_TP_OA " + root.getRunSettings().getSmsUpdate().getTpOa() + "\n");
@@ -1091,8 +1102,11 @@ public class RfmIsimService {
                         + ".SET_BUFFER Q %" + authKeyset.getKidValuation() + "\n"
                         + ".SET_BUFFER M " + cipherKeyset.getComputedKic() + "\n"
                         + ".SET_BUFFER N " + authKeyset.getComputedKid() + "\n"
-                        + ".INIT_ENV_0348\n"
+                        + ".INIT_SMS_0348\n"
+                        + ".CHANGE_FIRST_BYTE " +root.getRunSettings().getSmsUpdate().getUdhiFirstByte()+ "\n"
+                        + ".CHANGE_SC_ADDRESS " +root.getRunSettings().getSmsUpdate().getScAddress()+ "\n"
                         + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
+                        + ".CHANGE_POR_FORMAT " +this.porFormat(root.getRunSettings().getSmsUpdate().getPorFormat()) +"\n"
         );
         if (root.getRunSettings().getSmsUpdate().isUseWhiteList())
             routine.append(".CHANGE_TP_OA " + root.getRunSettings().getSmsUpdate().getTpOa() + "\n");
@@ -1345,12 +1359,13 @@ public class RfmIsimService {
             + "A0 A4 00 00 02 7F10 (9F22) ;select DF Telecom\n"
             + "A0 A4 00 00 02 6F3C (9F0F) ;select EF SMS\n"
             + "A0 DC 01 04 G J (91XX) ;update EF SMS\n"
-            + "CLEAR_SCRIPT\n"
-            + "Check SMS Content\n"
+            + ".CLEAR_SCRIPT\n"
+            + "\n;Check SMS Content\n"
             + "A0 B2 01 04 B0\n"
             + "; check PoR\n"
             + "A0 12 00 00 W(2;1) ["+this.otaPorSetting(rfmIsimCases)+" ] (9000)\n" //call OTA_POR_SETTING based on cases
             + "A0 14 00 00 0C 8103011300 82028183 830100 (9000)\n"
+
         );
 
         return updateSMSRecordRfmIsim.toString();
@@ -1359,23 +1374,24 @@ public class RfmIsimService {
     private String otaPorSetting(String rfmIsimCases){
         String  POR_OK, POR_NOT_OK, BAD_CASE_WRONG_KEYSET,
                 BAD_CASE_WRONG_CLASS_3G, BAD_CASE_WRONG_CLASS_2G,
-                BAD_CASE_WRONG_TAR, BAD_CASE_COUNTER_LOW,
-                BAD_CASE_WRONG_KEY_VALUE, BAD_CASE_INSUFFICIENT_MSL;
+                 BAD_CASE_COUNTER_LOW,
+                BAD_CASE_WRONG_KEY_VALUE, BAD_CASE_INSUFFICIENT_MSL; //BAD_CASE_WRONG_TAR,
 
         String result_set = "";
 
-        String scAddress = "07913366003000F0";
-        String tagUpdateRecord = "D0 33 81 XX XX 13 XX 82 02 81 83 85 XX 86 "+scAddress+" 8B XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX %TAR XX XX XX XX XX XX";
+        String scAddress            = root.getRunSettings().getSmsUpdate().getScAddress();
+        String tagUpdateRecord33    = "D0 33 81 XX XX 13 XX 82 02 81 83 85 XX 86 "+scAddress+" 8B XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX %TAR XX XX XX XX XX XX";
+        String tagUpdateRecord30    = "D0 30 81 XX XX 13 XX 82 02 81 83 85 XX 86 "+scAddress+" 8B XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX %TAR XX XX XX XX XX XX";
 
-        POR_OK                      = tagUpdateRecord+" XX XX 90 00";
-        POR_NOT_OK                  = tagUpdateRecord+" XX XX 98 04";
-        BAD_CASE_WRONG_KEYSET       = tagUpdateRecord+" 06";
-        BAD_CASE_WRONG_CLASS_3G     = tagUpdateRecord+" XX XX 6E 00";
-        BAD_CASE_WRONG_CLASS_2G     = tagUpdateRecord+" XX XX 6D 00";
-        BAD_CASE_WRONG_TAR          = "D0 30 81 XX XX 13 XX 82 02 81 83 85 XX 86 "+scAddress+" 8B XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX B0 FF FF XX XX XX XX XX XX 09";
-        BAD_CASE_COUNTER_LOW        = tagUpdateRecord+" 02";
-        BAD_CASE_WRONG_KEY_VALUE    = tagUpdateRecord+" 01";
-        BAD_CASE_INSUFFICIENT_MSL   = tagUpdateRecord+" 0A";
+        POR_OK                      = tagUpdateRecord33+" XX XX 90 00";
+        POR_NOT_OK                  = tagUpdateRecord33+" XX XX 98 04";
+        BAD_CASE_WRONG_KEYSET       = tagUpdateRecord30+" 06";
+        BAD_CASE_WRONG_CLASS_3G     = tagUpdateRecord33+" XX XX 6E 00";
+        BAD_CASE_WRONG_CLASS_2G     = tagUpdateRecord33+" XX XX 6D 00";
+        BAD_CASE_COUNTER_LOW        = tagUpdateRecord30+" 02";
+        BAD_CASE_WRONG_KEY_VALUE    = tagUpdateRecord30+" 01";
+        BAD_CASE_INSUFFICIENT_MSL   = tagUpdateRecord30+" 0A";
+        //BAD_CASE_WRONG_TAR          = "D0 30 81 XX XX 13 XX 82 02 81 83 85 XX 86 "+scAddress+" 8B XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX B0 FF FF XX XX XX XX XX XX 09";
 
         switch (rfmIsimCases){
             case "rfmIsimUpdateRecordCase1" :
@@ -1386,9 +1402,6 @@ public class RfmIsimService {
                 break;
             case "rfmIsimUpdateRecordCase3" :
                 result_set =  BAD_CASE_WRONG_CLASS_3G;
-                break;
-            case "rfmIsimUpdateRecordCase4" :
-                result_set = BAD_CASE_WRONG_TAR;
                 break;
             case "rfmIsimUpdateRecordCase5" :
                 result_set = BAD_CASE_COUNTER_LOW;
@@ -1403,6 +1416,21 @@ public class RfmIsimService {
 
         return result_set;
 
+    }
+
+    private String porFormat(String por){
+        String result_set = "";
+
+        switch (por) {
+            case "PoR as SMS-SUBMIT":
+                result_set = "01";
+                break;
+            case "PoR as SMS-DELIVER-REPORT":
+                result_set = "00";
+                break;
+        }
+
+        return result_set;
     }
 
     // Separate some looped on method()

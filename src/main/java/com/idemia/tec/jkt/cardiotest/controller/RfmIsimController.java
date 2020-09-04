@@ -212,6 +212,8 @@ public class RfmIsimController {
             lblRfmIsimCustomTargetBadCase.setDisable(true);
             cmbRfmIsimCustomTargetAccBadCase.setDisable(true);
             txtRfmIsimCustomTargetEfBadCase.setDisable(true);
+            txtRfmIsimTargetEf.setDisable(false);
+            txtRfmIsimTargetEfBadCase.setDisable(false);
         } else {
             lblRfmIsimCustomTarget.setDisable(false);
             cmbRfmIsimCustomTargetAcc.setDisable(false);
@@ -219,6 +221,8 @@ public class RfmIsimController {
             lblRfmIsimCustomTargetBadCase.setDisable(false);
             cmbRfmIsimCustomTargetAccBadCase.setDisable(false);
             txtRfmIsimCustomTargetEfBadCase.setDisable(false);
+            txtRfmIsimTargetEf.setDisable(true);
+            txtRfmIsimTargetEfBadCase.setDisable(true);
         }
     }
 

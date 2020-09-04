@@ -1694,14 +1694,14 @@ public class RfmIsimService {
         if (rfmIsim.isFullAccess()) {
             defineTargetFile.append(
                     "\n; TAR is configured for full access\n"
-                            + ".DEFINE %DF_ID " + root.getRunSettings().getCardParameters().getDfUsim() + "\n"
+                            + ".DEFINE %DF_ID " + root.getRunSettings().getCardParameters().getDfIsim() + "\n"
                             + ".DEFINE %EF_ID " + rfmIsim.getTargetEf() + "\n"
                             + ".DEFINE %EF_ID_ERR " + rfmIsim.getTargetEfBadCase() + "\n"
             );
         } else {
             defineTargetFile.append(
                     "\n; TAR is configured with access domain\n"
-                            + ".DEFINE %DF_ID " + root.getRunSettings().getCardParameters().getDfUsim() + "\n"
+                            + ".DEFINE %DF_ID " + root.getRunSettings().getCardParameters().getDfIsim() + "\n"
                             + ".DEFINE %EF_ID " + rfmIsim.getCustomTargetEf() + "; EF protected by " + rfmIsim.getCustomTargetAcc() +  "\n"
                             + ".DEFINE %EF_ID_ERR " + rfmIsim.getCustomTargetEfBadCase() + "; (negative test) EF protected by " + rfmIsim.getCustomTargetAccBadCase() +  "\n"
             );

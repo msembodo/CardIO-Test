@@ -166,6 +166,11 @@ public class RunServiceImpl implements RunService {
                 }
             }
             catch (IOException e) { e.printStackTrace(); }
+            // initiate zero counter
+            File srcCntr = new File("COUNTER.bin");
+            File tarCntr = new File(scriptsDirectory + "COUNTER.bin");
+            try { Files.copy(srcCntr.toPath(), tarCntr.toPath(), StandardCopyOption.REPLACE_EXISTING); }
+            catch (IOException e) { e.printStackTrace(); }
         }
         // copy variable file to project directory
         File sourceVarFile = new File(root.getRunSettings().getAdvSaveVariablesPath());

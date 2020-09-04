@@ -38,3 +38,4 @@ dll/
 tmp/
 
 *.json
+COUNTER.bin

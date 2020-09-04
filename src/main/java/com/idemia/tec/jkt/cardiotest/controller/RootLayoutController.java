@@ -627,7 +627,7 @@ public class RootLayoutController {
         }
 
         //--------------------------------------
-        if (module.getName().equals("FileManagement_LINK_FILE_TEST")) {
+        if (module.getName().equals("FileManagement_LinkFiles_TEST")) {
             runSettings.getFileManagement().setTestLinkFilesOk(true);
             runSettings.getFileManagement().setTestLinkFilesMessage("OK");
             String errFailure = "";
@@ -642,7 +642,7 @@ public class RootLayoutController {
                 runSettings.getFileManagement().setTestLinkFilesMessage(errFailure);
             }
         }
-        if (module.getName().equals("FileManagement_READABLE_&_UPDATEABLE_WHEN_INVALIDATED_TEST")) {
+        if (module.getName().equals("FileManagement_Readable&UpdateablewhenInvalidated_TEST")) {
             runSettings.getFileManagement().setTestRuwiOk(true);
             runSettings.getFileManagement().setTestRuwiMessage("OK");
             String errFailure = "";
@@ -657,7 +657,7 @@ public class RootLayoutController {
                 runSettings.getFileManagement().setTestRuwiMessage(errFailure);
             }
         }
-        if (module.getName().equals("FileManagement_SFI_CHECK_TEST")) {
+        if (module.getName().equals("FileManagement_SFI_TEST")) {
             runSettings.getFileManagement().setTestSfiOk(true);
             runSettings.getFileManagement().setTestSfiMessage("OK");
             String errFailure = "";

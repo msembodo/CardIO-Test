@@ -1,26 +1,25 @@
 package com.idemia.tec.jkt.cardiotest.service;
 
-import com.idemia.tec.jkt.cardiotest.controller.FileManagementController;
 import com.idemia.tec.jkt.cardiotest.controller.RootLayoutController;
+import com.idemia.tec.jkt.cardiotest.controller.FileManagementController;
 import com.idemia.tec.jkt.cardiotest.model.FileManagement;
-import com.idemia.tec.jkt.cardiotest.model.LinkFiles;
+import com.idemia.tec.jkt.cardiotest.model.FMLinkFiles;
 import javafx.collections.ObservableList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.idemia.tec.jkt.cardiotest.model.SecretCodes;
 
 @Service
 public class FileManagementService {
 
     @Autowired private RootLayoutController root;
 
-    ObservableList <LinkFiles> allLinkFiles;
+    ObservableList <FMLinkFiles> allFMLinkFiles;
 
 
     public StringBuilder generateFilemanagementLinkFiles(FileManagement fileManagement) {
         StringBuilder linkFileTestBuffer = new StringBuilder();
         linkFileTestBuffer.append(
-                ";=====================\n\n"
+                ";===================== \n\n"
                         + ";Link File Test\n\n"
                         + ";=====================\n\n"
         );

@@ -2,14 +2,14 @@ package com.idemia.tec.jkt.cardiotest.model;
 
 import javafx.beans.property.SimpleStringProperty;
 
-public class Ruwi {
+public class FMRuwi {
 
     private SimpleStringProperty path_Ruwi;
 
 
-    public Ruwi() {}
+    public FMRuwi() {}
 
-    public Ruwi(String path_Ruwi) {
+    public FMRuwi(String path_Ruwi) {
         this.path_Ruwi = new SimpleStringProperty (path_Ruwi);
     }
 

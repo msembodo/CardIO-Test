@@ -1,8 +1,9 @@
 package com.idemia.tec.jkt.cardiotest.controller;
 
-import com.idemia.tec.jkt.cardiotest.model.Ruwi;
+import com.idemia.tec.jkt.cardiotest.model.FMRuwi;
+import com.idemia.tec.jkt.cardiotest.model.VariableMapping;
 import javafx.scene.control.CheckBox;
-import com.idemia.tec.jkt.cardiotest.model.LinkFiles;
+import com.idemia.tec.jkt.cardiotest.model.FMLinkFiles;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import javafx.scene.control.TextField;
 
+import java.util.ArrayList;
+
 @Component
 public class FileManagementController  {
 
@@ -20,15 +23,23 @@ public class FileManagementController  {
     @Autowired private CardiotestController cardiotest;
 
     @FXML private CheckBox chkIncludeLinkFileTest;
-    @FXML private TableView<LinkFiles> tblLinkFileTest;
-    @FXML private TableColumn<LinkFiles, String> clmMaster;
-    @FXML private TableColumn<LinkFiles, String> clmGhost;
+    @FXML private TableView<FMLinkFiles> tblLinkFileTest;
+    @FXML private TableColumn<FMLinkFiles, String> clmMaster;
+    @FXML private TableColumn<FMLinkFiles, String> clmGhost;
+    @FXML private Button addLinkFileButton;
+    @FXML private Button deleteLinkFileButton;
+    @FXML private Button ModifyLinkFileButton;
+    @FXML private Button SaveLinkFileButton;
     @FXML private TextField path_MasterTextField;
     @FXML private TextField path_GhostTextField;
 
     @FXML private CheckBox chkIncludeRuwiTest;
-    @FXML private TableView<Ruwi> tblRuwi;
-    @FXML private TableColumn<Ruwi, String> clmRuwi;
+    @FXML private TableView<FMRuwi> tblRuwi;
+    @FXML private TableColumn<FMRuwi, String> clmRuwi;
+    @FXML private Button ModifyRuwiButton;
+    @FXML private Button SaveRuwiButton;
+    @FXML private Button addRuwiButton;
+    @FXML private Button deleteRuwiButton;
     @FXML private TextField path_RuwiTextField;
 
     @FXML private CheckBox chkIncludeSfiTest;
@@ -50,41 +61,51 @@ public class FileManagementController  {
     @FXML private CheckBox SFI_CBMID_6F48_0E_Checkbox , SFI_ACM_6F39_1C_Checkbox;
     @FXML private CheckBox SFI_Kc_4F20_01_Checkbox , SFI_KcGPRS_4F52_02_Checkbox;
 
-    private ObservableList<LinkFiles> linkfiles = FXCollections.observableArrayList();
-    private ObservableList<Ruwi> ruwiandSfi = FXCollections.observableArrayList();
+    private ObservableList<FMLinkFiles> linkfiles = FXCollections.observableArrayList();
+    private ObservableList<FMRuwi> ruwiandSfi = FXCollections.observableArrayList();
 
     public FileManagementController() {}
 
     public void initialize() {
+
+        //[LINK FILE TEST] This will allowed to select multiple table
+        //tblLinkFileTest.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+        //[LINK FILE TEST] This will allowed to select cell table
+        //tblLinkFileTest.getSelectionModel().setCellSelectionEnabled(true);
 
         // ============================================================
 
         chkIncludeLinkFileTest.setSelected(root.getRunSettings().getFileManagement().isIncludeLinkFilesTest());
         handleIncludeLinkFileCheck();
 
+
         //[LINK FILE TEST] setup for columns
-        clmMaster.setCellValueFactory(new PropertyValueFactory<LinkFiles, String>("path_Master"));
-        clmGhost.setCellValueFactory(new PropertyValueFactory<LinkFiles, String> ("path_Ghost"));
+        clmMaster.setCellValueFactory(new PropertyValueFactory<FMLinkFiles, String>("path_Master"));
+        clmGhost.setCellValueFactory(new PropertyValueFactory<FMLinkFiles, String> ("path_Ghost"));
 
         //[LINK FILE TEST] load the data
         tblLinkFileTest.setItems(initLinkFiles());
+        ModifyLinkFileButton.setDisable(true);
+        path_MasterTextField.setPromptText("File Path [MASTER]");
+        path_GhostTextField.setPromptText("File Path [GHOST]");
 
         //[LINK FILE TEST] Update the table to allow for the path to be edittable
         tblLinkFileTest.setEditable(true);
         clmMaster.setCellFactory(TextFieldTableCell.forTableColumn());
         clmGhost.setCellFactory(TextFieldTableCell.forTableColumn());
 
-        //[LINK FILE TEST] This will allowed to select multiple table
-        //tblLinkFileTest.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-
         // ============================================================
 
         chkIncludeRuwiTest.setSelected(root.getRunSettings().getFileManagement().isIncludeRuwiTest());
         handleIncludeRuwiCheck();
 
-        clmRuwi.setCellValueFactory(new PropertyValueFactory<Ruwi, String>("path_Ruwi"));
+        clmRuwi.setCellValueFactory(new PropertyValueFactory<FMRuwi, String>("path_Ruwi"));
+        path_RuwiTextField.setPromptText("File Path");
 
         tblRuwi.setEditable(true);
+        ModifyRuwiButton.setDisable(true);
+
         clmRuwi.setCellFactory(TextFieldTableCell.forTableColumn());
 
         // ============================================================
@@ -98,17 +119,17 @@ public class FileManagementController  {
     // ============================================================
 
     public void changePath_MasterCellEvent(TableColumn.CellEditEvent edittedCell) {
-        LinkFiles pathSelected = tblLinkFileTest.getSelectionModel().getSelectedItem();
+        FMLinkFiles pathSelected = tblLinkFileTest.getSelectionModel().getSelectedItem();
         pathSelected.setPath_Master( edittedCell.getNewValue().toString());
     }
     public void changePath_GhostCellEvent(TableColumn.CellEditEvent edittedCell) {
-        LinkFiles pathSelected = tblLinkFileTest.getSelectionModel().getSelectedItem();
+        FMLinkFiles pathSelected = tblLinkFileTest.getSelectionModel().getSelectedItem();
         pathSelected.setPath_Ghost( edittedCell.getNewValue().toString());
     }
 
     public void deletePathButtonPusshed() {
 
-        ObservableList<LinkFiles> selectedRows, allPath;
+        ObservableList<FMLinkFiles> selectedRows, allPath;
 
         //[LINK FILE TEST] This gives us the rows that were selected
         selectedRows = tblLinkFileTest.getSelectionModel().getSelectedItems();
@@ -116,67 +137,88 @@ public class FileManagementController  {
         allPath = tblLinkFileTest.getItems();
 
         //[LINK FILE TEST] loop over the selected rows and remove the path from table
-        for (LinkFiles linkFiles : selectedRows)
+        for (FMLinkFiles FMLinkFiles : selectedRows)
         {
-            allPath.remove(linkFiles);
+            allPath.remove(FMLinkFiles);
         }
 
     }
     public void newPathButtonPushed () {
-        LinkFiles newLinkFiles = new LinkFiles(path_MasterTextField.getText(),
+        FMLinkFiles newFMLinkFiles = new FMLinkFiles(path_MasterTextField.getText(),
                                             path_GhostTextField.getText());
 
         //[LINK FILE TEST] Get all the items from the table, then add a new path link file
-        tblLinkFileTest.getItems().add(newLinkFiles);
+        tblLinkFileTest.getItems().add(newFMLinkFiles);
         path_MasterTextField.clear();
         path_GhostTextField.clear();
     }
+
+    public void SaveLinkFileButtonPushed() {
+        tblLinkFileTest.setEditable(false);
+        ModifyLinkFileButton.setDisable(false);
+        SaveLinkFileButton.setDisable(true);
+        path_GhostTextField.setDisable(true);
+        path_MasterTextField.setDisable(true);
+        addLinkFileButton.setDisable(true);
+        deleteLinkFileButton.setDisable(true);
+    }
+    public void ModifyLinkFileButtonPushed() {
+        tblLinkFileTest.setEditable(true);
+        ModifyLinkFileButton.setDisable(true);
+        SaveLinkFileButton.setDisable(false);
+        path_GhostTextField.setDisable(false);
+        path_MasterTextField.setDisable(false);
+        addLinkFileButton.setDisable(false);
+        deleteLinkFileButton.setDisable(false);
+    }
+
     @FXML private void handleIncludeLinkFileCheck() { root.getMenuLinkFile().setDisable(!chkIncludeLinkFileTest.isSelected()); }
 
-    public ObservableList<LinkFiles> initLinkFiles() {
+
+    public ObservableList<FMLinkFiles> initLinkFiles() {
 
         //USIM-GSM
-        linkfiles.add(new LinkFiles("3F007FF06F37" , "3F007F206F37"));
-        linkfiles.add(new LinkFiles("3F007FF06F32" , "3F007F206F32"));
-        linkfiles.add(new LinkFiles("3F007FF06F07" , "3F007F206F07"));
-        linkfiles.add(new LinkFiles("3F007FF06F31" , "3F007F206F31"));
-        linkfiles.add(new LinkFiles("3F007FF06F39" , "3F007F206F39"));
-        linkfiles.add(new LinkFiles("3F007FF06F3E" , "3F007F206F3E"));
-        linkfiles.add(new LinkFiles("3F007FF06F3F" , "3F007F206F3F"));
-        linkfiles.add(new LinkFiles("3F007FF06F41" , "3F007F206F41"));
-        linkfiles.add(new LinkFiles("3F007FF06F45" , "3F007F206F45"));
-        linkfiles.add(new LinkFiles("3F007FF06F46" , "3F007F206F46"));
-        linkfiles.add(new LinkFiles("3F007FF06F50" , "3F007F206F50"));
-        linkfiles.add(new LinkFiles("3F007FF06F61" , "3F007F206F61"));
-        linkfiles.add(new LinkFiles("3F007FF06F62" , "3F007F206F62"));
-        linkfiles.add(new LinkFiles("3F007FF06F73" , "3F007F206F53"));
-        linkfiles.add(new LinkFiles("3F007FF06F78" , "3F007F206F78"));
-        linkfiles.add(new LinkFiles("3F007FF06F7B" , "3F007F206F7B"));
-        linkfiles.add(new LinkFiles("3F007FF06F7E" , "3F007F206F7E"));
+        linkfiles.add(new FMLinkFiles("3F007FF06F37" , "3F007F206F37"));
+        linkfiles.add(new FMLinkFiles("3F007FF06F32" , "3F007F206F32"));
+        linkfiles.add(new FMLinkFiles("3F007FF06F07" , "3F007F206F07"));
+        linkfiles.add(new FMLinkFiles("3F007FF06F31" , "3F007F206F31"));
+        linkfiles.add(new FMLinkFiles("3F007FF06F39" , "3F007F206F39"));
+        linkfiles.add(new FMLinkFiles("3F007FF06F3E" , "3F007F206F3E"));
+        linkfiles.add(new FMLinkFiles("3F007FF06F3F" , "3F007F206F3F"));
+        linkfiles.add(new FMLinkFiles("3F007FF06F41" , "3F007F206F41"));
+        linkfiles.add(new FMLinkFiles("3F007FF06F45" , "3F007F206F45"));
+        linkfiles.add(new FMLinkFiles("3F007FF06F46" , "3F007F206F46"));
+        linkfiles.add(new FMLinkFiles("3F007FF06F50" , "3F007F206F50"));
+        linkfiles.add(new FMLinkFiles("3F007FF06F61" , "3F007F206F61"));
+        linkfiles.add(new FMLinkFiles("3F007FF06F62" , "3F007F206F62"));
+        linkfiles.add(new FMLinkFiles("3F007FF06F73" , "3F007F206F53"));
+        linkfiles.add(new FMLinkFiles("3F007FF06F78" , "3F007F206F78"));
+        linkfiles.add(new FMLinkFiles("3F007FF06F7B" , "3F007F206F7B"));
+        linkfiles.add(new FMLinkFiles("3F007FF06F7E" , "3F007F206F7E"));
 
         //ACCESS-GSM
-        linkfiles.add(new LinkFiles("3F007FF055F3B4F20" , "3F007F206F20"));
-        linkfiles.add(new LinkFiles("3F007FF055F3B4F52" , "3F007F206F52"));
-        linkfiles.add(new LinkFiles("3F007FF055F3B4F63" , "3F007F206F63"));
-        linkfiles.add(new LinkFiles("3F007FF055F3B4F64" , "3F007F206F64"));
+        linkfiles.add(new FMLinkFiles("3F007FF055F3B4F20" , "3F007F206F20"));
+        linkfiles.add(new FMLinkFiles("3F007FF055F3B4F52" , "3F007F206F52"));
+        linkfiles.add(new FMLinkFiles("3F007FF055F3B4F63" , "3F007F206F63"));
+        linkfiles.add(new FMLinkFiles("3F007FF055F3B4F64" , "3F007F206F64"));
 
         //TELCO-GSM
-        linkfiles.add(new LinkFiles("3F007F106F54" , "3F007F206F54"));
+        linkfiles.add(new FMLinkFiles("3F007F106F54" , "3F007F206F54"));
 
         //TELCO-PHONEBOOK
-        linkfiles.add(new LinkFiles("3F007F106F3A" , "3F007F105F3A4F3A"));
-        linkfiles.add(new LinkFiles("3F007F106F4A" , "3F007F105F3A4F4A"));
-        linkfiles.add(new LinkFiles("3F007F106F4F" , "3F007F105F3A4F4F"));
+        linkfiles.add(new FMLinkFiles("3F007F106F3A" , "3F007F105F3A4F3A"));
+        linkfiles.add(new FMLinkFiles("3F007F106F4A" , "3F007F105F3A4F4A"));
+        linkfiles.add(new FMLinkFiles("3F007F106F4F" , "3F007F105F3A4F4F"));
 
         //USIM-TELCO
-        linkfiles.add(new LinkFiles("3F007FF06F3B" , "3F007F106F3B"));
-        linkfiles.add(new LinkFiles("3F007FF06F3C" , "3F007F106F3C"));
-        linkfiles.add(new LinkFiles("3F007FF06F42" , "3F007F106F42"));
-        linkfiles.add(new LinkFiles("3F007FF06F43" , "3F007F106F43"));
-        linkfiles.add(new LinkFiles("3F007FF06F47" , "3F007F106F47"));
-        linkfiles.add(new LinkFiles("3F007FF06F49" , "3F007F106F49"));
-        linkfiles.add(new LinkFiles("3F007FF06F4B" , "3F007F106F4B"));
-        linkfiles.add(new LinkFiles("3F007FF06F4C" , "3F007F106F4C"));
+        linkfiles.add(new FMLinkFiles("3F007FF06F3B" , "3F007F106F3B"));
+        linkfiles.add(new FMLinkFiles("3F007FF06F3C" , "3F007F106F3C"));
+        linkfiles.add(new FMLinkFiles("3F007FF06F42" , "3F007F106F42"));
+        linkfiles.add(new FMLinkFiles("3F007FF06F43" , "3F007F106F43"));
+        linkfiles.add(new FMLinkFiles("3F007FF06F47" , "3F007F106F47"));
+        linkfiles.add(new FMLinkFiles("3F007FF06F49" , "3F007F106F49"));
+        linkfiles.add(new FMLinkFiles("3F007FF06F4B" , "3F007F106F4B"));
+        linkfiles.add(new FMLinkFiles("3F007FF06F4C" , "3F007F106F4C"));
 
         return linkfiles;
     }
@@ -184,29 +226,47 @@ public class FileManagementController  {
     // ============================================================
 
     public void changePath_RuwiCellEvent(TableColumn.CellEditEvent edittedCell) {
-        Ruwi pathSelected = tblRuwi.getSelectionModel().getSelectedItem();
+        FMRuwi pathSelected = tblRuwi.getSelectionModel().getSelectedItem();
         pathSelected.setPath_Ruwi( edittedCell.getNewValue().toString());
     }
 
     public void deletePathButtonRuwiPusshed() {
 
-        ObservableList<Ruwi> selectedRows, allPath;
+        ObservableList<FMRuwi> selectedRows, allPath;
         selectedRows = tblRuwi.getSelectionModel().getSelectedItems();
 
         allPath = tblRuwi.getItems();
 
-        for (Ruwi ruwiandSfi : selectedRows)
+        for (FMRuwi ruwiandSfi : selectedRows)
         {
             allPath.remove(ruwiandSfi);
         }
 
     }
     public void newPathButtonRuwiPushed () {
-        Ruwi newruwi = new Ruwi(path_RuwiTextField.getText());
+        FMRuwi newruwi = new FMRuwi(path_RuwiTextField.getText());
 
         tblRuwi.getItems().add(newruwi);
         path_RuwiTextField.clear();
     }
+
+    public void SaveRuwiButtonPushed() {
+        tblRuwi.setEditable(false);
+        ModifyRuwiButton.setDisable(false);
+        SaveRuwiButton.setDisable(true);
+        path_RuwiTextField.setDisable(true);
+        addRuwiButton.setDisable(true);
+        deleteRuwiButton.setDisable(true);
+    }
+    public void ModifyRuwiButtonPushed() {
+        tblRuwi.setEditable(true);
+        ModifyRuwiButton.setDisable(true);
+        SaveRuwiButton.setDisable(false);
+        path_RuwiTextField.setDisable(false);
+        addRuwiButton.setDisable(false);
+        deleteRuwiButton.setDisable(false);
+    }
+
     @FXML private void handleIncludeRuwiCheck() { root.getMenuRuwi().setDisable(!chkIncludeRuwiTest.isSelected()); }
 
     // ============================================================

@@ -3,14 +3,14 @@ package com.idemia.tec.jkt.cardiotest.model;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class LinkFiles {
+public class FMLinkFiles {
 
     private SimpleStringProperty path_Master, path_Ghost;
 
 
-    public LinkFiles() {}
+    public FMLinkFiles() {}
 
-    public LinkFiles(String path_Master, String path_Ghost) {
+    public FMLinkFiles(String path_Master, String path_Ghost) {
         this.path_Master = new SimpleStringProperty (path_Master);
         this.path_Ghost = new SimpleStringProperty (path_Ghost);
     }

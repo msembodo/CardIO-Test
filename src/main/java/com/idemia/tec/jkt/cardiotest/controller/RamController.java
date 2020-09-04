@@ -164,6 +164,7 @@ public class RamController {
         cmbIsdMac.setValue(root.getRunSettings().getRam().getIsd().getCardManagerMac());
         cmbIsdEnc.setValue(root.getRunSettings().getRam().getIsd().getCardManagerEnc());
         cmbIsdKey.setValue(root.getRunSettings().getRam().getIsd().getCardManagerKey());
+        cmbIsdPin.setValue(root.getRunSettings().getRam().getIsd().getCardManagerPin());
 
 
         // initialize list of available keysets for RAM

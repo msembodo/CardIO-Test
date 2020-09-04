@@ -254,31 +254,152 @@ public class RamService {
                         + ";CHECK LOADED PACKAGE\n"
                         + ".POWER_ON\n"
                         + proactiveInitialization()
-                        + openChannel(isd) +
+        );
+        if(isd.getMethodForGpCommand().equals("no Card Manager Keyset")) {
+            routine.append(
+                    ".POWER_ON\n" +
+                            ".SET_BUFFER I %RAM_MSL \n"
+                            + proactiveInitialization()
+                            + "\n; SPI settings\n"
+                            + ".SET_BUFFER O %" + cipherKeyset.getKicValuation() + "\n"
+                            + ".SET_BUFFER Q %" + authKeyset.getKidValuation() + "\n"
+                            + ".SET_BUFFER M " + cipherKeyset.getComputedKic() + "\n"
+                            + ".SET_BUFFER N " + authKeyset.getComputedKid() + "\n"
+                            + ".INIT_ENV_0348\n"
+                            + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
+            );
+            if (root.getRunSettings().getSmsUpdate().isUseWhiteList())
+                routine.append(".CHANGE_TP_OA " + root.getRunSettings().getSmsUpdate().getTpOa() + "\n");
+            routine.append(
+                    ".CHANGE_TAR %TAR\n"
+                            + ".CHANGE_COUNTER L\n"
+                            + ".INCREASE_BUFFER L(04:05) 0001\n"
+                            + "\n; MSL = " + msl.getComputedMsl() + "\n"
+                            + ".SET_DLKEY_KIC O\n"
+                            + ".SET_DLKEY_KID Q\n"
+                            + ".CHANGE_KIC M\n"
+                            + ".CHANGE_KID N\n"
+                            + spiConfigurator(msl, cipherKeyset, authKeyset)
+            );
+            if (authKeyset.getKidMode().equals("AES - CMAC"))
+                routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
+
+            routine.append(
+                    ".SET_BUFFER J 80F2 2000 0E 4F 0C  A00000001853020000000010\n" +
+                            ".APPEND_SCRIPT J\n" +
+                            ".END_MESSAGE G J\n" +
+                            "\n" +
+                            "A0 C2 00 00 G J (9FXX)\n" +
+                            ".CLEAR_SCRIPT \n" +
+                            "\n" +
+                            "A0 C0 00 00 W(2;1) [XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX0161XX]\n"
+            );
+        } else {
+            routine.append(
+                    openChannel(isd)
+            );
+            if (!isd.isSecuredState()) {
+                routine.append(
                         "80F2 2000 0E 4F 0C  A00000001853020000000010 (61 0F)\n" +
                         "00C000000F [0C  A00000001853020000000010 0100]\n"
-                        + ";===========================================================\n" +
-                        ";Buffer L contains the anti replay counter for OTA message\n" +
-                        ";===========================================================\n" +
-                        ".SET_BUFFER L\n" +
-                        ".IMPORT_BUFFER L COUNTER.bin \n" +
-                        ".INCREASE_BUFFER L(04:05) 0001\n" +
-                        ".DISPLAY L\n" +
-                        ";==================================================================\n" +
-                        ";delete package\n" +
-                        ";==================================================================\n" +
-                        ".POWER_ON\n" +
-                        ".SET_BUFFER I %RAM_MSL \n" +
-                        proactiveInitialization() +
-                        "\n.POWER_ON\n"
-                        + proactiveInitialization()
-                        + "\n; SPI settings\n"
-                        + ".SET_BUFFER O %" + cipherKeyset.getKicValuation() + "\n"
-                        + ".SET_BUFFER Q %" + authKeyset.getKidValuation() + "\n"
-                        + ".SET_BUFFER M " + cipherKeyset.getComputedKic() + "\n"
-                        + ".SET_BUFFER N " + authKeyset.getComputedKid() + "\n"
-                        + ".INIT_ENV_0348\n"
-                        + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
+                );
+            } else {
+                routine.append(
+                        ".SET_BUFFER N 80F2 2000 0E 4F 0C  A00000001853020000000010 (61 0F)\n"
+                );
+                if (isd.getScLevel().equals("01") || isd.getScLevel().equals("03")) {
+                    routine.append(
+                            "\t.SET_BUFFER L <N>\n" +
+                                    "\t.SWITCH L\n" +
+                                    "\t\t.CASE 04\n" +
+                                    "\t\t\t.APPEND_BUFFER N 00\n" +
+                                    "\t\t.DEFAULT\n" +
+                                    "\t\t.BREAK\n" +
+                                    "\t.ENDSWITCH\n" +
+                                    "\n" +
+                                    "\t; Update command class\n" +
+                                    "\t.SET_BUFFER L N(1;1)\n" +
+                                    "\t.INCREASE_BUFFER L 04\n" +
+                                    "\n" +
+                                    "\t.SET_BUFFER N(1;1) L\n" +
+                                    "\n" +
+                                    "\t; Update command length\n" +
+                                    "\t.SET_BUFFER L N(5;1)\n" +
+                                    "\t.INCREASE_BUFFER L 08\n" +
+                                    "\t.DISPLAY L\n" +
+                                    "\n" +
+                                    "\t.SET_BUFFER N(5;1) L\n" +
+                                    "\n" +
+                                    "\t; Data for MAC computation (Previous MAC || Command)\n" +
+                                    "\t.SET_DATA M N\n" +
+                                    "\t.SET_VECT_INI 0000000000000000\n" +
+                                    "\t; Use MAC Session Key\n" +
+                                    "\t.SET_KEY J\n" +
+                                    "\t; Compute MAC\n" +
+                                    "\t.MAC3 M 80 /P\n" +
+                                    "\n" +
+                                    "\t; Append MAC to command\n" +
+                                    "\t.APPEND_BUFFER N M\n"
+                    );
+                }
+                if (isd.getScLevel().equals("03")) {
+                    routine.append(
+                            "\t; Retrieve the length of the data to encrypt\n" +
+                                    "\t.SET_BUFFER L <N>\n" +
+                                    "\t.DECREASE_BUFFER L 0D\n" +
+                                    "\n" +
+                                    "\t.SWITCH L\n" +
+                                    "\t\t.CASE 00\n" +
+                                    "\t\t\t* No data to encrypt\n" +
+                                    "\t\t.BREAK\n" +
+                                    "\n" +
+                                    "\t\t.DEFAULT\n" +
+                                    "\t\t\t; Retrieve data to be encrypted\n" +
+                                    "\t\t\t.SET_DATA N(6;L)\n" +
+                                    "\t\t\t.SET_VECT_INI 0000000000000000\n" +
+                                    "\t\t\t; Use Authentication/Encryption Session Key\n" +
+                                    "\t\t\t.SET_KEY I\n" +
+                                    "\t\t\t; Encrypt data and put result in L \n" +
+                                    "\t\t\t.DES3CBC L 80 /P\n" +
+                                    "\n" +
+                                    "\t\t\t; Put length of encrypted data in Lc\n" +
+                                    "\t\t\t.SET_BUFFER N(5;1) <L>\n" +
+                                    "\t\t\t; Add MAC length to Lc\n" +
+                                    "\t\t\t.INCREASE_BUFFER N(5;1) 08\n" +
+                                    "\n" +
+                                    "\t\t\t; construct command with encrypted data and computed MAC\n" +
+                                    "\t\t\t.SET_BUFFER N N(1;5) L M\n" +
+                                    "\t\t.BREAK\n" +
+                                    "\t.ENDSWITCH\n"
+                    );
+                }
+                routine.append(
+                        "N [0C  A00000001853020000000010 0100]\n"
+                );
+            }
+        }
+
+        routine.append(
+                    ";===========================================================\n" +
+                    ";Buffer L contains the anti replay counter for OTA message\n" +
+                    ";===========================================================\n" +
+                    ".SET_BUFFER L\n" +
+                    ".IMPORT_BUFFER L COUNTER.bin \n" +
+                    ".INCREASE_BUFFER L(04:05) 0001\n" +
+                    ".DISPLAY L\n" +
+                    ";==================================================================\n" +
+                    ";delete package\n" +
+                    ";==================================================================\n" +
+                    ".POWER_ON\n" +
+                    ".SET_BUFFER I %RAM_MSL \n"
+                    + proactiveInitialization()
+                    + "\n; SPI settings\n"
+                    + ".SET_BUFFER O %" + cipherKeyset.getKicValuation() + "\n"
+                    + ".SET_BUFFER Q %" + authKeyset.getKidValuation() + "\n"
+                    + ".SET_BUFFER M " + cipherKeyset.getComputedKic() + "\n"
+                    + ".SET_BUFFER N " + authKeyset.getComputedKid() + "\n"
+                    + ".INIT_ENV_0348\n"
+                    + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
         );
         if (root.getRunSettings().getSmsUpdate().isUseWhiteList())
             routine.append(".CHANGE_TP_OA " + root.getRunSettings().getSmsUpdate().getTpOa() + "\n");
@@ -304,7 +425,7 @@ public class RamService {
                         "A0 C2 00 00 G J (9FXX)\n" +
                         ".CLEAR_SCRIPT \n" +
                         "\n" +
-                        "A0 C0 00 00 W(2;1) [XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX0161XX]"
+                        "A0 C0 00 00 W(2;1) [XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX0161XX]\n"
         );
         return routine.toString();
     }
@@ -423,10 +544,133 @@ public class RamService {
                         ";check loaded package\n" +
                         ";==================================================================\n" +
                         ".POWER_ON\n" +
-                        proactiveInitialization() +
-                        openChannel(isd) +
+                        proactiveInitialization()
+        );
+        if(isd.getMethodForGpCommand().equals("no Card Manager Keyset")) {
+            routine.append(
+            ".POWER_ON\n" +
+                    ".SET_BUFFER I %RAM_MSL \n"
+                    + proactiveInitialization()
+                    + "\n; SPI settings\n"
+                    + ".SET_BUFFER O %" + cipherKeyset.getKicValuation() + "\n"
+                    + ".SET_BUFFER Q %" + authKeyset.getKidValuation() + "\n"
+                    + ".SET_BUFFER M " + cipherKeyset.getComputedKic() + "\n"
+                    + ".SET_BUFFER N " + authKeyset.getComputedKid() + "\n"
+                    + ".INIT_ENV_0348\n"
+                    + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
+            );
+            if (root.getRunSettings().getSmsUpdate().isUseWhiteList())
+                routine.append(".CHANGE_TP_OA " + root.getRunSettings().getSmsUpdate().getTpOa() + "\n");
+            routine.append(
+                    ".CHANGE_TAR %TAR\n"
+                            + ".CHANGE_COUNTER L\n"
+                            + ".INCREASE_BUFFER L(04:05) 0001\n"
+                            + "\n; MSL = " + msl.getComputedMsl() + "\n"
+                            + ".SET_DLKEY_KIC O\n"
+                            + ".SET_DLKEY_KID Q\n"
+                            + ".CHANGE_KIC M\n"
+                            + ".CHANGE_KID N\n"
+                            + spiConfigurator(msl, cipherKeyset, authKeyset)
+            );
+            if (authKeyset.getKidMode().equals("AES - CMAC"))
+                routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
+
+            routine.append(
+                    ".SET_BUFFER J 80F22000124F10A0000000770107601100020000000070\n" +
+                            ".APPEND_SCRIPT J\n" +
+                            ".END_MESSAGE G J\n" +
+                            "\n" +
+                            "A0 C2 00 00 G J (9FXX)\n" +
+                            ".CLEAR_SCRIPT \n" +
+                            "\n" +
+                            "A0 C0 00 00 W(2;1) [XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX0161XX]\n"
+            );
+        } else {
+            routine.append(
+                    openChannel(isd)
+            );
+            if (!isd.isSecuredState()) {
+                routine.append(
                         "80F22000124F10A0000000770107601100020000000070 (61 13)\n" +
-                        "00C0000013 [10  A0000000770107601100020000000070 0100]\n" +
+                        "00C0000013 [10  A0000000770107601100020000000070 0100]\n"
+                );
+            } else {
+                routine.append(
+                        ".SET_BUFFER N 80F22000124F10A0000000770107601100020000000070 (61 13)\n"
+                );
+                if (isd.getScLevel().equals("01") || isd.getScLevel().equals("03")) {
+                    routine.append(
+                            "\t.SET_BUFFER L <N>\n" +
+                            "\t.SWITCH L\n" +
+                            "\t\t.CASE 04\n" +
+                            "\t\t\t.APPEND_BUFFER N 00\n" +
+                            "\t\t.DEFAULT\n" +
+                            "\t\t.BREAK\n" +
+                            "\t.ENDSWITCH\n" +
+                            "\n" +
+                            "\t; Update command class\n" +
+                            "\t.SET_BUFFER L N(1;1)\n" +
+                            "\t.INCREASE_BUFFER L 04\n" +
+                            "\n" +
+                            "\t.SET_BUFFER N(1;1) L\n" +
+                            "\n" +
+                            "\t; Update command length\n" +
+                            "\t.SET_BUFFER L N(5;1)\n" +
+                            "\t.INCREASE_BUFFER L 08\n" +
+                            "\t.DISPLAY L\n" +
+                            "\n" +
+                            "\t.SET_BUFFER N(5;1) L\n" +
+                            "\n" +
+                            "\t; Data for MAC computation (Previous MAC || Command)\n" +
+                            "\t.SET_DATA M N\n" +
+                            "\t.SET_VECT_INI 0000000000000000\n" +
+                            "\t; Use MAC Session Key\n" +
+                            "\t.SET_KEY J\n" +
+                            "\t; Compute MAC\n" +
+                            "\t.MAC3 M 80 /P\n" +
+                            "\n" +
+                            "\t; Append MAC to command\n" +
+                            "\t.APPEND_BUFFER N M\n"
+                    );
+                }
+                if (isd.getScLevel().equals("03")) {
+                    routine.append(
+                            "\t; Retrieve the length of the data to encrypt\n" +
+                                    "\t.SET_BUFFER L <N>\n" +
+                                    "\t.DECREASE_BUFFER L 0D\n" +
+                                    "\n" +
+                                    "\t.SWITCH L\n" +
+                                    "\t\t.CASE 00\n" +
+                                    "\t\t\t* No data to encrypt\n" +
+                                    "\t\t.BREAK\n" +
+                                    "\n" +
+                                    "\t\t.DEFAULT\n" +
+                                    "\t\t\t; Retrieve data to be encrypted\n" +
+                                    "\t\t\t.SET_DATA N(6;L)\n" +
+                                    "\t\t\t.SET_VECT_INI 0000000000000000\n" +
+                                    "\t\t\t; Use Authentication/Encryption Session Key\n" +
+                                    "\t\t\t.SET_KEY I\n" +
+                                    "\t\t\t; Encrypt data and put result in L \n" +
+                                    "\t\t\t.DES3CBC L 80 /P\n" +
+                                    "\n" +
+                                    "\t\t\t; Put length of encrypted data in Lc\n" +
+                                    "\t\t\t.SET_BUFFER N(5;1) <L>\n" +
+                                    "\t\t\t; Add MAC length to Lc\n" +
+                                    "\t\t\t.INCREASE_BUFFER N(5;1) 08\n" +
+                                    "\n" +
+                                    "\t\t\t; construct command with encrypted data and computed MAC\n" +
+                                    "\t\t\t.SET_BUFFER N N(1;5) L M\n" +
+                                    "\t\t.BREAK\n" +
+                                    "\t.ENDSWITCH\n"
+                    );
+                }
+                routine.append(
+                        "N [10  A0000000770107601100020000000070 0100]\n"
+                );
+            }
+        }
+
+        routine.append(
                         ";===========================================================\n" +
                         ";Buffer L contains the anti replay counter for OTA message\n" +
                         ";===========================================================\n" +
@@ -631,7 +875,7 @@ public class RamService {
     private String getNextMessage(MinimumSecurityLevel msl) {
         StringBuilder routine = new StringBuilder();
         String auth_verif = msl.getAuthVerification();
-        if(auth_verif.equals("Cryptographic Checksum")) {
+        if(auth_verif.equals("Cryptographic Checksum") && msl.isUseCipher()) {
             routine.append(
                     "A0 C2 00 00 G J (9000)\n"
                         + ".GET_NEXT_MESSAGE G J \n"
@@ -665,65 +909,7 @@ public class RamService {
                                 ".DEFINE %PUT_KEY 80 D8 #1c #1c #1c #Nc ;(key version; mode and key index; Length, data)\n" +
                                 ".DEFINE %GET_RESPONSE_61 61\n" +
                                 ".DEFINE %GET_response 00 C0 00 00 #1c \n" +
-//                            "\t;--------------------------------------------------------------------------------------\n" +
-//                            "\t; PSKID derivation\n" +
-//                            "\t;--------------------------------------------------------------------------------------\n" +
-//                            "\t\n" +
-//                            "\t.ASCIITOHEX J %" + root.getRunSettings().getCardParameters().getIccid() + "\n" +
-//                            "\t.DEFINE %ICCID_ASCII J\n" +
-//                            "\t\n" +
-//                            "\t.SET_DATA %MKEY_LABEL\n" +
-//                            "\t.SHA I\n" +
-//                            "\t\n" +
-//                            "\t.DEFINE %MKEY_LABEL_HASH I\n" +
-//                            "\t.ASCIITOHEX I %MKEY_LABEL_HASH\n" +
-//                            "\t\n" +
-//                            "\t.DEFINE %MKEY_LABEL_HASH_ASCII I\n" +
-//                            "\t\n" +
-//                            "\t.DEFINE %SCP81_KEY_ID 4F544132\n" +
-//
-//
-//                            "\t;--------------------------------------------------------------------------------------\n" +
-//                            "\t; PSK derivation\n" +
-//                            "\t;--------------------------------------------------------------------------------------\n" +
-//                            "\n" +
-//                            "\t; we take the 8 last bytes of the ICCID_SWAPPED\n" +
-//                            "\t.SET_BUFFER I %" + root.getRunSettings().getCardParameters().getIccid() + "\n" +
-//                            "\t.DEFINE %8_LAST_ICCID  I(3;8)\n" +
-//                            "\t; set KM0 and KM1\n" +
-//                            "\t.DEFINE %KM0 %SCP81_KEY_MASTER\n" +
-//                            "\t.SET_BUFFER I %KM0\n" +
-//                            "\t.DEFINE %KM1 I(9;8) I(1;8)\n" +
-//                            "\n" +
-//                            "\t; compute R1\n" +
-//                            "\t.SET_DATA %8_LAST_ICCID\n" +
-//                            "\t.SET_KEY %KM0\n" +
-//                            "\t.DES3 I 00\n" +
-//                            "\n" +
-//                            "\t.DEFINE %B1 I\n" +
-//                            "\n" +
-//                            "\t; compute R2\n" +
-//                            "\t.SET_DATA %8_LAST_ICCID\n" +
-//                            "\t.SET_KEY %KM1\n" +
-//                            "\t.DES3 I 00\n" +
-//                            "\n" +
-//                            "\t.DEFINE %B2 I\n" +
-//                            "\n" +
-//                            "\t; psk\n" +
-//                            "\t.DEFINE %SCP81_KEY %B1 %B2\n" +
-//                            "\t\n" +
-//                            "\t.UNDEFINE %8_LAST_ICCID\n" +
-//                            "\t.UNDEFINE %KM0\n" +
-//                            "\t.UNDEFINE %KM1\n" +
-//                            "\t.UNDEFINE %B1\n" +
-//                            "\t.UNDEFINE %B2\n" +
-//                            "\t.UNDEFINE %SCP81_KEY_MASTER\n" +
-//                            "\t\n" +
                                 "\t.POWER_ON\n" +
-//
-//                            "\t;--------------------------------------------------------------------------------------------------------------------\n" +
-//                            "\t; Create a default SCP81 keyset for the ISD\n" +
-//                            "\t;--------------------------------------------------------------------------------------------------------------------\n" +
                                 "00 A4 04 00 <?> " + root.getRunSettings().getCardParameters().getCardManagerAid() + "\n" +
                                 "\t.SET_BUFFER I %ENC_SECRET_KEY\n" +
                                 "\t.SET_BUFFER J %MAC_SECRET_KEY\n" +
@@ -913,21 +1099,6 @@ public class RamService {
                                 "\t\t.AUTOMATIC_PROTOCOL_ON\n" +
                                 "\t.ENDIF\n" +
                                 "\n" +
-
-
-//                            "\t;--------------------------------------------------------------------------------------------------------\n" +
-//                            "\t*3 SCP81 KeySet modification. Please put your specific configuration here for KVN change\n" +
-//                            "\t;--------------------------------------------------------------------------------------------------------\n" +
-//                            "\t*3 Compute the PUT KEY to create the PSK TLS SCP81 keyset.\n" +
-//                            "\t.IFDEF DEK_TEST\n" +
-//                            "\t\t.DEFINE %PSK_TLS_SCP81_KEY  %PSK_TLS_NEW_KEY  ;%SCP81_KEY\n" +
-//                            "\t\t.DEFINE %DEDICATED_SCP_KEY_VERSION 40 ;Key version number\n" +
-//                            "\t\t.DEFINE %NUMBER_OF_KEY_VERSION_CREATION_WANTED 01 ;Only one key version created\n" +
-//                            "\t\t.CALL cmd_tools\\amendment_B_cmd_tools_create_SCP81_key_set_update.cmd  /LIST_OFF\n" +
-//                            "\t.ENDIF\n" +
-//                            "\n" +
-
-
                                 "\t;-----------------------------------------------\n" +
                                 "\t; RESET PREDEFINED VARIABLE\n" +
                                 "\t;-----------------------------------------------\n" +
@@ -979,23 +1150,13 @@ public class RamService {
                                 "\t\n" +
                                 "\t.UNDEFINE %SCP81_KEY_MASTER\n" +
                                 "\n"
-
-//                            "; Verify Code ADM1\n" +
-//                            "\tA0 20 0000 08 %ADM1 (9000)\n" +
-//                            "\t\n" +
-//                            "\t; Select Card Manager AID\n" +
-//                            "\t00 A4 0400 <?> %AID_CARD_MANAGER  (61 XX)\n" +
-//                            "\t\n" +
-//                            "\t; Get Response\n" +
-//                            "\t00 C0 00 00   W(2;1) [] (9000)\n" +
-//                            "\t\n"
                 );
             } else {
                 routine.append(
                         ".IFNDEF QUALIFICATION\n" +
                                 "\t\t.DEFINE %ISD_ENC %" + isd.getCardManagerEnc() + "\n"+
-                                "\t\t.DEFINE %ISD_DEK %" + isd.getCardManagerMac() + "\n" +
-                                "\t\t.DEFINE %ISD_MAC %" + isd.getCardManagerKey() + "\n" +
+                                "\t\t.DEFINE %ISD_DEK %" + isd.getCardManagerKey() + "\n" +
+                                "\t\t.DEFINE %ISD_MAC %" + isd.getCardManagerMac() + "\n" +
                                 "\t.ENDIF\n" +
                                 "\n" +
                                 "\t.PROTOCOL_LEVEL_APDU\n" +
@@ -1023,18 +1184,14 @@ public class RamService {
                                 "\n" +
                                 ".IFDEF SIMULATOR\n" +
                                 "\t* Display the command\n" +
-                                "\t.LIST_ON\n" +
                                 "\t.DISPLAY N\n" +
-                                "\t.LIST_OFF\n" +
                                 ".ELSE\n" +
                                 "\t.IFDEF OTA\n" +
                                 "\t\t* Apprend the command to the OTA script\n" +
                                 "\t\t.APPEND_BUFFER Q N\n" +
                                 "\t.ELSE\n" +
                                 "\t\t* Sends the command to the card\n" +
-                                "\t\t.LIST_ON\n" +
                                 "\t\tN (9000)\n" +
-                                "\t\t.LIST_OFF\n" +
                                 "\t.ENDIF\n" +
                                 ".ENDIF \n" +
                                 "\n" +
@@ -1137,7 +1294,11 @@ public class RamService {
         } else if (isd.getMethodForGpCommand().equals("no Card Manager Keyset")) {
             //TODO
         } else if (isd.getMethodForGpCommand().equals("SIMBiOs")) {
-            //TODO
+            routine.append(
+                    ".POWER_ON\n" +
+                    "00 A4 04 00 <?> " + root.getRunSettings().getCardParameters().getCardManagerAid() + "\n" +
+                    "00 20 00 00 08 %" + isd.getCardManagerPin() + "\n"
+            );
         }
         return routine.toString();
     }

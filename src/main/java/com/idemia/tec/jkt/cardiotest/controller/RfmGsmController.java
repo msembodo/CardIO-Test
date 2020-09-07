@@ -212,6 +212,8 @@ public class RfmGsmController {
             lblRfmGsmCustomTargetBadCase.setDisable(true);
             cmbRfmGsmCustomTargetAccBadCase.setDisable(true);
             txtRfmGsmCustomTargetEfBadCase.setDisable(true);
+            txtRfmGsmTargetEf.setDisable(false);
+            txtRfmGsmTargetEfBadCase.setDisable(false);
         } else {
             lblRfmGsmCustomTarget.setDisable(false);
             cmbRfmGsmCustomTargetAcc.setDisable(false);
@@ -219,6 +221,8 @@ public class RfmGsmController {
             lblRfmGsmCustomTargetBadCase.setDisable(false);
             cmbRfmGsmCustomTargetAccBadCase.setDisable(false);
             txtRfmGsmCustomTargetEfBadCase.setDisable(false);
+            txtRfmGsmTargetEf.setDisable(true);
+            txtRfmGsmTargetEfBadCase.setDisable(true);
         }
     }
 

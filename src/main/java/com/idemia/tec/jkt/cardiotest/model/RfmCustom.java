@@ -84,9 +84,6 @@ public class RfmCustom {
         this.tar = tar;
     }
 
-
-
-
     public String getTargetDf() {
         return targetDf;
     }
@@ -95,9 +92,6 @@ public class RfmCustom {
         this.targetDf = targetDf;
     }
 
-
-
-
     public String getCustomRfmDesc() {
         return customRfmDesc;
     }
@@ -105,9 +99,6 @@ public class RfmCustom {
     public void setCustomRfmDesc(String customRfmDesc) {
         this.customRfmDesc = customRfmDesc;
     }
-
-
-
 
     public String getTargetEf() {
         return targetEf;

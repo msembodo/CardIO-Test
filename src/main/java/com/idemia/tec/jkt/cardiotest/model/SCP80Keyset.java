@@ -179,9 +179,6 @@ public class   SCP80Keyset {
         this.cmacLength = cmacLength;
     }
 
-    // for debug
-    public String toJson() {
-        return new Gson().toJson(this);
-    }
+    public String toJson() { return new Gson().toJson(this); } // for debug
 
 }

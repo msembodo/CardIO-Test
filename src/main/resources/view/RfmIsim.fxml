@@ -60,7 +60,7 @@
                       <children>
                         <CheckBox fx:id="chkRfmIsimFullAccess" mnemonicParsing="false" onAction="#handleRfmIsimFullAccessCheck" text="Full access" />
                         <ComboBox fx:id="cmbRfmIsimCustomTargetAcc" onMouseClicked="#handleCustomTargetAccContextMenu" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <TextField fx:id="txtRfmIsimCustomTargetEf" prefHeight="31.0" prefWidth="144.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                        <TextField fx:id="txtRfmIsimCustomTargetEf" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                         <ComboBox fx:id="cmbRfmIsimCustomTargetAccBadCase" onMouseClicked="#handleCustomTargetAccBadCaseContextMenu" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                         <TextField fx:id="txtRfmIsimCustomTargetEfBadCase" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                         <Label fx:id="lblRfmIsimCustomTarget" text="EF" GridPane.rowIndex="1" />
@@ -118,21 +118,21 @@
                       </rowConstraints>
                       <children>
                         <Label text="MSL" />
-                        <TextField fx:id="txtRfmIsimMslByte" prefHeight="31.0" prefWidth="176.0" GridPane.columnIndex="1" />
-                        <Button mnemonicParsing="false" onAction="#handleButtonSetRfmIsimMsl" prefHeight="31.0" prefWidth="80.0" text="Set" GridPane.columnIndex="2" />
+                        <TextField fx:id="txtRfmIsimMslByte" prefWidth="176.0" GridPane.columnIndex="1" />
+                        <Button mnemonicParsing="false" onAction="#handleButtonSetRfmIsimMsl" prefWidth="80.0" text="Set" GridPane.columnIndex="2" />
                         <Label text="Cipher algorithm" GridPane.rowIndex="1" />
-                        <ComboBox fx:id="cmbRfmIsimCipherAlgo" prefHeight="31.0" prefWidth="254.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <ComboBox fx:id="cmbRfmIsimCipherAlgo" prefWidth="254.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         <CheckBox fx:id="chkRfmIsimUseCipher" mnemonicParsing="false" onAction="#handleRfmIsimUseCipherCheck" text="Use cipher" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                         <Label text="Authentication verification" GridPane.rowIndex="2" />
-                        <ComboBox fx:id="cmbRfmIsimAuthVerif" onAction="#handleRfmIsimAuthVerifSelection" prefHeight="31.0" prefWidth="254.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <ComboBox fx:id="cmbRfmIsimAuthVerif" onAction="#handleRfmIsimAuthVerifSelection" prefWidth="254.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                         <Label text="Signing algorithm" GridPane.rowIndex="3" />
-                        <ComboBox fx:id="cmbRfmIsimSigningAlgo" prefHeight="31.0" prefWidth="254.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <ComboBox fx:id="cmbRfmIsimSigningAlgo" prefWidth="254.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                         <Label text="Counter checking" GridPane.rowIndex="4" />
-                        <ComboBox fx:id="cmbRfmIsimCounterCheck" onAction="#handleRfmIsimCounterCheckingSelection" prefHeight="31.0" prefWidth="254.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <ComboBox fx:id="cmbRfmIsimCounterCheck" onAction="#handleRfmIsimCounterCheckingSelection" prefWidth="254.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                         <Label text="PoR requirement" GridPane.rowIndex="5" />
-                        <ComboBox fx:id="cmbRfmIsimPorRequirement" prefHeight="31.0" prefWidth="254.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                        <ComboBox fx:id="cmbRfmIsimPorRequirement" prefWidth="254.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                         <Label text="PoR security" GridPane.rowIndex="6" />
-                        <ComboBox fx:id="cmbRfmIsimPorSecurity" prefHeight="31.0" prefWidth="254.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                        <ComboBox fx:id="cmbRfmIsimPorSecurity" prefWidth="254.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                         <CheckBox fx:id="chkRfmIsimCipherPor" mnemonicParsing="false" text="Cipher PoR" GridPane.columnIndex="2" GridPane.rowIndex="6" />
                       </children>
                     </GridPane>

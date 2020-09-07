@@ -40,8 +40,7 @@ public class TestSuite {
         return name;
     }
 
-    @XmlAttribute
-    public void setName(String name) {
+    @XmlAttribute public void setName(String name) {
         this.name = name;
     }
 
@@ -49,8 +48,7 @@ public class TestSuite {
         return packageName;
     }
 
-    @XmlAttribute(name = "package")
-    public void setPackageName(String packageName) {
+    @XmlAttribute(name = "package") public void setPackageName(String packageName) {
         this.packageName = packageName;
     }
 
@@ -58,8 +56,7 @@ public class TestSuite {
         return failures;
     }
 
-    @XmlAttribute
-    public void setFailures(String failures) {
+    @XmlAttribute public void setFailures(String failures) {
         this.failures = failures;
     }
 
@@ -67,8 +64,7 @@ public class TestSuite {
         return errors;
     }
 
-    @XmlAttribute
-    public void setErrors(String errors) {
+    @XmlAttribute public void setErrors(String errors) {
         this.errors = errors;
     }
 
@@ -76,8 +72,7 @@ public class TestSuite {
         return skipped;
     }
 
-    @XmlAttribute
-    public void setSkipped(String skipped) {
+    @XmlAttribute public void setSkipped(String skipped) {
         this.skipped = skipped;
     }
 
@@ -85,8 +80,7 @@ public class TestSuite {
         return tests;
     }
 
-    @XmlAttribute
-    public void setTests(String tests) {
+    @XmlAttribute public void setTests(String tests) {
         this.tests = tests;
     }
 
@@ -94,8 +88,7 @@ public class TestSuite {
         return time;
     }
 
-    @XmlAttribute
-    public void setTime(String time) {
+    @XmlAttribute public void setTime(String time) {
         this.time = time;
     }
 
@@ -103,8 +96,7 @@ public class TestSuite {
         return systemErr;
     }
 
-    @XmlElement(name = "system-err")
-    public void setSystemErr(String systemErr) {
+    @XmlElement(name = "system-err") public void setSystemErr(String systemErr) {
         this.systemErr = systemErr;
     }
 
@@ -112,8 +104,7 @@ public class TestSuite {
         return testCases;
     }
 
-    @XmlElement(name = "testcase")
-    public void setTestCases(List<TestCase> testCases) {
+    @XmlElement(name = "testcase") public void setTestCases(List<TestCase> testCases) {
         this.testCases = testCases;
     }
 

@@ -21,58 +21,40 @@ public class SelectReaderController {
     private CardiotestApplication application;
     private List<CardTerminal> terminals;
 
-    @FXML
-    private ComboBox<String> cmbReader;
+    @FXML private ComboBox<String> cmbReader;
 
-    @Autowired
-    private RootLayoutController root;
+    @Autowired private RootLayoutController root;
 
     public SelectReaderController() {}
 
-    public void setMainApp(CardiotestApplication application) {
-        this.application = application;
-    }
+    public void setMainApp(CardiotestApplication application) { this.application = application; }
 
-    @FXML
-    private void initialize() {
+    @FXML private void initialize() {
         // get list of actual readers
         try {
             terminals = root.getTerminalFactory().terminals().list();
             if (!terminals.isEmpty()) {
                 List<String> readerNames = new ArrayList<>();
-                for (CardTerminal terminal : terminals)
-                    readerNames.add(terminal.getName());
+                for (CardTerminal terminal : terminals) readerNames.add(terminal.getName());
                 cmbReader.getItems().addAll(readerNames);
 
-                if (root.getRunSettings().getReaderNumber() == -1)
-                    cmbReader.getSelectionModel().select(0);
-                else
-                    cmbReader.getSelectionModel().select(root.getRunSettings().getReaderNumber());
-
-            } else
-                logger.error("No terminal/reader detected!");
-
-        } catch (CardException e) {
-            logger.error("Failed to list PCSC terminals");
-//            e.printStackTrace();
+                if (root.getRunSettings().getReaderNumber() == -1) cmbReader.getSelectionModel().select(0);
+                else cmbReader.getSelectionModel().select(root.getRunSettings().getReaderNumber());
+            }
+            else logger.error("No terminal/reader detected!");
         }
+        catch (CardException e) { logger.error("Failed to list PCSC terminals"); }
     }
 
-    @FXML
-    public void handleButtonCancel() {
-        application.getSelectReaderDialogStage().close();
-    }
+    @FXML public void handleButtonCancel() { application.getSelectReaderDialogStage().close(); }
 
-    @FXML
-    public void handleButtonOk() {
+    @FXML public void handleButtonOk() {
         int selectedReaderIndex = cmbReader.getSelectionModel().getSelectedIndex();
         root.getRunSettings().setReaderNumber(selectedReaderIndex);
-
         if (selectedReaderIndex != -1) {
             root.getLblTerminalInfo().setText(terminals.get(selectedReaderIndex).getName());
             root.getLblTerminalInfo().setTextFill(Color.BLACK);
         }
-
         application.getSelectReaderDialogStage().close();
     }
 

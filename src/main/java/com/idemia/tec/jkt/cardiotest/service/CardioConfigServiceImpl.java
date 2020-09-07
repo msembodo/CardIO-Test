@@ -13,19 +13,18 @@ public class CardioConfigServiceImpl implements CardioConfigService {
 
     private File runSettingsFile;
 
-    @Override
-    public RunSettings initConfig() {
+    @Override public RunSettings initConfig() {
         runSettingsFile = new File("run-settings.json");
         if (runSettingsFile.exists()) {
             // read saved settings
             ObjectMapper mapper = new ObjectMapper();
-            try {
-                return mapper.readValue(runSettingsFile, RunSettings.class);
-            } catch (IOException e) {
+            try { return mapper.readValue(runSettingsFile, RunSettings.class); }
+            catch (IOException e) {
                 e.printStackTrace();
                 return null;
             }
-        } else {
+        }
+        else {
             // constants for default values
             String PROJECT_PATH_DEFAULT = "C:\\";
             String ADV_SAVE_VAR_DEFAULT = "variables.txt";
@@ -74,6 +73,8 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             cardParameters.setDfCsim("7FF3");
             cardParameters.setIccid("ICCID");
             defaultSettings.setCardParameters(cardParameters);
+
+
 
             Authentication authentication = new Authentication();
             authentication.setIncludeDeltaTest(true);
@@ -143,7 +144,7 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             rfmIsim.setIncludeRfmIsim(true);
             rfmIsim.setTar("B00025");
             rfmIsim.setTargetEf("6FAD");
-            rfmIsim.setTargetEfBadCase("6FFC");
+            rfmIsim.setTargetEfBadCase("6F02");
             rfmIsim.setFullAccess(true);
             rfmIsim.setMinimumSecurityLevel(rfmIsimMsl);
             defaultSettings.setRfmIsim(rfmIsim);
@@ -171,6 +172,22 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             defaultSettings.setCustomScriptsSection2(new ArrayList<>());
             defaultSettings.setCustomScriptsSection3(new ArrayList<>());
 
+            MinimumSecurityLevel rfmCustomMsl = new MinimumSecurityLevel(true, "Cryptographic Checksum", "Counter must be higher");
+            rfmCustomMsl.setCipherAlgo("3DES - CBC 2 keys");
+            rfmCustomMsl.setSigningAlgo("3DES - CBC 2 keys");
+            rfmCustomMsl.setPorRequirement("PoR required");
+            rfmCustomMsl.setPorSecurity("response with no security");
+
+            RfmCustom rfmCustom = new RfmCustom();
+            rfmCustom.setIncludeRfmCustom(true);
+            rfmCustom.setTar("494D45");
+            rfmCustom.setTargetDf("7FF0");
+            rfmCustom.setTargetEf("6F7B");
+            rfmCustom.setTargetEfBadCase("6F05");
+            rfmCustom.setFullAccess(true);
+            rfmCustom.setMinimumSecurityLevel(rfmCustomMsl);
+            defaultSettings.setRfmCustom(rfmCustom);
+            rfmCustom.setCustomRfmDesc("RFM ...");
 
             ObjectMapper mapper = new ObjectMapper();
             try {
@@ -183,13 +200,9 @@ public class CardioConfigServiceImpl implements CardioConfigService {
         }
     }
 
-    @Override
-    public void saveConfig(RunSettings runSettings) {
+    @Override public void saveConfig(RunSettings runSettings) {
         ObjectMapper mapper = new ObjectMapper();
-        try {
-            mapper.writerWithDefaultPrettyPrinter().writeValue(runSettingsFile, runSettings);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        try { mapper.writerWithDefaultPrettyPrinter().writeValue(runSettingsFile, runSettings); }
+        catch (IOException e) { e.printStackTrace(); }
     }
 }

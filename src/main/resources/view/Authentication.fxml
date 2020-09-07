@@ -89,8 +89,8 @@
                         <TextField fx:id="txtSqnMax" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                         <TextField fx:id="txtDelta" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                         <TextField fx:id="txtAmf" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                        <ComboBox fx:id="cmbKi" onMouseClicked="#handleKiContextMenu" prefHeight="31.0" prefWidth="359.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                        <ComboBox fx:id="cmbOpc" onMouseClicked="#handleOpcContextMenu" prefHeight="31.0" prefWidth="359.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                        <ComboBox fx:id="cmbKi" onMouseClicked="#handleKiContextMenu" prefWidth="359.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                        <ComboBox fx:id="cmbOpc" onMouseClicked="#handleOpcContextMenu" prefWidth="359.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                       </children>
                     </GridPane>
                   </children>

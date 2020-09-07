@@ -23,4 +23,11 @@ public interface RunService {
     boolean runSecretCodes3g();
     boolean runSecretCodes2g();
 
+    //Custom RFM --------------------------------------
+    boolean runRfmCustom();
+    boolean runRfmCustomUpdateRecord();
+    boolean runRfmCustomExpandedMode();
+    // ------------------------------------------------
+
+
 }

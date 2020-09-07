@@ -78,7 +78,7 @@ public class RfmGsmController {
         cipherAlgos.add("3DES - CBC 2 keys");
         cipherAlgos.add("3DES - CBC 3 keys");
         cipherAlgos.add("DES - ECB");
-        cmbRfmGsmCipherAlgo.getItems().addAll(cipherAlgos);
+        if (!(cmbRfmGsmCipherAlgo.getItems().size() > 0)) cmbRfmGsmCipherAlgo.getItems().addAll(cipherAlgos);
         cmbRfmGsmCipherAlgo.setValue(root.getRunSettings().getRfmGsm().getMinimumSecurityLevel().getCipherAlgo());
 
         // initialize list of auth verification
@@ -87,7 +87,7 @@ public class RfmGsmController {
         authVerifs.add("Redundancy Check");
         authVerifs.add("Cryptographic Checksum");
         authVerifs.add("Digital Signature");
-        cmbRfmGsmAuthVerif.getItems().addAll(authVerifs);
+        if (!(cmbRfmGsmAuthVerif.getItems().size() > 0)) cmbRfmGsmAuthVerif.getItems().addAll(authVerifs);
         cmbRfmGsmAuthVerif.setValue(root.getRunSettings().getRfmGsm().getMinimumSecurityLevel().getAuthVerification());
 
         // initialize list of signing algorithm
@@ -107,7 +107,7 @@ public class RfmGsmController {
         signingAlgos.add("ISO9797 Algo 4 (auth value 4 byte)");
         signingAlgos.add("ISO9797 Algo 4 (auth value 8 byte)");
         signingAlgos.add("CRC16");
-        cmbRfmGsmSigningAlgo.getItems().addAll(signingAlgos);
+        if (!(cmbRfmGsmSigningAlgo.getItems().size() > 0)) cmbRfmGsmSigningAlgo.getItems().addAll(signingAlgos);
         cmbRfmGsmSigningAlgo.setValue(root.getRunSettings().getRfmGsm().getMinimumSecurityLevel().getSigningAlgo());
 
         // initialize list of counter checking
@@ -116,7 +116,7 @@ public class RfmGsmController {
         counterCheckings.add("Counter available no checking");
         counterCheckings.add("Counter must be higher");
         counterCheckings.add("Counter must be one higher");
-        cmbRfmGsmCounterCheck.getItems().addAll(counterCheckings);
+        if (!(cmbRfmGsmCounterCheck.getItems().size() > 0)) cmbRfmGsmCounterCheck.getItems().addAll(counterCheckings);
         cmbRfmGsmCounterCheck.setValue(root.getRunSettings().getRfmGsm().getMinimumSecurityLevel().getCounterChecking());
 
         // initialize list of PoR requirement
@@ -124,7 +124,7 @@ public class RfmGsmController {
         porRequirements.add("No PoR");
         porRequirements.add("PoR required");
         porRequirements.add("PoR only if error");
-        cmbRfmGsmPorRequirement.getItems().addAll(porRequirements);
+        if (!(cmbRfmGsmPorRequirement.getItems().size() > 0)) cmbRfmGsmPorRequirement.getItems().addAll(porRequirements);
         cmbRfmGsmPorRequirement.setValue(root.getRunSettings().getRfmGsm().getMinimumSecurityLevel().getPorRequirement());
 
         chkRfmGsmCipherPor.setSelected(root.getRunSettings().getRfmGsm().getMinimumSecurityLevel().isCipherPor());
@@ -135,7 +135,7 @@ public class RfmGsmController {
         porSecurities.add("response with RC");
         porSecurities.add("response with CC");
         porSecurities.add("response with DS");
-        cmbRfmGsmPorSecurity.getItems().addAll(porSecurities);
+        if (!(cmbRfmGsmPorSecurity.getItems().size() > 0)) cmbRfmGsmPorSecurity.getItems().addAll(porSecurities);
         cmbRfmGsmPorSecurity.setValue(root.getRunSettings().getRfmGsm().getMinimumSecurityLevel().getPorSecurity());
 
         // RFM Gsm parameters

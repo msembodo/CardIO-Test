@@ -115,6 +115,7 @@ public class CardiotestController {
     private CardiotestApplication application;
 
     @Autowired private RootLayoutController root;
+    @Autowired private CardiotestController cardiotest;
     @Autowired private SecretCodesController secretCodesController;
     @Autowired private AuthenticationController authenticationController;
     @Autowired private RfmUsimController rfmUsimController;
@@ -186,16 +187,7 @@ public class CardiotestController {
             for (VariableMapping mapping : application.getMappings())
                 mappedVariables.add(mapping.getMappedVariable());
         }
-        if (application.getMappings().size() == 0) {
-            for(AdvSaveVariable advSaveVariable : application.getAdvSaveVariables()) {
-                if (advSaveVariable.getDefinedVariable().equals("GSM_ICCID"))
-                    application.getMappings().add(new VariableMapping("ICCID", "GSM_ICCID",null, false));
-                else if(advSaveVariable.getDefinedVariable().equals("USIM_ICCID"))
-                    application.getMappings().add(new VariableMapping("ICCID", "USIM_ICCID",null, false));
-                else if(advSaveVariable.getDefinedVariable().equals("ICCID"))
-                    application.getMappings().add(new VariableMapping("ICCID", "ICCID",null, false));
-            }
-        }
+
     }
 
     @FXML public void initialize() {
@@ -275,7 +267,7 @@ public class CardiotestController {
         txtDfIsim.setText(root.getRunSettings().getCardParameters().getDfIsim());
         txtCsimAid.setText(root.getRunSettings().getCardParameters().getCsimAid());
         txtDfCsim.setText(root.getRunSettings().getCardParameters().getDfCsim());
-        cmbIccid.getSelectionModel().select(root.getRunSettings().getCardParameters().getIccid());
+        cmbIccid.setItems(mappedVariables);
 
         // OTA settings
         clmnKeysetName.setCellValueFactory(celldata -> celldata.getValue().keysetNameProperty());

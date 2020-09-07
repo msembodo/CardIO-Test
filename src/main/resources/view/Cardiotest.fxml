@@ -225,7 +225,8 @@
                                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                    <RowConstraints />
+                                                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" />
                                                       </rowConstraints>
                                                       <children>
                                                         <Label text="Card Manager AID" />
@@ -238,6 +239,7 @@
                                                         <Label text="DF ISIM" GridPane.rowIndex="7" />
                                                         <Label text="CSIM AID" GridPane.rowIndex="8" />
                                                         <Label text="DF CSIM" GridPane.rowIndex="9" />
+                                                        <Label text="ICCID" GridPane.rowIndex="10" />
                                                         <TextField fx:id="txtCardManagerAid" GridPane.columnIndex="1" />
                                                         <TextField fx:id="txtUsimAid" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                         <TextField fx:id="txtDfUsim" GridPane.columnIndex="1" GridPane.rowIndex="2" />
@@ -248,6 +250,7 @@
                                                         <TextField fx:id="txtDfIsim" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                                                         <TextField fx:id="txtCsimAid" GridPane.columnIndex="1" GridPane.rowIndex="8" />
                                                         <TextField fx:id="txtDfCsim" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                                                        <ComboBox fx:id="cmbIccid" onMouseClicked="#handleIccidContextMenu" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="10" />
                                                       </children>
                                                     </GridPane>
                                                   </children>
@@ -409,6 +412,11 @@
                             <Tab closable="false" text="Custom RFM">
                               <content>
                                 <fx:include source="RfmCustom.fxml" />
+                              </content>
+                            </Tab>
+                            <Tab closable="false" text="RAM">
+                              <content>
+                                <fx:include source="Ram.fxml" />
                               </content>
                             </Tab>
                             <Tab closable="false" text="Secret Codes">

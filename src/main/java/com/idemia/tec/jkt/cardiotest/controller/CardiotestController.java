@@ -78,8 +78,6 @@ public class CardiotestController {
     @FXML private TextField txtDfCsim;
     @FXML private ComboBox<String> cmbIccid;
 
-
-
     // OTA settings tab
     @FXML private TableView<SCP80Keyset> tblScp80Keyset;
     @FXML private TableColumn<SCP80Keyset, String> clmnKeysetName;
@@ -278,6 +276,7 @@ public class CardiotestController {
                 (observable, oldValue, newValue) -> showKeyset(newValue)
         );
         // initialize list of versions
+        cmbKeysetVersion.getItems().clear();
         for (int i = 0; i < 15; i++)
             cmbKeysetVersion.getItems().add(Integer.toString(i + 1));
         // initialize list of types
@@ -286,6 +285,7 @@ public class CardiotestController {
         keysetTypes.add("DES");
         keysetTypes.add("AES");
         keysetTypes.add("Proprietary Implementations");
+        cmbKeysetType.getItems().clear();
         cmbKeysetType.getItems().addAll(keysetTypes);
         // initialize list of cipher modes
         List<String> cipherBlockModes = new ArrayList<>();
@@ -303,6 +303,8 @@ public class CardiotestController {
         scp80KeyLengths.add("24");
         scp80KeyLengths.add("32");
 
+        cmbKicLength.getItems().clear();
+        cmbKicMode.getItems().clear();
         cmbKicLength.getItems().addAll(scp80KeyLengths);
         cmbKicMode.getItems().addAll(cipherBlockModes);
 
@@ -317,10 +319,13 @@ public class CardiotestController {
         cmbKidValuation.setItems(mappedVariables);
         registerForComboUpdate(cmbKidValuation);
 
+        cmbKidLength.getItems().clear();
+        cmbKidMode.getItems().clear();
         cmbKidLength.getItems().addAll(scp80KeyLengths);
         cmbKidMode.getItems().addAll(ccBlockModes);
 
         // initialize CMAC lengths
+        cmbCmacLength.getItems().clear();
         List<String> cmacLengths = new ArrayList<>();
         cmacLengths.add("4");
         cmacLengths.add("8");
@@ -338,6 +343,7 @@ public class CardiotestController {
         txtTpOa.setText(root.getRunSettings().getSmsUpdate().getTpOa());
 
         // initialize list of PoR format
+        cmbPorFormat.getItems().clear();
         List<String> porFormats = new ArrayList<>();
         porFormats.add("PoR as SMS-DELIVER-REPORT");
         porFormats.add("PoR as SMS-SUBMIT");

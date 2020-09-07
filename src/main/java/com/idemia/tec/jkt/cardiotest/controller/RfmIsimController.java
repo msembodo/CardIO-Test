@@ -78,7 +78,7 @@ public class RfmIsimController {
         cipherAlgos.add("3DES - CBC 2 keys");
         cipherAlgos.add("3DES - CBC 3 keys");
         cipherAlgos.add("DES - ECB");
-        cmbRfmIsimCipherAlgo.getItems().addAll(cipherAlgos);
+        if (!(cmbRfmIsimCipherAlgo.getItems().size() > 0)) cmbRfmIsimCipherAlgo.getItems().addAll(cipherAlgos);
         cmbRfmIsimCipherAlgo.setValue(root.getRunSettings().getRfmIsim().getMinimumSecurityLevel().getCipherAlgo());
 
         // initialize list of auth verification
@@ -87,7 +87,7 @@ public class RfmIsimController {
         authVerifs.add("Redundancy Check");
         authVerifs.add("Cryptographic Checksum");
         authVerifs.add("Digital Signature");
-        cmbRfmIsimAuthVerif.getItems().addAll(authVerifs);
+        if (!(cmbRfmIsimAuthVerif.getItems().size() > 0)) cmbRfmIsimAuthVerif.getItems().addAll(authVerifs);
         cmbRfmIsimAuthVerif.setValue(root.getRunSettings().getRfmIsim().getMinimumSecurityLevel().getAuthVerification());
 
         // initialize list of signing algorithm
@@ -107,7 +107,7 @@ public class RfmIsimController {
         signingAlgos.add("ISO9797 Algo 4 (auth value 4 byte)");
         signingAlgos.add("ISO9797 Algo 4 (auth value 8 byte)");
         signingAlgos.add("CRC16");
-        cmbRfmIsimSigningAlgo.getItems().addAll(signingAlgos);
+        if (!(cmbRfmIsimSigningAlgo.getItems().size() > 0)) cmbRfmIsimSigningAlgo.getItems().addAll(signingAlgos);
         cmbRfmIsimSigningAlgo.setValue(root.getRunSettings().getRfmIsim().getMinimumSecurityLevel().getSigningAlgo());
 
         // initialize list of counter checking
@@ -116,7 +116,7 @@ public class RfmIsimController {
         counterCheckings.add("Counter available no checking");
         counterCheckings.add("Counter must be higher");
         counterCheckings.add("Counter must be one higher");
-        cmbRfmIsimCounterCheck.getItems().addAll(counterCheckings);
+        if (!(cmbRfmIsimCounterCheck.getItems().size() > 0)) cmbRfmIsimCounterCheck.getItems().addAll(counterCheckings);
         cmbRfmIsimCounterCheck.setValue(root.getRunSettings().getRfmIsim().getMinimumSecurityLevel().getCounterChecking());
 
         // initialize list of PoR requirement
@@ -124,7 +124,7 @@ public class RfmIsimController {
         porRequirements.add("No PoR");
         porRequirements.add("PoR required");
         porRequirements.add("PoR only if error");
-        cmbRfmIsimPorRequirement.getItems().addAll(porRequirements);
+        if (!(cmbRfmIsimPorRequirement.getItems().size() > 0)) cmbRfmIsimPorRequirement.getItems().addAll(porRequirements);
         cmbRfmIsimPorRequirement.setValue(root.getRunSettings().getRfmIsim().getMinimumSecurityLevel().getPorRequirement());
 
         chkRfmIsimCipherPor.setSelected(root.getRunSettings().getRfmIsim().getMinimumSecurityLevel().isCipherPor());
@@ -135,7 +135,7 @@ public class RfmIsimController {
         porSecurities.add("response with RC");
         porSecurities.add("response with CC");
         porSecurities.add("response with DS");
-        cmbRfmIsimPorSecurity.getItems().addAll(porSecurities);
+        if (!(cmbRfmIsimPorSecurity.getItems().size() > 0)) cmbRfmIsimPorSecurity.getItems().addAll(porSecurities);
         cmbRfmIsimPorSecurity.setValue(root.getRunSettings().getRfmIsim().getMinimumSecurityLevel().getPorSecurity());
 
         // RFM ISIM parameters

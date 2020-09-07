@@ -80,7 +80,7 @@ public class RfmCustomController {
         cipherAlgos.add("3DES - CBC 2 keys");
         cipherAlgos.add("3DES - CBC 3 keys");
         cipherAlgos.add("DES - ECB");
-        cmbRfmCustomCipherAlgo.getItems().addAll(cipherAlgos);
+        if (!(cmbRfmCustomCipherAlgo.getItems().size() > 0)) cmbRfmCustomCipherAlgo.getItems().addAll(cipherAlgos);
         cmbRfmCustomCipherAlgo.setValue(root.getRunSettings().getRfmCustom().getMinimumSecurityLevel().getCipherAlgo());
 
         // initialize list of auth verification
@@ -89,7 +89,7 @@ public class RfmCustomController {
         authVerifs.add("Redundancy Check");
         authVerifs.add("Cryptographic Checksum");
         authVerifs.add("Digital Signature");
-        cmbRfmCustomAuthVerif.getItems().addAll(authVerifs);
+        if (!(cmbRfmCustomAuthVerif.getItems().size() > 0)) cmbRfmCustomAuthVerif.getItems().addAll(authVerifs);
         cmbRfmCustomAuthVerif.setValue(root.getRunSettings().getRfmCustom().getMinimumSecurityLevel().getAuthVerification());
 
         // initialize list of signing algorithm
@@ -109,7 +109,7 @@ public class RfmCustomController {
         signingAlgos.add("ISO9797 Algo 4 (auth value 4 byte)");
         signingAlgos.add("ISO9797 Algo 4 (auth value 8 byte)");
         signingAlgos.add("CRC16");
-        cmbRfmCustomSigningAlgo.getItems().addAll(signingAlgos);
+        if (!(cmbRfmCustomSigningAlgo.getItems().size() > 0)) cmbRfmCustomSigningAlgo.getItems().addAll(signingAlgos);
         cmbRfmCustomSigningAlgo.setValue(root.getRunSettings().getRfmCustom().getMinimumSecurityLevel().getSigningAlgo());
 
         // initialize list of counter checking
@@ -118,7 +118,7 @@ public class RfmCustomController {
         counterCheckings.add("Counter available no checking");
         counterCheckings.add("Counter must be higher");
         counterCheckings.add("Counter must be one higher");
-        cmbRfmCustomCounterCheck.getItems().addAll(counterCheckings);
+        if (!(cmbRfmCustomCounterCheck.getItems().size() > 0)) cmbRfmCustomCounterCheck.getItems().addAll(counterCheckings);
         cmbRfmCustomCounterCheck.setValue(root.getRunSettings().getRfmCustom().getMinimumSecurityLevel().getCounterChecking());
 
         // initialize list of PoR requirement
@@ -126,7 +126,7 @@ public class RfmCustomController {
         porRequirements.add("No PoR");
         porRequirements.add("PoR required");
         porRequirements.add("PoR only if error");
-        cmbRfmCustomPorRequirement.getItems().addAll(porRequirements);
+        if (!(cmbRfmCustomPorRequirement.getItems().size() > 0)) cmbRfmCustomPorRequirement.getItems().addAll(porRequirements);
         cmbRfmCustomPorRequirement.setValue(root.getRunSettings().getRfmCustom().getMinimumSecurityLevel().getPorRequirement());
 
         chkRfmCustomCipherPor.setSelected(root.getRunSettings().getRfmCustom().getMinimumSecurityLevel().isCipherPor());
@@ -137,7 +137,7 @@ public class RfmCustomController {
         porSecurities.add("response with RC");
         porSecurities.add("response with CC");
         porSecurities.add("response with DS");
-        cmbRfmCustomPorSecurity.getItems().addAll(porSecurities);
+        if (!(cmbRfmCustomPorSecurity.getItems().size() > 0)) cmbRfmCustomPorSecurity.getItems().addAll(porSecurities);
         cmbRfmCustomPorSecurity.setValue(root.getRunSettings().getRfmCustom().getMinimumSecurityLevel().getPorSecurity());
 
         // RFM CUSTOM parameters

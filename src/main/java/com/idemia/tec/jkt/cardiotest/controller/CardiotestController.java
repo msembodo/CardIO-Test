@@ -76,6 +76,7 @@ public class CardiotestController {
     @FXML private TextField txtDfIsim;
     @FXML private TextField txtCsimAid;
     @FXML private TextField txtDfCsim;
+    @FXML private ComboBox<String> cmbIccid;
 
     // OTA settings tab
     @FXML private TableView<SCP80Keyset> tblScp80Keyset;
@@ -112,11 +113,13 @@ public class CardiotestController {
     private CardiotestApplication application;
 
     @Autowired private RootLayoutController root;
+    @Autowired private CardiotestController cardiotest;
     @Autowired private SecretCodesController secretCodesController;
     @Autowired private AuthenticationController authenticationController;
     @Autowired private RfmUsimController rfmUsimController;
     @Autowired private RfmGsmController rfmGsmController;
     @Autowired private RfmIsimController rfmIsimController;
+    @Autowired private RamController ramController;
     @Autowired private RfmCustomController rfmCustomController;
 
     public CardiotestController() {}
@@ -182,6 +185,7 @@ public class CardiotestController {
             for (VariableMapping mapping : application.getMappings())
                 mappedVariables.add(mapping.getMappedVariable());
         }
+
     }
 
     @FXML public void initialize() {
@@ -261,6 +265,7 @@ public class CardiotestController {
         txtDfIsim.setText(root.getRunSettings().getCardParameters().getDfIsim());
         txtCsimAid.setText(root.getRunSettings().getCardParameters().getCsimAid());
         txtDfCsim.setText(root.getRunSettings().getCardParameters().getDfCsim());
+        cmbIccid.setValue(root.getRunSettings().getCardParameters().getIccid());
 
         // OTA settings
         clmnKeysetName.setCellValueFactory(celldata -> celldata.getValue().keysetNameProperty());
@@ -622,6 +627,8 @@ public class CardiotestController {
         }
     }
 
+    @FXML private void handleIccidContextMenu() { cmbIccid.setItems(cardiotest.getMappedVariables()); }
+
     public void saveControlState() {
         // project details
         root.getRunSettings().setProjectPath(txtProjectFolder.getText());
@@ -649,7 +656,7 @@ public class CardiotestController {
         root.getRunSettings().getCardParameters().setDfIsim(txtDfIsim.getText());
         root.getRunSettings().getCardParameters().setCsimAid(txtCsimAid.getText());
         root.getRunSettings().getCardParameters().setDfCsim(txtDfCsim.getText());
-
+        root.getRunSettings().getCardParameters().setIccid(cmbIccid.getSelectionModel().getSelectedItem());
 
         // SMS update settings
         root.getRunSettings().getSmsUpdate().setUdhiFirstByte(txtUdhiFirstByte.getText());
@@ -676,6 +683,9 @@ public class CardiotestController {
 
         //Custom RFM --------------------------------------
         rfmCustomController.saveControlState();
+
+        //RAM
+        ramController.saveControlState();
 
     }
 

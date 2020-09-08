@@ -61,6 +61,9 @@ public class RootLayoutController {
     private boolean runRfmIsimOk;
     private boolean runRfmIsimUpdateRecordOk;
     private boolean runRfmIsimExpandedModeOk;
+    private boolean runRamOk;
+    private boolean runRamUpdateRecordOk;
+    private boolean runRamExpandedModeOk;
     private boolean runRfmCustomOk;
     private boolean runRfmCustomUpdateRecordOk;
     private boolean runRfmCustomExpandedModeOk;
@@ -75,6 +78,7 @@ public class RootLayoutController {
     @Autowired private RfmIsimController rfmIsimController;
     @Autowired private RfmCustomController rfmCustomController;
     @Autowired private CustomTabController customTabController;
+    @Autowired private RamController ramController;
     @Autowired private CardioConfigService cardioConfigService;
     @Autowired private RunService runService;
     @Autowired private ReportService reportService;
@@ -98,6 +102,9 @@ public class RootLayoutController {
     @FXML private MenuItem menuRfmCustom;
     @FXML private MenuItem menuRfmCustomUpdateRecord;
     @FXML private MenuItem menuRfmCustomExpandedMode;
+    @FXML private MenuItem menuRam;
+    @FXML private MenuItem menuRamUpdateRecord;
+    @FXML private MenuItem menuRamExpandedMode;
     @FXML private MenuItem menuCodes3g;
     @FXML private MenuItem menuCodes2g;
 
@@ -557,6 +564,51 @@ public class RootLayoutController {
                 runSettings.getRfmIsim().setTestRfmIsimExpandedModeOk(false);
                 errFailure += module.getFailure().replace("\n", ";");
                 runSettings.getRfmIsim().setTestRfmIsimExpandedModeMessage(errFailure);
+            }
+        }
+        if (module.getName().equals("RAM")) {
+            runSettings.getRam().setTestRamOk(true);
+            runSettings.getRam().setTestRamMessage("OK");
+            String errFailure = "";
+            if (module.getError() != null) {
+                runSettings.getRam().setTestRamOk(false);
+                errFailure += module.getError().replace("\n", ";");
+                runSettings.getRam().setTestRamMessage(errFailure);
+            }
+            if (module.getFailure() != null) {
+                runSettings.getRam().setTestRamOk(false);
+                errFailure += module.getFailure().replace("\n", ";");
+                runSettings.getRam().setTestRamMessage(errFailure);
+            }
+        }
+        if (module.getName().equals("RFM_ISIM_UpdateRecord")) {
+            runSettings.getRam().setTestRamUpdateRecordOk(true);
+            runSettings.getRam().setTestRamUpdateRecordMessage("OK");
+            String errFailure = "";
+            if (module.getError() != null) {
+                runSettings.getRam().setTestRamUpdateRecordOk(false);
+                errFailure += module.getError().replace("\n", ";");
+                runSettings.getRam().setTestRamUpdateRecordMessage(errFailure);
+            }
+            if (module.getFailure() != null) {
+                runSettings.getRam().setTestRamUpdateRecordOk(false);
+                errFailure += module.getFailure().replace("\n", ";");
+                runSettings.getRam().setTestRamUpdateRecordMessage(errFailure);
+            }
+        }
+        if (module.getName().equals("RFM_ISIM_3G_ExpandedMode")) {
+            runSettings.getRam().setTestRamExpandedModeOk(true);
+            runSettings.getRam().setTestRamExpandedModeMessage("OK");
+            String errFailure = "";
+            if (module.getError() != null) {
+                runSettings.getRam().setTestRamExpandedModeOk(false);
+                errFailure += module.getError().replace("\n", ";");
+                runSettings.getRam().setTestRamExpandedModeMessage(errFailure);
+            }
+            if (module.getFailure() != null) {
+                runSettings.getRam().setTestRamExpandedModeOk(false);
+                errFailure += module.getFailure().replace("\n", ";");
+                runSettings.getRam().setTestRamExpandedModeMessage(errFailure);
             }
         }
 
@@ -1185,6 +1237,153 @@ public class RootLayoutController {
         runRfmIsimExpandedModeThread.start();
     }
 
+    //RAM --------------------------------------
+    @FXML
+    private void handleMenuRam() {
+        handleMenuSaveSettings();
+        // make user wait as verification executes
+        cardiotest.getMaskerPane().setText("Executing RAM. Please wait..");
+        // display masker pane
+        cardiotest.getMaskerPane().setVisible(true);
+        menuBar.setDisable(true);
+        appStatusBar.setDisable(true);
+
+        cardiotest.getTxtInterpretedLog().getChildren().clear();
+
+        appendTextFlow("Executing RAM..\n\n");
+
+        // use threads to avoid application freeze
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                runRamOk = runService.runRam();
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                cardiotest.getMaskerPane().setVisible(false);
+                menuBar.setDisable(false);
+                appStatusBar.setDisable(false);
+                // update status bar=
+                if (runRamOk) {
+                    appStatusBar.setText("Executed RAM: OK");
+                    Notifications.create().title("CardIO").text("Executed RAM: OK").showInformation();
+                    appendTextFlow(">> OK\n\n", 0);
+                }
+                else {
+                    appStatusBar.setText("Executed RAM: NOK");
+                    Notifications.create().title("CardIO").text("Executed RAM: NOK").showError();
+                    appendTextFlow(">> NOT OK\n", 1);
+                }
+                // display commmand-response
+                cardiotest.getTxtCommandResponse().setDisable(false);
+                String logFileName = runSettings.getProjectPath() + "\\scripts\\RAM.L00";
+                showCommandResponseLog(logFileName);
+            }
+        };
+        Thread runRamThread = new Thread(task);
+        runRamThread.start();
+    }
+
+    @FXML
+    private void handleMenuRamUpdateRecord() {
+        handleMenuSaveSettings();
+        // make user wait as verification executes
+        cardiotest.getMaskerPane().setText("Executing RAM_UpdateRecord. Please wait..");
+        // display masker pane
+        cardiotest.getMaskerPane().setVisible(true);
+        menuBar.setDisable(true);
+        appStatusBar.setDisable(true);
+
+        cardiotest.getTxtInterpretedLog().getChildren().clear();
+        appendTextFlow("Executing RAM_UpdateRecord..\n\n");
+
+        // use threads to avoid application freeze
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                runRamUpdateRecordOk = runService.runRamUpdateRecord();
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                cardiotest.getMaskerPane().setVisible(false);
+                menuBar.setDisable(false);
+                appStatusBar.setDisable(false);
+                // update status bar
+                if (runRamUpdateRecordOk) {
+                    appStatusBar.setText("Executed RAM_UpdateRecord: OK");
+                    Notifications.create().title("CardIO").text("Executed RAM_UpdateRecord: OK").showInformation();
+                    appendTextFlow(">> OK\n\n", 0);
+                }
+                else {
+                    appStatusBar.setText("Executed RAM_UpdateRecord: NOK");
+                    Notifications.create().title("CardIO").text("Executed RAM_UpdateRecord: NOK").showError();
+                    appendTextFlow(">> NOT OK\n", 1);
+                }
+                // display commmand-response
+                cardiotest.getTxtCommandResponse().setDisable(false);
+                String logFileName = runSettings.getProjectPath() + "\\scripts\\RAM_UpdateRecord.L00";
+                showCommandResponseLog(logFileName);
+            }
+        };
+        Thread runRamUpdateRecordThread = new Thread(task);
+        runRamUpdateRecordThread.start();
+    }
+
+    @FXML
+    private void handleMenuRamExpandedMode() {
+        handleMenuSaveSettings();
+        // make user wait as verification executes
+        cardiotest.getMaskerPane().setText("Executing RAM_3G_ExpandedMode. Please wait..");
+        // display masker pane
+        cardiotest.getMaskerPane().setVisible(true);
+        menuBar.setDisable(true);
+        appStatusBar.setDisable(true);
+
+        cardiotest.getTxtInterpretedLog().getChildren().clear();
+
+        appendTextFlow("Executing RAM_3G_ExpandedMode..\n\n");
+
+        // use threads to avoid application freeze
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                runRamExpandedModeOk = runService.runRamExpandedMode();
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                cardiotest.getMaskerPane().setVisible(false);
+                menuBar.setDisable(false);
+                appStatusBar.setDisable(false);
+                // update status bar
+                if (runRamExpandedModeOk) {
+                    appStatusBar.setText("Executed RAM_3G_ExpandedMode: OK");
+                    Notifications.create().title("CardIO").text("Executed RAM_3G_ExpandedMode: OK").showInformation();
+                    appendTextFlow(">> OK\n\n", 0);
+                }
+                else {
+                    appStatusBar.setText("Executed RAM_3G_ExpandedMode: NOK");
+                    Notifications.create().title("CardIO").text("Executed RAM_3G_ExpandedMode: NOK").showError();
+                    appendTextFlow(">> NOT OK\n", 1);
+                }
+                // display commmand-response
+                cardiotest.getTxtCommandResponse().setDisable(false);
+                String logFileName = runSettings.getProjectPath() + "\\scripts\\RAM_3G_ExpandedMode.L00";
+                showCommandResponseLog(logFileName);
+            }
+        };
+        Thread runRamExpandedModeThread = new Thread(task);
+        runRamExpandedModeThread.start();
+    }
+
     //Custom RFM --------------------------------------
     @FXML
     private void handleMenuRfmCustom() {
@@ -1482,6 +1681,17 @@ public class RootLayoutController {
     public MenuItem getMenuRfmCustomExpandedMode() {
         return menuRfmCustomExpandedMode;
         }
+    public MenuItem getMenuRam() {
+        return menuRam;
+    }
+
+    public MenuItem getMenuRamUpdateRecord() {
+        return menuRamUpdateRecord;
+    }
+
+    public MenuItem getMenuRamExpandedMode() {
+        return menuRamExpandedMode;
+    }
     public MenuItem getMenuCodes3g() { return menuCodes3g; }
     public MenuItem getMenuCodes2g() { return menuCodes2g; }
     public ObservableList<SCP80Keyset> getScp80Keysets() { return scp80Keysets; }

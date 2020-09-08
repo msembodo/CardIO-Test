@@ -265,7 +265,7 @@ public class CardiotestController {
         txtDfIsim.setText(root.getRunSettings().getCardParameters().getDfIsim());
         txtCsimAid.setText(root.getRunSettings().getCardParameters().getCsimAid());
         txtDfCsim.setText(root.getRunSettings().getCardParameters().getDfCsim());
-        cmbIccid.setItems(mappedVariables);
+        cmbIccid.setValue(root.getRunSettings().getCardParameters().getIccid());
 
         // OTA settings
         clmnKeysetName.setCellValueFactory(celldata -> celldata.getValue().keysetNameProperty());

@@ -151,18 +151,7 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
 
     @Override
     public StringBuilder generateRamUpdateRecord(Ram ram) {
-        StringBuilder ramUpdateRecordBuffer = new StringBuilder();
-        ramUpdateRecordBuffer.append(
-                ".CALL Mapping.txt /LIST_OFF\n"
-                        + ".CALL Options.txt /LIST_OFF\n\n"
-                        + ".POWER_ON\n"
-        );
-
-        // TODO
-        ramUpdateRecordBuffer.append("; TODO\n\n");
-
-        ramUpdateRecordBuffer.append(".POWER_OFF\n");
-        return ramUpdateRecordBuffer;
+        return ramService.generateRamUpdateRecord(ram);
     }
 
     @Override

@@ -18,6 +18,7 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
     @Autowired private RfmGsmService rfmGsmService;
     @Autowired private RfmIsimService rfmIsimService;
     @Autowired private RfmCustomService rfmCustomService;
+    @Autowired private RamService ramService;
 
     @Override public StringBuilder generateAtr() {
         String composeAtrScript = ".CALL Mapping.txt\n"
@@ -141,6 +142,31 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
 
         rfmCustomExpandedModeBuffer.append(".POWER_OFF\n");
         return rfmCustomExpandedModeBuffer;
+    }
+
+    @Override
+    public StringBuilder generateRam(Ram ram) {
+        return ramService.generateRam(ram);
+    }
+
+    @Override
+    public StringBuilder generateRamUpdateRecord(Ram ram) {
+        return ramService.generateRamUpdateRecord(ram);
+    }
+
+    @Override
+    public StringBuilder generateRamExpandedMode(Ram ram) {
+        StringBuilder ramExpandedModeBuffer = new StringBuilder();
+        ramExpandedModeBuffer.append(
+                ".CALL Mapping.txt /LIST_OFF\n"
+                        + ".CALL Options.txt /LIST_OFF\n\n"
+                        + ".POWER_ON\n"
+        );
+
+        ramExpandedModeBuffer.append("; TODO\n\n");
+
+        ramExpandedModeBuffer.append(".POWER_OFF\n");
+        return ramExpandedModeBuffer;
     }
 
 }

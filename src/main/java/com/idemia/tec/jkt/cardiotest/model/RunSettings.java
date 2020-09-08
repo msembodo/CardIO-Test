@@ -27,6 +27,7 @@ public class RunSettings {
     private RfmGsm rfmGsm;
     private RfmIsim rfmIsim;
     private RfmCustom rfmCustom;
+    private Ram ram;
     private List<CustomScript> customScriptsSection1;
     private List<CustomScript> customScriptsSection2;
     private List<CustomScript> customScriptsSection3;
@@ -39,7 +40,7 @@ public class RunSettings {
                        List<VariableMapping> variableMappings, ATR atr, SecretCodes secretCodes,
                        CardParameters cardParameters, Authentication authentication, List<SCP80Keyset> scp80Keysets,
                        SmsUpdate smsUpdate, RfmUsim rfmUsim, RfmGsm rfmGsm, RfmIsim rfmIsim, RfmCustom rfmCustom,
-                       List<CustomScript> customScriptsSection1, List<CustomScript> customScriptsSection2,
+                       Ram ram, List<CustomScript> customScriptsSection1, List<CustomScript> customScriptsSection2,
                        List<CustomScript> customScriptsSection3) {
         this.projectPath = projectPath;
         this.advSaveVariablesPath = advSaveVariablesPath;
@@ -64,6 +65,7 @@ public class RunSettings {
         this.rfmGsm = rfmGsm;
         this.rfmIsim = rfmIsim;
         this.rfmCustom = rfmCustom;
+        this.ram = ram;
         this.customScriptsSection1 = customScriptsSection1;
         this.customScriptsSection2 = customScriptsSection2;
         this.customScriptsSection3 = customScriptsSection3;
@@ -251,6 +253,14 @@ public class RunSettings {
 
     public void setRfmCustom(RfmCustom rfmCustom) {
         this.rfmCustom = rfmCustom; }
+
+    public Ram getRam() {
+        return ram;
+    }
+
+    public void setRam(Ram ram) {
+        this.ram = ram;
+    }
 
     public List<CustomScript> getCustomScriptsSection1() {
         return customScriptsSection1;

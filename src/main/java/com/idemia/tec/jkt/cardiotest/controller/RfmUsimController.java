@@ -78,7 +78,7 @@ public class RfmUsimController {
         cipherAlgos.add("3DES - CBC 2 keys");
         cipherAlgos.add("3DES - CBC 3 keys");
         cipherAlgos.add("DES - ECB");
-        cmbRfmUsimCipherAlgo.getItems().addAll(cipherAlgos);
+        if (!(cmbRfmUsimCipherAlgo.getItems().size() > 0)) cmbRfmUsimCipherAlgo.getItems().addAll(cipherAlgos);
         cmbRfmUsimCipherAlgo.setValue(root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().getCipherAlgo());
 
         // initialize list of auth verification
@@ -87,7 +87,7 @@ public class RfmUsimController {
         authVerifs.add("Redundancy Check");
         authVerifs.add("Cryptographic Checksum");
         authVerifs.add("Digital Signature");
-        cmbRfmUsimAuthVerif.getItems().addAll(authVerifs);
+        if (!(cmbRfmUsimAuthVerif.getItems().size() > 0)) cmbRfmUsimAuthVerif.getItems().addAll(authVerifs);
         cmbRfmUsimAuthVerif.setValue(root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().getAuthVerification());
 
         // initialize list of signing algorithm
@@ -107,7 +107,7 @@ public class RfmUsimController {
         signingAlgos.add("ISO9797 Algo 4 (auth value 4 byte)");
         signingAlgos.add("ISO9797 Algo 4 (auth value 8 byte)");
         signingAlgos.add("CRC16");
-        cmbRfmUsimSigningAlgo.getItems().addAll(signingAlgos);
+        if (!(cmbRfmUsimSigningAlgo.getItems().size() > 0)) cmbRfmUsimSigningAlgo.getItems().addAll(signingAlgos);
         cmbRfmUsimSigningAlgo.setValue(root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().getSigningAlgo());
 
         // initialize list of counter checking
@@ -116,7 +116,7 @@ public class RfmUsimController {
         counterCheckings.add("Counter available no checking");
         counterCheckings.add("Counter must be higher");
         counterCheckings.add("Counter must be one higher");
-        cmbRfmUsimCounterCheck.getItems().addAll(counterCheckings);
+        if (!(cmbRfmUsimCounterCheck.getItems().size() > 0)) cmbRfmUsimCounterCheck.getItems().addAll(counterCheckings);
         cmbRfmUsimCounterCheck.setValue(root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().getCounterChecking());
 
         // initialize list of PoR requirement
@@ -124,7 +124,7 @@ public class RfmUsimController {
         porRequirements.add("No PoR");
         porRequirements.add("PoR required");
         porRequirements.add("PoR only if error");
-        cmbRfmUsimPorRequirement.getItems().addAll(porRequirements);
+        if (!(cmbRfmUsimPorRequirement.getItems().size() > 0)) cmbRfmUsimPorRequirement.getItems().addAll(porRequirements);
         cmbRfmUsimPorRequirement.setValue(root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().getPorRequirement());
 
         chkRfmUsimCipherPor.setSelected(root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().isCipherPor());
@@ -135,7 +135,7 @@ public class RfmUsimController {
         porSecurities.add("response with RC");
         porSecurities.add("response with CC");
         porSecurities.add("response with DS");
-        cmbRfmUsimPorSecurity.getItems().addAll(porSecurities);
+        if (!(cmbRfmUsimPorSecurity.getItems().size() > 0)) cmbRfmUsimPorSecurity.getItems().addAll(porSecurities);
         cmbRfmUsimPorSecurity.setValue(root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().getPorSecurity());
 
         // RFM USIM parameters
@@ -212,6 +212,8 @@ public class RfmUsimController {
             lblRfmUsimCustomTargetBadCase.setDisable(true);
             cmbRfmUsimCustomTargetAccBadCase.setDisable(true);
             txtRfmUsimCustomTargetEfBadCase.setDisable(true);
+            txtRfmUsimTargetEf.setDisable(false);
+            txtRfmUsimTargetEfBadCase.setDisable(false);
         } else {
             lblRfmUsimCustomTarget.setDisable(false);
             cmbRfmUsimCustomTargetAcc.setDisable(false);
@@ -219,6 +221,8 @@ public class RfmUsimController {
             lblRfmUsimCustomTargetBadCase.setDisable(false);
             cmbRfmUsimCustomTargetAccBadCase.setDisable(false);
             txtRfmUsimCustomTargetEfBadCase.setDisable(false);
+            txtRfmUsimTargetEf.setDisable(true);
+            txtRfmUsimTargetEfBadCase.setDisable(true);
         }
     }
 

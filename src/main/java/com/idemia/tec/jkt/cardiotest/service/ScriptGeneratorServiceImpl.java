@@ -55,18 +55,7 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
     @Override public StringBuilder generateRfmUsim(RfmUsim rfmUsim) { return rfmUsimService.generateRfmUsim(rfmUsim); }
 
     @Override public StringBuilder generateRfmUsimUpdateRecord(RfmUsim rfmUsim) {
-        StringBuilder rfmUsimUpdateRecordBuffer = new StringBuilder();
-        rfmUsimUpdateRecordBuffer.append(
-            ".CALL Mapping.txt /LIST_OFF\n"
-            + ".CALL Options.txt /LIST_OFF\n\n"
-            + ".POWER_ON\n"
-        );
-
-        // TODO
-        rfmUsimUpdateRecordBuffer.append("; TODO\n\n");
-
-        rfmUsimUpdateRecordBuffer.append(".POWER_OFF\n");
-        return rfmUsimUpdateRecordBuffer;
+        return rfmUsimService.generateRfmUsimUpdateRecord(rfmUsim);
     }
 
     @Override public StringBuilder generateRfmUsimExpandedMode(RfmUsim rfmUsim) {
@@ -87,18 +76,7 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
     @Override public StringBuilder generateRfmGsm(RfmGsm rfmGsm) { return rfmGsmService.generateRfmGsm(rfmGsm); }
 
     @Override public StringBuilder generateRfmGsmUpdateRecord(RfmGsm rfmGsm) {
-        StringBuilder rfmGsmUpdateRecordBuffer = new StringBuilder();
-        rfmGsmUpdateRecordBuffer.append(
-            ".CALL Mapping.txt /LIST_OFF\n"
-            + ".CALL Options.txt /LIST_OFF\n\n"
-            + ".POWER_ON\n"
-        );
-
-        // TODO
-        rfmGsmUpdateRecordBuffer.append("; TODO\n\n");
-
-        rfmGsmUpdateRecordBuffer.append(".POWER_OFF\n");
-        return rfmGsmUpdateRecordBuffer;
+        return rfmGsmService.generateRfmGsmUpdateRecord(rfmGsm);
     }
 
     @Override public StringBuilder generateRfmGsmExpandedMode(RfmGsm rfmGsm) {
@@ -119,18 +97,7 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
     @Override public StringBuilder generateRfmIsim(RfmIsim rfmIsim) { return rfmIsimService.generateRfmIsim(rfmIsim); }
 
     @Override public StringBuilder generateRfmIsimUpdateRecord(RfmIsim rfmIsim) {
-        StringBuilder rfmIsimUpdateRecordBuffer = new StringBuilder();
-        rfmIsimUpdateRecordBuffer.append(
-            ".CALL Mapping.txt /LIST_OFF\n"
-            + ".CALL Options.txt /LIST_OFF\n\n"
-            + ".POWER_ON\n"
-        );
-
-        // TODO
-        rfmIsimUpdateRecordBuffer.append("; TODO\n\n");
-
-        rfmIsimUpdateRecordBuffer.append(".POWER_OFF\n");
-        return rfmIsimUpdateRecordBuffer;
+        return rfmIsimService.generateRfmIsimUpdateRecord(rfmIsim);
     }
 
     @Override public StringBuilder generateRfmIsimExpandedMode(RfmIsim rfmIsim) {

@@ -145,7 +145,7 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             rfmIsim.setIncludeRfmIsim(true);
             rfmIsim.setTar("B00025");
             rfmIsim.setTargetEf("6FAD");
-            rfmIsim.setTargetEfBadCase("6FFC");
+            rfmIsim.setTargetEfBadCase("6F02");
             rfmIsim.setFullAccess(true);
             rfmIsim.setMinimumSecurityLevel(rfmIsimMsl);
             defaultSettings.setRfmIsim(rfmIsim);

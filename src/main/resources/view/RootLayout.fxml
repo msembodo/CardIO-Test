@@ -32,17 +32,17 @@
                         <MenuItem fx:id="menuRuwi" mnemonicParsing="false" onAction="#handleMenuRuwiTest" text="Readable &amp; Updateable when Invalidated" />
                         <MenuItem fx:id="menuSfi" mnemonicParsing="false" onAction="#handleMenuSfiTest" text="SFI Check" />
                         <MenuItem fx:id="menuRfmUsim" mnemonicParsing="false" onAction="#handleMenuRfmUsim" text="RFM USIM" />
-                        <MenuItem fx:id="menuRfmUsimUpdateRecord" mnemonicParsing="false" onAction="#handleMenuRfmUsimUpdateRecord" text="RFM USIM update record" />
-                        <MenuItem fx:id="menuRfmUsimExpandedMode" mnemonicParsing="false" onAction="#handleMenuRfmUsimExpandedMode" text="RFM USIM expanded mode" />
+                        <MenuItem fx:id="menuRfmUsimUpdateRecord" mnemonicParsing="false" onAction="#handleMenuRfmUsimUpdateRecord" text="RFM USIM Update Record" />
+                        <MenuItem fx:id="menuRfmUsimExpandedMode" mnemonicParsing="false" onAction="#handleMenuRfmUsimExpandedMode" text="RFM USIM Expanded Mode>" />
                         <MenuItem fx:id="menuRfmGsm" mnemonicParsing="false" onAction="#handleMenuRfmGsm" text="RFM GSM" />
-                        <MenuItem fx:id="menuRfmGsmUpdateRecord" mnemonicParsing="false" onAction="#handleMenuRfmGsmUpdateRecord" text="RFM GSM update record" />
-                        <MenuItem fx:id="menuRfmGsmExpandedMode" mnemonicParsing="false" onAction="#handleMenuRfmGsmExpandedMode" text="RFM GSM expanded mode" />
+                        <MenuItem fx:id="menuRfmGsmUpdateRecord" mnemonicParsing="false" onAction="#handleMenuRfmGsmUpdateRecord" text="RFM GSM Update Record" />
+                        <MenuItem fx:id="menuRfmGsmExpandedMode" mnemonicParsing="false" onAction="#handleMenuRfmGsmExpandedMode" text="RFM GSM Expanded Mode" />
                         <MenuItem fx:id="menuRfmIsim" mnemonicParsing="false" onAction="#handleMenuRfmIsim" text="RFM ISIM" />
-                        <MenuItem fx:id="menuRfmIsimUpdateRecord" mnemonicParsing="false" onAction="#handleMenuRfmIsimUpdateRecord" text="RFM ISIM update record" />
-                        <MenuItem fx:id="menuRfmIsimExpandedMode" mnemonicParsing="false" onAction="#handleMenuRfmIsimExpandedMode" text="RFM ISIM expanded mode" />
+                        <MenuItem fx:id="menuRfmIsimUpdateRecord" mnemonicParsing="false" onAction="#handleMenuRfmIsimUpdateRecord" text="RFM ISIM Update Record" />
+                        <MenuItem fx:id="menuRfmIsimExpandedMode" mnemonicParsing="false" onAction="#handleMenuRfmIsimExpandedMode" text="RFM ISIM Expanded Mode" />
                         <MenuItem fx:id="menuRfmCustom" mnemonicParsing="false" onAction="#handleMenuRfmCustom" text="RFM CUSTOM" />
-                        <MenuItem fx:id="menuRfmCustomUpdateRecord" mnemonicParsing="false" onAction="#handleMenuRfmCustomUpdateRecord" text="RFM CUSTOM update record" />
-                        <MenuItem fx:id="menuRfmCustomExpandedMode" mnemonicParsing="false" onAction="#handleMenuRfmCustomExpandedMode" text="RFM CUSTOM expanded mode" />
+                        <MenuItem fx:id="menuRfmCustomUpdateRecord" mnemonicParsing="false" onAction="#handleMenuRfmCustomUpdateRecord" text="RFM CUSTOM Update Record" />
+                        <MenuItem fx:id="menuRfmCustomExpandedMode" mnemonicParsing="false" onAction="#handleMenuRfmCustomExpandedMode" text="RFM CUSTOM Expanded Mode" />
                         <MenuItem fx:id="menuCodes3g" mnemonicParsing="false" onAction="#handleMenuCodes3g" text="Secret Codes 3G" />
                         <MenuItem fx:id="menuCodes2g" mnemonicParsing="false" onAction="#handleMenuCodes2g" text="Secret Codes 2G" />
                     </items>

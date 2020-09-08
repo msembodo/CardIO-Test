@@ -247,6 +247,7 @@ public class RootLayoutController {
         rfmUsimController.initialize();
         rfmIsimController.initialize();
         rfmCustomController.initialize();
+        ramController.initialize();
         secretCodesController.initialize();
         customTabController.initialize();
     }

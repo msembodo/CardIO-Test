@@ -52,7 +52,7 @@ public class RamController {
 
     public RamController() {}
 
-    @FXML private void initialize() {
+    @FXML public void initialize() {
         chkIncludeRam.setSelected(root.getRunSettings().getRam().isIncludeRam());
         handleIncludeRamCheck();
 
@@ -78,7 +78,7 @@ public class RamController {
         cipherAlgos.add("3DES - CBC 2 keys");
         cipherAlgos.add("3DES - CBC 3 keys");
         cipherAlgos.add("DES - ECB");
-        cmbRamCipherAlgo.getItems().addAll(cipherAlgos);
+        if (!(cmbRamCipherAlgo.getItems().size() > 0)) cmbRamCipherAlgo.getItems().addAll(cipherAlgos);
         cmbRamCipherAlgo.setValue(root.getRunSettings().getRam().getMinimumSecurityLevel().getCipherAlgo());
 
         // initialize list of auth verification
@@ -87,7 +87,7 @@ public class RamController {
         authVerifs.add("Redundancy Check");
         authVerifs.add("Cryptographic Checksum");
         authVerifs.add("Digital Signature");
-        cmbRamAuthVerif.getItems().addAll(authVerifs);
+        if (!(cmbRamAuthVerif.getItems().size() > 0)) cmbRamAuthVerif.getItems().addAll(authVerifs);
         cmbRamAuthVerif.setValue(root.getRunSettings().getRam().getMinimumSecurityLevel().getAuthVerification());
 
         // initialize list of signing algorithm
@@ -107,7 +107,7 @@ public class RamController {
         signingAlgos.add("ISO9797 Algo 4 (auth value 4 byte)");
         signingAlgos.add("ISO9797 Algo 4 (auth value 8 byte)");
         signingAlgos.add("CRC16");
-        cmbRamSigningAlgo.getItems().addAll(signingAlgos);
+        if (!(cmbRamSigningAlgo.getItems().size() > 0)) cmbRamSigningAlgo.getItems().addAll(signingAlgos);
         cmbRamSigningAlgo.setValue(root.getRunSettings().getRam().getMinimumSecurityLevel().getSigningAlgo());
 
         // initialize list of counter checking
@@ -116,7 +116,7 @@ public class RamController {
         counterCheckings.add("Counter available no checking");
         counterCheckings.add("Counter must be higher");
         counterCheckings.add("Counter must be one higher");
-        cmbRamCounterCheck.getItems().addAll(counterCheckings);
+        if (!(cmbRamCounterCheck.getItems().size() > 0)) cmbRamCounterCheck.getItems().addAll(counterCheckings);
         cmbRamCounterCheck.setValue(root.getRunSettings().getRam().getMinimumSecurityLevel().getCounterChecking());
 
         // initialize list of PoR requirement
@@ -124,7 +124,7 @@ public class RamController {
         porRequirements.add("No PoR");
         porRequirements.add("PoR required");
         porRequirements.add("PoR only if error");
-        cmbRamPorRequirement.getItems().addAll(porRequirements);
+        if (!(cmbRamPorRequirement.getItems().size() > 0)) cmbRamPorRequirement.getItems().addAll(porRequirements);
         cmbRamPorRequirement.setValue(root.getRunSettings().getRam().getMinimumSecurityLevel().getPorRequirement());
 
         chkRamCipherPor.setSelected(root.getRunSettings().getRam().getMinimumSecurityLevel().isCipherPor());
@@ -135,7 +135,7 @@ public class RamController {
         porSecurities.add("response with RC");
         porSecurities.add("response with CC");
         porSecurities.add("response with DS");
-        cmbRamPorSecurity.getItems().addAll(porSecurities);
+        if (!(cmbRamPorSecurity.getItems().size() > 0)) cmbRamPorSecurity.getItems().addAll(porSecurities);
         cmbRamPorSecurity.setValue(root.getRunSettings().getRam().getMinimumSecurityLevel().getPorSecurity());
 
         // initialize Method for GP Command
@@ -143,7 +143,7 @@ public class RamController {
         methodForGpCommand.add("with Card Manager Keyset");
         methodForGpCommand.add("no Card Manager Keyset");
         methodForGpCommand.add("SIMBiOs");
-        cmbRamMethodForGpCommand.getItems().addAll(methodForGpCommand);
+        if (!(cmbRamMethodForGpCommand.getItems().size() > 0)) cmbRamMethodForGpCommand.getItems().addAll(methodForGpCommand);
         cmbRamMethodForGpCommand.setValue(root.getRunSettings().getRam().getIsd().getMethodForGpCommand());
 
         // initialize SC Level
@@ -151,7 +151,7 @@ public class RamController {
         scLevel.add("00");
         scLevel.add("01");
         scLevel.add("03");
-        cmbRamScLevel.getItems().addAll(scLevel);
+        if (!(cmbRamScLevel.getItems().size() > 0)) cmbRamScLevel.getItems().addAll(scLevel);
         cmbRamScLevel.setValue(root.getRunSettings().getRam().getIsd().getScLevel());
 
         // ISD secured state
@@ -165,7 +165,6 @@ public class RamController {
         cmbIsdEnc.setValue(root.getRunSettings().getRam().getIsd().getCardManagerEnc());
         cmbIsdKey.setValue(root.getRunSettings().getRam().getIsd().getCardManagerKey());
         cmbIsdPin.setValue(root.getRunSettings().getRam().getIsd().getCardManagerPin());
-
 
         // initialize list of available keysets for RAM
 

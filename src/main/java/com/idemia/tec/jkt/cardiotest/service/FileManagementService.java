@@ -12,16 +12,29 @@ import org.springframework.stereotype.Service;
 public class FileManagementService {
 
     @Autowired private RootLayoutController root;
+    @Autowired private FileManagementController FMCon;
 
     ObservableList <FMLinkFiles> allFMLinkFiles;
 
 
     public StringBuilder generateFilemanagementLinkFiles(FileManagement fileManagement) {
+
+        if ( !FMCon.isLinkFilesSaved(true))
+        {
+            //AlertBox.display("Warning", "Please save link files test configuration");
+            FMCon.setSaveLinkFileButtonPushed();
+        }
+
         StringBuilder linkFileTestBuffer = new StringBuilder();
         linkFileTestBuffer.append(
-                ";===================== \n\n"
-                        + ";Link File Test\n\n"
+                ";===================== \n"
+                        + ";Link File Test\n"
                         + ";=====================\n\n"
+        );
+
+        linkFileTestBuffer.append(
+                ".LOAD Calcul.dll\n"
+                        + ".LOAD Var_Reader.dll\n\n"
         );
 
         linkFileTestBuffer.append(
@@ -29,6 +42,291 @@ public class FileManagementService {
                         + ".CALL Options.txt /LIST_OFF\n\n"
                         + ".POWER_ON\n"
         );
+
+        linkFileTestBuffer.append(
+                "\n"
+                        + "00 20 00 0A 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+                        + "00 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n");
+        //+ "00 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n");
+        if (root.getRunSettings().getSecretCodes().isUseIsc2())
+            linkFileTestBuffer.append("00 20 00 0B 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+        if (root.getRunSettings().getSecretCodes().isUseIsc3())
+            linkFileTestBuffer.append("00 20 00 0C 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+        if (root.getRunSettings().getSecretCodes().isUseIsc4())
+            linkFileTestBuffer.append("00 20 00 0D 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+
+
+        for (int i=0;i < FMCon.getRow() ;i++)
+        {
+            linkFileTestBuffer.append(
+                    "\n; -------------------------\n"
+                            + ";== Link Files Test - " + (i+1) + " ==\n"
+                            + "; -------------------------\n\n"
+            );
+
+            linkFileTestBuffer.append(
+                    "\n; -------------------------\n"
+                            + "* \tSELECT MASTER EF \t*\n"
+                            + "; -------------------------\n\n"
+            );
+
+            int length_master;
+            length_master = FMCon.getData_master(i).length();
+
+            if (length_master == 12)
+            {
+                linkFileTestBuffer.append(
+                        "00A4000402 " + FMCon.getData_master(i).substring(0,4) + " (61xx)\n"
+                                + "00A4000402 " + FMCon.getData_master(i).substring(4,8) + " (61xx)\n"
+                                + "00A4000402 " + FMCon.getData_master(i).substring(8,12) + " (61xx)\n\n"
+                );
+            }
+
+            else if (length_master == 16)
+            {
+                linkFileTestBuffer.append(
+                        "00A4000402 " + FMCon.getData_master(i).substring(0,4) + " (61xx)\n"
+                                + "00A4000402 " + FMCon.getData_master(i).substring(4,8) + " (61xx)\n"
+                                + "00A4000402 " + FMCon.getData_master(i).substring(8,12) + " (61xx)\n"
+                                + "00A4000402 " + FMCon.getData_master(i).substring(12,16) + " (61xx)\n"
+                );
+            }
+
+            linkFileTestBuffer.append(
+                    "00C00000 W(2;1) (9000)\n\n"
+                    + ".SET_BUFFER M R(5;1)\n\n"
+            );
+
+            linkFileTestBuffer.append(
+                    "; -------------------------\n"
+                            + "* \tSELECT LINK EF \t*\n"
+                            + "; -------------------------\n\n"
+            );
+
+            int length_ghost;
+            length_ghost = FMCon.getData_ghost(i).length();
+
+            if (length_master == 12)
+            {
+                linkFileTestBuffer.append(
+                        "00A4000402 " + FMCon.getData_ghost(i).substring(0,4) + " (61xx)\n"
+                                + "00A4000402 " + FMCon.getData_ghost(i).substring(4,8) + " (61xx)\n"
+                                + "00A4000402 " + FMCon.getData_ghost(i).substring(8,12) + " (61xx)\n"
+                );
+            }
+
+            else if (length_master == 16)
+            {
+                linkFileTestBuffer.append(
+                        "00A4000402 " + FMCon.getData_ghost(i).substring(0,4) + " (61xx)\n"
+                                + "00A4000402 " + FMCon.getData_ghost(i).substring(4,8) + " (61xx)\n"
+                                + "00A4000402 " + FMCon.getData_ghost(i).substring(8,12) + " (61xx)\n"
+                                + "00A4000402 " + FMCon.getData_ghost(i).substring(12,16) + " (61xx)\n"
+                );
+            }
+
+            linkFileTestBuffer.append(
+                    "00C00000 W(2;1) (9000)\n\n"
+                            + ".SET_BUFFER N R(5;1)\n"
+                            + ".SET_DATA N\n\n"
+                            + ".COMPARE M\n\n"
+            );
+
+
+            linkFileTestBuffer.append(
+                    ".SWITCH M\n\n"
+                            + "; ---------------------\n"
+                            + "* \tTRANSPARENT\t\t*\n"
+                            + "; ---------------------\n"
+                            + ".CASE 41\n\n"
+            );
+
+            linkFileTestBuffer.append(
+                            "; ---------------------\n"
+                            + "* \tUPDATE 1 BYTE ON LINK EF\t*\n"
+                            + "; ---------------------\n\n"
+                            + "00 B0 00 00 01 (9000)\n"
+                            + ".DEFINE %CONTENT_OR R\n"
+                            + "00 D6 00 00 01 AA (9000)\n\n"
+            );
+
+            linkFileTestBuffer.append(
+                            "; ---------------------\n"
+                            + "* \tSELECT MASTER EF\t*\n"
+                            + "; ---------------------\n\n"
+            );
+
+            if (length_master == 12)
+            {
+                linkFileTestBuffer.append(
+                        "00A4000402 " + FMCon.getData_master(i).substring(0,4) + " (61xx)\n"
+                                + "00A4000402 " + FMCon.getData_master(i).substring(4,8) + " (61xx)\n"
+                                + "00A4000402 " + FMCon.getData_master(i).substring(8,12) + " (61xx)\n"
+                );
+            }
+
+            else if (length_master == 16)
+            {
+                linkFileTestBuffer.append(
+                        "00A4000402 " + FMCon.getData_master(i).substring(0,4) + " (61xx)\n"
+                                + "00A4000402 " + FMCon.getData_master(i).substring(4,8) + " (61xx)\n"
+                                + "00A4000402 " + FMCon.getData_master(i).substring(8,12) + " (61xx)\n"
+                                + "00A4000402 " + FMCon.getData_master(i).substring(12,16) + " (61xx)\n"
+                );
+            }
+
+            linkFileTestBuffer.append(
+                    "00 B0 00 00 01 [AA] (9000)\n\n"
+            );
+
+            linkFileTestBuffer.append(
+                    "; ---------------------\n"
+                            + "* \tRESTORE EF\t*\n"
+                            + "; ---------------------\n\n"
+            );
+
+            linkFileTestBuffer.append(
+                    "00D6000001 %CONTENT_OR (9000)\n"
+                            + ".UNDEFINE %CONTENT_OR\n\n"
+                            + ".BREAK\n\n"
+            );
+
+            linkFileTestBuffer.append(
+                    "; ---------------------\n"
+                            + "* \tCYCLIC\t*\n"
+                            + "; ---------------------\n"
+                    + ".CASE 46\n\n"
+            );
+
+            linkFileTestBuffer.append(
+                    "; ---------------------\n"
+                            + "* \tGET RECORD LENGTH\t*\n"
+                            + "; ---------------------\n"
+                            +".SET_BUFFER N R(8;1)\n"
+                            +"00 B2 01 04 N (9000)\n\n"
+            );
+
+            linkFileTestBuffer.append(
+                    "; ---------------------\n"
+                            + "* \tUPDATE LINK EF\t*\n"
+                            + "; ---------------------\n\n"
+                            +".DEFINE %RECORD_OR R\n"
+                            +".DEFINE %RECORD AA R(2:)\n"
+                            +"00 DC 01 03 N %RECORD (9000)\n\n"
+            );
+
+            linkFileTestBuffer.append(
+                    "; -------------------------\n"
+                            + "* \tSELECT MASTER EF \t*\n"
+                            + "; -------------------------\n\n"
+            );
+
+
+            if (length_master == 12)
+            {
+                linkFileTestBuffer.append(
+                        "00A4000402 " + FMCon.getData_master(i).substring(0,4) + " (61xx)\n"
+                                + "00A4000402 " + FMCon.getData_master(i).substring(4,8) + " (61xx)\n"
+                                + "00A4000402 " + FMCon.getData_master(i).substring(8,12) + " (61xx)\n"
+                );
+            }
+
+            else if (length_master == 16)
+            {
+                linkFileTestBuffer.append(
+                        "00A4000402 " + FMCon.getData_master(i).substring(0,4) + " (61xx)\n"
+                                + "00A4000402 " + FMCon.getData_master(i).substring(4,8) + " (61xx)\n"
+                                + "00A4000402 " + FMCon.getData_master(i).substring(8,12) + " (61xx)\n"
+                                + "00A4000402 " + FMCon.getData_master(i).substring(12,16) + " (61xx)\n"
+                );
+            }
+
+            linkFileTestBuffer.append(
+                    "; -------------------------\n"
+                            + "* \tREAD LINK EF COMPARE \t*\n"
+                            + "; -------------------------\n"
+                    +"00 B2 01 04 N [%RECORD ] (9000)\n\n"
+            );
+
+            linkFileTestBuffer.append(
+                    "; -------------------------\n"
+                            + "* \tRESTORE EF \t*\n"
+                            + "; -------------------------\n"
+                            +"00 DC 01 03 N %RECORD_OR (9000)\n"
+                    +".UNDEFINE %RECORD\n"+".UNDEFINE %RECORD_OR\n"+".BREAK"
+            );
+
+            linkFileTestBuffer.append(
+                    "; ---------------------\n"
+                            + "* \tLINEAR FIXED\t*\n"
+                            + "; ---------------------\n"
+                            + ".DEFAULT\n\n"
+            );
+
+            linkFileTestBuffer.append(
+                    "; ---------------------\n"
+                            + "* \tGET RECORD LENGTH\t*\n"
+                            + "; ---------------------\n"
+                            +".SET_BUFFER N R(8;1)\n"
+                            +"00 B2 01 04 N (90 00)\n\n"
+            );
+
+            linkFileTestBuffer.append(
+                    "; ---------------------\n"
+                            + "* \tUPDATE LINK EF\t*\n"
+                            + "; ---------------------\n"
+                            +".DEFINE %RECORD_OR R\n"
+                            +".DEFINE %RECORD AA R(2:)\n"
+                            +"00DC0104 N %RECORD (9000)\n\n"
+            );
+
+
+
+            linkFileTestBuffer.append(
+                    "; ---------------------\n"
+                            + "* \tSELECT MASTER MF\t*\n"
+                            + "; ---------------------\n"
+            );
+
+            if (length_master == 12)
+            {
+                linkFileTestBuffer.append(
+                        "00A4000402 " + FMCon.getData_master(i).substring(0,4) + " (61xx)\n"
+                                + "00A4000402 " + FMCon.getData_master(i).substring(4,8) + " (61xx)\n"
+                                + "00A4000402 " + FMCon.getData_master(i).substring(8,12) + " (61xx)\n\n"
+                );
+            }
+
+            else if (length_master == 16)
+            {
+                linkFileTestBuffer.append(
+                        "00A4000402 " + FMCon.getData_master(i).substring(0,4) + " (61xx)\n"
+                                + "00A4000402 " + FMCon.getData_master(i).substring(4,8) + " (61xx)\n"
+                                + "00A4000402 " + FMCon.getData_master(i).substring(8,12) + " (61xx)\n"
+                                + "00A4000402 " + FMCon.getData_master(i).substring(12,16) + " (61xx)\n\n"
+                );
+            }
+
+            linkFileTestBuffer.append(
+                    "; ---------------------\n"
+                            + "* \tREAD LINK EF COMPARE\t*\n"
+                            + "; ---------------------\n"
+                    + "00 B2 01 04 N [%RECORD ] (9000)\n\n"
+            );
+
+            linkFileTestBuffer.append(
+                    "; ---------------------\n"
+                            + "* \tRESTORE EF\t*\n"
+                            + "; ---------------------\n"
+                            + "00 DC 01 04 N %RECORD_OR (9000)\n\n"
+                            +".UNDEFINE %RECORD\n"
+                            +".UNDEFINE %RECORD_OR\n\n"
+                            +".BREAK\n.ENDSWITCH\n"
+            );
+
+            //System.out.println("TEST-"+length);
+        }
+
 
         linkFileTestBuffer.append(
                 "\n;\n"

@@ -7,10 +7,10 @@ public class FMLinkFiles {
 
     private SimpleStringProperty path_Master, path_Ghost;
 
-
     public FMLinkFiles() {}
 
-    public FMLinkFiles(String path_Master, String path_Ghost) {
+
+    public FMLinkFiles(String path_Master, String path_Ghost ) {
         this.path_Master = new SimpleStringProperty (path_Master);
         this.path_Ghost = new SimpleStringProperty (path_Ghost);
     }
@@ -39,6 +39,5 @@ public class FMLinkFiles {
      public SimpleStringProperty path_GhostProperty() {
         return path_Ghost;
     }
-
 
 }

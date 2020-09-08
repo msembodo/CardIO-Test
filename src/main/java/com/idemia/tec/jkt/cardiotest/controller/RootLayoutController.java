@@ -73,6 +73,7 @@ public class RootLayoutController {
     private boolean runCodes3gOk;
     private boolean runCodes2gOk;
 
+    @Autowired private RootLayoutController root;
     @Autowired private CardiotestController cardiotest;
     @Autowired private AuthenticationController authenticationController;
     @Autowired private SecretCodesController secretCodesController;
@@ -277,6 +278,8 @@ public class RootLayoutController {
     @FXML private void handleMenuToolOptions() { application.showToolOptions(); }
 
     @FXML private void handleMenuRunAll() {
+
+
         handleMenuSaveSettings();
 
         // make user wait as verification executes
@@ -839,50 +842,102 @@ public class RootLayoutController {
 
     //-------------------------
     @FXML private void handleMenuLinkFilesTest() {
-        handleMenuSaveSettings();
-        // make user wait as verification executes
-        cardiotest.getMaskerPane().setText("Executing FileManagement_LinkFile_TEST. Please wait..");
-        cardiotest.getMaskerPane().setVisible(true); // display masker pane
-        menuBar.setDisable(true);
-        appStatusBar.setDisable(true);
 
-        cardiotest.getTxtInterpretedLog().getChildren().clear();
-        appendTextFlow("Executing FileManagement_LinkFile_TEST..\n\n");
+            handleMenuSaveSettings();
+            // make user wait as verification executes
+            cardiotest.getMaskerPane().setText("Executing FileManagement_LinkFile_TEST. Please wait..");
+            cardiotest.getMaskerPane().setVisible(true); // display masker pane
+            menuBar.setDisable(true);
+            appStatusBar.setDisable(true);
 
-        // use threads to avoid application freeze
-        Task<Void> task = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                runLinkFilesTestOk = runService.runLinkFilesTest();
-                return null;
-            }
+            cardiotest.getTxtInterpretedLog().getChildren().clear();
+            appendTextFlow("Executing FileManagement_LinkFile_TEST..\n\n");
 
-            @Override
-            protected void succeeded() {
-                super.succeeded();
-                // dismiss masker pane
-                cardiotest.getMaskerPane().setVisible(false);
-                menuBar.setDisable(false);
-                appStatusBar.setDisable(false);
-                // update status bar
-                if (runLinkFilesTestOk) {
-                    appStatusBar.setText("Executed FileManagement_LinkFiles_TEST: OK");
-                    Notifications.create().title("CardIO").text("Executed FileManagement_LinkFiles_TEST: OK").showInformation();
-                    appendTextFlow(">> OK\n\n", 0);
+            // use threads to avoid application freeze
+            Task<Void> task = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                    runLinkFilesTestOk = runService.runLinkFilesTest();
+                    return null;
                 }
-                else {
-                    appStatusBar.setText("Executed FileManagement_LinkFiles_TEST: NOK");
-                    Notifications.create().title("CardIO").text("Executed FileManagement_LinkFiles_TEST: NOK").showError();
-                    appendTextFlow(">> NOT OK\n", 1);
+
+                @Override
+                protected void succeeded() {
+                    super.succeeded();
+                    // dismiss masker pane
+                    cardiotest.getMaskerPane().setVisible(false);
+                    menuBar.setDisable(false);
+                    appStatusBar.setDisable(false);
+                    // update status bar
+                    if (runLinkFilesTestOk) {
+                        appStatusBar.setText("Executed FileManagement_LinkFiles_TEST: OK");
+                        Notifications.create().title("CardIO").text("Executed FileManagement_LinkFiles_TEST: OK").showInformation();
+                        appendTextFlow(">> OK\n\n", 0);
+                    }
+                    else {
+                        appStatusBar.setText("Executed FileManagement_LinkFiles_TEST: NOK");
+                        Notifications.create().title("CardIO").text("Executed FileManagement_LinkFiles_TEST: NOK").showError();
+                        appendTextFlow(">> NOT OK\n", 1);
+                    }
+                    // display commmand-response
+                    cardiotest.getTxtCommandResponse().setDisable(false);
+                    String logFileName = runSettings.getProjectPath() + "\\scripts\\FileManagement_LinkFiles_TEST.L00";
+                    showCommandResponseLog(logFileName);
                 }
-                // display commmand-response
-                cardiotest.getTxtCommandResponse().setDisable(false);
-                String logFileName = runSettings.getProjectPath() + "\\scripts\\FileManagement_LinkFiles_TEST.L00";
-                showCommandResponseLog(logFileName);
-            }
-        };
-        Thread runLinkFileTestThread = new Thread(task);
-        runLinkFileTestThread.start();
+            };
+            Thread runLinkFileTestThread = new Thread(task);
+            runLinkFileTestThread.start();
+
+
+/*
+            handleMenuSaveSettings();
+            // make user wait as verification executes
+            cardiotest.getMaskerPane().setText("Executing FileManagement_LinkFile_TEST. Please wait..");
+            cardiotest.getMaskerPane().setVisible(true); // display masker pane
+            menuBar.setDisable(true);
+            appStatusBar.setDisable(true);
+
+            cardiotest.getTxtInterpretedLog().getChildren().clear();
+            appendTextFlow("Executing FileManagement_LinkFile_TEST..\n\n");
+
+            // use threads to avoid application freeze
+            Task<Void> task = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                    runLinkFilesTestOk = runService.runLinkFilesTest();
+                    return null;
+                }
+
+                @Override
+                protected void succeeded() {
+                    super.succeeded();
+                    // dismiss masker pane
+                    cardiotest.getMaskerPane().setVisible(false);
+                    menuBar.setDisable(false);
+                    appStatusBar.setDisable(false);
+                    // update status bar
+                    if (runLinkFilesTestOk) {
+                        appStatusBar.setText("Executed FileManagement_LinkFiles_TEST: OK");
+                        Notifications.create().title("CardIO").text("Executed FileManagement_LinkFiles_TEST: OK").showInformation();
+                        appendTextFlow(">> OK\n\n", 0);
+                    }
+                    else {
+                        appStatusBar.setText("Executed FileManagement_LinkFiles_TEST: NOK");
+                        Notifications.create().title("CardIO").text("Executed FileManagement_LinkFiles_TEST: NOK").showError();
+                        appendTextFlow(">> NOT OK\n", 1);
+                    }
+                    // display commmand-response
+                    cardiotest.getTxtCommandResponse().setDisable(false);
+                    String logFileName = runSettings.getProjectPath() + "\\scripts\\FileManagement_LinkFiles_TEST.L00";
+                    showCommandResponseLog(logFileName);
+                }
+            };
+            Thread runLinkFileTestThread = new Thread(task);
+            runLinkFileTestThread.start();
+
+ */
+
+
     }
 
     @FXML private void handleMenuRuwiTest() {

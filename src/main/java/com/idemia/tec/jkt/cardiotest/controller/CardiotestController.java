@@ -78,7 +78,6 @@ public class CardiotestController {
     @FXML private TextField txtDfCsim;
 
 
-
     // OTA settings tab
     @FXML private TableView<SCP80Keyset> tblScp80Keyset;
     @FXML private TableColumn<SCP80Keyset, String> clmnKeysetName;

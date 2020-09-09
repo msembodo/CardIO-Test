@@ -669,6 +669,125 @@ public class ReportServiceImpl implements ReportService {
             html.append(createTableFooter());
         }
 
+        if (runSettings.getRam().isIncludeRam() || runSettings.getRam().isIncludeRamUpdateRecord() || runSettings.getRam().isIncludeRamExpandedMode()) {
+            html.append("\n<div><h2>RAM</h2></div>");
+            html.append("\n<div><h3>Test modules</h3></div>");
+            html.append(createTableHeaderModule());
+            if (runSettings.getRam().isIncludeRam()) {
+                html.append("\n<tr><td class=\"item\">RAM</td>");
+                if (runSettings.getRam().isTestRamOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
+                else {
+                    String[] messages = runSettings.getRam().getTestRamMessage().split(";");
+                    html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
+                }
+            }
+            else html.append("\n<tr><td class=\"item\">RAM</td><td>(not included)</td></tr>");
+            if (runSettings.getRam().isIncludeRamUpdateRecord()) {
+                html.append("\n<tr><td class=\"item\">RAM update record</td>");
+                if (runSettings.getRam().isTestRamUpdateRecordOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
+                else {
+                    String[] messages = runSettings.getRam().getTestRamUpdateRecordMessage().split(";");
+                    html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
+                }
+            }
+            else html.append("\n<tr><td class=\"item\">RAM update record</td><td>(not included)</td></tr>");
+            if (runSettings.getRam().isIncludeRamExpandedMode()) {
+                html.append("\n<tr><td class=\"item\">RAM expanded mode</td>");
+                if (runSettings.getRam().isTestRamExpandedModeOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
+                else {
+                    String[] messages = runSettings.getRam().getTestRamExpandedModeMessage().split(";");
+                    html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
+                }
+            }
+            else html.append("\n<tr><td class=\"item\">RAM expanded mode</td><td>(not included)</td></tr>");
+            html.append(createTableFooter());
+
+            html.append("\n<div><h3>Test parameters</h3></div>");
+            html.append(createTableHeaderModule());
+            html.append(
+                "\n<tr><td class=\"item\">TAR</td>"
+                + "<td>" + runSettings.getRam().getTar() + "</td></tr>"
+            );
+            if (runSettings.getRam().isUseSpecificKeyset()) {
+                html.append(
+                    "\n<tr><td class=\"item\">Specific cipher keyset</td>"
+                    + "<td>" + runSettings.getRam().getCipheringKeyset().getKeysetName() + "</td></tr>"
+                    + "\n<tr><td class=\"item\">Specific auth keyset</td>"
+                    + "<td>" + runSettings.getRam().getAuthKeyset().getKeysetName() + "</td></tr>"
+                );
+            }
+            html.append(createTableFooter());
+
+            html.append("\n<div><h3>ISD settings</h3></div>");
+            html.append(createTableHeaderModule());
+            html.append(
+                "\n<tr><td class=\"item\">Method for GP command</td>"
+                + "<td>" + runSettings.getRam().getIsd().getMethodForGpCommand() + "</td></tr>"
+                + "\n<tr><td class=\"item\">SCP mode</td>"
+                + "<td>" + runSettings.getRam().getIsd().getScpMode() + "</td></tr>"
+                + "\n<tr><td class=\"item\">SC level</td>"
+                + "<td>" + runSettings.getRam().getIsd().getScLevel() + "</td></tr>"
+            );
+            html.append("\n<tr><td class=\"item\">Secured state</td>");
+            if (runSettings.getRam().getIsd().isSecuredState()) html.append("<td>YES</td></tr>");
+            else html.append("<td>NO</td></tr>");
+            if (runSettings.getRam().getIsd().getMethodForGpCommand().equals("with Card Manager Keyset")) {
+                html.append(
+                    "\n<tr><td class=\"item\">Encryption key (ENC)</td>"
+                    + "<td>" + getValue(runSettings.getRam().getIsd().getCardManagerEnc()) + "</td></tr>"
+                    + "\n<tr><td class=\"item\">Message Auth Code key (MAC)</td>"
+                    + "<td>" + getValue(runSettings.getRam().getIsd().getCardManagerMac()) + "</td></tr>"
+                    + "\n<tr><td class=\"item\">Data Encryption key (KEK)</td>"
+                    + "<td>" + getValue(runSettings.getRam().getIsd().getCardManagerKey()) + "</td></tr>"
+                );
+            }
+            if (runSettings.getRam().getIsd().getMethodForGpCommand().equals("SIMBiOs")) {
+                html.append(
+                    "\n<tr><td class=\"item\">Card manager PIN</td>"
+                    + "<td>" + getValue(runSettings.getRam().getIsd().getCardManagerPin()) + "</td></tr>"
+                );
+            }
+            html.append(createTableFooter());
+
+            html.append("\n<div><h3>Minimum Security Level</h3></div>");
+            html.append(createTableHeaderModule());
+            html.append(
+                "\n<tr><td class=\"item\">Computed MSL</td>"
+                + "<td>" + runSettings.getRam().getMinimumSecurityLevel().getComputedMsl() + "</td></tr>"
+            );
+            html.append("\n<tr><td class=\"item\">Use cipher</td>");
+            if (runSettings.getRam().getMinimumSecurityLevel().isUseCipher()) html.append("<td>YES</td></tr>");
+            else html.append("<td>NO</td></tr>");
+            html.append(
+                "\n<tr><td class=\"item\">Cipher algo</td>"
+                + "<td>" + runSettings.getRam().getMinimumSecurityLevel().getCipherAlgo() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td class=\"item\">Auth verification</td>"
+                + "<td>" + runSettings.getRam().getMinimumSecurityLevel().getAuthVerification() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td class=\"item\">Signing algo</td>"
+                + "<td>" + runSettings.getRam().getMinimumSecurityLevel().getSigningAlgo() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td class=\"item\">Counter checking</td>"
+                + "<td>" + runSettings.getRam().getMinimumSecurityLevel().getCounterChecking() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td class=\"item\">PoR requirement</td>"
+                + "<td>" + runSettings.getRam().getMinimumSecurityLevel().getPorRequirement() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td class=\"item\">PoR security</td>"
+                + "<td>" + runSettings.getRam().getMinimumSecurityLevel().getPorSecurity() + "</td></tr>"
+            );
+            html.append("\n<tr><td class=\"item\">Cipher PoR</td>");
+            if (runSettings.getRam().getMinimumSecurityLevel().isCipherPor()) html.append("<td>YES</td></tr>");
+            else html.append("<td>NO</td></tr>");
+            html.append(createTableFooter());
+        }
+
         // secret codes
         if (runSettings.getSecretCodes().isInclude3gScript() || runSettings.getSecretCodes().isInclude2gScript()) {
             html.append("\n<div><h2>Secret Codes</h2></div>");
@@ -1059,6 +1178,18 @@ public class ReportServiceImpl implements ReportService {
         }
         if (runSettings.getRfmCustom().isIncludeRfmCustomExpandedMode()) {
             if (runSettings.getRfmCustom().isTestRfmCustomExpandedModeOk()) testPass++;
+            else testFail++;
+        }
+        if (runSettings.getRam().isIncludeRam()) {
+            if (runSettings.getRam().isTestRamOk()) testPass ++;
+            else testFail++;
+        }
+        if (runSettings.getRam().isIncludeRamUpdateRecord()) {
+            if (runSettings.getRam().isTestRamUpdateRecordOk()) testPass++;
+            else testFail++;
+        }
+        if (runSettings.getRam().isIncludeRamExpandedMode()) {
+            if (runSettings.getRam().isTestRamExpandedModeOk()) testPass++;
             else testFail++;
         }
         if (runSettings.getSecretCodes().isInclude3gScript()) {

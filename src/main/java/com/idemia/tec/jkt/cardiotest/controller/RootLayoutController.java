@@ -582,7 +582,7 @@ public class RootLayoutController {
                 runSettings.getRam().setTestRamMessage(errFailure);
             }
         }
-        if (module.getName().equals("RFM_ISIM_UpdateRecord")) {
+        if (module.getName().equals("RAM_UpdateRecord")) {
             runSettings.getRam().setTestRamUpdateRecordOk(true);
             runSettings.getRam().setTestRamUpdateRecordMessage("OK");
             String errFailure = "";
@@ -597,7 +597,7 @@ public class RootLayoutController {
                 runSettings.getRam().setTestRamUpdateRecordMessage(errFailure);
             }
         }
-        if (module.getName().equals("RFM_ISIM_3G_ExpandedMode")) {
+        if (module.getName().equals("RAM_3G_ExpandedMode")) {
             runSettings.getRam().setTestRamExpandedModeOk(true);
             runSettings.getRam().setTestRamExpandedModeMessage("OK");
             String errFailure = "";

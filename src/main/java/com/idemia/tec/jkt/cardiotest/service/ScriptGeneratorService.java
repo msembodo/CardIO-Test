@@ -1,6 +1,14 @@
 package com.idemia.tec.jkt.cardiotest.service;
 
+
 import com.idemia.tec.jkt.cardiotest.model.*;
+import com.idemia.tec.jkt.cardiotest.model.Authentication;
+import com.idemia.tec.jkt.cardiotest.model.RfmUsim;
+import com.idemia.tec.jkt.cardiotest.model.RfmGsm;
+import com.idemia.tec.jkt.cardiotest.model.RfmIsim;
+import com.idemia.tec.jkt.cardiotest.model.RfmCustom;
+import com.idemia.tec.jkt.cardiotest.model.Ram;
+import com.idemia.tec.jkt.cardiotest.model.SecretCodes;
 
 public interface ScriptGeneratorService {
 
@@ -17,6 +25,9 @@ public interface ScriptGeneratorService {
     StringBuilder generateRfmIsim(RfmIsim rfmIsim);
     StringBuilder generateRfmIsimUpdateRecord(RfmIsim rfmIsim);
     StringBuilder generateRfmIsimExpandedMode(RfmIsim rfmIsim);
+    StringBuilder generateRam(Ram ram);
+    StringBuilder generateRamUpdateRecord(Ram ram);
+    StringBuilder generateRamExpandedMode(Ram ram);
     StringBuilder generateSecretCodes2g(SecretCodes secretCodes);
     StringBuilder generateSecretCodes3g(SecretCodes secretCodes);
     StringBuilder generateRfmCustom(RfmCustom rfmCustom);

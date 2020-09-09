@@ -74,6 +74,7 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             cardParameters.setDfIsim("7FF2");
             cardParameters.setCsimAid("A0000000871006FFFFFFFF89");
             cardParameters.setDfCsim("7FF3");
+            cardParameters.setIccid("ICCID");
             defaultSettings.setCardParameters(cardParameters);
 
 
@@ -150,6 +151,25 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             rfmIsim.setFullAccess(true);
             rfmIsim.setMinimumSecurityLevel(rfmIsimMsl);
             defaultSettings.setRfmIsim(rfmIsim);
+
+
+            MinimumSecurityLevel ramMsl = new MinimumSecurityLevel(true, "Cryptographic Checksum", "Counter must be higher");
+            ramMsl.setCipherAlgo("3DES - CBC 2 keys");ramMsl.setSigningAlgo("3DES - CBC 2 keys");
+            ramMsl.setPorRequirement("PoR required");
+            ramMsl.setPorSecurity("response with no security");
+
+            Isd isd = new Isd();
+            isd.setMethodForGpCommand("with Card Manager Keyset");
+            isd.setScLevel("00");
+            isd.setScpMode("0255");
+
+            Ram ram = new Ram();
+            ram.setIncludeRam(true);
+            ram.setTar("000000");
+            ram.setMinimumSecurityLevel(ramMsl);
+
+            ram.setIsd(isd);
+            defaultSettings.setRam(ram);
 
             defaultSettings.setCustomScriptsSection1(new ArrayList<>());
             defaultSettings.setCustomScriptsSection2(new ArrayList<>());

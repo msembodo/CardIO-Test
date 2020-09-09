@@ -43,6 +43,9 @@
                         <MenuItem fx:id="menuRfmCustom" mnemonicParsing="false" onAction="#handleMenuRfmCustom" text="RFM CUSTOM" />
                         <MenuItem fx:id="menuRfmCustomUpdateRecord" mnemonicParsing="false" onAction="#handleMenuRfmCustomUpdateRecord" text="RFM CUSTOM Update Record" />
                         <MenuItem fx:id="menuRfmCustomExpandedMode" mnemonicParsing="false" onAction="#handleMenuRfmCustomExpandedMode" text="RFM CUSTOM Expanded Mode" />
+                        <MenuItem fx:id="menuRam" mnemonicParsing="false" onAction="#handleMenuRam" text="RAM" />
+                        <MenuItem fx:id="menuRamUpdateRecord" mnemonicParsing="false" onAction="#handleMenuRamUpdateRecord" text="RAM update record" />
+                        <MenuItem fx:id="menuRamExpandedMode" mnemonicParsing="false" onAction="#handleMenuRamExpandedMode" text="RAM expanded mode" />
                         <MenuItem fx:id="menuCodes3g" mnemonicParsing="false" onAction="#handleMenuCodes3g" text="Secret Codes 3G" />
                         <MenuItem fx:id="menuCodes2g" mnemonicParsing="false" onAction="#handleMenuCodes2g" text="Secret Codes 2G" />
                     </items>

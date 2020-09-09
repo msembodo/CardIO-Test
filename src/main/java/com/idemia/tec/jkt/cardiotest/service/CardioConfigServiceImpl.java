@@ -27,6 +27,7 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             }
         }
         else {
+
             // constants for default values
             String PROJECT_PATH_DEFAULT = "C:\\";
             String ADV_SAVE_VAR_DEFAULT = "variables.txt";
@@ -172,7 +173,7 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             rfmCustom.setCustomRfmDesc("RFM ...");
 
             // --------------------------------
-            FileManagement fileManagement = new FileManagement(true, false, null ,true, false, null,true, false, null,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true);
+            FileManagement fileManagement = new FileManagement(true, false, null ,true, false, null,true, false, null,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,0,0,false);
             defaultSettings.setFileManagement(fileManagement);
             // --------------------------------
 

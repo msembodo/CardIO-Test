@@ -34,7 +34,7 @@ public class FileManagementService {
 
         linkFileTestBuffer.append(
                 ".LOAD Calcul.dll\n"
-                        + ".LOAD Var_Reader.dll\n\n"
+                        //+ ".LOAD Var_Reader.dll\n\n"
         );
 
         linkFileTestBuffer.append(
@@ -43,11 +43,30 @@ public class FileManagementService {
                         + ".POWER_ON\n"
         );
 
+        if (root.getRunSettings().getSecretCodes().isPin1disabled())
+        {
+            linkFileTestBuffer.append(
+                    ";Enabled PIN1\n"
+                    +"00 28 00 01 08 %CHV1 (9000)\n"
+            );
+        }
+
+        if (root.getRunSettings().getSecretCodes().isPin2disabled())
+        {
+            linkFileTestBuffer.append(
+                    ";Enabled PIN2\n"
+                            +"00 28 00 81 08 %CHV2 (9000)\n"
+            );
+        }
+
         linkFileTestBuffer.append(
-                "\n"
+                "00A40400<?> %USIM_AID\t(61xx)\n"
+                        + "00 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+                        + "00 20 00 81 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
                         + "00 20 00 0A 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
-                        + "00 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n");
-        //+ "00 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n");
+                );
+
+
         if (root.getRunSettings().getSecretCodes().isUseIsc2())
             linkFileTestBuffer.append("00 20 00 0B 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc3())
@@ -56,7 +75,7 @@ public class FileManagementService {
             linkFileTestBuffer.append("00 20 00 0D 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
 
 
-        for (int i=0;i < FMCon.getRow() ;i++)
+        for (int i=0;i < root.getRunSettings().getFileManagement().getRow() ;i++)
         {
             linkFileTestBuffer.append(
                     "\n; -------------------------\n"
@@ -71,24 +90,35 @@ public class FileManagementService {
             );
 
             int length_master;
-            length_master = FMCon.getData_master(i).length();
+            int length_ghost;
 
-            if (length_master == 12)
+            length_master = root.getRunSettings().getFileManagement().getData_master(i).length();
+            length_ghost = root.getRunSettings().getFileManagement().getData_ghost(i).length();
+
+            if (length_master == 8)
+                {
+                linkFileTestBuffer.append(
+                        "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(i).substring(0,4) + " (61xx)\n"
+                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(i).substring(4,8) + " (61xx)\n"
+                );
+            }
+
+            else if (length_master == 12)
             {
                 linkFileTestBuffer.append(
-                        "00A4000402 " + FMCon.getData_master(i).substring(0,4) + " (61xx)\n"
-                                + "00A4000402 " + FMCon.getData_master(i).substring(4,8) + " (61xx)\n"
-                                + "00A4000402 " + FMCon.getData_master(i).substring(8,12) + " (61xx)\n\n"
+                        "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(i).substring(0,4) + " (61xx)\n"
+                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(i).substring(4,8) + " (61xx)\n"
+                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(i).substring(8,12) + " (61xx)\n\n"
                 );
             }
 
             else if (length_master == 16)
             {
                 linkFileTestBuffer.append(
-                        "00A4000402 " + FMCon.getData_master(i).substring(0,4) + " (61xx)\n"
-                                + "00A4000402 " + FMCon.getData_master(i).substring(4,8) + " (61xx)\n"
-                                + "00A4000402 " + FMCon.getData_master(i).substring(8,12) + " (61xx)\n"
-                                + "00A4000402 " + FMCon.getData_master(i).substring(12,16) + " (61xx)\n"
+                        "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(i).substring(0,4) + " (61xx)\n"
+                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(i).substring(4,8) + " (61xx)\n"
+                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(i).substring(8,12) + " (61xx)\n"
+                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(i).substring(12,16) + " (61xx)\n"
                 );
             }
 
@@ -103,25 +133,31 @@ public class FileManagementService {
                             + "; -------------------------\n\n"
             );
 
-            int length_ghost;
-            length_ghost = FMCon.getData_ghost(i).length();
 
-            if (length_master == 12)
+            if (length_ghost == 8)
             {
                 linkFileTestBuffer.append(
-                        "00A4000402 " + FMCon.getData_ghost(i).substring(0,4) + " (61xx)\n"
-                                + "00A4000402 " + FMCon.getData_ghost(i).substring(4,8) + " (61xx)\n"
-                                + "00A4000402 " + FMCon.getData_ghost(i).substring(8,12) + " (61xx)\n"
+                        "00A4000402 " + root.getRunSettings().getFileManagement().getData_ghost(i).substring(0,4) + " (61xx)\n"
+                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ghost(i).substring(4,8) + " (61xx)\n"
                 );
             }
 
-            else if (length_master == 16)
+            else if (length_ghost == 12)
             {
                 linkFileTestBuffer.append(
-                        "00A4000402 " + FMCon.getData_ghost(i).substring(0,4) + " (61xx)\n"
-                                + "00A4000402 " + FMCon.getData_ghost(i).substring(4,8) + " (61xx)\n"
-                                + "00A4000402 " + FMCon.getData_ghost(i).substring(8,12) + " (61xx)\n"
-                                + "00A4000402 " + FMCon.getData_ghost(i).substring(12,16) + " (61xx)\n"
+                        "00A4000402 " + root.getRunSettings().getFileManagement().getData_ghost(i).substring(0,4) + " (61xx)\n"
+                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ghost(i).substring(4,8) + " (61xx)\n"
+                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ghost(i).substring(8,12) + " (61xx)\n"
+                );
+            }
+
+            else if (length_ghost == 16)
+            {
+                linkFileTestBuffer.append(
+                        "00A4000402 " + root.getRunSettings().getFileManagement().getData_ghost(i).substring(0,4) + " (61xx)\n"
+                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ghost(i).substring(4,8) + " (61xx)\n"
+                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ghost(i).substring(8,12) + " (61xx)\n"
+                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ghost(i).substring(12,16) + " (61xx)\n"
                 );
             }
 
@@ -156,22 +192,30 @@ public class FileManagementService {
                             + "; ---------------------\n\n"
             );
 
-            if (length_master == 12)
+            if (length_master == 8)
             {
                 linkFileTestBuffer.append(
-                        "00A4000402 " + FMCon.getData_master(i).substring(0,4) + " (61xx)\n"
-                                + "00A4000402 " + FMCon.getData_master(i).substring(4,8) + " (61xx)\n"
-                                + "00A4000402 " + FMCon.getData_master(i).substring(8,12) + " (61xx)\n"
+                        "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(i).substring(0,4) + " (61xx)\n"
+                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(i).substring(4,8) + " (61xx)\n"
+                );
+            }
+
+            else if (length_master == 12)
+            {
+                linkFileTestBuffer.append(
+                        "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(i).substring(0,4) + " (61xx)\n"
+                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(i).substring(4,8) + " (61xx)\n"
+                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(i).substring(8,12) + " (61xx)\n\n"
                 );
             }
 
             else if (length_master == 16)
             {
                 linkFileTestBuffer.append(
-                        "00A4000402 " + FMCon.getData_master(i).substring(0,4) + " (61xx)\n"
-                                + "00A4000402 " + FMCon.getData_master(i).substring(4,8) + " (61xx)\n"
-                                + "00A4000402 " + FMCon.getData_master(i).substring(8,12) + " (61xx)\n"
-                                + "00A4000402 " + FMCon.getData_master(i).substring(12,16) + " (61xx)\n"
+                        "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(i).substring(0,4) + " (61xx)\n"
+                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(i).substring(4,8) + " (61xx)\n"
+                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(i).substring(8,12) + " (61xx)\n"
+                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(i).substring(12,16) + " (61xx)\n"
                 );
             }
 
@@ -222,22 +266,30 @@ public class FileManagementService {
             );
 
 
-            if (length_master == 12)
+            if (length_master == 8)
             {
                 linkFileTestBuffer.append(
-                        "00A4000402 " + FMCon.getData_master(i).substring(0,4) + " (61xx)\n"
-                                + "00A4000402 " + FMCon.getData_master(i).substring(4,8) + " (61xx)\n"
-                                + "00A4000402 " + FMCon.getData_master(i).substring(8,12) + " (61xx)\n"
+                        "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(i).substring(0,4) + " (61xx)\n"
+                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(i).substring(4,8) + " (61xx)\n"
+                );
+            }
+
+            else if (length_master == 12)
+            {
+                linkFileTestBuffer.append(
+                        "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(i).substring(0,4) + " (61xx)\n"
+                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(i).substring(4,8) + " (61xx)\n"
+                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(i).substring(8,12) + " (61xx)\n\n"
                 );
             }
 
             else if (length_master == 16)
             {
                 linkFileTestBuffer.append(
-                        "00A4000402 " + FMCon.getData_master(i).substring(0,4) + " (61xx)\n"
-                                + "00A4000402 " + FMCon.getData_master(i).substring(4,8) + " (61xx)\n"
-                                + "00A4000402 " + FMCon.getData_master(i).substring(8,12) + " (61xx)\n"
-                                + "00A4000402 " + FMCon.getData_master(i).substring(12,16) + " (61xx)\n"
+                        "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(i).substring(0,4) + " (61xx)\n"
+                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(i).substring(4,8) + " (61xx)\n"
+                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(i).substring(8,12) + " (61xx)\n"
+                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(i).substring(12,16) + " (61xx)\n"
                 );
             }
 
@@ -253,7 +305,7 @@ public class FileManagementService {
                             + "* \tRESTORE EF \t*\n"
                             + "; -------------------------\n"
                             +"00 DC 01 03 N %RECORD_OR (9000)\n"
-                    +".UNDEFINE %RECORD\n"+".UNDEFINE %RECORD_OR\n"+".BREAK"
+                    +".UNDEFINE %RECORD\n"+".UNDEFINE %RECORD_OR\n"+".BREAK\n\n"
             );
 
             linkFileTestBuffer.append(
@@ -288,22 +340,30 @@ public class FileManagementService {
                             + "; ---------------------\n"
             );
 
-            if (length_master == 12)
+            if (length_master == 8)
             {
                 linkFileTestBuffer.append(
-                        "00A4000402 " + FMCon.getData_master(i).substring(0,4) + " (61xx)\n"
-                                + "00A4000402 " + FMCon.getData_master(i).substring(4,8) + " (61xx)\n"
-                                + "00A4000402 " + FMCon.getData_master(i).substring(8,12) + " (61xx)\n\n"
+                        "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(i).substring(0,4) + " (61xx)\n"
+                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(i).substring(4,8) + " (61xx)\n"
+                );
+            }
+
+            else if (length_master == 12)
+            {
+                linkFileTestBuffer.append(
+                        "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(i).substring(0,4) + " (61xx)\n"
+                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(i).substring(4,8) + " (61xx)\n"
+                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(i).substring(8,12) + " (61xx)\n\n"
                 );
             }
 
             else if (length_master == 16)
             {
                 linkFileTestBuffer.append(
-                        "00A4000402 " + FMCon.getData_master(i).substring(0,4) + " (61xx)\n"
-                                + "00A4000402 " + FMCon.getData_master(i).substring(4,8) + " (61xx)\n"
-                                + "00A4000402 " + FMCon.getData_master(i).substring(8,12) + " (61xx)\n"
-                                + "00A4000402 " + FMCon.getData_master(i).substring(12,16) + " (61xx)\n\n"
+                        "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(i).substring(0,4) + " (61xx)\n"
+                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(i).substring(4,8) + " (61xx)\n"
+                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(i).substring(8,12) + " (61xx)\n"
+                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(i).substring(12,16) + " (61xx)\n"
                 );
             }
 
@@ -335,6 +395,27 @@ public class FileManagementService {
         );
 
         linkFileTestBuffer.append(".POWER_OFF\n");
+
+        if (root.getRunSettings().getSecretCodes().isPin1disabled())
+        {
+            linkFileTestBuffer.append(
+                    ".POWER_ON\n\n"
+                    +";Disabled PIN1\n"
+                            +"00 26 00 01 08 %CHV1 (9000)\n\n"
+                            +".POWER_OFF\n"
+            );
+        }
+
+        if (root.getRunSettings().getSecretCodes().isPin2disabled())
+        {
+            linkFileTestBuffer.append(
+                    ".POWER_ON\n\n"
+                    +";Disabled PIN2\n"
+                            +"00 26 00 81 08 %CHV2 (9000)\n"
+                            +".POWER_OFF\n"
+            );
+        }
+
         return linkFileTestBuffer;
     }
 
@@ -348,7 +429,6 @@ public class FileManagementService {
         ruwiTestBuffer.append(
                 ".CALL Mapping.txt /LIST_OFF\n"
                         + ".CALL Options.txt /LIST_OFF\n\n"
-                        + ".POWER_ON\n"
         );
 
         ruwiTestBuffer.append(
@@ -356,6 +436,33 @@ public class FileManagementService {
                         + ";\n\n"
                         + ";\n"
         );
+
+        if (fileManagement.isRuwiSimbiosCtd_bool())
+            {
+                //todo simbios
+            }
+
+        else
+            {
+                //for (int i=0;i < root.getRunSettings().getFileManagement().getRowRuwi() ;i++)
+                //{
+                    ruwiTestBuffer.append(
+                            ".DEFINE %_VERIFY_ADM1_ A0 2000 00 08  %" + root.getRunSettings().getSecretCodes().getIsc1() + "\n"
+                                    + ".DEFINE %_VERIFY_CHV1_ A0 2000 01 08 %" + root.getRunSettings().getSecretCodes().getChv1()+ "\n"
+                                    + ".DEFINE %_VERIFY_CHV2_ A0 2000 02 08 %" + root.getRunSettings().getSecretCodes().getChv2()+ "\n"
+                    );
+
+                    if (root.getRunSettings().getSecretCodes().isUseIsc2())
+                        ruwiTestBuffer.append(".DEFINE %_VERIFY_ADM2_ A0 2000 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+                    if (root.getRunSettings().getSecretCodes().isUseIsc3())
+                        ruwiTestBuffer.append(".DEFINE %_VERIFY_ADM3_ A0 2000 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+                    if (root.getRunSettings().getSecretCodes().isUseIsc4())
+                        ruwiTestBuffer.append(".DEFINE %_VERIFY_ADM4_ A0 2000 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+
+                //}
+            }
+
+
 
         ruwiTestBuffer.append(".POWER_OFF\n");
         return ruwiTestBuffer;

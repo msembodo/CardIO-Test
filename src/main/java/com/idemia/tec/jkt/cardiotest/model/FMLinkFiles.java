@@ -1,11 +1,13 @@
 package com.idemia.tec.jkt.cardiotest.model;
 
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+
 
 public class FMLinkFiles {
 
     private SimpleStringProperty path_Master, path_Ghost;
+
+    //List<String> data_ghost = new ArrayList<>();
 
     public FMLinkFiles() {}
 
@@ -39,5 +41,7 @@ public class FMLinkFiles {
      public SimpleStringProperty path_GhostProperty() {
         return path_Ghost;
     }
+
+
 
 }

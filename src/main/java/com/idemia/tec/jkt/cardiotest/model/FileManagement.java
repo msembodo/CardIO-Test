@@ -4,13 +4,19 @@ import javafx.collections.ObservableList;
 
 public class FileManagement {
 
+    public String[] data_ghost = new String[200];
+    public String[] data_master = new String[200];
+    public int row=0;
     private boolean includeLinkFilesTest;
     private boolean testLinkFilesOk;
     private String testLinkFilesMessage;
 
+    public int rowRuwi=0;
+    public String[] data_ruwi = new String[200];
     private boolean includeRuwiTest;
     private boolean testRuwiOk;
     private String testRuwiMessage;
+    public Boolean RuwiSimbiosCtd_bool;
 
     private boolean includeSfiTest;
     private boolean testSfiOk;
@@ -36,7 +42,7 @@ public class FileManagement {
 
     public FileManagement() {}
 
-    public FileManagement(boolean includeLinkFilesTest, boolean testLinkFilesOk, String testLinkFilesMessage, boolean includeRuwiTest, boolean testRuwiOk, String testRuwiMessage, boolean includeSfiTest, boolean testSfiOk, String testSfiMessage, Boolean SFI_Iccid_2FE2_02_bool, Boolean SFI_ARR_2F06_06_bool, Boolean SFI_PL_2F05_05_bool, Boolean SFI_Dir_2F00_1E_bool, Boolean SFI_ECC_6F7B_01_bool, Boolean SFI_StartHFN_6F5B_0F_bool, Boolean SFI_LI_6F05_02_bool, Boolean SFI_TRESHOLD_6F5C_10_bool, Boolean SFI_AD_6FAD_03_bool, Boolean SFI_OPLMNwACT_6F61_11_bool, Boolean SFI_UST_6F38_04_bool, Boolean SFI_HPPLMN_6F31_12_bool, Boolean SFI_EST_6F56_05_bool, Boolean SFI_HPLMNwACT_6F62_13_bool, Boolean SFI_ACC_6F78_06_bool, Boolean SFI_ICI_6F80_14_bool, Boolean SFI_IMSI_6F07_07_bool, Boolean SFI_OCI_6F81_15_bool, Boolean SFI_KEYS_6F08_08_bool, Boolean SFI_CCP2_6F4F_16_bool, Boolean SFI_KEYSPS_6F09_09_bool, Boolean SFI_ARR_6F06_17_bool, Boolean SFI_PLMNwACT_6F60_0A_bool, Boolean SFI_ePDGIdEm_6F65_18_bool, Boolean SFI_LOCI_6F7E_0B_bool, Boolean SFI_PNN_6FC5_19_bool, Boolean SFI_PSLOCI_6F73_0C_bool, Boolean SFI_OPL_6FC6_1A_bool, Boolean SFI_FPLMN_6F7B_0D_bool, Boolean SFI_SPDI_6FCD_1B_bool, Boolean SFI_CBMID_6F48_0E_bool, Boolean SFI_ACM_6F39_1C_bool, Boolean SFI_Kc_4F20_01_bool, Boolean SFI_KcGPRS_4F52_02_bool) {
+    public FileManagement(boolean includeLinkFilesTest, boolean testLinkFilesOk, String testLinkFilesMessage, boolean includeRuwiTest, boolean testRuwiOk, String testRuwiMessage, boolean includeSfiTest, boolean testSfiOk, String testSfiMessage, Boolean SFI_Iccid_2FE2_02_bool, Boolean SFI_ARR_2F06_06_bool, Boolean SFI_PL_2F05_05_bool, Boolean SFI_Dir_2F00_1E_bool, Boolean SFI_ECC_6F7B_01_bool, Boolean SFI_StartHFN_6F5B_0F_bool, Boolean SFI_LI_6F05_02_bool, Boolean SFI_TRESHOLD_6F5C_10_bool, Boolean SFI_AD_6FAD_03_bool, Boolean SFI_OPLMNwACT_6F61_11_bool, Boolean SFI_UST_6F38_04_bool, Boolean SFI_HPPLMN_6F31_12_bool, Boolean SFI_EST_6F56_05_bool, Boolean SFI_HPLMNwACT_6F62_13_bool, Boolean SFI_ACC_6F78_06_bool, Boolean SFI_ICI_6F80_14_bool, Boolean SFI_IMSI_6F07_07_bool, Boolean SFI_OCI_6F81_15_bool, Boolean SFI_KEYS_6F08_08_bool, Boolean SFI_CCP2_6F4F_16_bool, Boolean SFI_KEYSPS_6F09_09_bool, Boolean SFI_ARR_6F06_17_bool, Boolean SFI_PLMNwACT_6F60_0A_bool, Boolean SFI_ePDGIdEm_6F65_18_bool, Boolean SFI_LOCI_6F7E_0B_bool, Boolean SFI_PNN_6FC5_19_bool, Boolean SFI_PSLOCI_6F73_0C_bool, Boolean SFI_OPL_6FC6_1A_bool, Boolean SFI_FPLMN_6F7B_0D_bool, Boolean SFI_SPDI_6FCD_1B_bool, Boolean SFI_CBMID_6F48_0E_bool, Boolean SFI_ACM_6F39_1C_bool, Boolean SFI_Kc_4F20_01_bool, Boolean SFI_KcGPRS_4F52_02_bool, int row, int rowRuwi, Boolean RuwiSimbiosCtd_bool) {
         this.includeLinkFilesTest = includeLinkFilesTest;
         this.testLinkFilesOk = testLinkFilesOk;
         this.testLinkFilesMessage = testLinkFilesMessage;
@@ -80,6 +86,9 @@ public class FileManagement {
         this.SFI_ACM_6F39_1C_bool = SFI_ACM_6F39_1C_bool;
         this.SFI_Kc_4F20_01_bool = SFI_Kc_4F20_01_bool;
         this.SFI_KcGPRS_4F52_02_bool = SFI_KcGPRS_4F52_02_bool;
+        this.row = row;
+        this.rowRuwi = rowRuwi;
+        this.RuwiSimbiosCtd_bool = RuwiSimbiosCtd_bool;
     }
 
     public boolean isIncludeLinkFilesTest() {
@@ -328,4 +337,46 @@ public class FileManagement {
     public boolean isSFI_Kc_4F20_01_bool(){return SFI_Kc_4F20_01_bool;}
     public boolean isSFI_KcGPRS_4F52_02_bool(){return SFI_KcGPRS_4F52_02_bool;}
 
+    public String getData_ghost(int i) {
+        return data_ghost[i];
+    }
+    public void setData_ghost(int i, String data_ghost) {
+
+        this.data_ghost[i] = data_ghost;
+    }
+    public String getData_master(int i) {
+        return data_master[i];
+    }
+    public void setData_master(int i, String data_master) {
+        this.data_master[i] = data_master;
+    }
+
+    public int getRow() {
+        return row;
+    }
+    public void setRow(int row) {
+        this.row = row;
+    }
+
+    public int getRowRuwi() {
+        return rowRuwi;
+    }
+    public void setRowRuwi(int rowRuwi) {
+        this.rowRuwi = rowRuwi;
+    }
+
+    public String getData_ruwi(int i) {
+        return data_ruwi[i];
+    }
+    public void setData_ruwi(int i, String data_ruwi) {
+        this.data_ruwi[i] = data_ruwi;
+    }
+
+    public Boolean isRuwiSimbiosCtd_bool() {
+        return RuwiSimbiosCtd_bool;
+    }
+
+    public void setRuwiSimbiosCtd_bool(Boolean ruwiSimbiosCtd_bool) {
+        RuwiSimbiosCtd_bool = ruwiSimbiosCtd_bool;
+    }
 }

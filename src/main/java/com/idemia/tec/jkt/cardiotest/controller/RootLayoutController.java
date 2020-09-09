@@ -1657,7 +1657,6 @@ public class RootLayoutController {
                 .map(f -> f.substring(scriptName.lastIndexOf(".") + 1));
     }
 
-
     public StatusBar getAppStatusBar() { return appStatusBar; }
     public TerminalFactory getTerminalFactory() { return terminalFactory; }
     public Label getLblTerminalInfo() { return lblTerminalInfo; }
@@ -1673,26 +1672,12 @@ public class RootLayoutController {
     public MenuItem getMenuRfmIsim() { return menuRfmIsim; }
     public MenuItem getMenuRfmIsimUpdateRecord() { return menuRfmIsimUpdateRecord; }
     public MenuItem getMenuRfmIsimExpandedMode() { return menuRfmIsimExpandedMode; }
-    public MenuItem getMenuRfmCustom() {
-        return menuRfmCustom;
-        }
-    public MenuItem getMenuRfmCustomUpdateRecord() {
-        return menuRfmCustomUpdateRecord;
-        }
-    public MenuItem getMenuRfmCustomExpandedMode() {
-        return menuRfmCustomExpandedMode;
-        }
-    public MenuItem getMenuRam() {
-        return menuRam;
-    }
-
-    public MenuItem getMenuRamUpdateRecord() {
-        return menuRamUpdateRecord;
-    }
-
-    public MenuItem getMenuRamExpandedMode() {
-        return menuRamExpandedMode;
-    }
+    public MenuItem getMenuRfmCustom() { return menuRfmCustom; }
+    public MenuItem getMenuRfmCustomUpdateRecord() { return menuRfmCustomUpdateRecord; }
+    public MenuItem getMenuRfmCustomExpandedMode() { return menuRfmCustomExpandedMode; }
+    public MenuItem getMenuRam() { return menuRam; }
+    public MenuItem getMenuRamUpdateRecord() { return menuRamUpdateRecord; }
+    public MenuItem getMenuRamExpandedMode() { return menuRamExpandedMode; }
     public MenuItem getMenuCodes3g() { return menuCodes3g; }
     public MenuItem getMenuCodes2g() { return menuCodes2g; }
     public ObservableList<SCP80Keyset> getScp80Keysets() { return scp80Keysets; }

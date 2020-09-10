@@ -599,7 +599,7 @@ public class RootLayoutController {
                 runSettings.getRam().setTestRamMessage(errFailure);
             }
         }
-        if (module.getName().equals("RFM_ISIM_UpdateRecord")) {
+        if (module.getName().equals("RAM_UpdateRecord")) {
             runSettings.getRam().setTestRamUpdateRecordOk(true);
             runSettings.getRam().setTestRamUpdateRecordMessage("OK");
             String errFailure = "";
@@ -614,7 +614,7 @@ public class RootLayoutController {
                 runSettings.getRam().setTestRamUpdateRecordMessage(errFailure);
             }
         }
-        if (module.getName().equals("RFM_ISIM_3G_ExpandedMode")) {
+        if (module.getName().equals("RAM_3G_ExpandedMode")) {
             runSettings.getRam().setTestRamExpandedModeOk(true);
             runSettings.getRam().setTestRamExpandedModeMessage("OK");
             String errFailure = "";
@@ -1937,26 +1937,12 @@ public class RootLayoutController {
     public MenuItem getMenuRfmIsim() { return menuRfmIsim; }
     public MenuItem getMenuRfmIsimUpdateRecord() { return menuRfmIsimUpdateRecord; }
     public MenuItem getMenuRfmIsimExpandedMode() { return menuRfmIsimExpandedMode; }
-    public MenuItem getMenuRfmCustom() {
-        return menuRfmCustom;
-        }
-    public MenuItem getMenuRfmCustomUpdateRecord() {
-        return menuRfmCustomUpdateRecord;
-        }
-    public MenuItem getMenuRfmCustomExpandedMode() {
-        return menuRfmCustomExpandedMode;
-        }
-    public MenuItem getMenuRam() {
-        return menuRam;
-    }
-
-    public MenuItem getMenuRamUpdateRecord() {
-        return menuRamUpdateRecord;
-    }
-
-    public MenuItem getMenuRamExpandedMode() {
-        return menuRamExpandedMode;
-    }
+    public MenuItem getMenuRfmCustom() { return menuRfmCustom; }
+    public MenuItem getMenuRfmCustomUpdateRecord() { return menuRfmCustomUpdateRecord; }
+    public MenuItem getMenuRfmCustomExpandedMode() { return menuRfmCustomExpandedMode; }
+    public MenuItem getMenuRam() { return menuRam; }
+    public MenuItem getMenuRamUpdateRecord() { return menuRamUpdateRecord; }
+    public MenuItem getMenuRamExpandedMode() { return menuRamExpandedMode; }
     public MenuItem getMenuCodes3g() { return menuCodes3g; }
     public MenuItem getMenuCodes2g() { return menuCodes2g; }
     public ObservableList<SCP80Keyset> getScp80Keysets() { return scp80Keysets; }

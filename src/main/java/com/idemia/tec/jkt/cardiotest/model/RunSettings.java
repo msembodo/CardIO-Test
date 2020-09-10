@@ -32,13 +32,13 @@ public class RunSettings {
     private RfmIsim rfmIsim;
     private RfmCustom rfmCustom;
     private Ram ram;
+    private AmmendmentB ammendmentB;
     private List<CustomScript> customScriptsSection1;
     private List<CustomScript> customScriptsSection2;
     private List<CustomScript> customScriptsSection3;
     private FileManagement fileManagement;
     private FMLinkFiles fMLinkFiles;
     private FMRuwi fMRuwi;
-
 
     public RunSettings() { }
 
@@ -48,7 +48,7 @@ public class RunSettings {
                        List<VariableMapping> variableMappings, CustomApdu customApdu, ATR atr, SecretCodes secretCodes,
                        CardParameters cardParameters, Authentication authentication, List<SCP80Keyset> scp80Keysets,
                        SmsUpdate smsUpdate, RfmUsim rfmUsim, RfmGsm rfmGsm, RfmIsim rfmIsim, RfmCustom rfmCustom,
-                       Ram ram, List<CustomScript> customScriptsSection1, List<CustomScript> customScriptsSection2,
+                       Ram ram, AmmendmentB ammendmentB, List<CustomScript> customScriptsSection1, List<CustomScript> customScriptsSection2,
                        List<CustomScript> customScriptsSection3, FileManagement fileManagement, FMLinkFiles fMLinkFiles,
                        FMRuwi fMRuwi, List<AppletParam> appletParams) {
 
@@ -78,6 +78,7 @@ public class RunSettings {
         this.rfmIsim = rfmIsim;
         this.rfmCustom = rfmCustom;
         this.ram = ram;
+        this.ammendmentB = ammendmentB;
         this.customScriptsSection1 = customScriptsSection1;
         this.customScriptsSection2 = customScriptsSection2;
         this.customScriptsSection3 = customScriptsSection3;
@@ -284,7 +285,8 @@ public class RunSettings {
     }
 
     public void setRfmCustom(RfmCustom rfmCustom) {
-        this.rfmCustom = rfmCustom; }
+        this.rfmCustom = rfmCustom;
+    }
 
     public Ram getRam() {
         return ram;
@@ -292,6 +294,14 @@ public class RunSettings {
 
     public void setRam(Ram ram) {
         this.ram = ram;
+    }
+
+    public AmmendmentB getAmmendmentB() {
+        return ammendmentB;
+    }
+
+    public void setAmmendmentB(AmmendmentB ammendmentB) {
+        this.ammendmentB = ammendmentB;
     }
 
     public List<CustomScript> getCustomScriptsSection1() {
@@ -316,7 +326,6 @@ public class RunSettings {
 
     public void setCustomScriptsSection3(List<CustomScript> customScriptsSection3) {
         this.customScriptsSection3 = customScriptsSection3;
-
     }
 
     public FileManagement getFileManagement() {
@@ -342,4 +351,5 @@ public class RunSettings {
     public void setfMRuwi(FMRuwi fMRuwi) {
         this.fMRuwi = fMRuwi;
     }
+
 }

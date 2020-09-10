@@ -38,8 +38,8 @@
                         <Label text="Ciphering keyset" GridPane.rowIndex="1" />
                         <Label text="Auth keyset" GridPane.rowIndex="2" />
                         <TextField fx:id="txtSdTar" GridPane.columnIndex="1" />
-                        <ComboBox fx:id="cmbCipherKeyset" onAction="#handleCipherKeysetSelection" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <ComboBox fx:id="cmbAuthKeyset" onAction="#handleAuthKeysetSelection" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <ComboBox fx:id="cmbCipherKeyset" onAction="#handleCipherKeysetSelection" onMouseClicked="#handleCipherKeysetContextMenu" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <ComboBox fx:id="cmbAuthKeyset" onAction="#handleAuthKeysetSelection" onMouseClicked="#handleAuthKeysetContextMenu" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                         <Label fx:id="lblKic" text="Kic (hex): " GridPane.columnIndex="2" GridPane.rowIndex="1" />
                         <Label fx:id="lblKid" text="Kid (hex): " GridPane.columnIndex="2" GridPane.rowIndex="2" />
                       </children>

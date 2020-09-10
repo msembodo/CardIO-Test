@@ -449,12 +449,27 @@ public class RunServiceImpl implements RunService {
 
         // add ruwi script to structure
         if (fileManagement.isIncludeRuwiTest()) {
+
+            //file ruwi helper_1
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RuWI01_OK_To_Go.txt"))) {
+                bw.append(scriptGenerator.generateFilemanagementRuWI01_OK_To_Go(fileManagement));
+            }
+            catch (IOException e) { logger.error("Failed RuWI01_OK_To_Go script"); }
+
+            //file ruwi helper_2
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RuWI02_Method.txt"))) {
+                bw.append(scriptGenerator.generateFilemanagementRuWI02_Method(fileManagement));
+            }
+            catch (IOException e) { logger.error("Failed RuWI02_Method script"); }
+
+
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "FileManagement_Readable&UpdateablewhenInvalidated_TEST.txt"))) {
                 bw.append(scriptGenerator.generateFilemanagementRuwi(fileManagement));
             }
             catch (IOException e) { logger.error("Failed FileManagement_Readable&UpdateablewhenInvalidated_TEST script"); }
             flmngmtRunAllString.append(".EXECUTE scripts\\FileManagement_Readable&UpdateablewhenInvalidated_TEST.txt /PATH logs\n");
             flmngmtRunAllString.append(".ALLUNDEFINE\n\n");
+
         }
 
         // add sfi script to structure

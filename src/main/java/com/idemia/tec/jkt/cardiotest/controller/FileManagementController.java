@@ -27,8 +27,6 @@ public class FileManagementController  {
     @FXML private TableColumn<FMLinkFiles, String> clmGhost;
     @FXML private Button addLinkFileButton;
     @FXML private Button deleteLinkFileButton;
-    @FXML private Button ModifyLinkFileButton;
-    @FXML private Button SaveLinkFileButton;
     @FXML private TextField path_MasterTextField;
     @FXML private TextField path_GhostTextField;
 
@@ -36,8 +34,6 @@ public class FileManagementController  {
     @FXML private CheckBox RuwiSimbiosCtdCheckbox;
     @FXML private TableView<FMRuwi> tblRuwi;
     @FXML private TableColumn<FMRuwi, String> clmRuwi;
-    @FXML private Button ModifyRuwiButton;
-    @FXML private Button SaveRuwiButton;
     @FXML private Button addRuwiButton;
     @FXML private Button deleteRuwiButton;
     @FXML private TextField path_RuwiTextField;
@@ -62,11 +58,7 @@ public class FileManagementController  {
     @FXML private CheckBox SFI_Kc_4F20_01_Checkbox , SFI_KcGPRS_4F52_02_Checkbox;
 
     public ObservableList<FMLinkFiles> LinkFilesTableData = FXCollections.observableArrayList();
-    private boolean linkFilesSaved=false;
-
-
     private ObservableList<FMRuwi> RuwiTableData = FXCollections.observableArrayList();
-    private boolean ruwiSaved=false;
 
     public FileManagementController() {}
 
@@ -81,13 +73,15 @@ public class FileManagementController  {
         path_MasterTextField.setPromptText("File Path [MASTER]");
         path_GhostTextField.setPromptText("File Path [GHOST]");
 
-        SaveLinkFileButtonPushed();
+        SaveLinkFiledata();
 
         // ============================================================
         initRuwiTable ();
         loadRuwiData ();
 
         chkIncludeRuwiTest.setSelected(root.getRunSettings().getFileManagement().isIncludeRuwiTest());
+        RuwiSimbiosCtdCheckbox.setSelected(root.getRunSettings().getFileManagement().isRuwiSimbiosCtd_bool());
+
         handleIncludeRuwiCheck();
 
         path_RuwiTextField.setPromptText("File Path");
@@ -95,7 +89,7 @@ public class FileManagementController  {
         //tblRuwi.setEditable(true);
         //clmRuwi.setCellFactory(TextFieldTableCell.forTableColumn());
 
-        SaveRuwiButtonPushed();
+        SaveRuwiData();
 
         // ============================================================
 
@@ -103,6 +97,9 @@ public class FileManagementController  {
         handleIncludeSfiCheck();
 
         // ============================================================
+
+        InitSFI ();
+
     }
 
     // ============================================================
@@ -261,9 +258,7 @@ public class FileManagementController  {
 
     }
 
-    public void SaveLinkFileButtonPushed() {
-        setLinkFilesSaved(true);
-        tblLinkFileTest.setEditable(false);ModifyLinkFileButton.setDisable(false);SaveLinkFileButton.setDisable(true);path_GhostTextField.setDisable(true);path_MasterTextField.setDisable(true);addLinkFileButton.setDisable(true);deleteLinkFileButton.setDisable(true);
+    public void SaveLinkFiledata() {
 
         int row_local=0;
 
@@ -283,10 +278,6 @@ public class FileManagementController  {
         }
 
         root.getRunSettings().getFileManagement().setRow(row_local);
-    }
-    public void ModifyLinkFileButtonPushed() {
-        setLinkFilesSaved(false);
-        tblLinkFileTest.setEditable(true);ModifyLinkFileButton.setDisable(true);SaveLinkFileButton.setDisable(false);path_GhostTextField.setDisable(false);path_MasterTextField.setDisable(false);addLinkFileButton.setDisable(false);deleteLinkFileButton.setDisable(false);
     }
 
     @FXML private void handleIncludeLinkFileCheck() { root.getMenuLinkFile().setDisable(!chkIncludeLinkFileTest.isSelected()); }
@@ -314,23 +305,98 @@ public class FileManagementController  {
 
         if (root.getRunSettings().getFileManagement().getRowRuwi() == 0)
         {
-            RuwiTableData.add(new FMRuwi("3F007FF06F37"));
-            RuwiTableData.add(new FMRuwi("3F007FF06F32"));
-            RuwiTableData.add(new FMRuwi("3F007FF06F07"));
+            RuwiTableData.add(new FMRuwi("3F007F106F54"));
+            RuwiTableData.add(new FMRuwi("3F007F106F4F"));
+            RuwiTableData.add(new FMRuwi("3F007F105F14"));
+            RuwiTableData.add(new FMRuwi("3F007F105F3A4F3A"));
+            RuwiTableData.add(new FMRuwi("3F007F105F3A4F4A"));
+            RuwiTableData.add(new FMRuwi("3F007F105F3A4F4F"));
+            RuwiTableData.add(new FMRuwi("3F007F105F3A4F30"));
+            RuwiTableData.add(new FMRuwi("3F007F105F3A4F09"));
+            RuwiTableData.add(new FMRuwi("3F007F105F3A4F4B"));
+            RuwiTableData.add(new FMRuwi("3F007F105F3A4F11"));
+            RuwiTableData.add(new FMRuwi("3F007F105F3A4F12"));
+            RuwiTableData.add(new FMRuwi("3F007F105F3A4F13"));
+            RuwiTableData.add(new FMRuwi("3F007F105F3A4F34"));
+            RuwiTableData.add(new FMRuwi("3F007F105F3A4F35"));
+            RuwiTableData.add(new FMRuwi("3F007F105F3A4F50"));
+            RuwiTableData.add(new FMRuwi("3F007F105F3A4F21"));
+            RuwiTableData.add(new FMRuwi("3F007F105F3A4F22"));
+            RuwiTableData.add(new FMRuwi("3F007F105F3A4F23"));
+            RuwiTableData.add(new FMRuwi("3F007F105F3A4F24"));
+            RuwiTableData.add(new FMRuwi("3F007F206F05"));
+            RuwiTableData.add(new FMRuwi("3F007F206F20"));
+            RuwiTableData.add(new FMRuwi("3F007F206F31"));
+            RuwiTableData.add(new FMRuwi("3F007F206F38"));
+            RuwiTableData.add(new FMRuwi("3F007F206F74"));
+            RuwiTableData.add(new FMRuwi("3F007F206F78"));
+            RuwiTableData.add(new FMRuwi("3F007F206F7B"));
+            RuwiTableData.add(new FMRuwi("3F007F206FAD"));
+            RuwiTableData.add(new FMRuwi("3F007F206FAE"));
+            RuwiTableData.add(new FMRuwi("3F007F206F30"));
+            RuwiTableData.add(new FMRuwi("3F007F206F3E"));
+            RuwiTableData.add(new FMRuwi("3F007F206F3F"));
+            RuwiTableData.add(new FMRuwi("3F007F206F45"));
+            RuwiTableData.add(new FMRuwi("3F007F206F48"));
+            RuwiTableData.add(new FMRuwi("3F007F206F50"));
+            RuwiTableData.add(new FMRuwi("3F007F206F46"));
+            RuwiTableData.add(new FMRuwi("3F007F206F52"));
+            RuwiTableData.add(new FMRuwi("3F007F206F53"));
+            RuwiTableData.add(new FMRuwi("3F007F206F54"));
+            RuwiTableData.add(new FMRuwi("3F007F206FB7"));
+            RuwiTableData.add(new FMRuwi("3F007F206FC7"));
+            RuwiTableData.add(new FMRuwi("3F007F206FC9"));
+            RuwiTableData.add(new FMRuwi("3F007F206FCA"));
+            RuwiTableData.add(new FMRuwi("3F007F206FCB"));
+            RuwiTableData.add(new FMRuwi("3F007F406F9E"));
+            RuwiTableData.add(new FMRuwi("3F007F406F10"));
             RuwiTableData.add(new FMRuwi("3F007FF06F31"));
-            RuwiTableData.add(new FMRuwi("3F007FF06F39"));
             RuwiTableData.add(new FMRuwi("3F007FF06F3E"));
             RuwiTableData.add(new FMRuwi("3F007FF06F3F"));
-            RuwiTableData.add(new FMRuwi("3F007FF06F41"));
-            RuwiTableData.add(new FMRuwi("3F007FF06F45"));
             RuwiTableData.add(new FMRuwi("3F007FF06F46"));
-            RuwiTableData.add(new FMRuwi("3F007FF06F50"));
-            RuwiTableData.add(new FMRuwi("3F007FF06F61"));
-            RuwiTableData.add(new FMRuwi("3F007FF06F62"));
-            RuwiTableData.add(new FMRuwi("3F007FF06F73"));
             RuwiTableData.add(new FMRuwi("3F007FF06F78"));
+            RuwiTableData.add(new FMRuwi("3F007FF06FAD"));
+            RuwiTableData.add(new FMRuwi("3F007FF06F3B"));
+            RuwiTableData.add(new FMRuwi("3F007FF06F4B"));
+            RuwiTableData.add(new FMRuwi("3F007FF06F3C"));
+            RuwiTableData.add(new FMRuwi("3F007FF06F40"));
+            RuwiTableData.add(new FMRuwi("3F007FF06F42"));
+            RuwiTableData.add(new FMRuwi("3F007FF06F43"));
+            RuwiTableData.add(new FMRuwi("3F007FF06F45"));
+            RuwiTableData.add(new FMRuwi("3F007FF06F48"));
+            RuwiTableData.add(new FMRuwi("3F007FF06F50"));
+            RuwiTableData.add(new FMRuwi("3F007FF06F49"));
+            RuwiTableData.add(new FMRuwi("3F007FF06F47"));
+            RuwiTableData.add(new FMRuwi("3F007FF06F4F"));
+            RuwiTableData.add(new FMRuwi("3F007FF06FC7"));
+            RuwiTableData.add(new FMRuwi("3F007FF06FC9"));
+            RuwiTableData.add(new FMRuwi("3F007FF06FCA"));
+            RuwiTableData.add(new FMRuwi("3F007FF06FCB"));
+            RuwiTableData.add(new FMRuwi("3F007FF06F05"));
+            RuwiTableData.add(new FMRuwi("3F007FF06F08"));
+            RuwiTableData.add(new FMRuwi("3F007FF06F09"));
+            RuwiTableData.add(new FMRuwi("3F007FF06F38"));
             RuwiTableData.add(new FMRuwi("3F007FF06F7B"));
-            RuwiTableData.add(new FMRuwi("3F007FF06F7E"));
+            RuwiTableData.add(new FMRuwi("3F007FF06FB7"));
+            RuwiTableData.add(new FMRuwi("3F007FF06F56"));
+            RuwiTableData.add(new FMRuwi("3F007FF06F57"));
+            RuwiTableData.add(new FMRuwi("3F007FF06F5B"));
+            RuwiTableData.add(new FMRuwi("3F007FF06F5C"));
+            RuwiTableData.add(new FMRuwi("3F007FF06F61"));
+            RuwiTableData.add(new FMRuwi("3F007FF06FC4"));
+            RuwiTableData.add(new FMRuwi("3F007FF06F73"));
+            RuwiTableData.add(new FMRuwi("3F007FF06F80"));
+            RuwiTableData.add(new FMRuwi("3F007FF06F82"));
+            RuwiTableData.add(new FMRuwi("3F007FF06F81"));
+            RuwiTableData.add(new FMRuwi("3F007FF06F83"));
+            RuwiTableData.add(new FMRuwi("3F007FF06FC5"));
+            RuwiTableData.add(new FMRuwi("3F007FF06FC6"));
+            RuwiTableData.add(new FMRuwi("3F007FF06FCD"));
+            RuwiTableData.add(new FMRuwi("3F007FF06FC3"));
+            RuwiTableData.add(new FMRuwi("3F007FF05F3B4F20"));
+            RuwiTableData.add(new FMRuwi("3F007FF05F3B4F52"));
+            RuwiTableData.add(new FMRuwi("3F007FF05F3B4F63"));
+            RuwiTableData.add(new FMRuwi("3F007FF05F3B4F64"));
 
             tblRuwi.setItems(RuwiTableData);
         }
@@ -401,9 +467,7 @@ public class FileManagementController  {
 
     }
 
-    public void SaveRuwiButtonPushed() {
-        setRuwiSaved(true);
-        tblRuwi.setEditable(false);ModifyRuwiButton.setDisable(false);SaveRuwiButton.setDisable(true);path_RuwiTextField.setDisable(true);addRuwiButton.setDisable(true);deleteRuwiButton.setDisable(true);
+    public void SaveRuwiData() {
 
         int row_local=0;
 
@@ -423,26 +487,58 @@ public class FileManagementController  {
         root.getRunSettings().getFileManagement().setRowRuwi(row_local);
 
     }
-    public void ModifyRuwiButtonPushed() {
-        setRuwiSaved(false);
-        tblRuwi.setEditable(true);ModifyRuwiButton.setDisable(true);SaveRuwiButton.setDisable(false);path_RuwiTextField.setDisable(false);addRuwiButton.setDisable(false);deleteRuwiButton.setDisable(false);
-
-    }
 
     @FXML private void handleIncludeRuwiCheck() { root.getMenuRuwi().setDisable(!chkIncludeRuwiTest.isSelected()); }
 
     // ============================================================
 
     @FXML private void handleIncludeSfiCheck() { root.getMenuSfi().setDisable(!chkIncludeSfiTest.isSelected()); }
+    private void InitSFI () {
+        SFI_Iccid_2FE2_02_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_Iccid_2FE2_02_bool());
+        SFI_PL_2F05_05_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_PL_2F05_05_bool());
+                //SFI_ECC_6F7B_01_Checkbox.setSelected(root.getRunSettings().getFileManagement().
+                SFI_LI_6F05_02_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_LI_6F05_02_bool());
+                SFI_AD_6FAD_03_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_AD_6FAD_03_bool());
+                SFI_UST_6F38_04_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_UST_6F38_04_bool());
+                SFI_EST_6F56_05_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_EST_6F56_05_bool());
+                SFI_ACC_6F78_06_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_ACC_6F78_06_bool());
+                SFI_IMSI_6F07_07_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_IMSI_6F07_07_bool());
+                SFI_KEYS_6F08_08_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_KEYS_6F08_08_bool());
+                SFI_KEYSPS_6F09_09_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_KEYSPS_6F09_09_bool());
+                SFI_PLMNwACT_6F60_0A_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_PLMNwACT_6F60_0A_bool());
+                SFI_LOCI_6F7E_0B_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_LOCI_6F7E_0B_bool());
+                SFI_PSLOCI_6F73_0C_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_PSLOCI_6F73_0C_bool());
+                SFI_FPLMN_6F7B_0D_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_FPLMN_6F7B_0D_bool());
+                SFI_CBMID_6F48_0E_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_CBMID_6F48_0E_bool());
+                SFI_Kc_4F20_01_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_Kc_4F20_01_bool());
+                SFI_ARR_2F06_06_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_ARR_2F06_06_bool());
+                SFI_Dir_2F00_1E_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_Dir_2F00_1E_bool());
+                SFI_StartHFN_6F5B_0F_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_StartHFN_6F5B_0F_bool());
+                SFI_TRESHOLD_6F5C_10_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_TRESHOLD_6F5C_10_bool());
+                SFI_OPLMNwACT_6F61_11_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_OPLMNwACT_6F61_11_bool());
+                SFI_HPPLMN_6F31_12_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_HPPLMN_6F31_12_bool());
+                SFI_HPLMNwACT_6F62_13_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_HPLMNwACT_6F62_13_bool());
+                SFI_ICI_6F80_14_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_ICI_6F80_14_bool());
+                SFI_OCI_6F81_15_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_OCI_6F81_15_bool());
+                SFI_CCP2_6F4F_16_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_CCP2_6F4F_16_bool());
+                SFI_ARR_6F06_17_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_ARR_6F06_17_bool());
+                //SFI_ePDGIdEm_6F65_18_Checkbox.setSelected(root.getRunSettings().getFileManagement().
+                SFI_PNN_6FC5_19_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_PNN_6FC5_19_bool());
+                SFI_OPL_6FC6_1A_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_OPL_6FC6_1A_bool());
+                SFI_SPDI_6FCD_1B_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_SPDI_6FCD_1B_bool());
+                SFI_ACM_6F39_1C_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_ACM_6F39_1C_bool());
+                SFI_KcGPRS_4F52_02_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_KcGPRS_4F52_02_bool());
+
+    }
 
     // ============================================================
 
     public void saveControlState() {
         root.getRunSettings().getFileManagement().setIncludeLinkFilesTest(chkIncludeLinkFileTest.isSelected());
-        SaveLinkFileButtonPushed();
+        SaveLinkFiledata();
 
         root.getRunSettings().getFileManagement().setIncludeRuwiTest(chkIncludeRuwiTest.isSelected());
-        SaveRuwiButtonPushed();
+        SaveRuwiData();
         root.getRunSettings().getFileManagement().setRuwiSimbiosCtd_bool(RuwiSimbiosCtdCheckbox.isSelected());
 
 
@@ -551,22 +647,6 @@ public class FileManagementController  {
         this.deleteLinkFileButton = deleteLinkFileButton;
     }
 
-    public Button getModifyLinkFileButton() {
-        return ModifyLinkFileButton;
-    }
-
-    public void setModifyLinkFileButton(Button modifyLinkFileButton) {
-        ModifyLinkFileButton = modifyLinkFileButton;
-    }
-
-    public Button getSaveLinkFileButton() {
-        return SaveLinkFileButton;
-    }
-
-    public void setSaveLinkFileButton(Button saveLinkFileButton) {
-        SaveLinkFileButton = saveLinkFileButton;
-    }
-
     public TextField getPath_MasterTextField() {
         return path_MasterTextField;
     }
@@ -605,22 +685,6 @@ public class FileManagementController  {
 
     public void setClmRuwi(TableColumn<FMRuwi, String> clmRuwi) {
         this.clmRuwi = clmRuwi;
-    }
-
-    public Button getModifyRuwiButton() {
-        return ModifyRuwiButton;
-    }
-
-    public void setModifyRuwiButton(Button modifyRuwiButton) {
-        ModifyRuwiButton = modifyRuwiButton;
-    }
-
-    public Button getSaveRuwiButton() {
-        return SaveRuwiButton;
-    }
-
-    public void setSaveRuwiButton(Button saveRuwiButton) {
-        SaveRuwiButton = saveRuwiButton;
     }
 
     public Button getAddRuwiButton() {
@@ -935,29 +999,6 @@ public class FileManagementController  {
         LinkFilesTableData = linkFilesTableData;
     }
 
-
-
-    public void setSaveLinkFileButtonPushed()
-    {
-        SaveLinkFileButtonPushed();
-    }
-
-    public boolean isLinkFilesSaved(boolean b) {
-        return linkFilesSaved;
-    }
-
-    public void setLinkFilesSaved(boolean linkFilesSaved) {
-        this.linkFilesSaved = linkFilesSaved;
-    }
-
-    public boolean isRuwiSaved() {
-        return ruwiSaved;
-    }
-
-    public void setRuwiSaved(boolean ruwiSaved) {
-        this.ruwiSaved = ruwiSaved;
-    }
-
     public CheckBox getRuwiSimbiosCtdCheckbox() {
         return RuwiSimbiosCtdCheckbox;
     }
@@ -966,7 +1007,4 @@ public class FileManagementController  {
         RuwiSimbiosCtdCheckbox = ruwiSimbiosCtdCheckbox;
     }
 
-    public boolean isLinkFilesSaved() {
-        return linkFilesSaved;
-    }
 }

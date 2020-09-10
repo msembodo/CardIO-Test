@@ -154,6 +154,12 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
     @Override public StringBuilder generateFilemanagementRuwi(FileManagement fileManagement) {
         return fileManagementService.generateFilemanagementRuwi(fileManagement);
     }
+        @Override public StringBuilder generateFilemanagementRuWI01_OK_To_Go(FileManagement fileManagement) {
+        return fileManagementService.generateFilemanagementRuWI01_OK_To_Go(fileManagement);
+    }
+        @Override public StringBuilder generateFilemanagementRuWI02_Method(FileManagement fileManagement) {
+        return fileManagementService.generateFilemanagementRuWI02_Method(fileManagement);
+    }
 
     @Override public StringBuilder generateFilemanagementSfi(FileManagement fileManagement) {
         return fileManagementService.generateFilemanagementSfi(fileManagement);

@@ -19,12 +19,6 @@ public class FileManagementService {
 
     public StringBuilder generateFilemanagementLinkFiles(FileManagement fileManagement) {
 
-        if ( !FMCon.isLinkFilesSaved(true))
-        {
-            //AlertBox.display("Warning", "Please save link files test configuration");
-            FMCon.setSaveLinkFileButtonPushed();
-        }
-
         StringBuilder linkFileTestBuffer = new StringBuilder();
         linkFileTestBuffer.append(
                 ";===================== \n"
@@ -60,9 +54,9 @@ public class FileManagementService {
         }
 
         linkFileTestBuffer.append(
-                "00A40400<?> %USIM_AID\t(61xx)\n"
-                        + "00 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
-                        + "00 20 00 81 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+                //"00A40400<?> %USIM_AID\t(61xx)\n"
+                         "00 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+                        //+ "00 20 00 81 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
                         + "00 20 00 0A 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
                 );
 
@@ -420,52 +414,653 @@ public class FileManagementService {
     }
 
     public StringBuilder generateFilemanagementRuwi(FileManagement fileManagement) {
+
         StringBuilder ruwiTestBuffer = new StringBuilder();
-        ruwiTestBuffer.append(
+
+
+                ruwiTestBuffer.append(
                 ";=====================\n"
-                        + ";Readable and Updateable when Invalidated Test\n\n"
-                        + ";=====================\n"
+                        + ";Readable and Updateable when Invalidated Test\n"
+                        + ";=====================\n\n"
         );
         ruwiTestBuffer.append(
-                ".CALL Mapping.txt /LIST_OFF\n"
+                ".LOAD dll\\BOTS.dll\n"
+                +".POWER_ON /PROTOCOL_ON\n\n"
+                + ".CALL Mapping.txt /LIST_OFF\n"
                         + ".CALL Options.txt /LIST_OFF\n\n"
         );
 
         ruwiTestBuffer.append(
-                "\n;\n"
-                        + ";\n\n"
-                        + ";\n"
+                "\n"
         );
 
+        //SIMBIOS
         if (fileManagement.isRuwiSimbiosCtd_bool())
             {
-                //todo simbios
-            }
-
-        else
-            {
-                //for (int i=0;i < root.getRunSettings().getFileManagement().getRowRuwi() ;i++)
-                //{
+                if (root.getRunSettings().getSecretCodes().isPin1disabled())
+                {
                     ruwiTestBuffer.append(
-                            ".DEFINE %_VERIFY_ADM1_ A0 2000 00 08  %" + root.getRunSettings().getSecretCodes().getIsc1() + "\n"
-                                    + ".DEFINE %_VERIFY_CHV1_ A0 2000 01 08 %" + root.getRunSettings().getSecretCodes().getChv1()+ "\n"
-                                    + ".DEFINE %_VERIFY_CHV2_ A0 2000 02 08 %" + root.getRunSettings().getSecretCodes().getChv2()+ "\n"
+                            ";Enable PIN1\n"
+                                    +"00 28 00 01 08 %CHV1 (9000)\n"
+                    );
+                }
+
+                if (root.getRunSettings().getSecretCodes().isPin2disabled())
+                {
+                    ruwiTestBuffer.append(
+                            ";Enable PIN2\n"
+                                    +"00 28 00 81 08 %CHV2 (9000)\n"
+                    );
+                }
+
+                ruwiTestBuffer.append(
+                        "00 20 00 0A 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+                                + "00 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+                                //"00A40400<?> %USIM_AID\t(61xx)\n"
+                                //+ "00 20 00 81 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+                );
+
+                if (root.getRunSettings().getSecretCodes().isUseIsc2())
+                    ruwiTestBuffer.append("00 20 00 0B 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+                if (root.getRunSettings().getSecretCodes().isUseIsc3())
+                    ruwiTestBuffer.append("00 20 00 0C 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+                if (root.getRunSettings().getSecretCodes().isUseIsc4())
+                    ruwiTestBuffer.append("00 20 00 0D 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+
+
+                ruwiTestBuffer.append(
+                        ".DEFINE %_VERIFY_ADM1_ 00 2000 0A 08  %" + root.getRunSettings().getSecretCodes().getIsc1() + "\n"
+                                + ".DEFINE %_VERIFY_CHV1_ 00 2000 01 08 %" + root.getRunSettings().getSecretCodes().getChv1()+ "\n"
+                                + ".DEFINE %_VERIFY_CHV2_ 00 2000 81 08 %" + root.getRunSettings().getSecretCodes().getChv2()+ "\n"
+                );
+
+                if (root.getRunSettings().getSecretCodes().isUseIsc2())
+                    ruwiTestBuffer.append(".DEFINE %_VERIFY_ADM2_ 00 2000 0B 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+                if (root.getRunSettings().getSecretCodes().isUseIsc3())
+                    ruwiTestBuffer.append(".DEFINE %_VERIFY_ADM3_ 00 2000 0C 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+                if (root.getRunSettings().getSecretCodes().isUseIsc4())
+                    ruwiTestBuffer.append(".DEFINE %_VERIFY_ADM4_ 00 2000 0D 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+
+                ruwiTestBuffer.append(
+                        "\n;.DEFINE %_SELECT_USIM_AID_ 00A4040C\n"
+                        +"\n.DEFINE %_SELECT_ \t\t\t00 A4 00 04 02\n"
+                                + ".DEFINE %_GET_RESPONSE_ \t00 C00000\n"
+                                + ".DEFINE %_READ_BINARY_ \t\t00 B0 0000\n"
+                                + ".DEFINE %_READ_RECORD_ \t\t00 B2 0104  ; read 1st reacord\n"
+                                + ".DEFINE %_UPDATE_BINARY_ \t00 D6 0000\n"
+                                + ".DEFINE %_UPDATE_RECORD_ \t00 DC 0104\n"
+                                + ".DEFINE %_UPDATE_RECORD_C_ \t00 DC 0003\n"
+                                + ".DEFINE %_INVALIDATE_ \t\t00 04 0000\n"
+                                + ".DEFINE %_REHABILITATE_ \t00 44 0000\n\n"
+                                + "; %_SELECT_ 3F00 (61 XX)\n"
+                                + "%_SELECT_ 3F00 (61 XX)\n"
+                                + ";%_SELECT_USIM_AID_  <?> %USIM_AID (9000)\n\n"
+                );
+
+
+                for (int i=0;i < root.getRunSettings().getFileManagement().getRowRuwi() ;i++) {
+                    ruwiTestBuffer.append(
+                            "\n; -------------------\n"
+                                    + "; == RUwI Test - " + (i + 1) + " ==\n"
+                                    + "; -------------------\n\n"
                     );
 
-                    if (root.getRunSettings().getSecretCodes().isUseIsc2())
-                        ruwiTestBuffer.append(".DEFINE %_VERIFY_ADM2_ A0 2000 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
-                    if (root.getRunSettings().getSecretCodes().isUseIsc3())
-                        ruwiTestBuffer.append(".DEFINE %_VERIFY_ADM3_ A0 2000 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
-                    if (root.getRunSettings().getSecretCodes().isUseIsc4())
-                        ruwiTestBuffer.append(".DEFINE %_VERIFY_ADM4_ A0 2000 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+                    int length_pathruwi;
 
-                //}
+                    length_pathruwi = root.getRunSettings().getFileManagement().getData_ruwi(i).length();
+
+                    if (length_pathruwi == 8) {
+                        ruwiTestBuffer.append(
+                                "00 A4 0004 02 " + root.getRunSettings().getFileManagement().getData_ruwi(i).substring(0, 4) + " (9FXX, 61XX)\n"
+                                        + "00 A4 0004 02 " + root.getRunSettings().getFileManagement().getData_ruwi(i).substring(4, 8) + " (9FXX, 61XX)\n"
+                        );
+                    }
+                    else if (length_pathruwi == 12) {
+                        ruwiTestBuffer.append(
+                                "00 A4 0004 02 " + root.getRunSettings().getFileManagement().getData_ruwi(i).substring(0, 4) + " (9FXX, 61XX)\n"
+                                        + "00 A4 0004 02 " + root.getRunSettings().getFileManagement().getData_ruwi(i).substring(4, 8) + " (9FXX, 61XX)\n"
+                                        + "00 A4 0004 02 " + root.getRunSettings().getFileManagement().getData_ruwi(i).substring(8, 12) + " (9FXX, 61XX)\n\n"
+                        );
+                    }
+                    else if (length_pathruwi == 16) {
+                        ruwiTestBuffer.append(
+                                "00 A4 0004 02 " + root.getRunSettings().getFileManagement().getData_ruwi(i).substring(0, 4) + " (9FXX, 61XX)\n"
+                                        + "00 A4 0004 02 " + root.getRunSettings().getFileManagement().getData_ruwi(i).substring(4, 8) + " (9FXX, 61XX)\n"
+                                        + "00 A4 0004 02 " + root.getRunSettings().getFileManagement().getData_ruwi(i).substring(8, 12) + " (9FXX, 61XX)\n"
+                                        + "00 A4 0004 02 " + root.getRunSettings().getFileManagement().getData_ruwi(i).substring(12, 16) + " (9FXX, 61XX)\n"
+                        );
+                    }
+
+                    ruwiTestBuffer.append(
+                            ".UNDEFINE %VBUF\n"
+                                    +".DEFINE %VBUF W(2;1)\n"
+                                    +"%_GET_RESPONSE_ %VBUF\n\n"
+                                    +"\n"
+                                    +".SET_BUFFER H 00\n"
+                                    +".SET_BUFFER G R\n"
+                                    +".SET_BUFFER M A5\t;Tag\n"
+                                    +".SET_BUFFER J 01\t;length of tag\n"
+                                    +"\n"
+                    );
+
+                    ruwiTestBuffer.append(
+                            ";====== Search_Tag_From_Buffer_M.pcom =====\n"
+                            +";;;;;RESET BUFFER H -> FOR LENGTH CONTAINER\n"
+                                    +".SET_BUFFER H 00 00\n\n"
+                                    +"\n"
+                                    +";;;;SET OFFSET\n"
+                                    +";;;FOR RESPONSE CONTENT\n"
+                                    +".SET_BUFFER I 00 01\n\n"
+                                    +"\n"
+                                    +"\n"
+                                    +"***SEARCH TAG 7F21***\n"
+                                    +".BEGIN_LOOP\n"
+                                    +"\t.SWITCH G(I;J)\n"
+                                    +"\t\t.CASE M\n"
+                                    +"\t\t\t.INCREASE_BUFFER I J\n"
+                                    +"\t\t\t.MESSAGE ****************\n"
+                                    +"\t\t\t.PRINT M\n"
+                                    +"\t\t\t.MESSAGE TAG Found!\n"
+                                    +"\t\t\t.APPEND_IFDEF PARSE_TAG_85_ON;\n"
+                                    +"\t\t\t.QUITLOOP\n"
+                                    +"\t\t\t.BREAK\n"
+                                    +"\t\t.DEFAULT\n"
+                                    +"\t\t\t.PRINT G(I;J)\n"
+                                    +"\t\t\t.INCREASE_BUFFER I 01\n"
+                                    +"\t\t.BREAK\n"
+                                    +"\t.ENDSWITCH\n"
+                                    +".LOOP 500\n"
+                                    +"***END SEARCH TAG 85***\n\n"
+                                    +"\n"
+                                    +"****EXTRACT CONTENT LENGTH****\n"
+                                    +".DISPLAY G(I;1)\n"
+                                    +"\n"
+                                    +".SWITCH G(I;1)\n"
+                                    +"\t.CASE 81\n"
+                                    +"\t\t.INCREASE_BUFFER I 01\n"
+                                    +"\t\t.SET_BUFFER H G(I;1)\n"
+                                    +"\t\t.INCREASE_BUFFER I 01\n"
+                                    +"\t\t.BREAK\n"
+                                    +"\n"
+                                    +"\t.CASE 82\n"
+                                    +"\t\t.INCREASE_BUFFER I 01\n"
+                                    +"\t\t.SET_BUFFER H G(I;2)\n"
+                                    +"\t\t.INCREASE_BUFFER I 02\n"
+                                    +"\t\t.BREAK\n"
+                                    +"\n"
+                                    +"\t.CASE 83\n"
+                                    +"\t\t.INCREASE_BUFFER I 01\n"
+                                    +"\t\t.SET_BUFFER H G(I;3)\n"
+                                    +"\t\t.INCREASE_BUFFER I 03\n"
+                                    +"\t\t.BREAK\n"
+                                    +"\n"
+                                    +"\t.DEFAULT\n"
+                                    +"\t\t.SET_BUFFER H G(I;1)\n"
+                                    +"\t\t.INCREASE_BUFFER I 01\n"
+                                    +"\t\t.BREAK\n"
+                                    +".ENDSWITCH\n"
+                                    +";====== END Search_Tag_From_Buffer_M.pcom =====\n"
+                    );
+
+                    ruwiTestBuffer.append(
+                            ".SET_BUFFER G G(I;H)\t\t;UPDATE BUFFER G\n"
+                                    +".SET_BUFFER M C0\t;Tag\n"
+                                    +".SET_BUFFER J 01\t;length of tag\n"
+                                    +"\n"
+                    );
+
+                    ruwiTestBuffer.append(
+                            ";====== Search_Tag_From_Buffer_M.pcom =====\n"
+                                    +";;;;;RESET BUFFER H -> FOR LENGTH CONTAINER\n"
+                                    +".SET_BUFFER H 00 00\n\n"
+                                    +"\n"
+                                    +";;;;SET OFFSET\n"
+                                    +";;;FOR RESPONSE CONTENT\n"
+                                    +".SET_BUFFER I 00 01\n\n"
+                                    +"\n"
+                                    +"\n"
+                                    +"***SEARCH TAG 7F21***\n"
+                                    +".BEGIN_LOOP\n"
+                                    +"\t.SWITCH G(I;J)\n"
+                                    +"\t\t.CASE M\n"
+                                    +"\t\t\t.INCREASE_BUFFER I J\n"
+                                    +"\t\t\t.MESSAGE ****************\n"
+                                    +"\t\t\t.PRINT M\n"
+                                    +"\t\t\t.MESSAGE TAG Found!\n"
+                                    +"\t\t\t.APPEND_IFDEF PARSE_TAG_85_ON;\n"
+                                    +"\t\t\t.QUITLOOP\n"
+                                    +"\t\t\t.BREAK\n"
+                                    +"\t\t.DEFAULT\n"
+                                    +"\t\t\t.PRINT G(I;J)\n"
+                                    +"\t\t\t.INCREASE_BUFFER I 01\n"
+                                    +"\t\t.BREAK\n"
+                                    +"\t.ENDSWITCH\n"
+                                    +".LOOP 500\n"
+                                    +"***END SEARCH TAG 85***\n\n"
+                                    +"\n"
+                                    +"****EXTRACT CONTENT LENGTH****\n"
+                                    +".DISPLAY G(I;1)\n"
+                                    +"\n"
+                                    +".SWITCH G(I;1)\n"
+                                    +"\t.CASE 81\n"
+                                    +"\t\t.INCREASE_BUFFER I 01\n"
+                                    +"\t\t.SET_BUFFER H G(I;1)\n"
+                                    +"\t\t.INCREASE_BUFFER I 01\n"
+                                    +"\t\t.BREAK\n"
+                                    +"\n"
+                                    +"\t.CASE 82\n"
+                                    +"\t\t.INCREASE_BUFFER I 01\n"
+                                    +"\t\t.SET_BUFFER H G(I;2)\n"
+                                    +"\t\t.INCREASE_BUFFER I 02\n"
+                                    +"\t\t.BREAK\n"
+                                    +"\n"
+                                    +"\t.CASE 83\n"
+                                    +"\t\t.INCREASE_BUFFER I 01\n"
+                                    +"\t\t.SET_BUFFER H G(I;3)\n"
+                                    +"\t\t.INCREASE_BUFFER I 03\n"
+                                    +"\t\t.BREAK\n"
+                                    +"\n"
+                                    +"\t.DEFAULT\n"
+                                    +"\t\t.SET_BUFFER H G(I;1)\n"
+                                    +"\t\t.INCREASE_BUFFER I 01\n"
+                                    +"\t\t.BREAK\n"
+                                    +".ENDSWITCH\n"
+                                    +";====== END Search_Tag_From_Buffer_M.pcom =====\n"
+                    );
+
+                    ruwiTestBuffer.append(
+                            ".SET_BUFFER L G(I;H)\n"
+                            +".SHIFT_LEFT J L 01\n"
+                    );
+
+                    ruwiTestBuffer.append(
+                            ".SWITCH J\n"
+                                    +"\t.CASE 80 ;this is TR for SIMBiOS mode\n"
+                                    +"\n\t\t;Validate the EF has SET for ruwi (byte 15th for TR , byte 18th = 40)\n"
+                                    +"\t\t;%_GET_RESPONSE_ %VBUF [XXXXXXXXXXXXXXXXXXXX A5XX C00140] (9000)\n"
+                                    + ".MESSAGE \"ruwi set\"\n"
+                                    +"\t.BREAK\n\n"
+                                    +"\n"
+                                    +"\t.CASE 00 ;this is LF/CY for SIMBiOS mode\n"
+                                    +"\n\t\t;Validate the EF has SET for ruwi (byte 15th for TR , byte 18th = 40)\n"
+                                    +"\t\t;%_GET_RESPONSE_ %VBUF [XXXXXXXXXXXXXXXXXXXXXXXXXX A5XX C00140] (9000)\n"
+                                    +".MESSAGE \"ruwi NOT set ERROR\"\n"
+                                    +"\t.BREAK\n"
+                                    +"\n"
+                                    +"\t.DEFAULT ;not TR/LF/CY\n"
+                                    +"\t\t.MESSAGE \"NOT AN EF during validate ruwi set\"\n"
+                                    +"\t.BREAK\t\n"
+                                    +".ENDSWITCH\n\n"
+                    );
+
+                    ruwiTestBuffer.append(
+                            ";Check is TR or NOT(LF,CY) byte 04th this is actually the length\n"
+                            +";02=TR 05=LF/CY for SIMBiOS mode\n"
+                                    +".SET_BUFFER J R(05;1)\n"
+                                    +".SHIFT_LEFT I J 05\n"
+                                    +".SET_BUFFER J I\n"
+                                    +".SET_BUFFER I R(08;1) ;EF size, used for UPDATE RECORD only, this version max 255 (in fact must be 2 byte)\n"
+
+                    );
+
+                    //+"\t\t.CALL RuWI02_Method.txt\n"
+                    ruwiTestBuffer.append(
+                            ";FOR EF\n"
+                            +" .SWITCH J\n"
+                                    +"\t.CASE 00 ;00=TR\n"
+                                    +"\t.CASE 20 ;this is TR for SIMBiOS mode\t\n"
+                                    +"\t\t.INCREASE_BUFFER M 01\n"
+                                    +"\t\t%_UPDATE_BINARY_ 01  M  (9000)\n"
+                                    +"\t\t%_READ_BINARY_   01 [M] (9000)\n\n"
+                                    +"\t\t%_INVALIDATE_ (9000)\n\n"
+                                    +"\t\t.INCREASE_BUFFER M 01\n"
+                                    +"\t\t%_UPDATE_BINARY_ 01  M  (9000)\n"
+                                    +"\t\t%_READ_BINARY_   01 [M] (9000)\n\n"
+                                    +"\t\t%_REHABILITATE_ (9000)\n\n"
+                                    +"\t\t.INCREASE_BUFFER M 01\n"
+                                    +"\t\t%_UPDATE_BINARY_ 01  M  (9000)\n"
+                                    +"\t\t%_READ_BINARY_   01 [M] (9000)\n\n"
+                                    +"\t\t.INCREASE_BUFFER J 01\n"
+                                    +"\t.BREAK\t\n\n\n"
+                                    +"\t.CASE C0\n"
+                                    +"\t.CASE 03 ;CY\n"
+                                    +"\t\t;.SET_BUFFER I R(15;1)\n"
+                                    +"\t\t.MESSAGE I\n"
+                                    +"\t\t%_READ_RECORD_   I (9000)\n"
+                                    +"\t\t;.DEFINE %EF_CONTENT R\n"
+                                    +"\t\t.SET_BUFFER L R\n\n"
+                                    +"\t\t.INCREASE_BUFFER M 01\n"
+                                    +"\t\t.DEFINE %RECORD M L(2:)\n"
+                                    +"\t\t%_UPDATE_RECORD_C_ I  %RECORD  (9000)\n"
+                                    +"\t\t%_READ_RECORD_   I [%RECORD] (9000)\n"
+                                    +"\t\t.UNDEFINE %RECORD\n\n"
+                                    +"\t\t%_INVALIDATE_ (9000)\n"
+                                    +"\t\t.INCREASE_BUFFER M 01\n"
+                                    +"\t\t.DEFINE %RECORD M L(2:)\n"
+                                    +"\t\t%_UPDATE_RECORD_C_ I  %RECORD  (9000)\n"
+                                    +"\t\t%_READ_RECORD_   I [%RECORD] (9000)\n"
+                                    +"\t\t.UNDEFINE %RECORD\n\n"
+                                    +"\t\t%_REHABILITATE_ (9000)\n\n"
+                                    +"\t\t.INCREASE_BUFFER M 01\n"
+                                    +"\t\t.DEFINE %RECORD M L(2:)\n"
+                                    +"\t\t%_UPDATE_RECORD_C_ I  %RECORD  (9000)\n"
+                                    +"\t\t%_READ_RECORD_   I [%RECORD] (9000)\n"
+                                    +"\t\t.UNDEFINE %RECORD\n\n"
+                                    +"\t\t.INCREASE_BUFFER J 01\n"
+                                    +"\t\t.UNDEFINE %RECORD\n"
+                                    +"\t.BREAK\n\n\n"
+                                    +"\t\t\n"
+                                    +"\t.CASE 40 ;this is LF/CY for SIMBiOS\tmode\n"
+                                    +"\t.CASE 01 ;LF\t\n"
+                                    +"\t\t.MESSAGE I\n"
+                                    +"\t\t%_READ_RECORD_   I (9000)\n"
+                                    +"\t\t.SET_BUFFER L R\n\n"
+                                    +"\t\t.INCREASE_BUFFER M 01\n"
+                                    +"\t\t.DEFINE %RECORD M L(2:)\n"
+                                    +"\t\t%_UPDATE_RECORD_ I  %RECORD  (9000)\n"
+                                    +"\t\t%_READ_RECORD_   I [%RECORD] (9000)\n"
+                                    +"\t\t.UNDEFINE %RECORD\n\n"
+                                    +"\t\t%_INVALIDATE_ (9000)\n\n"
+                                    +"\t\t.INCREASE_BUFFER M 01\n"
+                                    +"\t\t.DEFINE %RECORD M L(2:)\n"
+                                    +"\t\t%_UPDATE_RECORD_ I  %RECORD  (9000)\n"
+                                    +"\t\t%_READ_RECORD_   I [%RECORD] (9000)\n"
+                                    +"\t\t.UNDEFINE %RECORD\n\n"
+                                    +"\t\t%_REHABILITATE_ (9000)\n\n"
+                                    +"\t\t.INCREASE_BUFFER M 01\n"
+                                    +"\t\t.DEFINE %RECORD M L(2:)\n"
+                                    +"\t\t%_UPDATE_RECORD_ I  %RECORD  (9000)\n"
+                                    +"\t\t%_READ_RECORD_   I [%RECORD] (9000)\n"
+                                    +"\t\t.UNDEFINE %RECORD\n\n"
+                                    +"\t\t.INCREASE_BUFFER J 01\n"
+                                    +"\t\t.UNDEFINE %RECORD\n"
+                                    +"\t.BREAK\n\n"
+                                    +"\t.DEFAULT ;not TR/LF/CY\n"
+                                    +"\t\t.MESSAGE \"NOT AN EF ERROR\"\n"
+                                    +"\t.BREAK\n"
+                                    +".ENDSWITCH\n"
+
+                    );
+
+                }
+
+                if (root.getRunSettings().getSecretCodes().isPin1disabled())
+                {
+                    ruwiTestBuffer.append(
+                            ";DISABLE PIN1\n"
+                                    +"00 26 00 01 08 %CHV1 (9000)\n"
+                    );
+                }
+
+                if (root.getRunSettings().getSecretCodes().isPin2disabled())
+                {
+                    ruwiTestBuffer.append(
+                            ";DISABLE PIN2\n"
+                                    +"00 26 00 81 08 %CHV2 (9000)\n"
+                    );
+                }
+
             }
 
+        //NON-SIMBIOS
+        else
+            {
+                if (root.getRunSettings().getSecretCodes().isPin1disabled())
+                {
+                    ruwiTestBuffer.append(
+                            ";Enable PIN1\n"
+                                    +"A0 28 00 01 08 %CHV1 (9000)\n"
+                    );
+                }
 
+                if (root.getRunSettings().getSecretCodes().isPin2disabled())
+                {
+                    ruwiTestBuffer.append(
+                            ";Enable PIN2\n"
+                                    +"A0 28 00 02 08 %CHV2 (9000)\n"
+                    );
+                }
+
+                ruwiTestBuffer.append(
+                        "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+                                + "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+                                + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+                );
+
+                if (root.getRunSettings().getSecretCodes().isUseIsc2())
+                    ruwiTestBuffer.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+                if (root.getRunSettings().getSecretCodes().isUseIsc3())
+                    ruwiTestBuffer.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+                if (root.getRunSettings().getSecretCodes().isUseIsc4())
+                    ruwiTestBuffer.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n\n");
+
+
+                ruwiTestBuffer.append(
+                        ".DEFINE %_VERIFY_ADM1_ A0 2000 00 08  %" + root.getRunSettings().getSecretCodes().getIsc1() + "\n"
+                                + ".DEFINE %_VERIFY_CHV1_ A0 2000 01 08 %" + root.getRunSettings().getSecretCodes().getChv1()+ "\n"
+                                + ".DEFINE %_VERIFY_CHV2_ A0 2000 02 08 %" + root.getRunSettings().getSecretCodes().getChv2()+ "\n"
+                );
+
+                if (root.getRunSettings().getSecretCodes().isUseIsc2())
+                    ruwiTestBuffer.append(".DEFINE %_VERIFY_ADM2_ A0 2000 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+                if (root.getRunSettings().getSecretCodes().isUseIsc3())
+                    ruwiTestBuffer.append(".DEFINE %_VERIFY_ADM3_ A0 2000 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+                if (root.getRunSettings().getSecretCodes().isUseIsc4())
+                    ruwiTestBuffer.append(".DEFINE %_VERIFY_ADM4_ A0 2000 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+
+
+                ruwiTestBuffer.append(
+                        "\n.DEFINE %_SELECT_ \t\t\tA0 A4 00 00 02\n"
+                                + ".DEFINE %_GET_RESPONSE_ \tA0 C00000\n"
+                                + ".DEFINE %_READ_BINARY_ \t\tA0 B0 0000\n"
+                                + ".DEFINE %_READ_RECORD_ \t\tA0 B2 0104  ; read 1st reacord\n"
+                                + ".DEFINE %_UPDATE_BINARY_ \tA0 D6 0000\n"
+                                + ".DEFINE %_UPDATE_RECORD_ \tA0 DC 0104\n"
+                                + ".DEFINE %_UPDATE_RECORD_CY_ \tA0 DC 0103\n"
+                                + ".DEFINE %_INVALIDATE_ \t\tA0 04 0000\n"
+                                + ".DEFINE %_REHABILITATE_ \tA0 44 0000\n\n"
+                );
+
+
+                ruwiTestBuffer.append(
+                        ".SET_BUFFER M 00 ;value of EF\n"
+                );
+
+                for (int i=0;i < root.getRunSettings().getFileManagement().getRowRuwi() ;i++)
+                {
+                    ruwiTestBuffer.append(
+                            "\n; -------------------\n"
+                                    + "; == RUwI Test - " + (i+1) + " ==\n"
+                                    + "; -------------------\n\n"
+                    );
+
+                    int length_pathruwi;
+
+                    length_pathruwi = root.getRunSettings().getFileManagement().getData_ruwi(i).length();
+
+                    if (length_pathruwi == 8)
+                    {
+                        ruwiTestBuffer.append(
+                                "A0A4000002 " + root.getRunSettings().getFileManagement().getData_ruwi(i).substring(0,4) + " (9FXX, 61XX)\n"
+                                        + "A0A4000002 " + root.getRunSettings().getFileManagement().getData_ruwi(i).substring(4,8) + " (9FXX, 61XX)\n"
+                        );
+                    }
+
+                    else if (length_pathruwi == 12)
+                    {
+                        ruwiTestBuffer.append(
+                                "A0A4000002 " + root.getRunSettings().getFileManagement().getData_ruwi(i).substring(0,4) + " (9FXX, 61XX)\n"
+                                        + "A0A4000002 " + root.getRunSettings().getFileManagement().getData_ruwi(i).substring(4,8) + " (9FXX, 61XX)\n"
+                                        + "A0A4000002 " + root.getRunSettings().getFileManagement().getData_ruwi(i).substring(8,12) + " (9FXX, 61XX)\n\n"
+                        );
+                    }
+
+                    else if (length_pathruwi == 16)
+                    {
+                        ruwiTestBuffer.append(
+                                "A0A4000002 " + root.getRunSettings().getFileManagement().getData_ruwi(i).substring(0,4) + " (9FXX, 61XX)\n"
+                                        + "A0A4000002 " + root.getRunSettings().getFileManagement().getData_ruwi(i).substring(4,8) + " (9FXX, 61XX)\n"
+                                        + "A0A4000002 " + root.getRunSettings().getFileManagement().getData_ruwi(i).substring(8,12) + " (9FXX, 61XX)\n"
+                                        + "A0A4000002 " + root.getRunSettings().getFileManagement().getData_ruwi(i).substring(12,16) + " (9FXX, 61XX)\n"
+                        );
+                    }
+
+                    ruwiTestBuffer.append(
+                            ".DEFINE %VBUF W(2;1)\n\n"
+                                    + ";Validate the EF has SET for ruwi (byte 12th = 05)\n"
+                                    + "%_GET_RESPONSE_ %VBUF [XXXXXXXXXXXX XX XXXXXXXX 05 XX XX XX] (9000)\n\n"
+                                    + ".SET_BUFFER O R(09;1) ;get READ/UPDATE ACC\n"
+                                    + ".SET_BUFFER Q R(11;1) ;get INVALIDATE/REHABILITATE ACC\n\n"
+                                    + ";-- ruwi03_execute.txt --\n"
+                                    + ".SWITCH O\n"
+                                    + "\t.CASE FF\n"
+                                    + "\t.CASE XF\n"
+                                    + "\t.CASE FX\n"
+                                    + "\t\t.MESSAGE \"READ/UPDATE NEVER\"\n"
+                                    + "\t.BREAK\n\n"
+                                    + "\t.DEFAULT\n"
+                                    + "\t\t.CALL RuWI01_OK_To_Go.txt\n"
+                                    + "\t.BREAK\n"
+                                    + ".ENDSWITCH\n"
+                                    + ";-- END ruwi03_execute.txt --\n"
+                                    + ".UNDEFINE %VBUF W(2;1)\n\n"
+                    );
+
+                }
+
+
+
+                if (root.getRunSettings().getSecretCodes().isPin1disabled())
+                {
+                    ruwiTestBuffer.append(
+                            ".POWER_ON\n"
+                                    +";Disable PIN1\n"
+                                    +"A0 26 00 01 08 %CHV1 (9000)\n"
+                                    + ".POWER_OFF\n"
+                    );
+                }
+
+                if (root.getRunSettings().getSecretCodes().isPin2disabled())
+                {
+                    ruwiTestBuffer.append(
+                            ".POWER_ON\n"
+                                    +";Disable PIN2\n"
+                                    +"A0 26 00 02 08 %CHV2 (9000)\n"
+                                    + ".POWER_OFF\n"
+                    );
+                }
+
+            }
 
         ruwiTestBuffer.append(".POWER_OFF\n");
         return ruwiTestBuffer;
+    }
+
+        public StringBuilder generateFilemanagementRuWI01_OK_To_Go(FileManagement fileManagement) {
+            StringBuilder RuWI01_OK_To_GoBuffer = new StringBuilder();
+            RuWI01_OK_To_GoBuffer.append(";RuWI Helper_1\n");
+
+            RuWI01_OK_To_GoBuffer.append(
+                    ".SWITCH Q\n"
+                            +"\t.CASE FF\n"
+                            +"\t.CASE XF\n"
+                            +"\t.CASE FX\n"
+                            +"\t\t.MESSAGE \"INVALIDATE/REHABILITATE\"\n"
+                            +"\t.BREAK\n"
+                            +"\n\t.DEFAULT\n"
+                            +"\t\t.MESSAGE \"OK to Proceed\"\n"
+                            +"\t\t;Check is TR or NOT(LF,CY) byte 14th\n"
+                            +"\t\t;00=TR 01=LF 03=CY\n"
+                            +"\t\t.SET_BUFFER J R(14;1)\n"
+                            +"\t\t.SET_BUFFER I R(15;1) ;EF size, used for UPDATE RECORD only\n"
+                            +"\t\t.CALL RuWI02_Method.txt\n"
+                            +"\t.BREAK\n"
+                            +".ENDSWITCH\n"
+            );
+
+            return RuWI01_OK_To_GoBuffer;
+        }
+
+        public StringBuilder generateFilemanagementRuWI02_Method(FileManagement fileManagement) {
+        StringBuilder RuWI02_MethodBuffer = new StringBuilder();
+            RuWI02_MethodBuffer.append(";RuWI Helper_2 - Method\n");
+
+            RuWI02_MethodBuffer.append(
+                "\n"
+                        +";FOR EF\n"
+                        +" .SWITCH J\n"
+                        +"\t.CASE 00 ;00=TR\n"
+                        +"\t.CASE 02 ;this is TR for SIMBiOS mode\n"
+                        +"\t\t.INCREASE_BUFFER M 01\n"
+                        +"\t\t%_UPDATE_BINARY_ 01  M  (9000)\n"
+                        +"\t\t%_READ_BINARY_   01 [M] (9000)\n\n"
+                        +"\t\t%_INVALIDATE_ (9000)\n\n"
+                        +"\t\t.INCREASE_BUFFER M 01\n"
+                        +"\t\t%_UPDATE_BINARY_ 01  M  (9000)\n"
+                        +"\t\t%_READ_BINARY_   01 [M] (9000)\n\n"
+                        +"\t\t%_REHABILITATE_ (9000)\n\n"
+                        +"\t\t.INCREASE_BUFFER M 01\n"
+                        +"\t\t%_UPDATE_BINARY_ 01  M  (9000)\n"
+                        +"\t\t%_READ_BINARY_   01 [M] (9000)\n\n"
+                        +"\t\t.INCREASE_BUFFER J 01\n"
+                        +"\t.BREAK\n\n\n"
+                        +"\t.CASE 03 ;CY\n"
+                        +"\t\t.MESSAGE I\n"
+                        +"\t\t%_READ_RECORD_   I (9000)\n"
+                        +"\t\t.SET_BUFFER L R\n\n"
+                        +"\t\t.INCREASE_BUFFER M 01\n"
+                        +"\t\t.DEFINE %RECORD M L(2:)\n"
+                        +"\t\t%_UPDATE_RECORD_CY_ I  %RECORD  (9000)\n"
+                        +"\t\t%_READ_RECORD_   I [%RECORD] (9000)\n"
+                        +"\t\t.UNDEFINE %RECORD\n\n"
+                        +"\t\t%_INVALIDATE_ (9000)\n\n"
+                        +"\t\t.INCREASE_BUFFER M 01\n"
+                        +"\t\t.DEFINE %RECORD M L(2:)\n"
+                        +"\t\t%_UPDATE_RECORD_CY_ I  %RECORD  (9000)\n"
+                        +"\t\t%_READ_RECORD_   I [%RECORD] (9000)\n"
+                        +"\t\t.UNDEFINE %RECORD\n\n"
+                        +"\t\t%_REHABILITATE_ (9000)\n\n"
+                        +"\t\t.INCREASE_BUFFER M 01\n"
+                        +"\t\t.DEFINE %RECORD M L(2:)\n"
+                        +"\t\t%_UPDATE_RECORD_CY_ I  %RECORD  (9000)\n"
+                        +"\t\t%_READ_RECORD_   I [%RECORD] (9000)\n"
+                        +"\t\t.UNDEFINE %RECORD\n\n"
+                        +"\t\t.INCREASE_BUFFER J 01\n"
+                        +"\t\t.UNDEFINE %RECORD\n"
+                        +"\t.BREAK\n\n\n"
+                        +"\t.CASE 01 ;LF\n"
+                        +"\t.CASE 05 ;this is LF/CY for SIMBiOS\tmode\n"
+                        +"\t\t.MESSAGE I\n"
+                        +"\t\t%_READ_RECORD_   I (9000)\n"
+                        +"\t\t.SET_BUFFER L R\n\n"
+                        +"\t\t.INCREASE_BUFFER M 01\n"
+                        +"\t\t.DEFINE %RECORD M L(2:)\n"
+                        +"\t\t%_UPDATE_RECORD_ I  %RECORD  (9000)\n"
+                        +"\t\t%_READ_RECORD_   I [%RECORD] (9000)\n"
+                        +"\t\t.UNDEFINE %RECORD\n\n"
+                        +"\t\t%_INVALIDATE_ (9000)\n\n"
+                        +"\t\t.INCREASE_BUFFER M 01\n"
+                        +"\t\t.DEFINE %RECORD M L(2:)\n"
+                        +"\t\t%_UPDATE_RECORD_ I  %RECORD  (9000)\n"
+                        +"\t\t%_READ_RECORD_   I [%RECORD] (9000)\n"
+                        +"\t\t.UNDEFINE %RECORD\n\n"
+                        +"\t\t%_REHABILITATE_ (9000)\n\n"
+                        +"\t\t.INCREASE_BUFFER M 01\n"
+                        +"\t\t.DEFINE %RECORD M L(2:)\n"
+                        +"\t\t%_UPDATE_RECORD_ I  %RECORD  (9000)\n"
+                        +"\t\t%_READ_RECORD_   I [%RECORD] (9000)\n"
+                        +"\t\t.UNDEFINE %RECORD\n\n"
+                        +"\t\t.INCREASE_BUFFER J 01\n"
+                        +"\t\t.UNDEFINE %RECORD\n"
+                        +"\t.BREAK\n"
+                        +"\t.DEFAULT ;not TR/LF/CY\n"
+                        +"\t\t.MESSAGE \"NOT AN EF\"\n"
+                        +"\t.BREAK\n"
+                        +".ENDSWITCH\n"
+                        +"\n"
+        );
+
+        return RuWI02_MethodBuffer;
     }
 
     public StringBuilder generateFilemanagementSfi(FileManagement fileManagement) {
@@ -500,17 +1095,35 @@ public class FileManagementService {
                         + ".POWER_ON\n"
         );
 
+        if (root.getRunSettings().getSecretCodes().isPin1disabled())
+        {
+            sfiTestBuffer.append(
+                    ";Enabled PIN1\n"
+                            +"00 28 00 01 08 %CHV1 (9000)\n"
+            );
+        }
+
+        if (root.getRunSettings().getSecretCodes().isPin2disabled())
+        {
+            sfiTestBuffer.append(
+                    ";Enabled PIN2\n"
+                            +"00 28 00 81 08 %CHV2 (9000)\n"
+            );
+        }
+
         sfiTestBuffer.append(
-                "\n"
-                        + "00 20 00 0A 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
-                        + "00 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n");
-                        //+ "00 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n");
+                //"00A40400<?> %USIM_AID\t(61xx)\n"
+                        "00 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+                        //+ "00 20 00 81 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+                        + "00 20 00 0A 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc2())
             sfiTestBuffer.append("00 20 00 0B 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc3())
             sfiTestBuffer.append("00 20 00 0C 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc4())
             sfiTestBuffer.append("00 20 00 0D 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+
+
 
 
         sfiTestBuffer.append("\n******** MF SFI CHECKING ******** \n\n");
@@ -539,7 +1152,7 @@ public class FileManagementService {
             sfiTestBuffer.append(";%READ_RECORD $ 01 F4 00\n;%READ_RECORD $ 01 F4 W(2;1) (9000)\n\n");
 
         sfiTestBuffer.append("******* USIM SFI CHECKING ******* \n\n");
-        sfiTestBuffer.append("%SELECT_AID $ <?> %USIM_AID (61xx) \n\n");
+        sfiTestBuffer.append("%SELECT_AID $ <?> %USIM_AID (61xx,9000) \n\n");
 
 //EF_ECC
 
@@ -703,6 +1316,26 @@ public class FileManagementService {
 
 //Kc
 //KcGPRS
+
+        if (root.getRunSettings().getSecretCodes().isPin1disabled())
+        {
+            sfiTestBuffer.append(
+                    ".POWER_ON\n\n"
+                            +";Disabled PIN1\n"
+                            +"00 26 00 01 08 %CHV1 (9000)\n\n"
+                            +".POWER_OFF\n"
+            );
+        }
+
+        if (root.getRunSettings().getSecretCodes().isPin2disabled())
+        {
+            sfiTestBuffer.append(
+                    ".POWER_ON\n\n"
+                            +";Disabled PIN2\n"
+                            +"00 26 00 81 08 %CHV2 (9000)\n"
+                            +".POWER_OFF\n"
+            );
+        }
 
         sfiTestBuffer.append(".POWER_OFF\n");
         return sfiTestBuffer;

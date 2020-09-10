@@ -11,9 +11,16 @@ public class RfmIsim {
     private boolean fullAccess;
     private String customTargetAcc;
     private String customTargetEf;
+    private String customTargetEfIsc1;
+    private String customTargetEfIsc2;
+    private String customTargetEfIsc3;
+    private String customTargetEfIsc4;
+    private String customTargetEfGPin1;
+    private String customTargetEfLPin1;
     private String customTargetAccBadCase;
     private String customTargetEfBadCase;
     private boolean useSpecificKeyset;
+    private AccessDomain accessDomain;
     private SCP80Keyset cipheringKeyset;
     private SCP80Keyset authKeyset;
     private MinimumSecurityLevel minimumSecurityLevel;
@@ -28,7 +35,7 @@ public class RfmIsim {
 
     public RfmIsim(boolean includeRfmIsim, boolean includeRfmIsimUpdateRecord, boolean includeRfmIsimExpandedMode,
                    String tar, String targetEf, String targetEfBadCase, boolean fullAccess, String customTargetAcc,
-                   String customTargetEf, String customTargetAccBadCase, String customTargetEfBadCase,
+                   String customTargetEf, String customTargetEfIsc1, String customTargetEfIsc2, String customTargetEfIsc3, String customTargetEfGPin1, String customTargetEfLPin1, String customTargetAccBadCase, String customTargetEfBadCase,
                    boolean useSpecificKeyset, SCP80Keyset cipheringKeyset, SCP80Keyset authKeyset,
                    MinimumSecurityLevel minimumSecurityLevel) {
         this.includeRfmIsim = includeRfmIsim;
@@ -40,6 +47,11 @@ public class RfmIsim {
         this.fullAccess = fullAccess;
         this.customTargetAcc = customTargetAcc;
         this.customTargetEf = customTargetEf;
+        this.customTargetEfIsc1 = customTargetEfIsc1;
+        this.customTargetEfIsc2 = customTargetEfIsc2;
+        this.customTargetEfIsc3 = customTargetEfIsc3;
+        this.customTargetEfGPin1 = customTargetEfGPin1;
+        this.customTargetEfLPin1 = customTargetEfLPin1;
         this.customTargetAccBadCase = customTargetAccBadCase;
         this.customTargetEfBadCase = customTargetEfBadCase;
         this.useSpecificKeyset = useSpecificKeyset;
@@ -86,6 +98,54 @@ public class RfmIsim {
 
     public void setTargetEf(String targetEf) {
         this.targetEf = targetEf;
+    }
+
+    public String getCustomTargetEfIsc1() {
+        return customTargetEfIsc1;
+    }
+
+    public void setCustomTargetEfIsc1(String customTargetEfIsc1) {
+        this.customTargetEfIsc1 = customTargetEfIsc1;
+    }
+
+    public String getCustomTargetEfIsc2() {
+        return customTargetEfIsc2;
+    }
+
+    public void setCustomTargetEfIsc2(String customTargetEfIsc2) {
+        this.customTargetEfIsc2 = customTargetEfIsc2;
+    }
+
+    public String getCustomTargetEfIsc3() {
+        return customTargetEfIsc3;
+    }
+
+    public void setCustomTargetEfIsc3(String customTargetEfIsc3) {
+        this.customTargetEfIsc3 = customTargetEfIsc3;
+    }
+
+    public String getCustomTargetEfIsc4() {
+        return customTargetEfIsc4;
+    }
+
+    public void setCustomTargetEfIsc4(String customTargetEfIsc4) {
+        this.customTargetEfIsc4 = customTargetEfIsc4;
+    }
+
+    public String getCustomTargetEfGPin1() {
+        return customTargetEfGPin1;
+    }
+
+    public void setCustomTargetEfGPin1(String customTargetEfGPin1) {
+        this.customTargetEfGPin1 = customTargetEfGPin1;
+    }
+
+    public String getCustomTargetEfLPin1() {
+        return customTargetEfLPin1;
+    }
+
+    public void setCustomTargetEfLPin1(String customTargetEfLPin1) {
+        this.customTargetEfLPin1 = customTargetEfLPin1;
     }
 
     public String getTargetEfBadCase() {
@@ -214,6 +274,14 @@ public class RfmIsim {
 
     public void setTestRfmIsimExpandedModeMessage(String testRfmIsimExpandedModeMessage) {
         this.testRfmIsimExpandedModeMessage = testRfmIsimExpandedModeMessage;
+    }
+
+    public AccessDomain getAccessDomain() {
+        return accessDomain;
+    }
+
+    public void setAccessDomain(AccessDomain accessDomain) {
+        this.accessDomain = accessDomain;
     }
 
 }

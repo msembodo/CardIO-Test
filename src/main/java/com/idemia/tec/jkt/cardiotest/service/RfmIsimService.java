@@ -30,33 +30,19 @@ public class RfmIsimService {
                 + ".DEFINE %EF_ID " + rfmIsim.getTargetEf() + "\n"
                 + ".DEFINE %EF_ID_ERR " + rfmIsim.getTargetEfBadCase() + "\n"
             );
-        } else {
+        }
+        else {
             rfmIsimBuffer.append(
                 "\n; TAR is configured with access domain\n"
                 + ".DEFINE %DF_ID " + root.getRunSettings().getCardParameters().getDfIsim() + "\n"
-                + ".DEFINE %EF_ID " + rfmIsim.getCustomTargetEf() + "; EF protected by " + rfmIsim.getCustomTargetAcc() +  "\n"
-                + ".DEFINE %EF_ID_ERR " + rfmIsim.getCustomTargetEfBadCase() + "; (negative test) EF protected by " + rfmIsim.getCustomTargetAccBadCase() +  "\n"
+                + useRfmIsimEfAccessDomain(rfmIsim)
+                +".DEFINE %EF_ID_ERR " + rfmIsim.getCustomTargetEfBadCase() + "\n"
             );
         }
-        rfmIsimBuffer.append(
-            "\n.POWER_ON\n"
-            + "; check initial content of EF\n"
-            + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
-        );
-        if (root.getRunSettings().getSecretCodes().isUseIsc2())
-            rfmIsimBuffer.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
-        if (root.getRunSettings().getSecretCodes().isUseIsc3())
-            rfmIsimBuffer.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
-        if (root.getRunSettings().getSecretCodes().isUseIsc4())
-            rfmIsimBuffer.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
-        rfmIsimBuffer.append(
-            "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
-            + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
-            + "A0 A4 00 00 02 %DF_ID (9F22)\n"
-            + "A0 A4 00 00 02 %EF_ID (9F0F)\n"
-            + "A0 B0 00 00 01 (9000)\n"
-            + ".DEFINE %EF_CONTENT R\n"
-        );
+
+        // check Initial Content of EF
+        rfmIsimBuffer.append(useRfmIsimCheckInitialContent(rfmIsim));
+
         // some TAR may be configured with specific keyset or use all available keysets
         if (rfmIsim.isUseSpecificKeyset())
             rfmIsimBuffer.append(rfmIsimCase1(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), rfmIsim.getMinimumSecurityLevel()));
@@ -66,11 +52,11 @@ public class RfmIsimService {
                 rfmIsimBuffer.append(rfmIsimCase1(keyset, keyset, rfmIsim.getMinimumSecurityLevel()));
             }
         }
-        rfmIsimBuffer.append("\n.UNDEFINE %EF_CONTENT\n");
+        rfmIsimBuffer.append("\n.UNDEFINE %EF_CONTENT_ADM2\n");
         // perform negative test if not full access
         if (!rfmIsim.isFullAccess()) {
             rfmIsimBuffer.append(
-                "\n; perform negative test: updating " + rfmIsim.getCustomTargetEfBadCase() + " (" + rfmIsim.getCustomTargetAccBadCase() + ")\n"
+                "\n; perform negative test: updating " + rfmIsim.getCustomTargetEfBadCase() + " Out of Access Domain\n"
                 + "\n.POWER_ON\n"
                 + "; check initial content of EF\n"
                 + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
@@ -85,7 +71,7 @@ public class RfmIsimService {
                 "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
                 + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
                 + "A0 A4 00 00 02 %DF_ID (9F22)\n"
-                + select2gWithAbsolutePath(rfmIsim.getCustomTargetEfBadCase())
+                + "A0 A4 00 00 02 %EF_ID_ERR (9FXX)\n"
                 + "A0 B0 00 00 01 (9000)\n"
                 + ".DEFINE %EF_CONTENT R\n"
             );
@@ -395,10 +381,7 @@ public class RfmIsimService {
             routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
         routine.append(
             "\n; command(s) sent via OTA\n"
-            + ".SET_BUFFER J 00 A4 00 00 02 %EF_ID ; select EF\n"
-            + ".APPEND_SCRIPT J\n"
-            + ".SET_BUFFER J 00 D6 00 00 <?> AA ; update binary\n"
-            + ".APPEND_SCRIPT J\n"
+            + useRfmIsimCommandViaOtaAccessDomain(root.getRunSettings().getRfmIsim())
             + ".END_MESSAGE G J\n"
             + "; show OTA message details\n"
             + ".DISPLAY_MESSAGE J\n"
@@ -407,41 +390,20 @@ public class RfmIsimService {
             + ".CLEAR_SCRIPT\n"
             + "; check PoR\n"
             + "A0 C0 00 00 W(2;1) [XX XX XX XX XX XX %TAR XX XX XX XX XX XX 00 XX 90 00] (9000) ; PoR OK\n"
-            + "\n; check update has been done on EF\n"
-            + ".POWER_ON\n"
-            + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
         );
-        if (root.getRunSettings().getSecretCodes().isUseIsc2())
-            routine.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
-        if (root.getRunSettings().getSecretCodes().isUseIsc3())
-            routine.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
-        if (root.getRunSettings().getSecretCodes().isUseIsc4())
-            routine.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+
+        //check update has been done on EF
+        routine.append(this.useRfmIsimCheckUpdateEfDone());
+
+        //restore initial content of EF
+        routine.append(this.useRfmIsimRestoreRfmIsimInitialContent());
+
         routine.append(
-            "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
-            + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
-            + "A0 A4 00 00 02 %DF_ID (9F22)\n"
-            + "A0 A4 00 00 02 %EF_ID (9F0F)\n"
-            + "A0 B0 00 00 01 [AA] (9000)\n"
-            + "\n; restore initial content of EF\n"
-            + ".POWER_ON\n"
-            + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
-        );
-        if (root.getRunSettings().getSecretCodes().isUseIsc2())
-            routine.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
-        if (root.getRunSettings().getSecretCodes().isUseIsc3())
-            routine.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
-        if (root.getRunSettings().getSecretCodes().isUseIsc4())
-            routine.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
-        routine.append(
-            "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
-            + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
-            + "A0 A4 00 00 02 %DF_ID (9F22)\n"
-            + "A0 A4 00 00 02 %EF_ID (9F0F)\n"
-            + "A0 D6 00 00 01 %EF_CONTENT (9000)\n"
-            + "\n; increment counter by one\n"
+            "\n; increment counter by one\n"
             + ".INCREASE_BUFFER L(04:05) 0001\n"
         );
+
+
         return routine.toString();
     }
 
@@ -554,7 +516,8 @@ public class RfmIsimService {
             routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
         routine.append(
             "\n; command(s) sent via OTA\n"
-            + appendScriptSelect3g(root.getRunSettings().getRfmIsim().getCustomTargetEfBadCase())
+            + ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_ERR\n"
+            + ".APPEND_SCRIPT J\n"
             + ".SET_BUFFER J 00 D6 00 00 <?> AA ; update binary\n"
             + ".APPEND_SCRIPT J\n"
             + ".END_MESSAGE G J\n"
@@ -1331,6 +1294,43 @@ public class RfmIsimService {
         return routine.toString();
     }
 
+    private String headerScript(RfmIsim rfmIsim){
+        StringBuilder headerScript = new StringBuilder();
+        // call mappings and load DLLs
+        headerScript.append(
+                ".CALL Mapping.txt /LIST_OFF\n"
+                + ".CALL Options.txt /LIST_OFF\n\n"
+                + ".POWER_ON\n"
+                + ".LOAD dll\\Calcul.dll\n"
+                + ".LOAD dll\\OTA2.dll\n"
+                + ".LOAD dll\\Var_Reader.dll\n"
+        );
+        // create counter and initialize for first-time run
+        File counterBin = new File(root.getRunSettings().getProjectPath() + "\\scripts\\COUNTER.bin");
+        if (!counterBin.exists()) {
+            headerScript.append(
+                "\n; initialize counter\n"
+                + ".SET_BUFFER L 00 00 00 00 00\n"
+                + ".EXPORT_BUFFER L COUNTER.bin\n"
+            );
+        }
+        // load anti-replay counter
+        headerScript.append(
+                "\n; buffer L contains the anti-replay counter for OTA message\n"
+                + ".SET_BUFFER L\n"
+                + ".IMPORT_BUFFER L COUNTER.bin\n"
+                + ".INCREASE_BUFFER L(04:05) 0001\n"
+                + ".DISPLAY L\n"
+                + "\n; setup TAR\n"
+                + ".DEFINE %TAR " + rfmIsim.getTar() + "\n"
+        );
+        // enable pin if required
+        if (root.getRunSettings().getSecretCodes().isPin1disabled())
+            headerScript.append("\nA0 28 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000) ; enable GPIN1\n");
+
+        return headerScript.toString();
+    }
+
     private String updateSMSRecordRfmIsim(String rfmIsimCases) {
         StringBuilder updateSMSRecordRfmIsim = new StringBuilder();
 
@@ -1414,318 +1414,394 @@ public class RfmIsimService {
     }
 
     // Separate some looped on method()
+    private String useRfmIsimEfAccessDomain(RfmIsim rfmIsim){
 
-    public StringBuilder generateRfmIsimUpdateRecordTest(RfmIsim rfmIsim) {
-        StringBuilder rfmIsimUpdateRecordBuffer = new StringBuilder();
+        StringBuilder accessDomain = new StringBuilder();
 
-        // Header to CALL Mapping, Options, load DLL, / Counter
-        rfmIsimUpdateRecordBuffer.append(headerScript(rfmIsim));
-
-        //; Call Case1
-        rfmIsimUpdateRecordBuffer.append(rfmIsimCase1Test(rfmIsim));
-
-        return rfmIsimUpdateRecordBuffer;
-    }
-
-    private String rfmIsimCase1Test(RfmIsim rfmIsim) {
-        StringBuilder rfmIsimUpdateRecordCase1 = new StringBuilder();
-
-        if(root.getRunSettings().getRfmIsim().isIncludeRfmIsim()){
-            rfmIsimUpdateRecordCase1.append("\n*********\n; CASE 1: RFM ISIM with correct security settings\n*********\n");
+        if (rfmIsim.getAccessDomain().isUseIsc1()){
+            accessDomain.append(".DEFINE %EF_ID_ISIM_ADM1 " + rfmIsim.getCustomTargetEfIsc1() + "; EF protected by " + root.getRunSettings().getSecretCodes().getIsc1() +  "\n");
         }
-        else if(root.getRunSettings().getRfmIsim().isIncludeRfmIsimUpdateRecord()){
-            rfmIsimUpdateRecordCase1.append("\n*********\n; CASE 1: RFM ISIM Update Record with correct security settings\n*********\n");
+        if (rfmIsim.getAccessDomain().isUseIsc2()){
+            accessDomain.append(".DEFINE %EF_ID_ISIM_ADM2 " + rfmIsim.getCustomTargetEfIsc2() + "; EF protected by ADM2" + "\n");
+        }
+        if (rfmIsim.getAccessDomain().isUseIsc3()){
+            accessDomain.append(".DEFINE %EF_ID_ISIM_ADM3 " + rfmIsim.getCustomTargetEfIsc3() + "; EF protected by ADM3\n");
+        }
+        if (rfmIsim.getAccessDomain().isUseIsc4()){
+            accessDomain.append(".DEFINE %EF_ID_ISIM_ADM4 " + rfmIsim.getCustomTargetEfIsc4() + "; EF protected by ADM4\n");
+        }
+        if (rfmIsim.getAccessDomain().isUseGPin1()){
+            accessDomain.append(".DEFINE %EF_ID_ISIM_PIN1 " + rfmIsim.getCustomTargetEfGPin1() + "; EF protected by " + root.getRunSettings().getSecretCodes().getGpin() +  "\n");
+        }
+        if (rfmIsim.getAccessDomain().isUseLPin1()){
+            accessDomain.append(".DEFINE %EF_ID_ISIM_PIN2 " + rfmIsim.getCustomTargetEfLPin1() + "; EF protected by " + root.getRunSettings().getSecretCodes().getLpin() +  "\n");
         }
 
-        rfmIsimUpdateRecordCase1.append(rfmIsimIsIncludeModule(rfmIsim));
-
-        return rfmIsimUpdateRecordCase1.toString();
+        return accessDomain.toString();
     }
 
-    private String sendEnvelope(){
-        StringBuilder sendEnvelope = new StringBuilder();
-        sendEnvelope.append(
-            "\n ; send envelope\n"
-            + "A0 C2 00 00 G J (9FXX)\n"
-            + ".CLEAR_SCRIPT\n"
-            + "; check PoR\n"
-            + "A0 C0 00 00 W(2;1) [XX XX XX XX XX XX %TAR XX XX XX XX XX XX 00 XX 90 00] (9000) ; PoR OK\n"
-        );
+    private String useRfmIsimCheckInitialContent(RfmIsim rfmIsim){
 
-        return sendEnvelope.toString();
+        StringBuilder specificCheckInitialContent = new StringBuilder();
+
+        if(!rfmIsim.isFullAccess()){
+            if (rfmIsim.getAccessDomain().isUseIsc1()){
+                specificCheckInitialContent.append(this.checkInitialContentOnIsc1());
+            }
+            if (rfmIsim.getAccessDomain().isUseIsc2()){
+                specificCheckInitialContent.append(this.checkInitialContentOnIsc2());
+            }
+            if (rfmIsim.getAccessDomain().isUseIsc3()){
+                specificCheckInitialContent.append(this.checkInitialContentOnIsc3());
+            }
+            if (rfmIsim.getAccessDomain().isUseIsc4()){
+                specificCheckInitialContent.append(this.checkInitialContentOnIsc4());
+            }
+            if (rfmIsim.getAccessDomain().isUseGPin1()){
+                specificCheckInitialContent.append(this.checkInitialContentOnGPin1());
+            }
+            if (rfmIsim.getAccessDomain().isUseLPin1()){
+                specificCheckInitialContent.append(this.checkInitialContentOnLPin1());
+            }
+        }
+        else{
+            specificCheckInitialContent.append(this.checkInitialContent());
+        }
+
+        return specificCheckInitialContent.toString();
     }
 
-    private String checkEFUpdated(){
-        StringBuilder checkEFUpdated = new StringBuilder();
-        checkEFUpdated.append(
-             "\n; check update has been done on EF\n"
-            + ".POWER_ON\n"
-            + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+    private String useRfmIsimCommandViaOtaAccessDomain(RfmIsim rfmIsim){
+
+        StringBuilder commandOta = new StringBuilder();
+
+        if (!rfmIsim.isFullAccess()){
+            if (rfmIsim.getAccessDomain().isUseIsc1()){
+                commandOta.append(this.commandOtaIsc1());
+            }
+            if (rfmIsim.getAccessDomain().isUseIsc2()){
+                commandOta.append(this.commandOtaIsc2());
+            }
+            if (rfmIsim.getAccessDomain().isUseIsc3()){
+                commandOta.append(this.commandOtaIsc3());
+            }
+            if (rfmIsim.getAccessDomain().isUseIsc4()){
+                commandOta.append(this.commandOtaIsc4());
+            }
+            if (rfmIsim.getAccessDomain().isUseGPin1()){
+                commandOta.append(this.commandOtaGPin1());
+            }
+            if (rfmIsim.getAccessDomain().isUseLPin1()){
+                commandOta.append(this.commandOtaLpin1());
+            }
+        }
+        else{
+            commandOta.append(this.commandOta());
+        }
+
+        return commandOta.toString();
+    }
+
+    private String useRfmIsimCheckUpdateEfDone(){
+
+        StringBuilder checkUpdateHasBeenDone = new StringBuilder();
+
+        checkUpdateHasBeenDone.append(
+                "\n; check update has been done on EF on ADM2\n"
+                        + ".POWER_ON\n"
+                        + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
         );
         if (root.getRunSettings().getSecretCodes().isUseIsc2())
-            checkEFUpdated.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+            checkUpdateHasBeenDone.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc3())
-            checkEFUpdated.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+            checkUpdateHasBeenDone.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc4())
-            checkEFUpdated.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
-        checkEFUpdated.append(
-             "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
-            + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
-            + "A0 A4 00 00 02 %DF_ID (9F22)\n"
-            + "A0 A4 00 00 02 %EF_ID (9F0F)\n"
-            + "A0 B0 00 00 01 [AA] (9000)\n"
+            checkUpdateHasBeenDone.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+        checkUpdateHasBeenDone.append(
+                "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+                        + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+                        + "A0 A4 00 00 02 %DF_ID (9F22)\n"
+                        + "A0 A4 00 00 02 %EF_ID_ISIM_ADM2 (9F0F)\n"
+                        + "A0 B0 00 00 01 [AA] (9000)\n"
         );
 
-        return checkEFUpdated.toString();
+        return checkUpdateHasBeenDone.toString();
     }
 
-    private String restoreInitialEFContent(){
-        StringBuilder restoreInitialEFContent = new StringBuilder();
-        restoreInitialEFContent.append(
-             "\n; restore initial content of EF\n"
-            + ".POWER_ON\n"
-            + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+    private String useRfmIsimRestoreRfmIsimInitialContent(){
+
+        StringBuilder restoreInitialContent = new StringBuilder();
+
+        restoreInitialContent.append(
+                "\n; restore initial content of EF on ADM2\n"
+                        + ".POWER_ON\n"
+                        + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
         );
+
         if (root.getRunSettings().getSecretCodes().isUseIsc2())
-            restoreInitialEFContent.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+            restoreInitialContent.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc3())
-            restoreInitialEFContent.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+            restoreInitialContent.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc4())
-            restoreInitialEFContent.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
-        restoreInitialEFContent.append(
-             "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
-            + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
-            + "A0 A4 00 00 02 %DF_ID (9F22)\n"
-            + "A0 A4 00 00 02 %EF_ID (9F0F)\n"
-            + "A0 D6 00 00 01 %EF_CONTENT (9000)\n"
+            restoreInitialContent.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+        restoreInitialContent.append(
+                "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+                        + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+                        + "A0 A4 00 00 02 %DF_ID (9F22)\n"
+                        + "A0 A4 00 00 02 %EF_ID_ISIM_ADM2 (9F0F)\n"
+                        + "A0 D6 00 00 01 %EF_CONTENT_ADM2 (9000)\n"
         );
 
-        return restoreInitialEFContent.toString();
-    }
-
-    private String headerScript(RfmIsim rfmIsim){
-        StringBuilder headerScript = new StringBuilder();
-        // call mappings and load DLLs
-        headerScript.append(
-            ".CALL Mapping.txt /LIST_OFF\n"
-            + ".CALL Options.txt /LIST_OFF\n\n"
-            + ".POWER_ON\n"
-            + ".LOAD dll\\Calcul.dll\n"
-            + ".LOAD dll\\OTA2.dll\n"
-            + ".LOAD dll\\Var_Reader.dll\n"
-        );
-        // create counter and initialize for first-time run
-        File counterBin = new File(root.getRunSettings().getProjectPath() + "\\scripts\\COUNTER.bin");
-        if (!counterBin.exists()) {
-            headerScript.append(
-                "\n; initialize counter\n"
-                + ".SET_BUFFER L 00 00 00 00 00\n"
-                + ".EXPORT_BUFFER L COUNTER.bin\n"
-            );
-        }
-        // load anti-replay counter
-        headerScript.append(
-            "\n; buffer L contains the anti-replay counter for OTA message\n"
-            + ".SET_BUFFER L\n"
-            + ".IMPORT_BUFFER L COUNTER.bin\n"
-            + ".INCREASE_BUFFER L(04:05) 0001\n"
-            + ".DISPLAY L\n"
-            + "\n; setup TAR\n"
-            + ".DEFINE %TAR " + rfmIsim.getTar() + "\n"
-        );
-        // enable pin if required
-        if (root.getRunSettings().getSecretCodes().isPin1disabled())
-            headerScript.append("\nA0 28 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000) ; enable GPIN1\n");
-
-        return headerScript.toString();
+        return restoreInitialContent.toString();
     }
 
     private String checkInitialContent(){
         StringBuilder checkInitialContent = new StringBuilder();
-            checkInitialContent.append(
-                    "\n.POWER_ON\n"
-                    + "; check initial content of EF\n"
-                    + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
-            );
-            if (root.getRunSettings().getSecretCodes().isUseIsc2())
-                checkInitialContent.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
-            if (root.getRunSettings().getSecretCodes().isUseIsc3())
-                checkInitialContent.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
-            if (root.getRunSettings().getSecretCodes().isUseIsc4())
-                checkInitialContent.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
-            checkInitialContent.append(
-                    "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
-                    + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
-                    + "A0 A4 00 00 02 %DF_ID (9F22)\n"
-                    + "A0 A4 00 00 02 %EF_ID (9F0F)\n"
-                    + "A0 B0 00 00 01 (9000)\n"
-                    + ".DEFINE %EF_CONTENT R\n"
-            );
+        checkInitialContent.append(
+                "\n.POWER_ON\n"
+                        + "; check initial content of EF\n"
+                        + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+        );
+        if (root.getRunSettings().getSecretCodes().isUseIsc2())
+            checkInitialContent.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+        if (root.getRunSettings().getSecretCodes().isUseIsc3())
+            checkInitialContent.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+        if (root.getRunSettings().getSecretCodes().isUseIsc4())
+            checkInitialContent.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+        checkInitialContent.append(
+                "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+                        + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+                        + "A0 A4 00 00 02 %DF_ID (9F22)\n"
+                        + "A0 A4 00 00 02 %EF_ID (9F0F)\n"
+                        + "A0 B0 00 00 01 (9000)\n"
+                        + ".DEFINE %EF_CONTENT R\n"
+        );
+
+        return checkInitialContent.toString();
+    }
+    private String checkInitialContentOnIsc1(){
+        StringBuilder checkInitialContent = new StringBuilder();
+        checkInitialContent.append(
+                "\n.POWER_ON\n"
+                        + "; check initial content of EF on ADM1\n"
+                        + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+        );
+        if (root.getRunSettings().getSecretCodes().isUseIsc2())
+            checkInitialContent.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+        if (root.getRunSettings().getSecretCodes().isUseIsc3())
+            checkInitialContent.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+        if (root.getRunSettings().getSecretCodes().isUseIsc4())
+            checkInitialContent.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+        checkInitialContent.append(
+                "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+                        + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+                        + "A0 A4 00 00 02 %DF_ID (9F22)\n"
+                        + "A0 A4 00 00 02 %EF_ID_ISIM_ADM1 (9F0F)\n"
+                        + "A0 B0 00 00 01 (9000)\n"
+                        + ".DEFINE %EF_CONTENT_ADM1 R\n"
+        );
+
+        return checkInitialContent.toString();
+    }
+    private String checkInitialContentOnIsc2(){
+        StringBuilder checkInitialContent = new StringBuilder();
+        checkInitialContent.append(
+                "\n.POWER_ON\n"
+                        + "; check initial content of EF on ADM2\n"
+                        + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+        );
+        if (root.getRunSettings().getSecretCodes().isUseIsc2())
+            checkInitialContent.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+        if (root.getRunSettings().getSecretCodes().isUseIsc3())
+            checkInitialContent.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+        if (root.getRunSettings().getSecretCodes().isUseIsc4())
+            checkInitialContent.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+        checkInitialContent.append(
+                "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+                        + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+                        + "A0 A4 00 00 02 %DF_ID (9F22)\n"
+                        + "A0 A4 00 00 02 %EF_ID_ISIM_ADM2 (9F0F)\n"
+                        + "A0 B0 00 00 01 (9000)\n"
+                        + ".DEFINE %EF_CONTENT_ADM2 R\n"
+        );
+
+        return checkInitialContent.toString();
+    }
+    private String checkInitialContentOnIsc3(){
+        StringBuilder checkInitialContent = new StringBuilder();
+        checkInitialContent.append(
+                "\n.POWER_ON\n"
+                        + "; check initial content of EF on ADM3\n"
+                        + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+        );
+        if (root.getRunSettings().getSecretCodes().isUseIsc2())
+            checkInitialContent.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+        if (root.getRunSettings().getSecretCodes().isUseIsc3())
+            checkInitialContent.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+        if (root.getRunSettings().getSecretCodes().isUseIsc4())
+            checkInitialContent.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+        checkInitialContent.append(
+                "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+                        + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+                        + "A0 A4 00 00 02 %DF_ID (9F22)\n"
+                        + "A0 A4 00 00 02 %EF_ID_ISIM_ADM3 (9F0F)\n"
+                        + "A0 B0 00 00 01 (9000)\n"
+                        + ".DEFINE %EF_CONTENT_ADM3 R\n"
+        );
+
+        return checkInitialContent.toString();
+    }
+    private String checkInitialContentOnIsc4(){
+        StringBuilder checkInitialContent = new StringBuilder();
+        checkInitialContent.append(
+                "\n.POWER_ON\n"
+                        + "; check initial content of EF on ADM4\n"
+                        + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+        );
+        if (root.getRunSettings().getSecretCodes().isUseIsc2())
+            checkInitialContent.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+        if (root.getRunSettings().getSecretCodes().isUseIsc3())
+            checkInitialContent.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+        if (root.getRunSettings().getSecretCodes().isUseIsc4())
+            checkInitialContent.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+        checkInitialContent.append(
+                "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+                        + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+                        + "A0 A4 00 00 02 %DF_ID (9F22)\n"
+                        + "A0 A4 00 00 02 %EF_ID_ISIM_ADM4 (9F0F)\n"
+                        + "A0 B0 00 00 01 (9000)\n"
+                        + ".DEFINE %EF_CONTENT_ADM4 R\n"
+        );
+
+        return checkInitialContent.toString();
+    }
+    private String checkInitialContentOnGPin1(){
+        StringBuilder checkInitialContent = new StringBuilder();
+        checkInitialContent.append(
+                "\n.POWER_ON\n"
+                        + "; check initial content of EF on PIN1\n"
+                        + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+        );
+        if (root.getRunSettings().getSecretCodes().isUseIsc2())
+            checkInitialContent.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+        if (root.getRunSettings().getSecretCodes().isUseIsc3())
+            checkInitialContent.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+        if (root.getRunSettings().getSecretCodes().isUseIsc4())
+            checkInitialContent.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+        checkInitialContent.append(
+                "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+                        + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+                        + "A0 A4 00 00 02 %DF_ID (9F22)\n"
+                        + "A0 A4 00 00 02 %EF_ID_ISIM_PIN1 (9F0F)\n"
+                        + "A0 B0 00 00 01 (9000)\n"
+                        + ".DEFINE %EF_CONTENT_PIN1 R\n"
+        );
+
+        return checkInitialContent.toString();
+    }
+    private String checkInitialContentOnLPin1(){
+        StringBuilder checkInitialContent = new StringBuilder();
+        checkInitialContent.append(
+                "\n.POWER_ON\n"
+                        + "; check initial content of EF on PIN2\n"
+                        + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+        );
+        if (root.getRunSettings().getSecretCodes().isUseIsc2())
+            checkInitialContent.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+        if (root.getRunSettings().getSecretCodes().isUseIsc3())
+            checkInitialContent.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+        if (root.getRunSettings().getSecretCodes().isUseIsc4())
+            checkInitialContent.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+        checkInitialContent.append(
+                "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+                        + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+                        + "A0 A4 00 00 02 %DF_ID (9F22)\n"
+                        + "A0 A4 00 00 02 %EF_ID_ISIM_PIN2 (9F0F)\n"
+                        + "A0 B0 00 00 01 (9000)\n"
+                        + ".DEFINE %EF_CONTENT_PIN2 R\n"
+        );
 
         return checkInitialContent.toString();
     }
 
-    private String rfmIsimCase1Service(SCP80Keyset cipherKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel msl){
-        StringBuilder rfmIsimCase1Service = new StringBuilder();
-        rfmIsimCase1Service.append(
-                "\n.POWER_ON\n"
-                        + proactiveInitialization()
-                        + "\n; SPI settings\n"
-                        + ".SET_BUFFER O %" + cipherKeyset.getKicValuation() + "\n"
-                        + ".SET_BUFFER Q %" + authKeyset.getKidValuation() + "\n"
-                        + ".SET_BUFFER M " + cipherKeyset.getComputedKic() + "\n"
-                        + ".SET_BUFFER N " + authKeyset.getComputedKid() + "\n"
-                        + ".INIT_ENV_0348\n"
-                        + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
+    private String commandOta(){
+        StringBuilder commandOta = new StringBuilder();
+        commandOta.append(
+            ".SET_BUFFER J 00 A4 00 00 02 %EF_ID ; select EF\n"
+            + ".APPEND_SCRIPT J\n"
+            + ".SET_BUFFER J 00 D6 00 00 <?> AA ; update binary\n"
+            + ".APPEND_SCRIPT J\n"
         );
-        if (root.getRunSettings().getSmsUpdate().isUseWhiteList())
-            rfmIsimCase1Service.append(".CHANGE_TP_OA " + root.getRunSettings().getSmsUpdate().getTpOa() + "\n");
-        rfmIsimCase1Service.append(
-                ".CHANGE_TAR %TAR\n"
-                        + ".CHANGE_COUNTER L\n"
-                        + ".INCREASE_BUFFER L(04:05) 0001\n"
-                        + "\n; MSL = " + msl.getComputedMsl() + "\n"
-                        + ".SET_DLKEY_KIC O\n"
-                        + ".SET_DLKEY_KID Q\n"
-                        + ".CHANGE_KIC M\n"
-                        + ".CHANGE_KID N\n"
-                        + spiConfigurator(msl, cipherKeyset, authKeyset)
+
+        return commandOta.toString();
+    }
+    private String commandOtaIsc1(){
+        StringBuilder commandOta = new StringBuilder();
+        commandOta.append(
+            ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_ADM1 ; select EF on ADM1\n"
+            + ".APPEND_SCRIPT J\n"
+            + ".SET_BUFFER J 00 D6 00 00 <?> AA ; update binary\n"
+            + ".APPEND_SCRIPT J\n"
         );
-        if (authKeyset.getKidMode().equals("AES - CMAC"))
-            rfmIsimCase1Service.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
-        rfmIsimCase1Service.append(
-                "\n; command(s) sent via OTA\n"
-                        + ".SET_BUFFER J 00 A4 00 00 02 %EF_ID ; select EF\n"
+
+        return commandOta.toString();
+    }
+    private String commandOtaIsc2(){
+        StringBuilder commandOta = new StringBuilder();
+        commandOta.append(
+                ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_ISIM_ADM2 ; select EF on ADM2\n"
                         + ".APPEND_SCRIPT J\n"
                         + ".SET_BUFFER J 00 D6 00 00 <?> AA ; update binary\n"
                         + ".APPEND_SCRIPT J\n"
-                        + ".END_MESSAGE G J\n"
-                        + "; show OTA message details\n"
-                        + ".DISPLAY_MESSAGE J\n"
-
         );
 
-        //Select RFM ISIM Module
-        if(root.getRunSettings().getRfmIsim().isIncludeRfmIsim()){
-            rfmIsimCase1Service.append(sendEnvelope());
-        }
-        else if (root.getRunSettings().getRfmIsim().isIncludeRfmIsimUpdateRecord()){
-            rfmIsimCase1Service.append(updateSMSRecordRfmIsim("rfmCase2"));
-        }
-
-        // ; check update has been done on EF
-        rfmIsimCase1Service.append(checkEFUpdated());
-
-        // ; restore initial content of EF
-        rfmIsimCase1Service.append(restoreInitialEFContent());
-
-        rfmIsimCase1Service.append(
-                "\n; increment counter by one\n"
-                + ".INCREASE_BUFFER L(04:05) 0001\n"
+        return commandOta.toString();
+    }
+    private String commandOtaIsc3(){
+        StringBuilder commandOta = new StringBuilder();
+        commandOta.append(
+                ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_ADM3 ; select EF on ADM3\n"
+                        + ".APPEND_SCRIPT J\n"
+                        + ".SET_BUFFER J 00 D6 00 00 <?> AA ; update binary\n"
+                        + ".APPEND_SCRIPT J\n"
         );
 
-        return rfmIsimCase1Service.toString();
+        return commandOta.toString();
+    }
+    private String commandOtaIsc4(){
+        StringBuilder commandOta = new StringBuilder();
+        commandOta.append(
+                ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_ADM4 ; select EF on ADM4\n"
+                        + ".APPEND_SCRIPT J\n"
+                        + ".SET_BUFFER J 00 D6 00 00 <?> AA ; update binary\n"
+                        + ".APPEND_SCRIPT J\n"
+        );
+
+        return commandOta.toString();
+    }
+    private String commandOtaGPin1(){
+        StringBuilder commandOta = new StringBuilder();
+        commandOta.append(
+                ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_PIN1 ; select EF on PIN1\n"
+                        + ".APPEND_SCRIPT J\n"
+                        + ".SET_BUFFER J 00 D6 00 00 <?> AA ; update binary\n"
+                        + ".APPEND_SCRIPT J\n"
+        );
+
+        return commandOta.toString();
+    }
+    private String commandOtaLpin1(){
+        StringBuilder commandOta = new StringBuilder();
+        commandOta.append(
+                ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_ISIM_PIN2 ; select EF on PIN2\n"
+                        + ".APPEND_SCRIPT J\n"
+                        + ".SET_BUFFER J 00 D6 00 00 <?> AA ; update binary\n"
+                        + ".APPEND_SCRIPT J\n"
+        );
+
+        return commandOta.toString();
     }
 
-    private String rfmIsimIsIncludeModule(RfmIsim rfmIsim){
-        StringBuilder rfmIsimIsIncludeModule = new StringBuilder();
-
-        if(root.getRunSettings().getRfmIsim().isIncludeRfmIsimUpdateRecord()){
-
-            rfmIsimIsIncludeModule.append(defineTargetFile(rfmIsim));
-
-            rfmIsimIsIncludeModule.append(checkInitialContent());
-
-            rfmIsimIsIncludeModule.append(isUseSpecificKeyset(rfmIsim));
-
-            rfmIsimIsIncludeModule.append("\n.UNDEFINE %EF_CONTENT\n");
-        }
-
-        else if (root.getRunSettings().getRfmIsim().isIncludeRfmIsim()){
-
-            rfmIsimIsIncludeModule.append(defineTargetFile(rfmIsim));
-
-            rfmIsimIsIncludeModule.append(checkInitialContent());
-
-            rfmIsimIsIncludeModule.append(isUseSpecificKeyset(rfmIsim));
-
-            rfmIsimIsIncludeModule.append("\n.UNDEFINE %EF_CONTENT\n");
-
-            if (!rfmIsim.isFullAccess()) {
-                rfmIsimIsIncludeModule.append(
-                        "\n; perform negative test: updating " + rfmIsim.getCustomTargetEfBadCase() + " (" + rfmIsim.getCustomTargetAccBadCase() + ")\n"
-                                + "\n.POWER_ON\n"
-                                + "; check initial content of EF\n"
-                                + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
-                );
-                if (root.getRunSettings().getSecretCodes().isUseIsc2())
-                    rfmIsimIsIncludeModule.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
-                if (root.getRunSettings().getSecretCodes().isUseIsc3())
-                    rfmIsimIsIncludeModule.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
-                if (root.getRunSettings().getSecretCodes().isUseIsc4())
-                    rfmIsimIsIncludeModule.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
-                rfmIsimIsIncludeModule.append(
-                        "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
-                                + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
-                                + "A0 A4 00 00 02 %DF_ID (9F22)\n"
-                                + select2gWithAbsolutePath(rfmIsim.getCustomTargetEfBadCase())
-                                + "A0 B0 00 00 01 (9000)\n"
-                                + ".DEFINE %EF_CONTENT R\n"
-                );
-                if (rfmIsim.isUseSpecificKeyset())
-                    rfmIsimIsIncludeModule.append(rfmIsimCase1NegativeTest(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), rfmIsim.getMinimumSecurityLevel()));
-                else {
-                    for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets()) {
-                        rfmIsimIsIncludeModule.append("\n; using keyset: " + keyset.getKeysetName() + "\n");
-                        rfmIsimIsIncludeModule.append(rfmIsimCase1NegativeTest(keyset, keyset, rfmIsim.getMinimumSecurityLevel()));
-                    }
-                }
-                rfmIsimIsIncludeModule.append("\n.UNDEFINE %EF_CONTENT\n");
-            }
-        }
-
-
-        return rfmIsimIsIncludeModule.toString();
-    }
-
-    private String defineTargetFile(RfmIsim rfmIsim){
-        StringBuilder defineTargetFile = new StringBuilder();
-        // define target files
-        if (rfmIsim.isFullAccess()) {
-            defineTargetFile.append(
-                    "\n; TAR is configured for full access\n"
-                            + ".DEFINE %DF_ID " + root.getRunSettings().getCardParameters().getDfIsim() + "\n"
-                            + ".DEFINE %EF_ID " + rfmIsim.getTargetEf() + "\n"
-                            + ".DEFINE %EF_ID_ERR " + rfmIsim.getTargetEfBadCase() + "\n"
-            );
-        } else {
-            defineTargetFile.append(
-                    "\n; TAR is configured with access domain\n"
-                            + ".DEFINE %DF_ID " + root.getRunSettings().getCardParameters().getDfIsim() + "\n"
-                            + ".DEFINE %EF_ID " + rfmIsim.getCustomTargetEf() + "; EF protected by " + rfmIsim.getCustomTargetAcc() +  "\n"
-                            + ".DEFINE %EF_ID_ERR " + rfmIsim.getCustomTargetEfBadCase() + "; (negative test) EF protected by " + rfmIsim.getCustomTargetAccBadCase() +  "\n"
-            );
-        }
-
-        return defineTargetFile.toString();
-    }
-
-    private String isUseSpecificKeyset(RfmIsim rfmIsim){
-        StringBuilder isUseSpecificKeyset = new StringBuilder();
-
-        // some TAR may be configured with specific keyset or use all available keysets
-        if (rfmIsim.isUseSpecificKeyset())
-            isUseSpecificKeyset.append(rfmIsimCase1Service(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), rfmIsim.getMinimumSecurityLevel()));
-        else {
-            for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets()) {
-                isUseSpecificKeyset.append("\n; using keyset: " + keyset.getKeysetName() + "\n");
-                isUseSpecificKeyset.append(rfmIsimCase1Service(keyset, keyset, rfmIsim.getMinimumSecurityLevel()));
-            }
-        }
-
-        return isUseSpecificKeyset.toString();
-
-    }
-
+//end of script
 }
 

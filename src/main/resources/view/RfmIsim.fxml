@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.idemia.tec.jkt.cardiotest.controller.RfmIsimController">
+<AnchorPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.idemia.tec.jkt.cardiotest.controller.RfmIsimController">
   <children>
     <ScrollPane prefHeight="630.0" prefWidth="1530.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <content>
@@ -21,7 +21,7 @@
             <CheckBox fx:id="chkIncludeRfmIsim" layoutX="12.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleIncludeRfmIsimCheck" text="Include 'RFM ISIM'" AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="12.0" />
             <CheckBox fx:id="chkIncludeRfmIsimUpdateRecord" layoutX="201.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleIncludeRfmIsimUpdateRecordCheck" text="Include 'RFM ISIM - update record'" AnchorPane.topAnchor="12.0" />
             <CheckBox fx:id="chkIncludeRfmIsimExpandedMode" layoutX="495.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleIncludeRfmIsimExpandedModeCheck" text="Include 'RFM ISIM - expanded mode'" AnchorPane.topAnchor="12.0" />
-            <TitledPane animated="false" collapsible="false" focusTraversable="false" layoutX="530.0" layoutY="300.0" prefHeight="310.0" prefWidth="670.0" text="RFM Options &amp; Parameters" AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="50.0">
+            <TitledPane animated="false" collapsible="false" focusTraversable="false" layoutX="530.0" layoutY="300.0" prefHeight="310.0" prefWidth="667.0" text="RFM Options &amp; Parameters" AnchorPane.bottomAnchor="180.0" AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="50.0">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                   <children>
@@ -45,7 +45,7 @@
                         <TextField fx:id="txtRfmIsimTargetEfBadCase" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                       </children>
                     </GridPane>
-                    <GridPane hgap="4.0" layoutX="334.0" layoutY="32.0" prefHeight="132.0" prefWidth="363.0" AnchorPane.leftAnchor="270.0" AnchorPane.topAnchor="8.0">
+                    <GridPane hgap="4.0" layoutX="334.0" layoutY="32.0" prefHeight="132.0" prefWidth="363.0" AnchorPane.bottomAnchor="125.0" AnchorPane.leftAnchor="270.0" AnchorPane.topAnchor="8.0">
                       <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="213.0" minWidth="10.0" prefWidth="140.0" />
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="213.0" minWidth="10.0" prefWidth="100.0" />
@@ -56,15 +56,28 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                       </rowConstraints>
                       <children>
                         <CheckBox fx:id="chkRfmIsimFullAccess" mnemonicParsing="false" onAction="#handleRfmIsimFullAccessCheck" text="Full access" />
-                        <ComboBox fx:id="cmbRfmIsimCustomTargetAcc" onMouseClicked="#handleCustomTargetAccContextMenu" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <TextField fx:id="txtRfmIsimCustomTargetEf" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                        <ComboBox fx:id="cmbRfmIsimCustomTargetAccBadCase" onMouseClicked="#handleCustomTargetAccBadCaseContextMenu" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <TextField fx:id="txtRfmIsimCustomTargetEfBadCase" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                        <TextField fx:id="txtRfmIsimCustomTargetEfBadCase" GridPane.columnIndex="2" GridPane.rowIndex="7" />
                         <Label fx:id="lblRfmIsimCustomTarget" text="EF" GridPane.rowIndex="1" />
-                        <Label fx:id="lblRfmIsimCustomTargetBadCase" text="EF (negative test)" GridPane.rowIndex="2" />
+                        <Label fx:id="lblRfmIsimCustomTargetBadCase" text="EF (Negative Test)" GridPane.rowIndex="7" />
+                                    <CheckBox fx:id="chkRfmIsimUseIsc1" mnemonicParsing="false" onAction="#handleIncludeIsc1Check" text="ISC1" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                    <CheckBox fx:id="chkRfmIsimUseIsc2" mnemonicParsing="false" onAction="#handleIncludeIsc2Check" text="ISC2" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                    <CheckBox fx:id="chkRfmIsimUseIsc3" mnemonicParsing="false" onAction="#handleIncludeIsc3Check" text="ISC3" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                    <CheckBox fx:id="chkRfmIsimUseGPin1" mnemonicParsing="false" onAction="#handleIncludeGPin1Check" text="GPIN1" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                    <CheckBox fx:id="chkRfmIsimUseLPin1" mnemonicParsing="false" onAction="#handleIncludeLPin1Check" text="LPIN1" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                    <TextField fx:id="txtRfmIsimCustomTargetEfIsc1" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                    <TextField fx:id="txtRfmIsimCustomTargetEfIsc2" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                    <TextField fx:id="txtRfmIsimCustomTargetEfIsc3" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                    <TextField fx:id="txtRfmIsimCustomTargetEfGPin1" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                                    <TextField fx:id="txtRfmIsimCustomTargetEfLPin1" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+                                    <CheckBox fx:id="chkRfmIsimUseIsc4" mnemonicParsing="false" onAction="#handleIncludeIsc4Check" text="ISC4" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                    <TextField fx:id="txtRfmIsimCustomTargetEfIsc4" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                       </children>
                     </GridPane>
                     <CheckBox fx:id="chkUseSpecificKeyset" layoutX="20.0" layoutY="169.0" mnemonicParsing="false" onAction="#handleUseSpecificKeysetCheck" text="Use specific keyset:" AnchorPane.bottomAnchor="84.0" AnchorPane.leftAnchor="8.0" />

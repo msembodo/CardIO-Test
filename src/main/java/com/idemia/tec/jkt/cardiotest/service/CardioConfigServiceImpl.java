@@ -140,6 +140,14 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             rfmIsimMsl.setPorRequirement("PoR required");
             rfmIsimMsl.setPorSecurity("response with no security");
 
+            AccessDomain rfmIsimAccessDomain = new AccessDomain();
+            rfmIsimAccessDomain.setUseIsc1(false);
+            rfmIsimAccessDomain.setUseIsc2(false);
+            rfmIsimAccessDomain.setUseIsc3(false);
+            rfmIsimAccessDomain.setUseIsc4(false);
+            rfmIsimAccessDomain.setUseGPin1(false);
+            rfmIsimAccessDomain.setUseLPin1(false);
+
             RfmIsim rfmIsim = new RfmIsim();
             rfmIsim.setIncludeRfmIsim(true);
             rfmIsim.setTar("B00025");
@@ -147,8 +155,9 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             rfmIsim.setTargetEfBadCase("6F02");
             rfmIsim.setFullAccess(true);
             rfmIsim.setMinimumSecurityLevel(rfmIsimMsl);
-            defaultSettings.setRfmIsim(rfmIsim);
 
+            rfmIsim.setAccessDomain(rfmIsimAccessDomain);
+            defaultSettings.setRfmIsim(rfmIsim);
 
             MinimumSecurityLevel ramMsl = new MinimumSecurityLevel(true, "Cryptographic Checksum", "Counter must be higher");
             ramMsl.setCipherAlgo("3DES - CBC 2 keys");ramMsl.setSigningAlgo("3DES - CBC 2 keys");

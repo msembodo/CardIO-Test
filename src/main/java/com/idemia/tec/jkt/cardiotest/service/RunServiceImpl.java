@@ -80,7 +80,7 @@ public class RunServiceImpl implements RunService {
 
         //-------------------
         // file management
-        if (root.getRunSettings().getFileManagement().isIncludeLinkFilesTest())
+        if (root.getRunSettings().getFileManagement().isIncludeLinkFilesTest() || root.getRunSettings().getFileManagement().isIncludeRuwiTest() || root.getRunSettings().getFileManagement().isIncludeSfiTest()  )
             runAllBuffer.append(addFileManagement(root.getRunSettings().getFileManagement()));
         //-------------------
 

@@ -976,8 +976,8 @@ public class ReportServiceImpl implements ReportService {
                     html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
                 }
             }
-
             else html.append("\n<tr><td class=\"item\">Link File Test</td><td>(not included)</td></tr>");
+
             if (runSettings.getFileManagement().isIncludeRuwiTest()) {
                 html.append("\n<tr><td class=\"item\">Readable & Updateable when Invalidated</td>");
 
@@ -989,6 +989,7 @@ public class ReportServiceImpl implements ReportService {
 
             }
             else html.append("\n<tr><td class=\"item\">Readable & Updateable when Invalidated</td><td>(not included)</td></tr>");
+            
             if (runSettings.getFileManagement().isIncludeSfiTest()) {
                 html.append("\n<tr><td class=\"item\">SFI TEST</td>");
 

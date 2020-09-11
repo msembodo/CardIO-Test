@@ -1,5 +1,7 @@
 package com.idemia.tec.jkt.cardiotest.service;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.idemia.tec.jkt.cardiotest.model.*;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,7 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             }
         }
         else {
+
             // constants for default values
             String PROJECT_PATH_DEFAULT = "C:\\";
             String ADV_SAVE_VAR_DEFAULT = "variables.txt";
@@ -189,10 +192,21 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             defaultSettings.setRfmCustom(rfmCustom);
             rfmCustom.setCustomRfmDesc("RFM ...");
 
+            // --------------------------------
+            FileManagement fileManagement = new FileManagement(true, false, null ,true, false, null,true, false, null,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,0,0,false);
+            defaultSettings.setFileManagement(fileManagement);
+            // --------------------------------
+
             ObjectMapper mapper = new ObjectMapper();
             try {
                 mapper.writerWithDefaultPrettyPrinter().writeValue(runSettingsFile, defaultSettings);
                 return defaultSettings;
+            } catch (JsonGenerationException e) {
+                e.printStackTrace();
+                return null;
+            } catch (JsonMappingException e) {
+                e.printStackTrace();
+                return null;
             } catch (IOException e) {
                 e.printStackTrace();
                 return null;

@@ -29,7 +29,6 @@ import javax.smartcardio.CardException;
 import javax.smartcardio.CardTerminal;
 import javax.smartcardio.TerminalFactory;
 import java.io.*;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -51,6 +50,13 @@ public class RootLayoutController {
     private TestSuiteResponse tsResponse;
     private boolean runAtrOk;
     private boolean runDeltaTestOk;
+
+    // --------------------
+    private boolean runLinkFilesTestOk;
+    private boolean runRuwiTestOk;
+    private boolean runSfiTestOk;
+    // --------------------
+
     private boolean runSqnMaxOk;
     private boolean runRfmUsimOk;
     private boolean runRfmUsimUpdateRecordOk;
@@ -70,6 +76,7 @@ public class RootLayoutController {
     private boolean runCodes3gOk;
     private boolean runCodes2gOk;
 
+    @Autowired private RootLayoutController root;
     @Autowired private CardiotestController cardiotest;
     @Autowired private AuthenticationController authenticationController;
     @Autowired private SecretCodesController secretCodesController;
@@ -83,7 +90,9 @@ public class RootLayoutController {
     @Autowired private RunService runService;
     @Autowired private ReportService reportService;
     @Autowired private ExportImportService eximService;
-
+    //-------------
+    @Autowired private FileManagementController fileManagementController;
+    //-------------
     @FXML private BorderPane rootBorderPane;
     @FXML private MenuBar menuBar;
 
@@ -107,7 +116,11 @@ public class RootLayoutController {
     @FXML private MenuItem menuRamExpandedMode;
     @FXML private MenuItem menuCodes3g;
     @FXML private MenuItem menuCodes2g;
-
+    //-------------
+    @FXML private MenuItem menuLinkFiles;
+    @FXML private MenuItem menuRuwi;
+    @FXML private MenuItem menuSfi;
+    //-------------
 
     private StatusBar appStatusBar;
     private Label lblTerminalInfo;
@@ -250,6 +263,9 @@ public class RootLayoutController {
         ramController.initialize();
         secretCodesController.initialize();
         customTabController.initialize();
+        //-------------
+        fileManagementController.initialize();
+        //-------------
     }
 
     @FXML private void handleMenuExportSettings() {
@@ -270,6 +286,8 @@ public class RootLayoutController {
     @FXML private void handleMenuToolOptions() { application.showToolOptions(); }
 
     @FXML private void handleMenuRunAll() {
+
+
         handleMenuSaveSettings();
 
         // make user wait as verification executes
@@ -335,7 +353,8 @@ public class RootLayoutController {
                     reportService.createReportFromSettings(runSettings);
                     cardiotest.getTxtCommandResponse().clear();
                     cardiotest.getTabBottom().getSelectionModel().select(0);
-                } else {
+                }
+                else {
                     appStatusBar.setText(tsResponse.getMessage());
                     Notifications.create().title("CardIO").text(tsResponse.getMessage()).showError();
                     logger.error(tsResponse.getMessage());
@@ -475,7 +494,6 @@ public class RootLayoutController {
                 runSettings.getRfmUsim().setTestRfmUsimExpandedModeMessage(errFailure);
             }
         }
-
         if (module.getName().equals("RFM_GSM")) {
             runSettings.getRfmGsm().setTestRfmGsmOk(true);
             runSettings.getRfmGsm().setTestRfmGsmMessage("OK");
@@ -521,7 +539,6 @@ public class RootLayoutController {
                 runSettings.getRfmGsm().setTestRfmGsmExpandedModeMessage(errFailure);
             }
         }
-
         if (module.getName().equals("RFM_ISIM")) {
             runSettings.getRfmIsim().setTestRfmIsimOk(true);
             runSettings.getRfmIsim().setTestRfmIsimMessage("OK");
@@ -619,9 +636,6 @@ public class RootLayoutController {
             setCustomScriptsTestStatus(module, runSettings.getCustomScriptsSection2());
         if (runSettings.getCustomScriptsSection3().size() > 0)
             setCustomScriptsTestStatus(module, runSettings.getCustomScriptsSection3());
-
-
-        //Custom RFM --------------------------------------
         if (module.getName().equals("RFM_CUSTOM")) {
             runSettings.getRfmCustom().setTestRfmCustomOk(true);
             runSettings.getRfmCustom().setTestRfmCustomMessage("OK");
@@ -668,6 +682,53 @@ public class RootLayoutController {
             }
         }
 
+        //--------------------------------------
+        if (module.getName().equals("FileManagement_LinkFiles_TEST")) {
+            runSettings.getFileManagement().setTestLinkFilesOk(true);
+            runSettings.getFileManagement().setTestLinkFilesMessage("OK");
+            String errFailure = "";
+            if (module.getError() != null) {
+                runSettings.getFileManagement().setTestLinkFilesOk(false);
+                errFailure += module.getError().replace("\n", ";");
+                runSettings.getFileManagement().setTestLinkFilesMessage(errFailure);
+            }
+            if (module.getFailure() != null) {
+                runSettings.getFileManagement().setTestLinkFilesOk(false);
+                errFailure += module.getFailure().replace("\n", ";");
+                runSettings.getFileManagement().setTestLinkFilesMessage(errFailure);
+            }
+        }
+        if (module.getName().equals("FileManagement_Readable&UpdateablewhenInvalidated_TEST")) {
+            runSettings.getFileManagement().setTestRuwiOk(true);
+            runSettings.getFileManagement().setTestRuwiMessage("OK");
+            String errFailure = "";
+            if (module.getError() != null) {
+                runSettings.getFileManagement().setTestRuwiOk(false);
+                errFailure += module.getError().replace("\n", ";");
+                runSettings.getFileManagement().setTestRuwiMessage(errFailure);
+            }
+            if (module.getFailure() != null) {
+                runSettings.getFileManagement().setTestRuwiOk(false);
+                errFailure += module.getFailure().replace("\n", ";");
+                runSettings.getFileManagement().setTestRuwiMessage(errFailure);
+            }
+        }
+        if (module.getName().equals("FileManagement_SFI_TEST")) {
+            runSettings.getFileManagement().setTestSfiOk(true);
+            runSettings.getFileManagement().setTestSfiMessage("OK");
+            String errFailure = "";
+            if (module.getError() != null) {
+                runSettings.getFileManagement().setTestSfiOk(false);
+                errFailure += module.getError().replace("\n", ";");
+                runSettings.getFileManagement().setTestSfiMessage(errFailure);
+            }
+            if (module.getFailure() != null) {
+                runSettings.getFileManagement().setTestSfiOk(false);
+                errFailure += module.getFailure().replace("\n", ";");
+                runSettings.getFileManagement().setTestSfiMessage(errFailure);
+            }
+        }
+        //--------------------------------------
         cardioConfigService.saveConfig(runSettings);
     }
 
@@ -722,7 +783,8 @@ public class RootLayoutController {
                     appStatusBar.setText("Executed ATR: OK");
                     Notifications.create().title("CardIO").text("Executed ATR: OK").showInformation();
                     appendTextFlow(">> OK\n\n", 0);
-                } else {
+                }
+                else {
                     appStatusBar.setText("Executed ATR: NOK");
                     Notifications.create().title("CardIO").text("Executed ATR: NOK").showError();
                     appendTextFlow(">> NOT OK\n", 1);
@@ -768,7 +830,8 @@ public class RootLayoutController {
                     appStatusBar.setText("Executed MILLENAGE_DELTA_TEST: OK");
                     Notifications.create().title("CardIO").text("Executed MILLENAGE_DELTA_TEST: OK").showInformation();
                     appendTextFlow(">> OK\n\n", 0);
-                } else {
+                }
+                else {
                     appStatusBar.setText("Executed MILLENAGE_DELTA_TEST: NOK");
                     Notifications.create().title("CardIO").text("Executed MILLENAGE_DELTA_TEST: NOK").showError();
                     appendTextFlow(">> NOT OK\n", 1);
@@ -814,7 +877,8 @@ public class RootLayoutController {
                     appStatusBar.setText("Executed MILLENAGE_SQN_MAX: OK");
                     Notifications.create().title("CardIO").text("Executed MILLENAGE_SQN_MAX: OK").showInformation();
                     appendTextFlow(">> OK\n\n", 0);
-                } else {
+                }
+                else {
                     appStatusBar.setText("Executed MILLENAGE_SQN_MAX: NOK");
                     Notifications.create().title("CardIO").text("Executed MILLENAGE_SQN_MAX: NOK").showError();
                     appendTextFlow(">> NOT OK\n", 1);
@@ -828,6 +892,201 @@ public class RootLayoutController {
         Thread runSqnMaxThread = new Thread(task);
         runSqnMaxThread.start();
     }
+
+    //-------------------------
+    @FXML private void handleMenuLinkFilesTest() {
+
+            handleMenuSaveSettings();
+            // make user wait as verification executes
+            cardiotest.getMaskerPane().setText("Executing FileManagement_LinkFile_TEST. Please wait..");
+            cardiotest.getMaskerPane().setVisible(true); // display masker pane
+            menuBar.setDisable(true);
+            appStatusBar.setDisable(true);
+
+            cardiotest.getTxtInterpretedLog().getChildren().clear();
+            appendTextFlow("Executing FileManagement_LinkFile_TEST..\n\n");
+
+            // use threads to avoid application freeze
+            Task<Void> task = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                    runLinkFilesTestOk = runService.runLinkFilesTest();
+                    return null;
+                }
+
+                @Override
+                protected void succeeded() {
+                    super.succeeded();
+                    // dismiss masker pane
+                    cardiotest.getMaskerPane().setVisible(false);
+                    menuBar.setDisable(false);
+                    appStatusBar.setDisable(false);
+                    // update status bar
+                    if (runLinkFilesTestOk) {
+                        appStatusBar.setText("Executed FileManagement_LinkFiles_TEST: OK");
+                        Notifications.create().title("CardIO").text("Executed FileManagement_LinkFiles_TEST: OK").showInformation();
+                        appendTextFlow(">> OK\n\n", 0);
+                    }
+                    else {
+                        appStatusBar.setText("Executed FileManagement_LinkFiles_TEST: NOK");
+                        Notifications.create().title("CardIO").text("Executed FileManagement_LinkFiles_TEST: NOK").showError();
+                        appendTextFlow(">> NOT OK\n", 1);
+                    }
+                    // display commmand-response
+                    cardiotest.getTxtCommandResponse().setDisable(false);
+                    String logFileName = runSettings.getProjectPath() + "\\scripts\\FileManagement_LinkFiles_TEST.L00";
+                    showCommandResponseLog(logFileName);
+                }
+            };
+            Thread runLinkFileTestThread = new Thread(task);
+            runLinkFileTestThread.start();
+
+
+/*
+            handleMenuSaveSettings();
+            // make user wait as verification executes
+            cardiotest.getMaskerPane().setText("Executing FileManagement_LinkFile_TEST. Please wait..");
+            cardiotest.getMaskerPane().setVisible(true); // display masker pane
+            menuBar.setDisable(true);
+            appStatusBar.setDisable(true);
+
+            cardiotest.getTxtInterpretedLog().getChildren().clear();
+            appendTextFlow("Executing FileManagement_LinkFile_TEST..\n\n");
+
+            // use threads to avoid application freeze
+            Task<Void> task = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                    runLinkFilesTestOk = runService.runLinkFilesTest();
+                    return null;
+                }
+
+                @Override
+                protected void succeeded() {
+                    super.succeeded();
+                    // dismiss masker pane
+                    cardiotest.getMaskerPane().setVisible(false);
+                    menuBar.setDisable(false);
+                    appStatusBar.setDisable(false);
+                    // update status bar
+                    if (runLinkFilesTestOk) {
+                        appStatusBar.setText("Executed FileManagement_LinkFiles_TEST: OK");
+                        Notifications.create().title("CardIO").text("Executed FileManagement_LinkFiles_TEST: OK").showInformation();
+                        appendTextFlow(">> OK\n\n", 0);
+                    }
+                    else {
+                        appStatusBar.setText("Executed FileManagement_LinkFiles_TEST: NOK");
+                        Notifications.create().title("CardIO").text("Executed FileManagement_LinkFiles_TEST: NOK").showError();
+                        appendTextFlow(">> NOT OK\n", 1);
+                    }
+                    // display commmand-response
+                    cardiotest.getTxtCommandResponse().setDisable(false);
+                    String logFileName = runSettings.getProjectPath() + "\\scripts\\FileManagement_LinkFiles_TEST.L00";
+                    showCommandResponseLog(logFileName);
+                }
+            };
+            Thread runLinkFileTestThread = new Thread(task);
+            runLinkFileTestThread.start();
+
+ */
+
+
+    }
+
+    @FXML private void handleMenuRuwiTest() {
+        handleMenuSaveSettings();
+        // make user wait as verification executes
+        cardiotest.getMaskerPane().setText("Executing FileManagement_Readable&UpdateablewhenInvalidated_TEST. Please wait..");
+        cardiotest.getMaskerPane().setVisible(true); // display masker pane
+        menuBar.setDisable(true);
+        appStatusBar.setDisable(true);
+
+        cardiotest.getTxtInterpretedLog().getChildren().clear();
+        appendTextFlow("Executing FileManagement_Readable&UpdateablewhenInvalidated_TEST..\n\n");
+
+        // use threads to avoid application freeze
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                runRuwiTestOk = runService.runRuwiTest();
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                // dismiss masker pane
+                cardiotest.getMaskerPane().setVisible(false);
+                menuBar.setDisable(false);
+                appStatusBar.setDisable(false);
+                // update status bar
+                if (runRuwiTestOk) {
+                    appStatusBar.setText("Executed FileManagement_Readable&UpdateablewhenInvalidated_TEST: OK");
+                    Notifications.create().title("CardIO").text("Executed FileManagement_Readable&UpdateablewhenInvalidated_TEST: OK").showInformation();
+                    appendTextFlow(">> OK\n\n", 0);
+                }
+                else {
+                    appStatusBar.setText("Executed FileManagement_Readable&_Updateable_when_Invalidated_TEST: NOK");
+                    Notifications.create().title("CardIO").text("Executed FileManagement_Readable&UpdateablewhenInvalidated_TEST: NOK").showError();
+                    appendTextFlow(">> NOT OK\n", 1);
+                }
+                // display commmand-response
+                cardiotest.getTxtCommandResponse().setDisable(false);
+                String logFileName = runSettings.getProjectPath() + "\\scripts\\FileManagement_Readable&UpdateablewhenInvalidated_TEST.L00";
+                showCommandResponseLog(logFileName);
+            }
+        };
+        Thread runRuwiTestThread = new Thread(task);
+        runRuwiTestThread.start();
+    }
+
+    @FXML private void handleMenuSfiTest() {
+        handleMenuSaveSettings();
+        // make user wait as verification executes
+        cardiotest.getMaskerPane().setText("Executing FileManagement_SFI_TEST. Please wait..");
+        cardiotest.getMaskerPane().setVisible(true); // display masker pane
+        menuBar.setDisable(true);
+        appStatusBar.setDisable(true);
+
+        cardiotest.getTxtInterpretedLog().getChildren().clear();
+        appendTextFlow("Executing FileManagement_SFI_TEST..\n\n");
+
+        // use threads to avoid application freeze
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                runSfiTestOk = runService.runSfiTest();
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                // dismiss masker pane
+                cardiotest.getMaskerPane().setVisible(false);
+                menuBar.setDisable(false);
+                appStatusBar.setDisable(false);
+                // update status bar
+                if (runSfiTestOk) {
+                    appStatusBar.setText("Executed FileManagement_SFI_TEST: OK");
+                    Notifications.create().title("CardIO").text("Executed FileManagement_SFI_TEST: OK").showInformation();
+                    appendTextFlow(">> OK\n\n", 0);
+                }
+                else {
+                    appStatusBar.setText("Executed FileManagement_SFI_TEST: NOK");
+                    Notifications.create().title("CardIO").text("Executed FileManagement_SFI_TEST: NOK").showError();
+                    appendTextFlow(">> NOT OK\n", 1);
+                }
+                // display commmand-response
+                cardiotest.getTxtCommandResponse().setDisable(false);
+                String logFileName = runSettings.getProjectPath() + "\\scripts\\FileManagement_SFI_TEST.L00";
+                showCommandResponseLog(logFileName);
+            }
+        };
+        Thread runSfiTestThread = new Thread(task);
+        runSfiTestThread.start();
+    }
+    //-------------------------
 
     @FXML private void handleMenuRfmUsim() {
         handleMenuSaveSettings();
@@ -859,7 +1118,8 @@ public class RootLayoutController {
                     appStatusBar.setText("Executed RFM_USIM: OK");
                     Notifications.create().title("CardIO").text("Executed RFM_USIM: OK").showInformation();
                     appendTextFlow(">> OK\n\n", 0);
-                } else {
+                }
+                else {
                     appStatusBar.setText("Executed RFM_USIM: NOK");
                     Notifications.create().title("CardIO").text("Executed RFM_USIM: NOK").showError();
                     appendTextFlow(">> NOT OK\n", 1);
@@ -904,7 +1164,8 @@ public class RootLayoutController {
                     appStatusBar.setText("Executed RFM_USIM_UpdateRecord: OK");
                     Notifications.create().title("CardIO").text("Executed RFM_USIM_UpdateRecord: OK").showInformation();
                     appendTextFlow(">> OK\n\n", 0);
-                } else {
+                }
+                else {
                     appStatusBar.setText("Executed RFM_USIM_UpdateRecord: NOK");
                     Notifications.create().title("CardIO").text("Executed RFM_USIM_UpdateRecord: NOK").showError();
                     appendTextFlow(">> NOT OK\n", 1);
@@ -949,7 +1210,8 @@ public class RootLayoutController {
                     appStatusBar.setText("Executed RFM_USIM_3G_ExpandedMode: OK");
                     Notifications.create().title("CardIO").text("Executed RFM_USIM_3G_ExpandedMode: OK").showInformation();
                     appendTextFlow(">> OK\n\n", 0);
-                } else {
+                }
+                else {
                     appStatusBar.setText("Executed RFM_USIM_3G_ExpandedMode: NOK");
                     Notifications.create().title("CardIO").text("Executed RFM_USIM_3G_ExpandedMode: NOK").showError();
                     appendTextFlow(">> NOT OK\n", 1);
@@ -1132,7 +1394,8 @@ public class RootLayoutController {
                     appStatusBar.setText("Executed RFM_ISIM: OK");
                     Notifications.create().title("CardIO").text("Executed RFM_ISIM: OK").showInformation();
                     appendTextFlow(">> OK\n\n", 0);
-                } else {
+                }
+                else {
                     appStatusBar.setText("Executed RFM_ISIM: NOK");
                     Notifications.create().title("CardIO").text("Executed RFM_ISIM: NOK").showError();
                     appendTextFlow(">> NOT OK\n", 1);
@@ -1177,7 +1440,8 @@ public class RootLayoutController {
                     appStatusBar.setText("Executed RFM_ISIM_UpdateRecord: OK");
                     Notifications.create().title("CardIO").text("Executed RFM_ISIM_UpdateRecord: OK").showInformation();
                     appendTextFlow(">> OK\n\n", 0);
-                } else {
+                }
+                else {
                     appStatusBar.setText("Executed RFM_ISIM_UpdateRecord: NOK");
                     Notifications.create().title("CardIO").text("Executed RFM_ISIM_UpdateRecord: NOK").showError();
                     appendTextFlow(">> NOT OK\n", 1);
@@ -1223,7 +1487,8 @@ public class RootLayoutController {
                     appStatusBar.setText("Executed RFM_ISIM_3G_ExpandedMode: OK");
                     Notifications.create().title("CardIO").text("Executed RFM_ISIM_3G_ExpandedMode: OK").showInformation();
                     appendTextFlow(">> OK\n\n", 0);
-                } else {
+                }
+                else {
                     appStatusBar.setText("Executed RFM_ISIM_3G_ExpandedMode: NOK");
                     Notifications.create().title("CardIO").text("Executed RFM_ISIM_3G_ExpandedMode: NOK").showError();
                     appendTextFlow(">> NOT OK\n", 1);
@@ -1433,8 +1698,7 @@ public class RootLayoutController {
         runRfmCustomThread.start();
     }
 
-    @FXML
-    private void handleMenuRfmCustomUpdateRecord() {
+    @FXML private void handleMenuRfmCustomUpdateRecord() {
         handleMenuSaveSettings();
         // make user wait as verification executes
         cardiotest.getMaskerPane().setText("Executing RFM_CUSTOM_UpdateRecord. Please wait..");
@@ -1480,8 +1744,7 @@ public class RootLayoutController {
         runRfmCustomUpdateRecordThread.start();
     }
 
-    @FXML
-    private void handleMenuRfmCustomExpandedMode() {
+    @FXML private void handleMenuRfmCustomExpandedMode() {
         handleMenuSaveSettings();
         // make user wait as verification executes
         cardiotest.getMaskerPane().setText("Executing RFM_CUSTOM_3G_ExpandedMode. Please wait..");
@@ -1558,7 +1821,8 @@ public class RootLayoutController {
                     appStatusBar.setText("Executed SecretCodes_3G: OK");
                     Notifications.create().title("CardIO").text("Executed SecretCodes_3G: OK").showInformation();
                     appendTextFlow(">> OK\n\n", 0);
-                } else {
+                }
+                else {
                     appStatusBar.setText("Executed SecretCodes_3G: NOK");
                     Notifications.create().title("CardIO").text("Executed SecretCodes_3G: NOK").showError();
                     appendTextFlow(">> NOT OK\n", 1);
@@ -1604,7 +1868,8 @@ public class RootLayoutController {
                     appStatusBar.setText("Executed SecretCodes_2G: OK");
                     Notifications.create().title("CardIO").text("Executed SecretCodes_2G: OK").showInformation();
                     appendTextFlow(">> OK\n\n", 0);
-                } else {
+                }
+                else {
                     appStatusBar.setText("Executed SecretCodes_2G: NOK");
                     Notifications.create().title("CardIO").text("Executed SecretCodes_2G: NOK").showError();
                     appendTextFlow(">> NOT OK\n", 1);
@@ -1684,6 +1949,12 @@ public class RootLayoutController {
     public ObservableList<CustomScript> getCustomScriptsSection1() { return customScriptsSection1; }
     public ObservableList<CustomScript> getCustomScriptsSection2() { return customScriptsSection2; }
     public ObservableList<CustomScript> getCustomScriptsSection3() { return customScriptsSection3; }
+
+    //-------------------------
+    public MenuItem getMenuLinkFile() { return menuLinkFiles; }
+    public MenuItem getMenuRuwi() { return menuRuwi; }
+    public MenuItem getMenuSfi() { return menuSfi; }
+    //-------------------------
 
     public void setImportProjectDir(File importProjectDir) { this.importProjectDir = importProjectDir; }
     public void setImportVarFile(File importVarFile) { this.importVarFile = importVarFile; }

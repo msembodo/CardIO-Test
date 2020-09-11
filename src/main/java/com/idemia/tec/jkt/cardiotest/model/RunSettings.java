@@ -31,6 +31,10 @@ public class RunSettings {
     private List<CustomScript> customScriptsSection1;
     private List<CustomScript> customScriptsSection2;
     private List<CustomScript> customScriptsSection3;
+    private FileManagement fileManagement;
+    private FMLinkFiles fMLinkFiles;
+    private FMRuwi fMRuwi;
+
 
     public RunSettings() { }
 
@@ -41,7 +45,8 @@ public class RunSettings {
                        CardParameters cardParameters, Authentication authentication, List<SCP80Keyset> scp80Keysets,
                        SmsUpdate smsUpdate, RfmUsim rfmUsim, RfmGsm rfmGsm, RfmIsim rfmIsim, RfmCustom rfmCustom,
                        Ram ram, List<CustomScript> customScriptsSection1, List<CustomScript> customScriptsSection2,
-                       List<CustomScript> customScriptsSection3) {
+                       List<CustomScript> customScriptsSection3, FileManagement fileManagement, FMLinkFiles fMLinkFiles, FMRuwi fMRuwi) {
+
         this.projectPath = projectPath;
         this.advSaveVariablesPath = advSaveVariablesPath;
         this.readerNumber = readerNumber;
@@ -69,6 +74,10 @@ public class RunSettings {
         this.customScriptsSection1 = customScriptsSection1;
         this.customScriptsSection2 = customScriptsSection2;
         this.customScriptsSection3 = customScriptsSection3;
+        this.fileManagement = fileManagement;
+        this.fMLinkFiles = fMLinkFiles;
+        this.fMRuwi = fMRuwi;
+
     }
 
     public String getProjectPath() {
@@ -287,4 +296,28 @@ public class RunSettings {
 
     }
 
+
+    public FileManagement getFileManagement() {
+        return fileManagement;
+    }
+
+    public void setFileManagement(FileManagement fileManagement) {
+        this.fileManagement = fileManagement;
+    }
+
+    public FMLinkFiles getfMLinkFiles() {
+        return fMLinkFiles;
+    }
+
+    public void setfMLinkFiles(FMLinkFiles fMLinkFiles) {
+        this.fMLinkFiles = fMLinkFiles;
+    }
+
+    public FMRuwi getfMRuwi() {
+        return fMRuwi;
+    }
+
+    public void setfMRuwi(FMRuwi fMRuwi) {
+        this.fMRuwi = fMRuwi;
+    }
 }

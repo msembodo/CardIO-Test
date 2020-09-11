@@ -1,5 +1,7 @@
 package com.idemia.tec.jkt.cardiotest.service;
 
+
+import com.idemia.tec.jkt.cardiotest.model.*;
 import com.idemia.tec.jkt.cardiotest.model.Authentication;
 import com.idemia.tec.jkt.cardiotest.model.RfmUsim;
 import com.idemia.tec.jkt.cardiotest.model.RfmGsm;
@@ -28,11 +30,17 @@ public interface ScriptGeneratorService {
     StringBuilder generateRamExpandedMode(Ram ram);
     StringBuilder generateSecretCodes2g(SecretCodes secretCodes);
     StringBuilder generateSecretCodes3g(SecretCodes secretCodes);
-
-    //Custom RFM --------------------------------------
     StringBuilder generateRfmCustom(RfmCustom rfmCustom);
     StringBuilder generateRfmCustomUpdateRecord(RfmCustom rfmCustom);
     StringBuilder generateRfmCustomExpandedMode(RfmCustom rfmCustom);
+
+
+    // ------------------------------------------------
+    StringBuilder generateFilemanagementLinkFiles(FileManagement fileManagement);
+    StringBuilder generateFilemanagementRuwi(FileManagement fileManagement);
+        StringBuilder generateFilemanagementRuWI01_OK_To_Go(FileManagement fileManagement);
+        StringBuilder generateFilemanagementRuWI02_Method(FileManagement fileManagement);
+    StringBuilder generateFilemanagementSfi(FileManagement fileManagement);
     // ------------------------------------------------
 
 }

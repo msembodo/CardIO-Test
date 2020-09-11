@@ -36,7 +36,7 @@ public class RfmIsim {
     public RfmIsim(boolean includeRfmIsim, boolean includeRfmIsimUpdateRecord, boolean includeRfmIsimExpandedMode,
                    String tar, String targetEf, String targetEfBadCase, boolean fullAccess, String customTargetAcc,
                    String customTargetEf, String customTargetEfIsc1, String customTargetEfIsc2, String customTargetEfIsc3, String customTargetEfGPin1, String customTargetEfLPin1, String customTargetAccBadCase, String customTargetEfBadCase,
-                   boolean useSpecificKeyset, SCP80Keyset cipheringKeyset, SCP80Keyset authKeyset,
+                   boolean useSpecificKeyset, AccessDomain accessDomain, SCP80Keyset cipheringKeyset, SCP80Keyset authKeyset,
                    MinimumSecurityLevel minimumSecurityLevel) {
         this.includeRfmIsim = includeRfmIsim;
         this.includeRfmIsimUpdateRecord = includeRfmIsimUpdateRecord;
@@ -55,6 +55,7 @@ public class RfmIsim {
         this.customTargetAccBadCase = customTargetAccBadCase;
         this.customTargetEfBadCase = customTargetEfBadCase;
         this.useSpecificKeyset = useSpecificKeyset;
+        this.accessDomain = accessDomain;
         this.cipheringKeyset = cipheringKeyset;
         this.authKeyset = authKeyset;
         this.minimumSecurityLevel = minimumSecurityLevel;

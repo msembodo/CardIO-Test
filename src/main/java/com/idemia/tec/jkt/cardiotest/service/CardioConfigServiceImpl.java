@@ -111,6 +111,14 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             rfmUsimMsl.setPorRequirement("PoR required");
             rfmUsimMsl.setPorSecurity("response with no security");
 
+            AccessDomain rfmUsimAccessDomain = new AccessDomain();
+            rfmUsimAccessDomain.setUseIsc1(false);
+            rfmUsimAccessDomain.setUseIsc2(false);
+            rfmUsimAccessDomain.setUseIsc3(false);
+            rfmUsimAccessDomain.setUseIsc4(false);
+            rfmUsimAccessDomain.setUseGPin1(false);
+            rfmUsimAccessDomain.setUseLPin1(false);
+
             RfmUsim rfmUsim = new RfmUsim();
             rfmUsim.setIncludeRfmUsim(true);
             rfmUsim.setTar("B00001");
@@ -118,6 +126,8 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             rfmUsim.setTargetEfBadCase("6F05");
             rfmUsim.setFullAccess(true);
             rfmUsim.setMinimumSecurityLevel(rfmUsimMsl);
+
+            rfmUsim.setAccessDomain(rfmUsimAccessDomain);
             defaultSettings.setRfmUsim(rfmUsim);
 
             MinimumSecurityLevel rfmGsmMsl = new MinimumSecurityLevel(true, "Cryptographic Checksum", "Counter must be higher");

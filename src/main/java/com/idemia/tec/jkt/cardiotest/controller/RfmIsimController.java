@@ -279,8 +279,8 @@ public class RfmIsimController {
             txtRfmIsimCustomTargetEfBadCase.setDisable(true);
             txtRfmIsimTargetEf.setDisable(false);
             txtRfmIsimTargetEfBadCase.setDisable(false);
-
-        } else {
+        }
+        else {
             lblRfmIsimCustomTarget.setDisable(false);
             chkRfmIsimUseIsc1.setDisable(false);
             chkRfmIsimUseIsc2.setDisable(false);

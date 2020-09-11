@@ -57,37 +57,10 @@ public class RfmUsimService {
 
     public StringBuilder generateRfmUsim(RfmUsim rfmUsim) {
         StringBuilder rfmUsimBuffer = new StringBuilder();
-        // call mappings and load DLLs
-        rfmUsimBuffer.append(
-            ".CALL Mapping.txt /LIST_OFF\n"
-            + ".CALL Options.txt /LIST_OFF\n\n"
-            + ".POWER_ON\n"
-            + ".LOAD dll\\Calcul.dll\n"
-            + ".LOAD dll\\OTA2.dll\n"
-            + ".LOAD dll\\Var_Reader.dll\n"
-        );
-        // create counter and initialize for first-time run
-        File counterBin = new File(root.getRunSettings().getProjectPath() + "\\scripts\\COUNTER.bin");
-        if (!counterBin.exists()) {
-            rfmUsimBuffer.append(
-                "\n; initialize counter\n"
-                + ".SET_BUFFER L 00 00 00 00 00\n"
-                + ".EXPORT_BUFFER L COUNTER.bin\n"
-            );
-        }
-        // load anti-replay counter
-        rfmUsimBuffer.append(
-            "\n; buffer L contains the anti-replay counter for OTA message\n"
-            + ".SET_BUFFER L\n"
-            + ".IMPORT_BUFFER L COUNTER.bin\n"
-            + ".INCREASE_BUFFER L(04:05) 0001\n"
-            + ".DISPLAY L\n"
-            + "\n; setup TAR\n"
-            + ".DEFINE %TAR " + rfmUsim.getTar() + "\n"
-        );
-        // enable pin if required
-        if (root.getRunSettings().getSecretCodes().isPin1disabled())
-            rfmUsimBuffer.append("\nA0 28 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000) ; enable GPIN1\n");
+
+        // Generate Header Script
+        rfmUsimBuffer.append(this.headerScriptRfmUsim(rfmUsim));
+
         // case 1
         rfmUsimBuffer.append("\n*********\n; CASE 1: RFM USIM with correct security settings\n*********\n");
         // define target files
@@ -1500,4 +1473,5 @@ public class RfmUsimService {
 
     }
 
+//end of script
 }

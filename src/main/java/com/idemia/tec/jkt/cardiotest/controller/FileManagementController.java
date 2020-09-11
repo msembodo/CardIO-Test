@@ -950,4 +950,11 @@ public class FileManagementController  {
         RuwiSimbiosCtdCheckbox = ruwiSimbiosCtdCheckbox;
     }
 
+    public ObservableList<FMRuwi> getRuwiTableData() {
+        return RuwiTableData;
+    }
+
+    public void setRuwiTableData(ObservableList<FMRuwi> ruwiTableData) {
+        RuwiTableData = ruwiTableData;
+    }
 }

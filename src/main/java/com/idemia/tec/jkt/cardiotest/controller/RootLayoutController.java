@@ -247,6 +247,8 @@ public class RootLayoutController {
         customScriptsSection1.clear();
         customScriptsSection2.clear();
         customScriptsSection3.clear();
+        fileManagementController.getLinkFilesTableData().clear();
+        fileManagementController.getRuwiTableData().clear();
         cardiotest.initialize();
         cardiotest.setObservableList();
         authenticationController.initialize();

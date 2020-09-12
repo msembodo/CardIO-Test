@@ -127,7 +127,7 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             rfmUsim.setFullAccess(true);
             rfmUsim.setMinimumSecurityLevel(rfmUsimMsl);
 
-            rfmUsim.setAccessDomain(rfmUsimAccessDomain);
+            rfmUsim.setRfmUsimAccessDomain(rfmUsimAccessDomain);
             defaultSettings.setRfmUsim(rfmUsim);
 
             MinimumSecurityLevel rfmGsmMsl = new MinimumSecurityLevel(true, "Cryptographic Checksum", "Counter must be higher");
@@ -166,7 +166,7 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             rfmIsim.setFullAccess(true);
             rfmIsim.setMinimumSecurityLevel(rfmIsimMsl);
 
-            rfmIsim.setAccessDomain(rfmIsimAccessDomain);
+            rfmIsim.setRfmIsimAccessDomain(rfmIsimAccessDomain);
             defaultSettings.setRfmIsim(rfmIsim);
 
             MinimumSecurityLevel ramMsl = new MinimumSecurityLevel(true, "Cryptographic Checksum", "Counter must be higher");

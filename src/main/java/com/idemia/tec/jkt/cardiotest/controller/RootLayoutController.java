@@ -29,7 +29,6 @@ import javax.smartcardio.CardException;
 import javax.smartcardio.CardTerminal;
 import javax.smartcardio.TerminalFactory;
 import java.io.*;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -137,10 +136,10 @@ public class RootLayoutController {
             List<CardTerminal> terminals = terminalFactory.terminals().list();
             if (terminals.isEmpty()) lblTerminalInfo.setText("(no terminal/reader detected)");
             else if (runSettings.getReaderNumber() != -1)
-//                if (runSettings.getReaderNumber() > terminals.size() - 1) {
-//                    runSettings.setReaderNumber(0); // set to first reader when terminals have changed
-//                    logger.info("Card terminals have changed; going default to first reader");
-//                }
+                if (runSettings.getReaderNumber() > terminals.size() - 1) {
+                    runSettings.setReaderNumber(0); // set to first reader when terminals have changed
+                    logger.info("Card terminals have changed; going default to first reader");
+                }
                 lblTerminalInfo.setText(terminals.get(runSettings.getReaderNumber()).getName());
         } catch (CardException e) {
             logger.error("Failed to list PCSC terminals");

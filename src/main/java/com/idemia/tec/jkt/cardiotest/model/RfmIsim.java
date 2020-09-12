@@ -277,11 +277,11 @@ public class RfmIsim {
         this.testRfmIsimExpandedModeMessage = testRfmIsimExpandedModeMessage;
     }
 
-    public AccessDomain getAccessDomain() {
+    public AccessDomain getRfmIsimAccessDomain() {
         return accessDomain;
     }
 
-    public void setAccessDomain(AccessDomain accessDomain) {
+    public void setRfmIsimAccessDomain(AccessDomain accessDomain) {
         this.accessDomain = accessDomain;
     }
 

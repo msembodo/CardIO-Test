@@ -19,8 +19,8 @@
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="630.0" prefWidth="1530.0">
           <children>
             <CheckBox fx:id="chkIncludeRfmIsim" layoutX="12.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleIncludeRfmIsimCheck" text="Include 'RFM ISIM'" AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="12.0" />
-            <CheckBox fx:id="chkIncludeRfmIsimUpdateRecord" layoutX="201.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleIncludeRfmIsimUpdateRecordCheck" text="Include 'RFM ISIM - update record'" AnchorPane.topAnchor="12.0" />
-            <CheckBox fx:id="chkIncludeRfmIsimExpandedMode" layoutX="495.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleIncludeRfmIsimExpandedModeCheck" text="Include 'RFM ISIM - expanded mode'" AnchorPane.topAnchor="12.0" />
+            <CheckBox fx:id="chkIncludeRfmIsimUpdateRecord" layoutX="201.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleIncludeRfmIsimUpdateRecordCheck" text="Include 'RFM ISIM - Update Record'" AnchorPane.topAnchor="12.0" />
+            <CheckBox fx:id="chkIncludeRfmIsimExpandedMode" layoutX="495.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleIncludeRfmIsimExpandedModeCheck" text="Include 'RFM ISIM - Expanded Mode'" AnchorPane.topAnchor="12.0" />
             <TitledPane animated="false" collapsible="false" focusTraversable="false" layoutX="530.0" layoutY="300.0" prefHeight="310.0" prefWidth="667.0" text="RFM Options &amp; Parameters" AnchorPane.bottomAnchor="180.0" AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="50.0">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">

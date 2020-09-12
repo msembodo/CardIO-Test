@@ -17,32 +17,57 @@ public class RfmIsimService {
     private String headerScriptRfmIsim(RfmIsim rfmIsim){
         StringBuilder headerScript = new StringBuilder();
         // call mappings and load DLLs
+
         headerScript.append(
-                ".CALL Mapping.txt /LIST_OFF\n"
-                        + ".CALL Options.txt /LIST_OFF\n\n"
-                        + ".POWER_ON\n"
-                        + ".LOAD dll\\Calcul.dll\n"
-                        + ".LOAD dll\\OTA2.dll\n"
-                        + ".LOAD dll\\Var_Reader.dll\n"
+            ";==================================================\n" +
+            ";================!!! CAUTION !!!===================\n" +
+            ";==================================================\n\n" +
+            "*Please check the last byte for the POR\n" +
+            "*'00' PoR OK.\n" +
+            "*'01' RC/CC/DS failed.\n" +
+            "*'02' CNTR low.\n" +
+            "*'03' CNTR high.\n" +
+            "*'04' CNTR Blocked\n" +
+            "*'05' Ciphering error.\n" +
+            "*'06' Unidentified security error. This code is for the case where the Receiving Entity cannot correctly\n" +
+            "*interpret the Command Header and the Response Packet is sent unciphered with no RC/CC/DS.\n" +
+            "*'07' Insufficient memory to process incoming message.\n" +
+            "*'08' This status code \"more time\" should be used if the Receiving Entity/Application needs more time\n" +
+            "*to process the Command Packet due to timing constraints. In this case a later Response Packet\n" +
+            "*should be returned to the Sending Entity once processing has been completed.\n" +
+            "*'09' TAR Unknown\n" +
+            "*'0A' Insufficient security level\n\n" +
+            ";=======================\n\n"
+        );
+
+        headerScript.append("; ---------------------------------------- RFM ISIM ------------------------------------------------------\n\n");
+
+        headerScript.append(
+            ".CALL Mapping.txt /LIST_OFF\n"
+            + ".CALL Options.txt /LIST_OFF\n\n"
+            + ".POWER_ON\n"
+            + ".LOAD dll\\Calcul.dll\n"
+            + ".LOAD dll\\OTA2.dll\n"
+            + ".LOAD dll\\Var_Reader.dll\n"
         );
         // create counter and initialize for first-time run
         File counterBin = new File(root.getRunSettings().getProjectPath() + "\\scripts\\COUNTER.bin");
         if (!counterBin.exists()) {
             headerScript.append(
-                    "\n; initialize counter\n"
-                            + ".SET_BUFFER L 00 00 00 00 00\n"
-                            + ".EXPORT_BUFFER L COUNTER.bin\n"
+                "\n; initialize counter\n"
+                + ".SET_BUFFER L 00 00 00 00 00\n"
+                + ".EXPORT_BUFFER L COUNTER.bin\n"
             );
         }
         // load anti-replay counter
         headerScript.append(
-                "\n; buffer L contains the anti-replay counter for OTA message\n"
-                        + ".SET_BUFFER L\n"
-                        + ".IMPORT_BUFFER L COUNTER.bin\n"
-                        + ".INCREASE_BUFFER L(04:05) 0001\n"
-                        + ".DISPLAY L\n"
-                        + "\n; setup TAR\n"
-                        + ".DEFINE %TAR " + rfmIsim.getTar() + "\n"
+            "\n; buffer L contains the anti-replay counter for OTA message\n"
+            + ".SET_BUFFER L\n"
+            + ".IMPORT_BUFFER L COUNTER.bin\n"
+            + ".INCREASE_BUFFER L(04:05) 0001\n"
+            + ".DISPLAY L\n"
+            + "\n; setup TAR\n"
+            + ".DEFINE %TAR " + rfmIsim.getTar() + "\n"
         );
         // enable pin if required
         if (root.getRunSettings().getSecretCodes().isPin1disabled())
@@ -88,11 +113,11 @@ public class RfmIsimService {
         // case 2
         rfmIsimBuffer.append("\n*********\n; CASE 2: (Bad Case) RFM with keyset which is not allowed in ISIM TAR\n*********\n");
             if (rfmIsim.isUseSpecificKeyset())
-                rfmIsimBuffer.append(rfmIsimCase2(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), rfmIsim.getMinimumSecurityLevel()));
+                rfmIsimBuffer.append(rfmIsimCase2(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), rfmIsim.getMinimumSecurityLevel(), false));
             else {
                 for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets()) {
                     rfmIsimBuffer.append("\n; using keyset: " + keyset.getKeysetName() + "\n");
-                    rfmIsimBuffer.append(rfmIsimCase2(keyset, keyset, rfmIsim.getMinimumSecurityLevel()));
+                    rfmIsimBuffer.append(rfmIsimCase2(keyset, keyset, rfmIsim.getMinimumSecurityLevel(), false));
                 }
             }
         //end of case 2
@@ -100,11 +125,11 @@ public class RfmIsimService {
         // case 3
         rfmIsimBuffer.append("\n*********\n; CASE 3: (Bad Case) send 2G command to ISIM TAR\n*********\n");
             if (rfmIsim.isUseSpecificKeyset())
-                rfmIsimBuffer.append(rfmIsimCase3(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), rfmIsim.getMinimumSecurityLevel()));
+                rfmIsimBuffer.append(rfmIsimCase3(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), rfmIsim.getMinimumSecurityLevel(), false));
             else {
                 for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets()) {
                     rfmIsimBuffer.append("\n; using keyset: " + keyset.getKeysetName() + "\n");
-                    rfmIsimBuffer.append(rfmIsimCase3(keyset, keyset, rfmIsim.getMinimumSecurityLevel()));
+                    rfmIsimBuffer.append(rfmIsimCase3(keyset, keyset, rfmIsim.getMinimumSecurityLevel(), false));
                 }
             }
         //end of case 3
@@ -112,11 +137,11 @@ public class RfmIsimService {
         // case 4
         rfmIsimBuffer.append("\n*********\n; CASE 4: (Bad Case) use unknown TAR\n*********\n");
             if (rfmIsim.isUseSpecificKeyset())
-                rfmIsimBuffer.append(rfmIsimCase4(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), rfmIsim.getMinimumSecurityLevel()));
+                rfmIsimBuffer.append(rfmIsimCase4(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), rfmIsim.getMinimumSecurityLevel(), false));
             else {
                 for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets()) {
                     rfmIsimBuffer.append("\n; using keyset: " + keyset.getKeysetName() + "\n");
-                    rfmIsimBuffer.append(rfmIsimCase4(keyset, keyset, rfmIsim.getMinimumSecurityLevel()));
+                    rfmIsimBuffer.append(rfmIsimCase4(keyset, keyset, rfmIsim.getMinimumSecurityLevel(), false));
                 }
             }
         //end of case 4
@@ -127,11 +152,11 @@ public class RfmIsimService {
                 rfmIsimBuffer.append("\n; MSL: " + rfmIsim.getMinimumSecurityLevel().getComputedMsl() + " -- no need to check counter\n");
             else {
                 if (rfmIsim.isUseSpecificKeyset())
-                    rfmIsimBuffer.append(rfmIsimCase5(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), rfmIsim.getMinimumSecurityLevel()));
+                    rfmIsimBuffer.append(rfmIsimCase5(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), rfmIsim.getMinimumSecurityLevel(), false));
                 else {
                     for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets()) {
                         rfmIsimBuffer.append("\n; using keyset: " + keyset.getKeysetName() + "\n");
-                        rfmIsimBuffer.append(rfmIsimCase5(keyset, keyset, rfmIsim.getMinimumSecurityLevel()));
+                        rfmIsimBuffer.append(rfmIsimCase5(keyset, keyset, rfmIsim.getMinimumSecurityLevel(), false));
                     }
                 }
             }
@@ -140,11 +165,11 @@ public class RfmIsimService {
         // case 6
         rfmIsimBuffer.append("\n*********\n; CASE 6: (Bad Case) use bad key for authentication\n*********\n");
             if (rfmIsim.isUseSpecificKeyset())
-                rfmIsimBuffer.append(rfmIsimCase6(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), rfmIsim.getMinimumSecurityLevel()));
+                rfmIsimBuffer.append(rfmIsimCase6(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), rfmIsim.getMinimumSecurityLevel(), false));
             else {
                 for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets()) {
                     rfmIsimBuffer.append("\n; using keyset: " + keyset.getKeysetName() + "\n");
-                    rfmIsimBuffer.append(rfmIsimCase6(keyset, keyset, rfmIsim.getMinimumSecurityLevel()));
+                    rfmIsimBuffer.append(rfmIsimCase6(keyset, keyset, rfmIsim.getMinimumSecurityLevel(), false));
                 }
             }
         //end of case 6
@@ -161,11 +186,11 @@ public class RfmIsimService {
                 lowMsl.setPorSecurity("response with no security");
                 lowMsl.setCipherPor(false);
                 if (rfmIsim.isUseSpecificKeyset())
-                    rfmIsimBuffer.append(rfmIsimCase7(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), lowMsl));
+                    rfmIsimBuffer.append(rfmIsimCase7(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), lowMsl, false));
                 else {
                     for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets()) {
                         rfmIsimBuffer.append("\n; using keyset: " + keyset.getKeysetName() + "\n");
-                        rfmIsimBuffer.append(rfmIsimCase7(keyset, keyset, lowMsl));
+                        rfmIsimBuffer.append(rfmIsimCase7(keyset, keyset, lowMsl, false));
                     }
                 }
             }
@@ -177,11 +202,11 @@ public class RfmIsimService {
                 rfmIsimBuffer.append("\n; profile does not have white list configuration -- case 8 is not executed\n");
             else {
                 if (rfmIsim.isUseSpecificKeyset())
-                    rfmIsimBuffer.append(rfmIsimCase8(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), rfmIsim.getMinimumSecurityLevel()));
+                    rfmIsimBuffer.append(rfmIsimCase8(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), rfmIsim.getMinimumSecurityLevel(), false));
                 else {
                     for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets()) {
                         rfmIsimBuffer.append("\n; using keyset: " + keyset.getKeysetName() + "\n");
-                        rfmIsimBuffer.append(rfmIsimCase8(keyset, keyset, rfmIsim.getMinimumSecurityLevel()));
+                        rfmIsimBuffer.append(rfmIsimCase8(keyset, keyset, rfmIsim.getMinimumSecurityLevel(), false));
                     }
                 }
             }
@@ -430,85 +455,6 @@ public class RfmIsimService {
         return routine.toString();
     }
 
-    private String rfmIsimUpdateRecordCase1(SCP80Keyset cipherKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel msl) {
-        StringBuilder routine = new StringBuilder();
-        routine.append(
-                "\n.POWER_ON\n"
-                + proactiveInitialization()
-                + "\n; SPI settings\n"
-                + ".SET_BUFFER O %" + cipherKeyset.getKicValuation() + "\n"
-                + ".SET_BUFFER Q %" + authKeyset.getKidValuation() + "\n"
-                + ".SET_BUFFER M " + cipherKeyset.getComputedKic() + "\n"
-                + ".SET_BUFFER N " + authKeyset.getComputedKid() + "\n"
-                + ".INIT_SMS_0348\n"
-                + ".CHANGE_FIRST_BYTE " + root.getRunSettings().getSmsUpdate().getUdhiFirstByte() + "\n"
-                + ".CHANGE_SC_ADDRESS " + root.getRunSettings().getSmsUpdate().getScAddress() + "\n"
-                + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
-                + ".CHANGE_POR_FORMAT " + this.porFormatRfmIsim(root.getRunSettings().getSmsUpdate().getPorFormat()) + "\n"
-        );
-        if (root.getRunSettings().getSmsUpdate().isUseWhiteList())
-            routine.append(".CHANGE_TP_OA " + root.getRunSettings().getSmsUpdate().getTpOa() + "\n");
-        routine.append(
-                ".CHANGE_TAR %TAR\n"
-                + ".CHANGE_COUNTER L\n"
-                + ".INCREASE_BUFFER L(04:05) 0001\n"
-                + "\n; MSL = " + msl.getComputedMsl() + "\n"
-                + ".SET_DLKEY_KIC O\n"
-                + ".SET_DLKEY_KID Q\n"
-                + ".CHANGE_KIC M\n"
-                + ".CHANGE_KID N\n"
-                + spiConfigurator(msl, cipherKeyset, authKeyset)
-        );
-        if (authKeyset.getKidMode().equals("AES - CMAC"))
-            routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
-        routine.append(
-                "\n; command(s) sent via OTA\n"
-                + ".SET_BUFFER J 00 A4 00 00 02 %EF_ID ; select EF\n"
-                + ".APPEND_SCRIPT J\n"
-                + ".SET_BUFFER J 00 D6 00 00 <?> AA ; update binary\n"
-                + ".APPEND_SCRIPT J\n"
-                + ".END_MESSAGE G J\n"
-                + "; show OTA message details\n"
-                + ".DISPLAY_MESSAGE J\n"
-                + updateSMSRecordRfmIsim("rfmIsimUpdateRecordCase1") // call updateSMSRecordRfmIsim per-cases
-                + "\n; check update has been done on EF\n"
-                + ".POWER_ON\n"
-                + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
-        );
-        if (root.getRunSettings().getSecretCodes().isUseIsc2())
-            routine.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
-        if (root.getRunSettings().getSecretCodes().isUseIsc3())
-            routine.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
-        if (root.getRunSettings().getSecretCodes().isUseIsc4())
-            routine.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
-        routine.append(
-                "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
-                + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
-                + "A0 A4 00 00 02 %DF_ID (9F22)\n"
-                + "A0 A4 00 00 02 %EF_ID (9F0F)\n"
-                + "A0 B0 00 00 01 [AA] (9000)\n"
-                + "\n; restore initial content of EF\n"
-                + ".POWER_ON\n"
-                + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
-        );
-        if (root.getRunSettings().getSecretCodes().isUseIsc2())
-            routine.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
-        if (root.getRunSettings().getSecretCodes().isUseIsc3())
-            routine.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
-        if (root.getRunSettings().getSecretCodes().isUseIsc4())
-            routine.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
-        routine.append(
-                "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
-                + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
-                + "A0 A4 00 00 02 %DF_ID (9F22)\n"
-                + "A0 A4 00 00 02 %EF_ID (9F0F)\n"
-                + "A0 D6 00 00 01 %EF_CONTENT (9000)\n"
-                + "\n; increment counter by one\n"
-                + ".INCREASE_BUFFER L(04:05) 0001\n"
-        );
-        return routine.toString();
-    }
-
     private String rfmIsimCase1NegativeTest(SCP80Keyset cipherKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel msl) {
         StringBuilder routine = new StringBuilder();
         routine.append(
@@ -573,7 +519,7 @@ public class RfmIsimService {
         return routine.toString();
     }
 
-    private String rfmIsimCase2(SCP80Keyset cipherKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel msl) {
+    private String rfmIsimCase2(SCP80Keyset cipherKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel msl, Boolean isUpdateRecord) {
         StringBuilder routine = new StringBuilder();
         routine.append(
             "\n.POWER_ON\n"
@@ -660,7 +606,7 @@ public class RfmIsimService {
         return routine.toString();
     }
 
-    private String rfmIsimCase3(SCP80Keyset cipherKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel msl) {
+    private String rfmIsimCase3(SCP80Keyset cipherKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel msl, Boolean isUpdateRecord) {
         StringBuilder routine = new StringBuilder();
         routine.append(
             "\n.POWER_ON\n"
@@ -747,7 +693,7 @@ public class RfmIsimService {
         return routine.toString();
     }
 
-    private String rfmIsimCase4(SCP80Keyset cipherKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel msl) {
+    private String rfmIsimCase4(SCP80Keyset cipherKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel msl, Boolean isUpdateRecord) {
         StringBuilder routine = new StringBuilder();
         routine.append(
             "\n.POWER_ON\n"
@@ -841,7 +787,7 @@ public class RfmIsimService {
         return routine.toString();
     }
 
-    private String rfmIsimCase5(SCP80Keyset cipherKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel msl) {
+    private String rfmIsimCase5(SCP80Keyset cipherKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel msl, Boolean isUpdateRecord) {
         StringBuilder routine = new StringBuilder();
         routine.append(
             "\n.POWER_ON\n"
@@ -928,7 +874,7 @@ public class RfmIsimService {
         return routine.toString();
     }
 
-    private String rfmIsimCase6(SCP80Keyset cipherKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel msl) {
+    private String rfmIsimCase6(SCP80Keyset cipherKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel msl, Boolean isUpdateRecord) {
         StringBuilder routine = new StringBuilder();
         routine.append(
             "\n.POWER_ON\n"
@@ -1015,7 +961,7 @@ public class RfmIsimService {
         return routine.toString();
     }
 
-    private String rfmIsimCase7(SCP80Keyset cipherKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel msl) {
+    private String rfmIsimCase7(SCP80Keyset cipherKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel msl, Boolean isUpdateRecord) {
         StringBuilder routine = new StringBuilder();
         routine.append(
             "\n.POWER_ON\n"
@@ -1102,7 +1048,7 @@ public class RfmIsimService {
         return routine.toString();
     }
 
-    private String rfmIsimCase8(SCP80Keyset cipherKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel msl) {
+    private String rfmIsimCase8(SCP80Keyset cipherKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel msl, Boolean isUpdateRecord) {
         StringBuilder routine = new StringBuilder();
         routine.append(
             "\n.POWER_ON\n"
@@ -1345,7 +1291,7 @@ public class RfmIsimService {
                 + "\n;Check SMS Content\n" // CHECK_SMS_CONTENT
                 + "A0 B2 01 04 B0\n" // READ_SMS
                 + "; check PoR\n"
-                + "A0 12 00 00 W(2;1) [" + this.otaPorSettingRfmIsim(rfmIsimCases) + " ] (9000)\n"
+                + "A0 12 00 00 W(2;1) [" + this.otaPorSettingRfmIsimUpdateRecord(rfmIsimCases) + " ] (9000)\n"
                 + "A0 14 00 00 0C 8103011300 82028183 830100 (9000)\n"
         );
 
@@ -1353,6 +1299,53 @@ public class RfmIsimService {
     }
 
     private String otaPorSettingRfmIsim(String rfmIsimCases){
+        String  POR_OK, POR_NOT_OK, BAD_CASE_WRONG_KEYSET,
+                BAD_CASE_WRONG_CLASS_3G, BAD_CASE_WRONG_CLASS_2G,
+                 BAD_CASE_COUNTER_LOW,
+                BAD_CASE_WRONG_KEY_VALUE, BAD_CASE_INSUFFICIENT_MSL; //BAD_CASE_WRONG_TAR;
+
+        String result_set = "";
+
+        String scAddress            = root.getRunSettings().getSmsUpdate().getScAddress();
+        String tag33UpdateRecord    = "D0 33 81 XX XX 13 XX 82 02 81 83 85 XX 86 " + scAddress + " 8B XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX %TAR XX XX XX XX XX XX";
+        String tag30UpdateRecord    = "D0 30 81 XX XX 13 XX 82 02 81 83 85 XX 86 " + scAddress + " 8B XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX %TAR XX XX XX XX XX XX";
+
+        POR_OK                      = tag33UpdateRecord+" XX XX 90 00";
+        POR_NOT_OK                  = tag33UpdateRecord+" XX XX 98 04";
+        BAD_CASE_WRONG_KEYSET       = tag30UpdateRecord+" 06";
+        BAD_CASE_WRONG_CLASS_3G     = tag33UpdateRecord+" XX XX 6E 00";
+        BAD_CASE_WRONG_CLASS_2G     = tag33UpdateRecord+" XX XX 6D 00";
+        BAD_CASE_COUNTER_LOW        = tag30UpdateRecord+" 02";
+        BAD_CASE_WRONG_KEY_VALUE    = tag30UpdateRecord+" 01";
+        BAD_CASE_INSUFFICIENT_MSL   = tag30UpdateRecord+" 0A";
+        //BAD_CASE_WRONG_TAR          = "D0 30 81 XX XX 13 XX 82 02 81 83 85 XX 86 "+scAddress+" 8B XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX B0 FF FF XX XX XX XX XX XX 09";
+
+        switch (rfmIsimCases){
+            case "rfmIsimCase1" :
+                result_set = POR_OK;
+                break;
+            case "rfmIsimCase2" :
+                result_set = BAD_CASE_WRONG_KEYSET;
+                break;
+            case "rfmIsimCase3" :
+                result_set =  BAD_CASE_WRONG_CLASS_3G;
+                break;
+            case "rfmIsimCase5" :
+                result_set = BAD_CASE_COUNTER_LOW;
+                break;
+            case "rfmIsimCase6" :
+                result_set = BAD_CASE_WRONG_KEY_VALUE;
+                break;
+            case "rfmIsimCase7" :
+                result_set = BAD_CASE_INSUFFICIENT_MSL;
+                break;
+        }
+
+        return result_set;
+
+    }
+
+    private String otaPorSettingRfmIsimUpdateRecord(String rfmIsimCases){
         String  POR_OK, POR_NOT_OK, BAD_CASE_WRONG_KEYSET,
                 BAD_CASE_WRONG_CLASS_3G, BAD_CASE_WRONG_CLASS_2G,
                  BAD_CASE_COUNTER_LOW,
@@ -1420,22 +1413,22 @@ public class RfmIsimService {
 
         StringBuilder accessDomain = new StringBuilder();
 
-        if (rfmIsim.getAccessDomain().isUseIsc1()){
+        if (rfmIsim.getRfmIsimAccessDomain().isUseIsc1()){
             accessDomain.append(".DEFINE %EF_ID_ISIM_ADM1 " + rfmIsim.getCustomTargetEfIsc1() + "; EF protected by ADM1\n");
         }
-        if (rfmIsim.getAccessDomain().isUseIsc2()){
+        if (rfmIsim.getRfmIsimAccessDomain().isUseIsc2()){
             accessDomain.append(".DEFINE %EF_ID_ISIM_ADM2 " + rfmIsim.getCustomTargetEfIsc2() + "; EF protected by ADM2\n");
         }
-        if (rfmIsim.getAccessDomain().isUseIsc3()){
+        if (rfmIsim.getRfmIsimAccessDomain().isUseIsc3()){
             accessDomain.append(".DEFINE %EF_ID_ISIM_ADM3 " + rfmIsim.getCustomTargetEfIsc3() + "; EF protected by ADM3\n");
         }
-        if (rfmIsim.getAccessDomain().isUseIsc4()){
+        if (rfmIsim.getRfmIsimAccessDomain().isUseIsc4()){
             accessDomain.append(".DEFINE %EF_ID_ISIM_ADM4 " + rfmIsim.getCustomTargetEfIsc4() + "; EF protected by ADM4\n");
         }
-        if (rfmIsim.getAccessDomain().isUseGPin1()){
+        if (rfmIsim.getRfmIsimAccessDomain().isUseGPin1()){
             accessDomain.append(".DEFINE %EF_ID_ISIM_PIN1 " + rfmIsim.getCustomTargetEfGPin1() + "; EF protected by PIN1\n");
         }
-        if (rfmIsim.getAccessDomain().isUseLPin1()){
+        if (rfmIsim.getRfmIsimAccessDomain().isUseLPin1()){
             accessDomain.append(".DEFINE %EF_ID_ISIM_PIN2 " + rfmIsim.getCustomTargetEfLPin1() + "; EF protected by PIN2\n");
         }
 
@@ -1521,7 +1514,7 @@ public class RfmIsimService {
             + "A0 A4 00 00 02 %DF_ID (9F22)\n"
         );
 
-        if (rfmIsim.getAccessDomain().isUseIsc1()){
+        if (rfmIsim.getRfmIsimAccessDomain().isUseIsc1()){
             checkInitialContent.append(
                 "; check content EF-" + rfmIsim.getCustomTargetEfIsc1() +  "\n"
                 +"A0 A4 00 00 02 %EF_ID_ISIM_ADM1 (9F0F)\n"
@@ -1529,7 +1522,7 @@ public class RfmIsimService {
                 + ".DEFINE %EF_CONTENT_ADM1 R\n"
             );
         }
-        if (rfmIsim.getAccessDomain().isUseIsc2()){
+        if (rfmIsim.getRfmIsimAccessDomain().isUseIsc2()){
             checkInitialContent.append(
                 "; check content EF-" + rfmIsim.getCustomTargetEfIsc2() +  "\n"
                 +"A0 A4 00 00 02 %EF_ID_ISIM_ADM2 (9F0F)\n"
@@ -1538,7 +1531,7 @@ public class RfmIsimService {
 
             );
         }
-        if (rfmIsim.getAccessDomain().isUseIsc3()){
+        if (rfmIsim.getRfmIsimAccessDomain().isUseIsc3()){
             checkInitialContent.append(
                 "; check content EF-" + rfmIsim.getCustomTargetEfIsc3() +  "\n"
                 +"A0 A4 00 00 02 %EF_ID_ISIM_ADM3 (9F0F)\n"
@@ -1546,7 +1539,7 @@ public class RfmIsimService {
                 +".DEFINE %EF_CONTENT_ADM3 R\n"
             );
         }
-        if (rfmIsim.getAccessDomain().isUseIsc4()){
+        if (rfmIsim.getRfmIsimAccessDomain().isUseIsc4()){
             checkInitialContent.append(
                 "; check content EF-" + rfmIsim.getCustomTargetEfIsc4() +  "\n"
                 +"A0 A4 00 00 02 %EF_ID_ISIM_ADM4 (9F0F)\n"
@@ -1554,7 +1547,7 @@ public class RfmIsimService {
                 +".DEFINE %EF_CONTENT_ADM4 R\n"
             );
         }
-        if (rfmIsim.getAccessDomain().isUseGPin1()){
+        if (rfmIsim.getRfmIsimAccessDomain().isUseGPin1()){
             checkInitialContent.append(
                 "; check content EF-" + rfmIsim.getCustomTargetEfGPin1() +  "\n"
                 +"A0 A4 00 00 02 %EF_ID_ISIM_PIN1 (9F0F)\n"
@@ -1562,7 +1555,7 @@ public class RfmIsimService {
                 +".DEFINE %EF_CONTENT_PIN1 R\n"
             );
         }
-        if (rfmIsim.getAccessDomain().isUseLPin1()){
+        if (rfmIsim.getRfmIsimAccessDomain().isUseLPin1()){
             checkInitialContent.append(
                 "; check content EF-" + rfmIsim.getCustomTargetEfLPin1() +  "\n"
                 +"A0 A4 00 00 02 %EF_ID_ISIM_PIN2 (9F0F)\n"
@@ -1597,7 +1590,7 @@ public class RfmIsimService {
 
         commandOta.append("\n; command(s) sent via OTA\n");
 
-        if (rfmIsim.getAccessDomain().isUseIsc1()){
+        if (rfmIsim.getRfmIsimAccessDomain().isUseIsc1()){
             commandOta.append(
                 ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_ISIM_ADM1 ; select EF on ADM1\n"
                 + ".APPEND_SCRIPT J\n"
@@ -1605,7 +1598,7 @@ public class RfmIsimService {
                 + ".APPEND_SCRIPT J\n"
             );
         }
-        if (rfmIsim.getAccessDomain().isUseIsc2()){
+        if (rfmIsim.getRfmIsimAccessDomain().isUseIsc2()){
             commandOta.append(
                 ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_ISIM_ADM2 ; select EF on ADM2\n"
                 + ".APPEND_SCRIPT J\n"
@@ -1613,7 +1606,7 @@ public class RfmIsimService {
                 + ".APPEND_SCRIPT J\n"
             );
         }
-        if (rfmIsim.getAccessDomain().isUseIsc3()){
+        if (rfmIsim.getRfmIsimAccessDomain().isUseIsc3()){
             commandOta.append(
                 ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_ISIM_ADM3 ; select EF on ADM3\n"
                 + ".APPEND_SCRIPT J\n"
@@ -1621,7 +1614,7 @@ public class RfmIsimService {
                 + ".APPEND_SCRIPT J\n"
             );
         }
-        if (rfmIsim.getAccessDomain().isUseIsc4()){
+        if (rfmIsim.getRfmIsimAccessDomain().isUseIsc4()){
             commandOta.append(
                 ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_ISIM_ADM4 ; select EF on ADM4\n"
                 + ".APPEND_SCRIPT J\n"
@@ -1629,7 +1622,7 @@ public class RfmIsimService {
                 + ".APPEND_SCRIPT J\n"
             );
         }
-        if (rfmIsim.getAccessDomain().isUseGPin1()){
+        if (rfmIsim.getRfmIsimAccessDomain().isUseGPin1()){
             commandOta.append(
                 ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_ISIM_PIN1 ; select EF on PIN1\n"
                 + ".APPEND_SCRIPT J\n"
@@ -1637,7 +1630,7 @@ public class RfmIsimService {
                 + ".APPEND_SCRIPT J\n"
             );
         }
-        if (rfmIsim.getAccessDomain().isUseLPin1()){
+        if (rfmIsim.getRfmIsimAccessDomain().isUseLPin1()){
             commandOta.append(
                 ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_ISIM_PIN2 ; select EF on PIN2\n"
                 + ".APPEND_SCRIPT J\n"
@@ -1700,42 +1693,42 @@ public class RfmIsimService {
         );
 
 
-        if(rfmIsim.getAccessDomain().isUseIsc1()){
+        if(rfmIsim.getRfmIsimAccessDomain().isUseIsc1()){
             checkUpdateHasBeenDone.append(
                 "; check update on EF-" + rfmIsim.getCustomTargetEfIsc1() +  "\n"
                 +"A0 A4 00 00 02 %EF_ID_ISIM_ADM1 (9F0F)\n"
                 + "A0 B0 00 00 01 [A1] (9000)\n"
             );
         }
-        if(rfmIsim.getAccessDomain().isUseIsc2()){
+        if(rfmIsim.getRfmIsimAccessDomain().isUseIsc2()){
             checkUpdateHasBeenDone.append(
                 "; check update on EF-" + rfmIsim.getCustomTargetEfIsc2() +  "\n"
                 +"A0 A4 00 00 02 %EF_ID_ISIM_ADM2 (9F0F)\n"
                 + "A0 B0 00 00 01 [A2] (9000)\n"
             );
         }
-        if(rfmIsim.getAccessDomain().isUseIsc3()){
+        if(rfmIsim.getRfmIsimAccessDomain().isUseIsc3()){
             checkUpdateHasBeenDone.append(
                 "; check update on EF-" + rfmIsim.getCustomTargetEfIsc3() +  "\n"
                 +"A0 A4 00 00 02 %EF_ID_ISIM_ADM3 (9F0F)\n"
                 + "A0 B0 00 00 01 [A3] (9000)\n"
             );
         }
-        if(rfmIsim.getAccessDomain().isUseIsc4()){
+        if(rfmIsim.getRfmIsimAccessDomain().isUseIsc4()){
             checkUpdateHasBeenDone.append(
                 "; check update on EF-" + rfmIsim.getCustomTargetEfIsc4() +  "\n"
                 +"A0 A4 00 00 02 %EF_ID_ISIM_ADM4 (9F0F)\n"
                 + "A0 B0 00 00 01 [A4] (9000)\n"
             );
         }
-        if(rfmIsim.getAccessDomain().isUseGPin1()){
+        if(rfmIsim.getRfmIsimAccessDomain().isUseGPin1()){
             checkUpdateHasBeenDone.append(
                 "; check update on EF-" + rfmIsim.getCustomTargetEfGPin1() +  "\n"
                 +"A0 A4 00 00 02 %EF_ID_ISIM_PIN1 (9F0F)\n"
                 + "A0 B0 00 00 01 [A5] (9000)\n"
             );
         }
-        if(rfmIsim.getAccessDomain().isUseLPin1()){
+        if(rfmIsim.getRfmIsimAccessDomain().isUseLPin1()){
             checkUpdateHasBeenDone.append(
                 "; check update on EF-" + rfmIsim.getCustomTargetEfLPin1() +  "\n"
                 +"A0 A4 00 00 02 %EF_ID_ISIM_PIN2 (9F0F)\n"
@@ -1797,42 +1790,42 @@ public class RfmIsimService {
         );
 
 
-        if (rfmIsim.getAccessDomain().isUseIsc1()){
+        if (rfmIsim.getRfmIsimAccessDomain().isUseIsc1()){
             restoreInitialContent.append(
                 "; restore content EF-" + rfmIsim.getCustomTargetEfIsc1() +  "\n"
                 +"A0 A4 00 00 02 %EF_ID_ISIM_ADM1 (9F0F)\n"
                 + "A0 D6 00 00 01 %EF_CONTENT_ADM1 (9000)\n"
             );
         }
-        if (rfmIsim.getAccessDomain().isUseIsc2()){
+        if (rfmIsim.getRfmIsimAccessDomain().isUseIsc2()){
             restoreInitialContent.append(
                 "; restore content EF-" + rfmIsim.getCustomTargetEfIsc2() +  "\n"
                 +"A0 A4 00 00 02 %EF_ID_ISIM_ADM2 (9F0F)\n"
                 + "A0 D6 00 00 01 %EF_CONTENT_ADM2 (9000)\n"
             );
         }
-        if (rfmIsim.getAccessDomain().isUseIsc3()){
+        if (rfmIsim.getRfmIsimAccessDomain().isUseIsc3()){
             restoreInitialContent.append(
                 "; restore content EF-" + rfmIsim.getCustomTargetEfIsc3() +  "\n"
                 +"A0 A4 00 00 02 %EF_ID_ISIM_ADM3 (9F0F)\n"
                 + "A0 D6 00 00 01 %EF_CONTENT_ADM3 (9000)\n"
             );
         }
-        if (rfmIsim.getAccessDomain().isUseIsc4()){
+        if (rfmIsim.getRfmIsimAccessDomain().isUseIsc4()){
             restoreInitialContent.append(
                 "; restore content EF-" + rfmIsim.getCustomTargetEfIsc4() +  "\n"
                 +"A0 A4 00 00 02 %EF_ID_ISIM_ADM4 (9F0F)\n"
                 + "A0 D6 00 00 01 %EF_CONTENT_ADM4 (9000)\n"
             );
         }
-        if (rfmIsim.getAccessDomain().isUseGPin1()){
+        if (rfmIsim.getRfmIsimAccessDomain().isUseGPin1()){
             restoreInitialContent.append(
                 "; restore content EF-" + rfmIsim.getCustomTargetEfGPin1() +  "\n"
                 +"A0 A4 00 00 02 %EF_ID_ISIM_PIN1 (9F0F)\n"
                 + "A0 D6 00 00 01 %EF_CONTENT_PIN1 (9000)\n"
             );
         }
-        if (rfmIsim.getAccessDomain().isUseLPin1()){
+        if (rfmIsim.getRfmIsimAccessDomain().isUseLPin1()){
             restoreInitialContent.append(
                 "; restore content EF-" + rfmIsim.getCustomTargetEfLPin1() +  "\n"
                 +"A0 A4 00 00 02 %EF_ID_ISIM_PIN2 (9F0F)\n"
@@ -1912,6 +1905,24 @@ public class RfmIsimService {
 
         return routine.toString();
     }
+
+//    ;=======================
+//*Please check the last byte for the POR
+//*'00' PoR OK.
+//*'01' RC/CC/DS failed.
+//*'02' CNTR low.
+//*'03' CNTR high.
+//*'04' CNTR Blocked
+//*'05' Ciphering error.
+//*'06' Unidentified security error. This code is for the case where the Receiving Entity cannot correctly
+//*interpret the Command Header and the Response Packet is sent unciphered with no RC/CC/DS.
+//*'07' Insufficient memory to process incoming message.
+//*'08' This status code "more time" should be used if the Receiving Entity/Application needs more time
+//*to process the Command Packet due to timing constraints. In this case a later Response Packet
+//*should be returned to the Sending Entity once processing has been completed.
+//*'09' TAR Unknown
+//*'0A' Insufficient security level
+//;=======================
 
 //end of script
 }

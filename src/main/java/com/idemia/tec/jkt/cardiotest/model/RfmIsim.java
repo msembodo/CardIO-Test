@@ -101,6 +101,46 @@ public class RfmIsim {
         this.targetEf = targetEf;
     }
 
+    public String getTargetEfBadCase() {
+        return targetEfBadCase;
+    }
+
+    public void setTargetEfBadCase(String targetEfBadCase) {
+        this.targetEfBadCase = targetEfBadCase;
+    }
+
+    public boolean isFullAccess() {
+        return fullAccess;
+    }
+
+    public void setFullAccess(boolean fullAccess) {
+        this.fullAccess = fullAccess;
+    }
+
+    public String getCustomTargetAcc() {
+        return customTargetAcc;
+    }
+
+    public void setCustomTargetAcc(String customTargetAcc) {
+        this.customTargetAcc = customTargetAcc;
+    }
+
+    public String getCustomTargetEf() {
+        return customTargetEf;
+    }
+
+    public void setCustomTargetEf(String customTargetEf) {
+        this.customTargetEf = customTargetEf;
+    }
+
+    public String getCustomTargetAccBadCase() {
+        return customTargetAccBadCase;
+    }
+
+    public void setCustomTargetAccBadCase(String customTargetAccBadCase) {
+        this.customTargetAccBadCase = customTargetAccBadCase;
+    }
+
     public String getCustomTargetEfIsc1() {
         return customTargetEfIsc1;
     }
@@ -147,46 +187,6 @@ public class RfmIsim {
 
     public void setCustomTargetEfLPin1(String customTargetEfLPin1) {
         this.customTargetEfLPin1 = customTargetEfLPin1;
-    }
-
-    public String getTargetEfBadCase() {
-        return targetEfBadCase;
-    }
-
-    public void setTargetEfBadCase(String targetEfBadCase) {
-        this.targetEfBadCase = targetEfBadCase;
-    }
-
-    public boolean isFullAccess() {
-        return fullAccess;
-    }
-
-    public void setFullAccess(boolean fullAccess) {
-        this.fullAccess = fullAccess;
-    }
-
-    public String getCustomTargetAcc() {
-        return customTargetAcc;
-    }
-
-    public void setCustomTargetAcc(String customTargetAcc) {
-        this.customTargetAcc = customTargetAcc;
-    }
-
-    public String getCustomTargetEf() {
-        return customTargetEf;
-    }
-
-    public void setCustomTargetEf(String customTargetEf) {
-        this.customTargetEf = customTargetEf;
-    }
-
-    public String getCustomTargetAccBadCase() {
-        return customTargetAccBadCase;
-    }
-
-    public void setCustomTargetAccBadCase(String customTargetAccBadCase) {
-        this.customTargetAccBadCase = customTargetAccBadCase;
     }
 
     public String getCustomTargetEfBadCase() {

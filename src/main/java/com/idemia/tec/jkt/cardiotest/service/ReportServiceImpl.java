@@ -412,6 +412,7 @@ public class ReportServiceImpl implements ReportService {
                     + "<td>" + runSettings.getRfmUsim().getCustomTargetEf() + "&nbsp;(" + runSettings.getRfmUsim().getCustomTargetAcc() + ")</td></tr>"
                     + "\n<tr><td class=\"item\">Target EF (negative case)</td>"
                     + "<td>" + runSettings.getRfmUsim().getCustomTargetEfBadCase() + "&nbsp;(" + runSettings.getRfmUsim().getCustomTargetAccBadCase() + ")</td></tr>"
+                    // TODO RFM USIM Generate Report for not Full Access use Access Domain
                 );
             }
             if (runSettings.getRfmUsim().isUseSpecificKeyset()) {
@@ -515,6 +516,7 @@ public class ReportServiceImpl implements ReportService {
                     + "<td>" + runSettings.getRfmGsm().getCustomTargetEf() + "&nbsp;(" + runSettings.getRfmGsm().getCustomTargetAcc() + ")</td></tr>"
                     + "\n<tr><td class=\"item\">Target EF (negative case)</td>"
                     + "<td>" + runSettings.getRfmGsm().getCustomTargetEfBadCase() + "&nbsp;(" + runSettings.getRfmGsm().getCustomTargetAccBadCase() + ")</td></tr>"
+                    // TODO RFM GSM Generate Report for not Full Access use Access Domain
                 );
             }
             if (runSettings.getRfmGsm().isUseSpecificKeyset()) {
@@ -618,6 +620,7 @@ public class ReportServiceImpl implements ReportService {
                     + "<td>" + runSettings.getRfmIsim().getCustomTargetEf() + "&nbsp;(" + runSettings.getRfmIsim().getCustomTargetAcc() + ")</td></tr>"
                     + "\n<tr><td class=\"item\">Target EF (negative case)</td>"
                     + "<td>" + runSettings.getRfmIsim().getCustomTargetEfBadCase() + "&nbsp;(" + runSettings.getRfmIsim().getCustomTargetAccBadCase() + ")</td></tr>"
+                    // TODO RFM ISIM Generate Report for not Full Access use Access Domain
                 );
             }
             if (runSettings.getRfmIsim().isUseSpecificKeyset()) {
@@ -669,6 +672,9 @@ public class ReportServiceImpl implements ReportService {
             html.append(createTableFooter());
         }
 
+        // TODO RFM CUSTOM Generate Report
+
+        // RAM
         if (runSettings.getRam().isIncludeRam() || runSettings.getRam().isIncludeRamUpdateRecord() || runSettings.getRam().isIncludeRamExpandedMode()) {
             html.append("\n<div><h2>RAM</h2></div>");
             html.append("\n<div><h3>Test modules</h3></div>");

@@ -202,11 +202,11 @@ public class RfmIsimService {
                 rfmIsimBuffer.append("\n; profile does not have white list configuration -- case 8 is not executed\n");
             else {
                 if (rfmIsim.isUseSpecificKeyset())
-                    rfmIsimBuffer.append(rfmIsimCase8(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), rfmIsim.getMinimumSecurityLevel(), false));
+                    rfmIsimBuffer.append(rfmIsimCase8(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), rfmIsim.getMinimumSecurityLevel()));
                 else {
                     for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets()) {
                         rfmIsimBuffer.append("\n; using keyset: " + keyset.getKeysetName() + "\n");
-                        rfmIsimBuffer.append(rfmIsimCase8(keyset, keyset, rfmIsim.getMinimumSecurityLevel(), false));
+                        rfmIsimBuffer.append(rfmIsimCase8(keyset, keyset, rfmIsim.getMinimumSecurityLevel()));
                     }
                 }
             }
@@ -267,11 +267,11 @@ public class RfmIsimService {
         // case 2
         rfmIsimUpdateRecordBuffer.append("\n*********\n; CASE 2: (Bad Case) RFM with keyset which is not allowed in ISIM TAR\n*********\n");
             if (rfmIsim.isUseSpecificKeyset())
-                rfmIsimUpdateRecordBuffer.append(rfmIsimUpdateRecordCase2(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), rfmIsim.getMinimumSecurityLevel()));
+                rfmIsimUpdateRecordBuffer.append(rfmIsimCase2(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), rfmIsim.getMinimumSecurityLevel(), true));
             else {
                 for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets()) {
                     rfmIsimUpdateRecordBuffer.append("\n; using keyset: " + keyset.getKeysetName() + "\n");
-                    rfmIsimUpdateRecordBuffer.append(rfmIsimUpdateRecordCase2(keyset, keyset, rfmIsim.getMinimumSecurityLevel()));
+                    rfmIsimUpdateRecordBuffer.append(rfmIsimCase2(keyset, keyset, rfmIsim.getMinimumSecurityLevel(), true));
                 }
             }
         //end of case 2
@@ -279,11 +279,11 @@ public class RfmIsimService {
         // case 3
         rfmIsimUpdateRecordBuffer.append("\n*********\n; CASE 3: (Bad Case) send 2G command to ISIM TAR\n*********\n");
             if (rfmIsim.isUseSpecificKeyset())
-                rfmIsimUpdateRecordBuffer.append(rfmIsimUpdateRecordCase3(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), rfmIsim.getMinimumSecurityLevel()));
+                rfmIsimUpdateRecordBuffer.append(rfmIsimCase3(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), rfmIsim.getMinimumSecurityLevel(), true));
             else {
                 for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets()) {
                     rfmIsimUpdateRecordBuffer.append("\n; using keyset: " + keyset.getKeysetName() + "\n");
-                    rfmIsimUpdateRecordBuffer.append(rfmIsimUpdateRecordCase3(keyset, keyset, rfmIsim.getMinimumSecurityLevel()));
+                    rfmIsimUpdateRecordBuffer.append(rfmIsimCase3(keyset, keyset, rfmIsim.getMinimumSecurityLevel(), true));
                 }
             }
         //end of case 3
@@ -291,11 +291,11 @@ public class RfmIsimService {
         // case 4
         rfmIsimUpdateRecordBuffer.append("\n*********\n; CASE 4: (Bad Case) use unknown TAR\n*********\n");
             if (rfmIsim.isUseSpecificKeyset())
-                rfmIsimUpdateRecordBuffer.append(rfmIsimUpdateRecordCase4(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), rfmIsim.getMinimumSecurityLevel()));
+                rfmIsimUpdateRecordBuffer.append(rfmIsimCase4(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), rfmIsim.getMinimumSecurityLevel(), true));
             else {
                 for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets()) {
                     rfmIsimUpdateRecordBuffer.append("\n; using keyset: " + keyset.getKeysetName() + "\n");
-                    rfmIsimUpdateRecordBuffer.append(rfmIsimUpdateRecordCase4(keyset, keyset, rfmIsim.getMinimumSecurityLevel()));
+                    rfmIsimUpdateRecordBuffer.append(rfmIsimCase4(keyset, keyset, rfmIsim.getMinimumSecurityLevel(), true));
                 }
             }
         //end of case 4
@@ -306,11 +306,11 @@ public class RfmIsimService {
                 rfmIsimUpdateRecordBuffer.append("\n; MSL: " + rfmIsim.getMinimumSecurityLevel().getComputedMsl() + " -- no need to check counter\n");
             else {
                 if (rfmIsim.isUseSpecificKeyset())
-                    rfmIsimUpdateRecordBuffer.append(rfmIsimUpdateRecordCase5(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), rfmIsim.getMinimumSecurityLevel()));
+                    rfmIsimUpdateRecordBuffer.append(rfmIsimCase5(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), rfmIsim.getMinimumSecurityLevel(), true));
                 else {
                     for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets()) {
                         rfmIsimUpdateRecordBuffer.append("\n; using keyset: " + keyset.getKeysetName() + "\n");
-                        rfmIsimUpdateRecordBuffer.append(rfmIsimUpdateRecordCase5(keyset, keyset, rfmIsim.getMinimumSecurityLevel()));
+                        rfmIsimUpdateRecordBuffer.append(rfmIsimCase5(keyset, keyset, rfmIsim.getMinimumSecurityLevel(), true));
                     }
                 }
             }
@@ -319,11 +319,11 @@ public class RfmIsimService {
         // case 6
         rfmIsimUpdateRecordBuffer.append("\n*********\n; CASE 6: (Bad Case) use bad key for authentication\n*********\n");
             if (rfmIsim.isUseSpecificKeyset())
-                rfmIsimUpdateRecordBuffer.append(rfmIsimUpdateRecordCase6(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), rfmIsim.getMinimumSecurityLevel()));
+                rfmIsimUpdateRecordBuffer.append(rfmIsimCase6(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), rfmIsim.getMinimumSecurityLevel(), true));
             else {
                 for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets()) {
                     rfmIsimUpdateRecordBuffer.append("\n; using keyset: " + keyset.getKeysetName() + "\n");
-                    rfmIsimUpdateRecordBuffer.append(rfmIsimUpdateRecordCase6(keyset, keyset, rfmIsim.getMinimumSecurityLevel()));
+                    rfmIsimUpdateRecordBuffer.append(rfmIsimCase6(keyset, keyset, rfmIsim.getMinimumSecurityLevel(), true));
                 }
             }
         //end of case 6
@@ -340,11 +340,11 @@ public class RfmIsimService {
                 lowMsl.setPorSecurity("response with no security");
                 lowMsl.setCipherPor(false);
                 if (rfmIsim.isUseSpecificKeyset())
-                    rfmIsimUpdateRecordBuffer.append(rfmIsimUpdateRecordCase7(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), lowMsl));
+                    rfmIsimUpdateRecordBuffer.append(rfmIsimCase7(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), lowMsl, true));
                 else {
                     for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets()) {
                         rfmIsimUpdateRecordBuffer.append("\n; using keyset: " + keyset.getKeysetName() + "\n");
-                        rfmIsimUpdateRecordBuffer.append(rfmIsimUpdateRecordCase7(keyset, keyset, lowMsl));
+                        rfmIsimUpdateRecordBuffer.append(rfmIsimCase7(keyset, keyset, lowMsl, true));
                     }
                 }
             }
@@ -389,7 +389,7 @@ public class RfmIsimService {
             + ".SET_BUFFER N " + authKeyset.getComputedKid() + "\n"
         );
 
-        // check isUpdateRecord
+        // check 0348 isUpdateRecord
         if(!isUpdateRecord){
             routine.append(this.init_ENV_0348RfmIsim());
         }
@@ -431,7 +431,7 @@ public class RfmIsimService {
 
             // check isUpdateRecord
             if(!isUpdateRecord){
-                routine.append(this.sendEnvelopeRfmIsim());
+                routine.append(this.sendEnvelopeRfmIsim("rfmIsimCase1"));
             }
             else {
                 routine.append(this.updateSMSRecordRfmIsim("rfmIsimUpdateRecordCase1"));
@@ -529,9 +529,16 @@ public class RfmIsimService {
             + ".SET_BUFFER Q " + createFakeAuthKey(authKeyset) + " ; bad key\n"
             + ".SET_BUFFER M 99 ; bad keyset\n"
             + ".SET_BUFFER N 99 ; bad keyset\n"
-            + ".INIT_ENV_0348\n"
-            + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
         );
+
+        // check 0348 isUpdateRecord
+        if(!isUpdateRecord){
+            routine.append(this.init_ENV_0348RfmIsim());
+        }
+        else {
+            routine.append(this.init_SMS_0348RfmIsim());
+        }
+
         if (root.getRunSettings().getSmsUpdate().isUseWhiteList())
             routine.append(".CHANGE_TP_OA " + root.getRunSettings().getSmsUpdate().getTpOa() + "\n");
         routine.append(
@@ -552,57 +559,21 @@ public class RfmIsimService {
             + ".SET_BUFFER J 00 A4 00 00 02 3F00\n"
             + ".APPEND_SCRIPT J\n"
             + ".END_MESSAGE G J\n"
-            + "; send envelope\n"
-            + "A0 C2 00 00 G J (9XXX)\n"
-            + ".CLEAR_SCRIPT\n"
-            + "; check PoR\n"
-            + "A0 C0 00 00 W(2;1) [XX XX XX XX XX XX %TAR XX XX XX XX XX XX 06] (9000) ; unidentified security error\n"
-            + "\n; increment counter by one\n"
+        );
+
+        // check isUpdateRecord
+        if(!isUpdateRecord){
+            routine.append(this.sendEnvelopeRfmIsim("rfmIsimCase2"));
+        }
+        else {
+            routine.append(this.updateSMSRecordRfmIsim("rfmIsimUpdateRecordCase2"));
+        }
+
+        routine.append(
+             "\n; increment counter by one\n"
             + ".INCREASE_BUFFER L(04:05) 0001\n"
         );
-        return routine.toString();
-    }
 
-    private String rfmIsimUpdateRecordCase2(SCP80Keyset cipherKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel msl) {
-        StringBuilder routine = new StringBuilder();
-        routine.append(
-                "\n.POWER_ON\n"
-                + proactiveInitialization()
-                + "\n; SPI settings\n"
-                + ".SET_BUFFER O " + createFakeCipherKey(cipherKeyset) + " ; bad key\n"
-                + ".SET_BUFFER Q " + createFakeAuthKey(authKeyset) + " ; bad key\n"
-                + ".SET_BUFFER M 99 ; bad keyset\n"
-                + ".SET_BUFFER N 99 ; bad keyset\n"
-                + ".INIT_SMS_0348\n"
-                + ".CHANGE_FIRST_BYTE " + root.getRunSettings().getSmsUpdate().getUdhiFirstByte() + "\n"
-                + ".CHANGE_SC_ADDRESS " + root.getRunSettings().getSmsUpdate().getScAddress() + "\n"
-                + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
-                + ".CHANGE_POR_FORMAT " + this.porFormatRfmIsim(root.getRunSettings().getSmsUpdate().getPorFormat()) + "\n"
-        );
-        if (root.getRunSettings().getSmsUpdate().isUseWhiteList())
-            routine.append(".CHANGE_TP_OA " + root.getRunSettings().getSmsUpdate().getTpOa() + "\n");
-        routine.append(
-                ".CHANGE_TAR %TAR\n"
-                + ".CHANGE_COUNTER L\n"
-                + ".INCREASE_BUFFER L(04:05) 0001\n"
-                + "\n; MSL = " + msl.getComputedMsl() + "\n"
-                + ".SET_DLKEY_KIC O\n"
-                + ".SET_DLKEY_KID Q\n"
-                + ".CHANGE_KIC M\n"
-                + ".CHANGE_KID N\n"
-                + spiConfigurator(msl, cipherKeyset, authKeyset)
-        );
-        if (authKeyset.getKidMode().equals("AES - CMAC"))
-            routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
-        routine.append(
-                "\n; command(s) sent via OTA\n"
-                + ".SET_BUFFER J 00 A4 00 00 02 3F00\n"
-                + ".APPEND_SCRIPT J\n"
-                + ".END_MESSAGE G J\n"
-                + updateSMSRecordRfmIsim("rfmIsimUpdateRecordCase2")
-                + "\n; increment counter by one\n"
-                + ".INCREASE_BUFFER L(04:05) 0001\n"
-        );
         return routine.toString();
     }
 
@@ -616,9 +587,16 @@ public class RfmIsimService {
             + ".SET_BUFFER Q %" + authKeyset.getKidValuation() + "\n"
             + ".SET_BUFFER M " + cipherKeyset.getComputedKic() + "\n"
             + ".SET_BUFFER N " + authKeyset.getComputedKid() + "\n"
-            + ".INIT_ENV_0348\n"
-            + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
         );
+
+        // check 0348 isUpdateRecord
+        if(!isUpdateRecord){
+            routine.append(this.init_ENV_0348RfmIsim());
+        }
+        else {
+            routine.append(this.init_SMS_0348RfmIsim());
+        }
+
         if (root.getRunSettings().getSmsUpdate().isUseWhiteList())
             routine.append(".CHANGE_TP_OA " + root.getRunSettings().getSmsUpdate().getTpOa() + "\n");
         routine.append(
@@ -639,57 +617,21 @@ public class RfmIsimService {
             + ".SET_BUFFER J A0 A4 00 00 02 3F00 ; this command isn't supported by ISIM\n"
             + ".APPEND_SCRIPT J\n"
             + ".END_MESSAGE G J\n"
-            + "; send envelope\n"
-            + "A0 C2 00 00 G J (9XXX)\n"
-            + ".CLEAR_SCRIPT\n"
-            + "; check PoR\n"
-            + "A0 C0 00 00 W(2;1) [XX XX XX XX XX XX %TAR XX XX XX XX XX XX 00 XX 6E 00] (9000) ; PoR returns '6E00' (class not supported)\n"
-            + "\n; increment counter by one\n"
+        );
+
+        // check isUpdateRecord
+        if(!isUpdateRecord){
+            routine.append(this.sendEnvelopeRfmIsim("rfmIsimCase3"));
+        }
+        else {
+            routine.append(this.updateSMSRecordRfmIsim("rfmIsimUpdateRecordCase3"));
+        }
+
+        routine.append(
+             "\n; increment counter by one\n"
             + ".INCREASE_BUFFER L(04:05) 0001\n"
         );
-        return routine.toString();
-    }
 
-    private String rfmIsimUpdateRecordCase3(SCP80Keyset cipherKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel msl) {
-        StringBuilder routine = new StringBuilder();
-        routine.append(
-                "\n.POWER_ON\n"
-                + proactiveInitialization()
-                + "\n; SPI settings\n"
-                + ".SET_BUFFER O %" + cipherKeyset.getKicValuation() + "\n"
-                + ".SET_BUFFER Q %" + authKeyset.getKidValuation() + "\n"
-                + ".SET_BUFFER M " + cipherKeyset.getComputedKic() + "\n"
-                + ".SET_BUFFER N " + authKeyset.getComputedKid() + "\n"
-                + ".INIT_SMS_0348\n"
-                + ".CHANGE_FIRST_BYTE " + root.getRunSettings().getSmsUpdate().getUdhiFirstByte() + "\n"
-                + ".CHANGE_SC_ADDRESS " + root.getRunSettings().getSmsUpdate().getScAddress() + "\n"
-                + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
-                + ".CHANGE_POR_FORMAT " + this.porFormatRfmIsim(root.getRunSettings().getSmsUpdate().getPorFormat()) +"\n"
-        );
-        if (root.getRunSettings().getSmsUpdate().isUseWhiteList())
-            routine.append(".CHANGE_TP_OA " + root.getRunSettings().getSmsUpdate().getTpOa() + "\n");
-        routine.append(
-                ".CHANGE_TAR %TAR\n"
-                + ".CHANGE_COUNTER L\n"
-                + ".INCREASE_BUFFER L(04:05) 0001\n"
-                + "\n; MSL = " + msl.getComputedMsl() + "\n"
-                + ".SET_DLKEY_KIC O\n"
-                + ".SET_DLKEY_KID Q\n"
-                + ".CHANGE_KIC M\n"
-                + ".CHANGE_KID N\n"
-                + spiConfigurator(msl, cipherKeyset, authKeyset)
-        );
-        if (authKeyset.getKidMode().equals("AES - CMAC"))
-            routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
-        routine.append(
-                "\n; command(s) sent via OTA\n"
-                + ".SET_BUFFER J A0 A4 00 00 02 3F00 ; this command isn't supported by ISIM\n"
-                + ".APPEND_SCRIPT J\n"
-                + ".END_MESSAGE G J\n"
-                + updateSMSRecordRfmIsim("rfmIsimUpdateRecordCase3")
-                + "\n; increment counter by one\n"
-                + ".INCREASE_BUFFER L(04:05) 0001\n"
-        );
         return routine.toString();
     }
 
@@ -703,9 +645,16 @@ public class RfmIsimService {
             + ".SET_BUFFER Q %" + authKeyset.getKidValuation() + "\n"
             + ".SET_BUFFER M " + cipherKeyset.getComputedKic() + "\n"
             + ".SET_BUFFER N " + authKeyset.getComputedKid() + "\n"
-            + ".INIT_ENV_0348\n"
-            + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
         );
+
+        // check 0348 isUpdateRecord
+        if(!isUpdateRecord){
+            routine.append(this.init_ENV_0348RfmIsim());
+        }
+        else {
+            routine.append(this.init_SMS_0348RfmIsim());
+        }
+
         if (root.getRunSettings().getSmsUpdate().isUseWhiteList())
             routine.append(".CHANGE_TP_OA " + root.getRunSettings().getSmsUpdate().getTpOa() + "\n");
         routine.append(
@@ -726,54 +675,15 @@ public class RfmIsimService {
             + ".SET_BUFFER J 00 A4 00 00 02 3F00\n"
             + ".APPEND_SCRIPT J\n"
             + ".END_MESSAGE G J\n"
-            + "; send envelope\n"
-            + "A0 C2 00 00 G J (9XXX)\n"
-            + ".CLEAR_SCRIPT\n"
-            + "; check PoR\n"
-            + "A0 C0 00 00 W(2;1) [XX XX XX XX XX XX B0 FF FF XX XX XX XX XX XX 09] (9000) ; TAR unknown\n"
-            + "\n; increment counter by one\n"
-            + ".INCREASE_BUFFER L(04:05) 0001\n"
         );
-        return routine.toString();
-    }
 
-    private String rfmIsimUpdateRecordCase4(SCP80Keyset cipherKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel msl) {
-        StringBuilder routine = new StringBuilder();
-        routine.append(
-                "\n.POWER_ON\n"
-                + proactiveInitialization()
-                + "\n; SPI settings\n"
-                + ".SET_BUFFER O %" + cipherKeyset.getKicValuation() + "\n"
-                + ".SET_BUFFER Q %" + authKeyset.getKidValuation() + "\n"
-                + ".SET_BUFFER M " + cipherKeyset.getComputedKic() + "\n"
-                + ".SET_BUFFER N " + authKeyset.getComputedKid() + "\n"
-                + ".INIT_SMS_0348\n"
-                + ".CHANGE_FIRST_BYTE " + root.getRunSettings().getSmsUpdate().getUdhiFirstByte() + "\n"
-                + ".CHANGE_SC_ADDRESS " + root.getRunSettings().getSmsUpdate().getScAddress() + "\n"
-                + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
-                + ".CHANGE_POR_FORMAT " + this.porFormatRfmIsim(root.getRunSettings().getSmsUpdate().getPorFormat()) +"\n"
-        );
-        if (root.getRunSettings().getSmsUpdate().isUseWhiteList())
-            routine.append(".CHANGE_TP_OA " + root.getRunSettings().getSmsUpdate().getTpOa() + "\n");
-        routine.append(
-                ".CHANGE_TAR B0FFFF ; this TAR isn't registered in profile\n"
-                + ".CHANGE_COUNTER L\n"
-                + ".INCREASE_BUFFER L(04:05) 0001\n"
-                + "\n; MSL = " + msl.getComputedMsl() + "\n"
-                + ".SET_DLKEY_KIC O\n"
-                + ".SET_DLKEY_KID Q\n"
-                + ".CHANGE_KIC M\n"
-                + ".CHANGE_KID N\n"
-                + spiConfigurator(msl, cipherKeyset, authKeyset)
-        );
-        if (authKeyset.getKidMode().equals("AES - CMAC"))
-            routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
-        routine.append(
-                "\n; command(s) sent via OTA\n"
-                + ".SET_BUFFER J 00 A4 00 00 02 3F00\n"
-                + ".APPEND_SCRIPT J\n"
-                + ".END_MESSAGE G J\n"
-                + "\n; update EF SMS record\n" // Case 4 (Bad Case) use unknown TAR, code manually
+        // check isUpdateRecord
+        if(!isUpdateRecord){
+            routine.append(this.sendEnvelopeRfmIsim("rfmIsimCase4"));
+        }
+        else {
+            routine.append(
+                 "\n; update EF SMS record\n" // Case 4 (Bad Case) use unknown TAR, code manually
                 + "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000)\n"
                 + "A0 A4 00 00 02 7F10 (9F22) ;select DF Telecom\n"
                 + "A0 A4 00 00 02 6F3C (9F0F) ;select EF SMS\n"
@@ -781,9 +691,14 @@ public class RfmIsimService {
                 + ".CLEAR_SCRIPT\n"
                 + "\n;Check SMS Content\n"
                 + "A0 B2 01 04 B0\n"
-                + "\n; increment counter by one\n"
-                + ".INCREASE_BUFFER L(04:05) 0001\n"
+            );
+        }
+
+        routine.append(
+             "\n; increment counter by one\n"
+            + ".INCREASE_BUFFER L(04:05) 0001\n"
         );
+
         return routine.toString();
     }
 
@@ -797,9 +712,16 @@ public class RfmIsimService {
             + ".SET_BUFFER Q %" + authKeyset.getKidValuation() + "\n"
             + ".SET_BUFFER M " + cipherKeyset.getComputedKic() + "\n"
             + ".SET_BUFFER N " + authKeyset.getComputedKid() + "\n"
-            + ".INIT_ENV_0348\n"
-            + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
         );
+
+        // check 0348 isUpdateRecord
+        if(!isUpdateRecord){
+            routine.append(this.init_ENV_0348RfmIsim());
+        }
+        else {
+            routine.append(this.init_SMS_0348RfmIsim());
+        }
+
         if (root.getRunSettings().getSmsUpdate().isUseWhiteList())
             routine.append(".CHANGE_TP_OA " + root.getRunSettings().getSmsUpdate().getTpOa() + "\n");
         routine.append(
@@ -820,57 +742,22 @@ public class RfmIsimService {
             + ".SET_BUFFER J 00 A4 00 00 02 3F00\n"
             + ".APPEND_SCRIPT J\n"
             + ".END_MESSAGE G J\n"
-            + "; send envelope\n"
-            + "A0 C2 00 00 G J (9XXX)\n"
-            + ".CLEAR_SCRIPT\n"
-            + "; check PoR\n"
-            + "A0 C0 00 00 W(2;1) [XX XX XX XX XX XX %TAR XX XX XX XX XX XX 02] (9000) ; low counter\n"
-            + "\n; increment counter by one\n"
+        );
+
+        // check isUpdateRecord
+        if(!isUpdateRecord){
+            routine.append(this.sendEnvelopeRfmIsim("rfmIsimCase5"));
+        }
+        else {
+            routine.append(this.updateSMSRecordRfmIsim("rfmIsimUpdateRecordCase5"));
+        }
+
+        routine.append(
+             "\n; increment counter by one\n"
             + ".INCREASE_BUFFER L(04:05) 0001\n"
         );
-        return routine.toString();
-    }
 
-    private String rfmIsimUpdateRecordCase5(SCP80Keyset cipherKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel msl) {
-        StringBuilder routine = new StringBuilder();
-        routine.append(
-                "\n.POWER_ON\n"
-                + proactiveInitialization()
-                + "\n; SPI settings\n"
-                + ".SET_BUFFER O %" + cipherKeyset.getKicValuation() + "\n"
-                + ".SET_BUFFER Q %" + authKeyset.getKidValuation() + "\n"
-                + ".SET_BUFFER M " + cipherKeyset.getComputedKic() + "\n"
-                + ".SET_BUFFER N " + authKeyset.getComputedKid() + "\n"
-                + ".INIT_SMS_0348\n"
-                + ".CHANGE_FIRST_BYTE " + root.getRunSettings().getSmsUpdate().getUdhiFirstByte() + "\n"
-                + ".CHANGE_SC_ADDRESS " + root.getRunSettings().getSmsUpdate().getScAddress() + "\n"
-                + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
-                + ".CHANGE_POR_FORMAT " + this.porFormatRfmIsim(root.getRunSettings().getSmsUpdate().getPorFormat()) +"\n"
-        );
-        if (root.getRunSettings().getSmsUpdate().isUseWhiteList())
-            routine.append(".CHANGE_TP_OA " + root.getRunSettings().getSmsUpdate().getTpOa() + "\n");
-        routine.append(
-                ".CHANGE_TAR %TAR\n"
-                + ".CHANGE_COUNTER 0000000001 ; this value is lower than previous case\n"
-                + ".INCREASE_BUFFER L(04:05) 0001\n"
-                + "\n; MSL = " + msl.getComputedMsl() + "\n"
-                + ".SET_DLKEY_KIC O\n"
-                + ".SET_DLKEY_KID Q\n"
-                + ".CHANGE_KIC M\n"
-                + ".CHANGE_KID N\n"
-                + spiConfigurator(msl, cipherKeyset, authKeyset)
-        );
-        if (authKeyset.getKidMode().equals("AES - CMAC"))
-            routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
-        routine.append(
-                "\n; command(s) sent via OTA\n"
-                + ".SET_BUFFER J 00 A4 00 00 02 3F00\n"
-                + ".APPEND_SCRIPT J\n"
-                + ".END_MESSAGE G J\n"
-                + updateSMSRecordRfmIsim("rfmIsimUpdateRecordCase5")
-                + "\n; increment counter by one\n"
-                + ".INCREASE_BUFFER L(04:05) 0001\n"
-        );
+
         return routine.toString();
     }
 
@@ -884,9 +771,16 @@ public class RfmIsimService {
             + ".SET_BUFFER Q " + createFakeAuthKey(authKeyset) + " ; bad authentication key\n"
             + ".SET_BUFFER M " + cipherKeyset.getComputedKic() + "\n"
             + ".SET_BUFFER N " + authKeyset.getComputedKid() + "\n"
-            + ".INIT_ENV_0348\n"
-            + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
         );
+
+        // check 0348 isUpdateRecord
+        if(!isUpdateRecord){
+            routine.append(this.init_ENV_0348RfmIsim());
+        }
+        else {
+            routine.append(this.init_SMS_0348RfmIsim());
+        }
+
         if (root.getRunSettings().getSmsUpdate().isUseWhiteList())
             routine.append(".CHANGE_TP_OA " + root.getRunSettings().getSmsUpdate().getTpOa() + "\n");
         routine.append(
@@ -907,57 +801,21 @@ public class RfmIsimService {
             + ".SET_BUFFER J 00 A4 00 00 02 3F00\n"
             + ".APPEND_SCRIPT J\n"
             + ".END_MESSAGE G J\n"
-            + "; send envelope\n"
-            + "A0 C2 00 00 G J (9XXX)\n"
-            + ".CLEAR_SCRIPT\n"
-            + "; check PoR\n"
-            + "A0 C0 00 00 W(2;1) [XX XX XX XX XX XX %TAR XX XX XX XX XX XX 01] (9000) ; RC/CC/DS failed\n"
-            + "\n; increment counter by one\n"
+        );
+
+        // check isUpdateRecord
+        if(!isUpdateRecord){
+            routine.append(this.sendEnvelopeRfmIsim("rfmIsimCase6"));
+        }
+        else {
+            routine.append(this.updateSMSRecordRfmIsim("rfmIsimUpdateRecordCase6"));
+        }
+
+        routine.append(
+             "\n; increment counter by one\n"
             + ".INCREASE_BUFFER L(04:05) 0001\n"
         );
-        return routine.toString();
-    }
 
-    private String rfmIsimUpdateRecordCase6(SCP80Keyset cipherKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel msl) {
-        StringBuilder routine = new StringBuilder();
-        routine.append(
-                "\n.POWER_ON\n"
-                + proactiveInitialization()
-                + "\n; SPI settings\n"
-                + ".SET_BUFFER O %" + cipherKeyset.getKicValuation() + "\n"
-                + ".SET_BUFFER Q " + createFakeAuthKey(authKeyset) + " ; bad authentication key\n"
-                + ".SET_BUFFER M " + cipherKeyset.getComputedKic() + "\n"
-                + ".SET_BUFFER N " + authKeyset.getComputedKid() + "\n"
-                + ".INIT_SMS_0348\n"
-                + ".CHANGE_FIRST_BYTE " + root.getRunSettings().getSmsUpdate().getUdhiFirstByte() + "\n"
-                + ".CHANGE_SC_ADDRESS " + root.getRunSettings().getSmsUpdate().getScAddress() + "\n"
-                + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
-                + ".CHANGE_POR_FORMAT " + this.porFormatRfmIsim(root.getRunSettings().getSmsUpdate().getPorFormat()) +"\n"
-        );
-        if (root.getRunSettings().getSmsUpdate().isUseWhiteList())
-            routine.append(".CHANGE_TP_OA " + root.getRunSettings().getSmsUpdate().getTpOa() + "\n");
-        routine.append(
-                ".CHANGE_TAR %TAR\n"
-                + ".CHANGE_COUNTER L\n"
-                + ".INCREASE_BUFFER L(04:05) 0001\n"
-                + "\n; MSL = " + msl.getComputedMsl() + "\n"
-                + ".SET_DLKEY_KIC O\n"
-                + ".SET_DLKEY_KID Q\n"
-                + ".CHANGE_KIC M\n"
-                + ".CHANGE_KID N\n"
-                + spiConfigurator(msl, cipherKeyset, authKeyset)
-        );
-        if (authKeyset.getKidMode().equals("AES - CMAC"))
-            routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
-        routine.append(
-                "\n; command(s) sent via OTA\n"
-                + ".SET_BUFFER J 00 A4 00 00 02 3F00\n"
-                + ".APPEND_SCRIPT J\n"
-                + ".END_MESSAGE G J\n"
-                + updateSMSRecordRfmIsim("rfmIsimUpdateRecordCase6")
-                + "\n; increment counter by one\n"
-                + ".INCREASE_BUFFER L(04:05) 0001\n"
-        );
         return routine.toString();
     }
 
@@ -971,9 +829,16 @@ public class RfmIsimService {
             + ".SET_BUFFER Q %" + authKeyset.getKidValuation() + "\n"
             + ".SET_BUFFER M " + cipherKeyset.getComputedKic() + "\n"
             + ".SET_BUFFER N " + authKeyset.getComputedKid() + "\n"
-            + ".INIT_ENV_0348\n"
-            + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
         );
+
+        // check 0348 isUpdateRecord
+        if(!isUpdateRecord){
+            routine.append(this.init_ENV_0348RfmIsim());
+        }
+        else {
+            routine.append(this.init_SMS_0348RfmIsim());
+        }
+
         if (root.getRunSettings().getSmsUpdate().isUseWhiteList())
             routine.append(".CHANGE_TP_OA " + root.getRunSettings().getSmsUpdate().getTpOa() + "\n");
         routine.append(
@@ -994,61 +859,25 @@ public class RfmIsimService {
             + ".SET_BUFFER J 00 A4 00 00 02 3F00\n"
             + ".APPEND_SCRIPT J\n"
             + ".END_MESSAGE G J\n"
-            + "; send envelope\n"
-            + "A0 C2 00 00 G J (9XXX)\n"
-            + ".CLEAR_SCRIPT\n"
-            + "; check PoR\n"
-            + "A0 C0 00 00 W(2;1) [XX XX XX XX XX XX %TAR XX XX XX XX XX XX 0A] (9000) ; insufficient MSL\n"
-            + "\n; increment counter by one\n"
+        );
+
+        // check isUpdateRecord
+        if(!isUpdateRecord){
+            routine.append(this.sendEnvelopeRfmIsim("rfmIsimCase7"));
+        }
+        else {
+            routine.append(this.updateSMSRecordRfmIsim("rfmIsimUpdateRecordCase7"));
+        }
+
+        routine.append(
+             "\n; increment counter by one\n"
             + ".INCREASE_BUFFER L(04:05) 0001\n"
         );
+
         return routine.toString();
     }
 
-    private String rfmIsimUpdateRecordCase7(SCP80Keyset cipherKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel msl) {
-        StringBuilder routine = new StringBuilder();
-        routine.append(
-                "\n.POWER_ON\n"
-                + proactiveInitialization()
-                + "\n; SPI settings\n"
-                + ".SET_BUFFER O %" + cipherKeyset.getKicValuation() + "\n"
-                + ".SET_BUFFER Q %" + authKeyset.getKidValuation() + "\n"
-                + ".SET_BUFFER M " + cipherKeyset.getComputedKic() + "\n"
-                + ".SET_BUFFER N " + authKeyset.getComputedKid() + "\n"
-                + ".INIT_SMS_0348\n"
-                + ".CHANGE_FIRST_BYTE " + root.getRunSettings().getSmsUpdate().getUdhiFirstByte() + "\n"
-                + ".CHANGE_SC_ADDRESS " + root.getRunSettings().getSmsUpdate().getScAddress() + "\n"
-                + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
-                + ".CHANGE_POR_FORMAT " + this.porFormatRfmIsim(root.getRunSettings().getSmsUpdate().getPorFormat()) +"\n"
-        );
-        if (root.getRunSettings().getSmsUpdate().isUseWhiteList())
-            routine.append(".CHANGE_TP_OA " + root.getRunSettings().getSmsUpdate().getTpOa() + "\n");
-        routine.append(
-                ".CHANGE_TAR %TAR\n"
-                + ".CHANGE_COUNTER L\n"
-                + ".INCREASE_BUFFER L(04:05) 0001\n"
-                + "\n; MSL = " + msl.getComputedMsl() + "\n"
-                + ".SET_DLKEY_KIC O\n"
-                + ".SET_DLKEY_KID Q\n"
-                + ".CHANGE_KIC M\n"
-                + ".CHANGE_KID N\n"
-                + spiConfigurator(msl, cipherKeyset, authKeyset)
-        );
-        if (authKeyset.getKidMode().equals("AES - CMAC"))
-            routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
-        routine.append(
-                "\n; command(s) sent via OTA\n"
-                + ".SET_BUFFER J 00 A4 00 00 02 3F00\n"
-                + ".APPEND_SCRIPT J\n"
-                + ".END_MESSAGE G J\n"
-                + updateSMSRecordRfmIsim("rfmIsimUpdateRecordCase7")
-                + "\n; increment counter by one\n"
-                + ".INCREASE_BUFFER L(04:05) 0001\n"
-        );
-        return routine.toString();
-    }
-
-    private String rfmIsimCase8(SCP80Keyset cipherKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel msl, Boolean isUpdateRecord) {
+    private String rfmIsimCase8(SCP80Keyset cipherKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel msl) {
         StringBuilder routine = new StringBuilder();
         routine.append(
             "\n.POWER_ON\n"
@@ -1263,7 +1092,34 @@ public class RfmIsimService {
         return routine.toString();
     }
 
-    private String sendEnvelopeRfmIsim(){
+    private String init_SMS_0348RfmIsim(){
+
+        StringBuilder routine = new StringBuilder();
+
+        routine.append(
+                ".INIT_SMS_0348\n"
+                        + ".CHANGE_FIRST_BYTE " + root.getRunSettings().getSmsUpdate().getUdhiFirstByte() + "\n"
+                        + ".CHANGE_SC_ADDRESS " + root.getRunSettings().getSmsUpdate().getScAddress() + "\n"
+                        + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
+                        + ".CHANGE_POR_FORMAT " + this.porFormatRfmIsim(root.getRunSettings().getSmsUpdate().getPorFormat()) + "\n"
+        );
+
+        return routine.toString();
+    }
+
+    private String init_ENV_0348RfmIsim(){
+
+        StringBuilder routine = new StringBuilder();
+
+        routine.append(
+                ".INIT_ENV_0348\n"
+                        + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
+        );
+
+        return routine.toString();
+    }
+
+    private String sendEnvelopeRfmIsim(String rfmIsimCases){
 
         StringBuilder routine = new StringBuilder();
 
@@ -1272,7 +1128,7 @@ public class RfmIsimService {
             + "A0 C2 00 00 G J (9FXX)\n"
             + ".CLEAR_SCRIPT\n"
             + "; check PoR\n"
-            + "A0 C0 00 00 W(2;1) [XX XX XX XX XX XX %TAR XX XX XX XX XX XX 00 XX 90 00] (9000) ; PoR OK\n"
+            + "A0 C0 00 00 W(2;1) [" + this.otaPorSettingRfmIsim(rfmIsimCases)+ "] (9000) ; PoR OK\n"
         );
 
         return routine.toString();
@@ -1302,23 +1158,19 @@ public class RfmIsimService {
         String  POR_OK, POR_NOT_OK, BAD_CASE_WRONG_KEYSET,
                 BAD_CASE_WRONG_CLASS_3G, BAD_CASE_WRONG_CLASS_2G,
                  BAD_CASE_COUNTER_LOW,
-                BAD_CASE_WRONG_KEY_VALUE, BAD_CASE_INSUFFICIENT_MSL; //BAD_CASE_WRONG_TAR;
+                BAD_CASE_WRONG_KEY_VALUE, BAD_CASE_INSUFFICIENT_MSL, BAD_CASE_WRONG_TAR;
 
         String result_set = "";
 
-        String scAddress            = root.getRunSettings().getSmsUpdate().getScAddress();
-        String tag33UpdateRecord    = "D0 33 81 XX XX 13 XX 82 02 81 83 85 XX 86 " + scAddress + " 8B XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX %TAR XX XX XX XX XX XX";
-        String tag30UpdateRecord    = "D0 30 81 XX XX 13 XX 82 02 81 83 85 XX 86 " + scAddress + " 8B XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX %TAR XX XX XX XX XX XX";
-
-        POR_OK                      = tag33UpdateRecord+" XX XX 90 00";
-        POR_NOT_OK                  = tag33UpdateRecord+" XX XX 98 04";
-        BAD_CASE_WRONG_KEYSET       = tag30UpdateRecord+" 06";
-        BAD_CASE_WRONG_CLASS_3G     = tag33UpdateRecord+" XX XX 6E 00";
-        BAD_CASE_WRONG_CLASS_2G     = tag33UpdateRecord+" XX XX 6D 00";
-        BAD_CASE_COUNTER_LOW        = tag30UpdateRecord+" 02";
-        BAD_CASE_WRONG_KEY_VALUE    = tag30UpdateRecord+" 01";
-        BAD_CASE_INSUFFICIENT_MSL   = tag30UpdateRecord+" 0A";
-        //BAD_CASE_WRONG_TAR          = "D0 30 81 XX XX 13 XX 82 02 81 83 85 XX 86 "+scAddress+" 8B XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX B0 FF FF XX XX XX XX XX XX 09";
+        POR_OK                      = "XX XX XX XX XX XX %TAR XX XX XX XX XX XX 00 XX 90 00";
+        POR_NOT_OK                  = "";
+        BAD_CASE_WRONG_KEYSET       = "XX XX XX XX XX XX %TAR XX XX XX XX XX XX 06";
+        BAD_CASE_WRONG_CLASS_3G     = "XX XX XX XX XX XX %TAR XX XX XX XX XX XX 00 XX 6E 00";
+        BAD_CASE_WRONG_CLASS_2G     = "";
+        BAD_CASE_COUNTER_LOW        = "XX XX XX XX XX XX %TAR XX XX XX XX XX XX 02";
+        BAD_CASE_WRONG_KEY_VALUE    = "XX XX XX XX XX XX %TAR XX XX XX XX XX XX 01";
+        BAD_CASE_INSUFFICIENT_MSL   = "XX XX XX XX XX XX %TAR XX XX XX XX XX XX 0A";
+        BAD_CASE_WRONG_TAR          = "XX XX XX XX XX XX B0 FF FF XX XX XX XX XX XX 09";
 
         switch (rfmIsimCases){
             case "rfmIsimCase1" :
@@ -1329,6 +1181,9 @@ public class RfmIsimService {
                 break;
             case "rfmIsimCase3" :
                 result_set =  BAD_CASE_WRONG_CLASS_3G;
+                break;
+            case "rfmIsimCase4" :
+                result_set =  BAD_CASE_WRONG_TAR;
                 break;
             case "rfmIsimCase5" :
                 result_set = BAD_CASE_COUNTER_LOW;
@@ -1878,51 +1733,6 @@ public class RfmIsimService {
 
         return performNegativeTest.toString();
     }
-
-    private String init_SMS_0348RfmIsim(){
-
-        StringBuilder routine = new StringBuilder();
-
-        routine.append(
-                ".INIT_SMS_0348\n"
-                        + ".CHANGE_FIRST_BYTE " + root.getRunSettings().getSmsUpdate().getUdhiFirstByte() + "\n"
-                        + ".CHANGE_SC_ADDRESS " + root.getRunSettings().getSmsUpdate().getScAddress() + "\n"
-                        + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
-                        + ".CHANGE_POR_FORMAT " + this.porFormatRfmIsim(root.getRunSettings().getSmsUpdate().getPorFormat()) + "\n"
-        );
-
-        return routine.toString();
-    }
-
-    private String init_ENV_0348RfmIsim(){
-
-        StringBuilder routine = new StringBuilder();
-
-        routine.append(
-            ".INIT_ENV_0348\n"
-            + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
-        );
-
-        return routine.toString();
-    }
-
-//    ;=======================
-//*Please check the last byte for the POR
-//*'00' PoR OK.
-//*'01' RC/CC/DS failed.
-//*'02' CNTR low.
-//*'03' CNTR high.
-//*'04' CNTR Blocked
-//*'05' Ciphering error.
-//*'06' Unidentified security error. This code is for the case where the Receiving Entity cannot correctly
-//*interpret the Command Header and the Response Packet is sent unciphered with no RC/CC/DS.
-//*'07' Insufficient memory to process incoming message.
-//*'08' This status code "more time" should be used if the Receiving Entity/Application needs more time
-//*to process the Command Packet due to timing constraints. In this case a later Response Packet
-//*should be returned to the Sending Entity once processing has been completed.
-//*'09' TAR Unknown
-//*'0A' Insufficient security level
-//;=======================
 
 //end of script
 }

@@ -5,13 +5,15 @@ public class CardioUser {
     private String userName;
     private String securityToken;
     private String domain;
+    private boolean loginSuccess;
 
     public CardioUser() {}
 
-    public CardioUser(String userName, String securityToken, String domain) {
+    public CardioUser(String userName, String securityToken, String domain, boolean loginSuccess) {
         this.userName = userName;
         this.securityToken = securityToken;
         this.domain = domain;
+        this.loginSuccess = loginSuccess;
     }
 
     public String getUserName() { return userName; }
@@ -25,5 +27,9 @@ public class CardioUser {
     public String getDomain() { return domain; }
 
     public void setDomain(String domain) { this.domain = domain; }
+
+    public boolean isLoginSuccess() { return loginSuccess; }
+
+    public void setLoginSuccess(boolean loginSuccess) { this.loginSuccess = loginSuccess; }
 
 }

@@ -3,14 +3,16 @@ package com.idemia.tec.jkt.cardiotest;
 import com.idemia.tec.jkt.cardiotest.controller.*;
 import com.idemia.tec.jkt.cardiotest.model.AdvSaveVariable;
 import com.idemia.tec.jkt.cardiotest.model.CardioUser;
-import com.idemia.tec.jkt.cardiotest.model.SCP80Keyset;
 import com.idemia.tec.jkt.cardiotest.model.VariableMapping;
 import com.idemia.tec.jkt.cardiotest.service.ActiveDirectoryService;
+import com.idemia.tec.jkt.cardiotest.service.UserService;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -21,7 +23,6 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.apache.log4j.BasicConfigurator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -42,8 +43,6 @@ public class CardiotestApplication extends Application {
 
 	private ObservableList<AdvSaveVariable> advSaveVariables = FXCollections.observableArrayList();
 	private ObservableList<VariableMapping> mappings = FXCollections.observableArrayList();
-
-	@Autowired private RootLayoutController root;
 
 	public CardiotestApplication() {}
 
@@ -213,19 +212,32 @@ public class CardiotestApplication extends Application {
 
 		loginDialog.getDialogPane().setContent(grid);
 
-//		Platform.runLater(() -> txtUserName.requestFocus());
+		CardioUser cardioUser = UserService.initUser();
+		txtDomain.setText(cardioUser.getDomain());
+		txtUserName.setText(cardioUser.getUserName());
+		if (!cardioUser.getUserName().equals("")) Platform.runLater(() -> txtPassword.requestFocus());
 
 		loginDialog.setResultConverter(dialogButton -> {
 			if (dialogButton == loginButtonType) {
-				CardioUser user = new CardioUser(txtUserName.getText(), txtPassword.getText(), txtDomain.getText());
-				if (ActiveDirectoryService.authenticate(user))
-					return user;
+				cardioUser.setUserName(txtUserName.getText());
+				cardioUser.setSecurityToken(txtPassword.getText());
+				cardioUser.setDomain(txtDomain.getText());
+				if (ActiveDirectoryService.authenticate(cardioUser)) {
+					cardioUser.setSecurityToken(""); // clear password
+					cardioUser.setLoginSuccess(true);
+					UserService.saveUser(cardioUser);
+					return cardioUser;
+				}
 				else {
-					Alert loginAlert = new Alert(Alert.AlertType.ERROR);
-					loginAlert.setTitle("Login error");
-					loginAlert.initOwner(loginButton.getScene().getWindow());
-					loginAlert.setHeaderText(null);
-					loginAlert.setContentText("Failed connecting to IDEMIA network: Bad credential or user is not part of any organizational unit.");
+					cardioUser.setSecurityToken(""); // clear password
+					cardioUser.setLoginSuccess(false);
+					UserService.saveUser(cardioUser);
+					Alert accountAlert = new Alert(Alert.AlertType.ERROR);
+					accountAlert.setTitle("Login error");
+					accountAlert.initOwner(loginButton.getScene().getWindow());
+					accountAlert.setHeaderText(null);
+					accountAlert.setContentText("Failed connecting to IDEMIA network: Bad credential or user is not part of any organizational unit.");
+					accountAlert.showAndWait();
 				}
 			}
 			return null;
@@ -237,4 +249,5 @@ public class CardiotestApplication extends Application {
 	public Stage getSelectReaderDialogStage() { return selectReaderDialogStage; }
 	public Stage getToolOptionsDialogStage() { return toolOptionsDialogStage; }
 	public Stage getImportDialogStage() { return importDialogStage; }
+
 }

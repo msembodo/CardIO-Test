@@ -1,8 +1,7 @@
 package com.idemia.tec.jkt.cardiotest.service;
 
 import com.idemia.tec.jkt.cardiotest.model.CardioUser;
-import com.imperva.ddc.core.query.Endpoint;
-import com.imperva.ddc.core.query.ConnectionResponse;
+import com.imperva.ddc.core.query.*;
 import com.imperva.ddc.service.DirectoryConnectorService;
 
 public class ActiveDirectoryService {
@@ -16,7 +15,9 @@ public class ActiveDirectoryService {
         endpoint.setPassword(cardioUser.getSecurityToken());
 
         ConnectionResponse connectionResponse = DirectoryConnectorService.authenticate(endpoint);
-        return !connectionResponse.isError();
+        if (connectionResponse.getConnectionResultByHost().get(cardioUser.getDomain()))
+            return !connectionResponse.isError();
+        else return false;
     }
 
 }

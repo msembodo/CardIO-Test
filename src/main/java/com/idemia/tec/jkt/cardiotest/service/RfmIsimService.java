@@ -16,33 +16,33 @@ public class RfmIsimService {
 
     private String headerScriptRfmIsim(RfmIsim rfmIsim){
         StringBuilder headerScript = new StringBuilder();
-        // call mappings and load DLLs
 
         headerScript.append(
             ";==================================================\n" +
             ";================!!! CAUTION !!!===================\n" +
             ";==================================================\n\n" +
-            "*Please check the last byte for the POR\n" +
-            "*'00' PoR OK.\n" +
-            "*'01' RC/CC/DS failed.\n" +
-            "*'02' CNTR low.\n" +
-            "*'03' CNTR high.\n" +
-            "*'04' CNTR Blocked\n" +
-            "*'05' Ciphering error.\n" +
-            "*'06' Unidentified security error. This code is for the case where the Receiving Entity cannot correctly\n" +
-            "*interpret the Command Header and the Response Packet is sent unciphered with no RC/CC/DS.\n" +
-            "*'07' Insufficient memory to process incoming message.\n" +
-            "*'08' This status code \"more time\" should be used if the Receiving Entity/Application needs more time\n" +
-            "*to process the Command Packet due to timing constraints. In this case a later Response Packet\n" +
-            "*should be returned to the Sending Entity once processing has been completed.\n" +
-            "*'09' TAR Unknown\n" +
-            "*'0A' Insufficient security level\n\n" +
+            "* Please check the last byte for the POR\n" +
+            "* '00' PoR OK.\n" +
+            "* '01' RC/CC/DS failed.\n" +
+            "* '02' CNTR low.\n" +
+            "* '03' CNTR high.\n" +
+            "* '04' CNTR Blocked\n" +
+            "* '05' Ciphering error.\n" +
+            "* '06' Unidentified security error. This code is for the case where the Receiving Entity cannot correctly\n" +
+            "* interpret the Command Header and the Response Packet is sent unciphered with no RC/CC/DS.\n" +
+            "* '07' Insufficient memory to process incoming message.\n" +
+            "* '08' This status code \"more time\" should be used if the Receiving Entity/Application needs more time\n" +
+            "* to process the Command Packet due to timing constraints. In this case a later Response Packet\n" +
+            "* should be returned to the Sending Entity once processing has been completed.\n" +
+            "* '09' TAR Unknown\n" +
+            "* '0A' Insufficient security level\n\n" +
             ";=======================\n\n"
         );
 
         headerScript.append("; ---------------------------------------- RFM ISIM ------------------------------------------------------\n\n");
 
         headerScript.append(
+            // call mappings and load DLLs
             ".CALL Mapping.txt /LIST_OFF\n"
             + ".CALL Options.txt /LIST_OFF\n\n"
             + ".POWER_ON\n"
@@ -50,6 +50,7 @@ public class RfmIsimService {
             + ".LOAD dll\\OTA2.dll\n"
             + ".LOAD dll\\Var_Reader.dll\n"
         );
+
         // create counter and initialize for first-time run
         File counterBin = new File(root.getRunSettings().getProjectPath() + "\\scripts\\COUNTER.bin");
         if (!counterBin.exists()) {
@@ -59,6 +60,7 @@ public class RfmIsimService {
                 + ".EXPORT_BUFFER L COUNTER.bin\n"
             );
         }
+
         // load anti-replay counter
         headerScript.append(
             "\n; buffer L contains the anti-replay counter for OTA message\n"
@@ -69,6 +71,7 @@ public class RfmIsimService {
             + "\n; setup TAR\n"
             + ".DEFINE %TAR " + rfmIsim.getTar() + "\n"
         );
+
         // enable pin if required
         if (root.getRunSettings().getSecretCodes().isPin1disabled())
             headerScript.append("\nA0 28 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000) ; enable GPIN1\n");
@@ -1125,7 +1128,7 @@ public class RfmIsimService {
 
         routine.append(
             "; send envelope\n"
-            + "A0 C2 00 00 G J (9FXX)\n"
+            + "A0 C2 00 00 G J (9XXX)\n"
             + ".CLEAR_SCRIPT\n"
             + "; check PoR\n"
             + "A0 C0 00 00 W(2;1) [" + this.otaPorSettingRfmIsim(rfmIsimCases)+ "] (9000) ; PoR OK\n"

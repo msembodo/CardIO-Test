@@ -281,7 +281,59 @@ public class AmdbController {
 
         root.getRunSettings().getAmmendmentB().setSdTar(txtSdTar.getText());
 
+        SCP80Keyset scp80CipherKeyset = new SCP80Keyset();
+        scp80CipherKeyset.setKeysetName(cmbCipherKeyset.getSelectionModel().getSelectedItem());
+        for (SCP80Keyset registeredKeyset : root.getScp80Keysets()) {
+            if (registeredKeyset.getKeysetName().equals(scp80CipherKeyset.getKeysetName())) {
+                scp80CipherKeyset.setKeysetVersion(registeredKeyset.getKeysetVersion());
+                scp80CipherKeyset.setKeysetType(registeredKeyset.getKeysetType());
+                scp80CipherKeyset.setKicValuation(registeredKeyset.getKicValuation());
+                scp80CipherKeyset.setKicKeyLength(registeredKeyset.getKicKeyLength());
+                scp80CipherKeyset.setKicMode(registeredKeyset.getKicMode());
+                scp80CipherKeyset.setComputedKic(registeredKeyset.getComputedKic());
+                scp80CipherKeyset.setKidValuation(registeredKeyset.getKidValuation());
+                scp80CipherKeyset.setKidKeyLength(registeredKeyset.getKidKeyLength());
+                scp80CipherKeyset.setKidMode(registeredKeyset.getKidMode());
+                scp80CipherKeyset.setComputedKid(registeredKeyset.getComputedKid());
+                scp80CipherKeyset.setCmacLength(registeredKeyset.getCmacLength());
+                break;
+            }
+        }
+        root.getRunSettings().getAmmendmentB().setScp80CipherKeyset(scp80CipherKeyset);
 
+        SCP80Keyset scp80AuthKeyset = new SCP80Keyset();
+        scp80AuthKeyset.setKeysetName(cmbAuthKeyset.getSelectionModel().getSelectedItem());
+        for (SCP80Keyset registeredKeyset : root.getScp80Keysets()) {
+            if (registeredKeyset.getKeysetName().equals(scp80AuthKeyset.getKeysetName())) {
+                scp80AuthKeyset.setKeysetVersion(registeredKeyset.getKeysetVersion());
+                scp80AuthKeyset.setKeysetType(registeredKeyset.getKeysetType());
+                scp80AuthKeyset.setKicValuation(registeredKeyset.getKicValuation());
+                scp80AuthKeyset.setKicKeyLength(registeredKeyset.getKicKeyLength());
+                scp80AuthKeyset.setKicMode(registeredKeyset.getKicMode());
+                scp80AuthKeyset.setComputedKic(registeredKeyset.getComputedKic());
+                scp80AuthKeyset.setKidValuation(registeredKeyset.getKidValuation());
+                scp80AuthKeyset.setKidKeyLength(registeredKeyset.getKidKeyLength());
+                scp80AuthKeyset.setKidMode(registeredKeyset.getKidMode());
+                scp80AuthKeyset.setComputedKid(registeredKeyset.getComputedKid());
+                scp80AuthKeyset.setCmacLength(registeredKeyset.getCmacLength());
+                break;
+            }
+        }
+        root.getRunSettings().getAmmendmentB().setScp80AuthKeyset(scp80AuthKeyset);
+
+        root.getRunSettings().getAmmendmentB().getConnectionParameters().setUseDestinationAddress(chkDestinationAddress.isSelected());
+        root.getRunSettings().getAmmendmentB().getConnectionParameters().setUseBufferSize(chkBufferSize.isSelected());
+        root.getRunSettings().getAmmendmentB().getConnectionParameters().setUseNetworkAccessName(chkNetworkAccessName.isSelected());
+        root.getRunSettings().getAmmendmentB().getConnectionParameters().setUseTransportLevel(chkTransportLevel.isSelected());
+        if (root.getRunSettings().getAmmendmentB().getConnectionParameters().useDestinationAddress())
+            root.getRunSettings().getAmmendmentB().getConnectionParameters().setDestinationAddress(txtDestinationAddress.getText());
+        if (root.getRunSettings().getAmmendmentB().getConnectionParameters().useBufferSize())
+            root.getRunSettings().getAmmendmentB().getConnectionParameters().setBufferSize(Integer.parseInt(txtBufferSize.getText()));
+        if (root.getRunSettings().getAmmendmentB().getConnectionParameters().useNetworkAccessName())
+            root.getRunSettings().getAmmendmentB().getConnectionParameters().setNetworkAcessName(txtNetworkAccessName.getText());
+        if (root.getRunSettings().getAmmendmentB().getConnectionParameters().useTransportLevel()) {
+            
+        }
         // TODO
     }
 

@@ -4,6 +4,8 @@
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
@@ -29,14 +31,13 @@
           <Tab text="About">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                 <children>
-                    <Label layoutX="127.0" layoutY="105.0" text="card.io" AnchorPane.leftAnchor="127.0" AnchorPane.topAnchor="105.0">
-                       <font>
-                          <Font name="Gadugi" size="64.0" />
-                       </font>
-                    </Label>
-                    <Label layoutX="99.0" layoutY="187.0" text="TEC Testing Interface &amp; Configurator" AnchorPane.leftAnchor="99.0" AnchorPane.topAnchor="187.0" />
-                 </children>
+                     <children>
+                        <ImageView fitHeight="152.0" fitWidth="300.0" layoutX="70.0" layoutY="114.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../cardio.png" />
+                           </image>
+                        </ImageView>
+                     </children>
               </AnchorPane>
             </content>
           </Tab>

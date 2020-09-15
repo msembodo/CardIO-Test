@@ -279,6 +279,8 @@ public class RootLayoutController {
 
     @FXML private void handleMenuToolOptions() { application.showToolOptions(); }
 
+    @FXML private void handleMenuAbout() { application.showAbout(); }
+
     @FXML private void handleMenuRunAll() {
         handleMenuSaveSettings();
 
@@ -1878,14 +1880,13 @@ public class RootLayoutController {
     public MenuItem getMenuRamExpandedMode() { return menuRamExpandedMode; }
     public MenuItem getMenuCodes3g() { return menuCodes3g; }
     public MenuItem getMenuCodes2g() { return menuCodes2g; }
+    public MenuItem getMenuLinkFile() { return menuLinkFiles; }
+    public MenuItem getMenuRuwi() { return menuRuwi; }
+    public MenuItem getMenuSfi() { return menuSfi; }
     public ObservableList<SCP80Keyset> getScp80Keysets() { return scp80Keysets; }
     public ObservableList<CustomScript> getCustomScriptsSection1() { return customScriptsSection1; }
     public ObservableList<CustomScript> getCustomScriptsSection2() { return customScriptsSection2; }
     public ObservableList<CustomScript> getCustomScriptsSection3() { return customScriptsSection3; }
-
-    public MenuItem getMenuLinkFile() { return menuLinkFiles; }
-    public MenuItem getMenuRuwi() { return menuRuwi; }
-    public MenuItem getMenuSfi() { return menuSfi; }
 
     public void setImportProjectDir(File importProjectDir) { this.importProjectDir = importProjectDir; }
     public void setImportVarFile(File importVarFile) { this.importVarFile = importVarFile; }

@@ -20,6 +20,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.apache.log4j.BasicConfigurator;
@@ -40,6 +41,7 @@ public class CardiotestApplication extends Application {
 	private Stage selectReaderDialogStage;
 	private Stage toolOptionsDialogStage;
 	private Stage importDialogStage;
+	private Stage aboutStage;
 
 	private ObservableList<AdvSaveVariable> advSaveVariables = FXCollections.observableArrayList();
 	private ObservableList<VariableMapping> mappings = FXCollections.observableArrayList();
@@ -54,11 +56,11 @@ public class CardiotestApplication extends Application {
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("CARDIO");
 
-		Optional<CardioUser> cardioUser = domainLogin();
-		cardioUser.ifPresent(account -> {
+//		Optional<CardioUser> cardioUser = domainLogin();
+//		cardioUser.ifPresent(account -> {
 			initRootLayout();
 			showCardioTest();
-		});
+//		});
 	}
 
 	public ObservableList<AdvSaveVariable> getAdvSaveVariables() { return advSaveVariables; }
@@ -172,6 +174,29 @@ public class CardiotestApplication extends Application {
 		catch (Exception e) { e.printStackTrace(); }
 	}
 
+	public void showAbout() {
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/About.fxml"));
+			loader.setControllerFactory(springContext::getBean);
+			AnchorPane about = loader.load();
+
+			// give controller access to main app
+			AboutController controller = loader.getController();
+			controller.setMainApp(this);
+
+			// create dialog
+			aboutStage = new Stage();
+			aboutStage.setTitle("About");
+			aboutStage.setResizable(false);
+			aboutStage.initModality(Modality.WINDOW_MODAL);
+			aboutStage.initOwner(primaryStage);
+			Scene scene = new Scene(about);
+			aboutStage.setScene(scene);
+			aboutStage.showAndWait();
+		}
+		catch (IOException e) { e.printStackTrace(); }
+	}
+
 	public Optional<CardioUser> domainLogin() {
 		Dialog<CardioUser> loginDialog = new Dialog<>();
 		loginDialog.setTitle("CARDIO Login");
@@ -249,5 +274,6 @@ public class CardiotestApplication extends Application {
 	public Stage getSelectReaderDialogStage() { return selectReaderDialogStage; }
 	public Stage getToolOptionsDialogStage() { return toolOptionsDialogStage; }
 	public Stage getImportDialogStage() { return importDialogStage; }
+	public Stage getAboutStage() { return aboutStage; }
 
 }

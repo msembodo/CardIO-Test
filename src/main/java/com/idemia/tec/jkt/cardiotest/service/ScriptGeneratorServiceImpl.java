@@ -19,6 +19,8 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
     @Autowired private RfmIsimService rfmIsimService;
     @Autowired private RfmCustomService rfmCustomService;
     @Autowired private RamService ramService;
+    @Autowired private RamService verifGp;
+
 
     @Override public StringBuilder generateAtr() {
         String composeAtrScript = ".CALL Mapping.txt\n"
@@ -167,6 +169,11 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
 
         ramExpandedModeBuffer.append(".POWER_OFF\n");
         return ramExpandedModeBuffer;
+    }
+
+    @Override
+    public StringBuilder generateVerifGp(Ram ram) {
+        return ramService.generateVerifGp(ram);
     }
 
 }

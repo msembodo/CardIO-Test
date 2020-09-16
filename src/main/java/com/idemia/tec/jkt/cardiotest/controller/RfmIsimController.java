@@ -31,14 +31,21 @@ public class RfmIsimController {
     @FXML private TextField txtRfmIsimTargetEfBadCase;
     @FXML private CheckBox chkRfmIsimFullAccess;
     @FXML private Label lblRfmIsimCustomTarget;
+    @FXML private TextField txtRfmIsimCustomTargetEfAlw;
     @FXML private TextField txtRfmIsimCustomTargetEfIsc1;
     @FXML private TextField txtRfmIsimCustomTargetEfIsc2;
     @FXML private TextField txtRfmIsimCustomTargetEfIsc3;
     @FXML private TextField txtRfmIsimCustomTargetEfIsc4;
     @FXML private TextField txtRfmIsimCustomTargetEfGPin1;
     @FXML private TextField txtRfmIsimCustomTargetEfLPin1;
+    @FXML private TextField txtRfmIsimCustomTargetEfBadCaseAlw;
+    @FXML private TextField txtRfmIsimCustomTargetEfBadCaseIsc1;
+    @FXML private TextField txtRfmIsimCustomTargetEfBadCaseIsc2;
+    @FXML private TextField txtRfmIsimCustomTargetEfBadCaseIsc3;
+    @FXML private TextField txtRfmIsimCustomTargetEfBadCaseIsc4;
+    @FXML private TextField txtRfmIsimCustomTargetEfBadCaseGPin1;
+    @FXML private TextField txtRfmIsimCustomTargetEfBadCaseLPin1;
     @FXML private Label lblRfmIsimCustomTargetBadCase;
-    @FXML private TextField txtRfmIsimCustomTargetEfBadCase;
     @FXML private CheckBox chkUseSpecificKeyset;
     @FXML private Label lblRfmIsimCipheringKeyset;
     @FXML private ComboBox<String> cmbRfmIsimCipheringKeyset;
@@ -50,12 +57,20 @@ public class RfmIsimController {
     @FXML private Label lblRfmIsimKid;
     @FXML private CheckBox chkRfmIsimCustomKid;
     @FXML private TextField txtRfmIsimCustomKid;
+    @FXML private CheckBox chkRfmIsimUseAlw;
     @FXML private CheckBox chkRfmIsimUseIsc1;
     @FXML private CheckBox chkRfmIsimUseIsc2;
     @FXML private CheckBox chkRfmIsimUseIsc3;
     @FXML private CheckBox chkRfmIsimUseIsc4;
     @FXML private CheckBox chkRfmIsimUseGPin1;
     @FXML private CheckBox chkRfmIsimUseLPin1;
+    @FXML private CheckBox chkRfmIsimUseBadCaseAlw;
+    @FXML private CheckBox chkRfmIsimUseBadCaseIsc1;
+    @FXML private CheckBox chkRfmIsimUseBadCaseIsc2;
+    @FXML private CheckBox chkRfmIsimUseBadCaseIsc3;
+    @FXML private CheckBox chkRfmIsimUseBadCaseIsc4;
+    @FXML private CheckBox chkRfmIsimUseBadCaseGPin1;
+    @FXML private CheckBox chkRfmIsimUseBadCaseLPin1;
 
     @Autowired private RootLayoutController root;
     @Autowired private CardiotestController cardiotest;
@@ -209,8 +224,8 @@ public class RfmIsimController {
             txtRfmIsimCustomTargetEfLPin1.setText("");
         }
 
-        if (root.getRunSettings().getRfmIsim().getCustomTargetEfBadCase() != null)
-            txtRfmIsimCustomTargetEfBadCase.setText(root.getRunSettings().getRfmIsim().getCustomTargetEfBadCase());
+//        if (root.getRunSettings().getRfmIsim().getCustomTargetEfBadCase() != null)
+//            txtRfmIsimCustomTargetEfBadCase.setText(root.getRunSettings().getRfmIsim().getCustomTargetEfBadCase());
 
         chkRfmIsimFullAccess.setSelected(root.getRunSettings().getRfmIsim().isFullAccess());
         handleRfmIsimFullAccessCheck();
@@ -263,91 +278,219 @@ public class RfmIsimController {
     @FXML private void handleRfmIsimFullAccessCheck() {
         if (chkRfmIsimFullAccess.isSelected()) {
             lblRfmIsimCustomTarget.setDisable(true);
+            txtRfmIsimCustomTargetEfAlw.setDisable(true);
             txtRfmIsimCustomTargetEfIsc1.setDisable(true);
             txtRfmIsimCustomTargetEfIsc2.setDisable(true);
             txtRfmIsimCustomTargetEfIsc3.setDisable(true);
             txtRfmIsimCustomTargetEfIsc4.setDisable(true);
             txtRfmIsimCustomTargetEfGPin1.setDisable(true);
             txtRfmIsimCustomTargetEfLPin1.setDisable(true);
+            txtRfmIsimCustomTargetEfBadCaseAlw.setDisable(true);
+            txtRfmIsimCustomTargetEfBadCaseIsc1.setDisable(true);
+            txtRfmIsimCustomTargetEfBadCaseIsc2.setDisable(true);
+            txtRfmIsimCustomTargetEfBadCaseIsc3.setDisable(true);
+            txtRfmIsimCustomTargetEfBadCaseIsc4.setDisable(true);
+            txtRfmIsimCustomTargetEfBadCaseGPin1.setDisable(true);
+            txtRfmIsimCustomTargetEfBadCaseLPin1.setDisable(true);
+            chkRfmIsimUseAlw.setDisable(true);
             chkRfmIsimUseIsc1.setDisable(true);
             chkRfmIsimUseIsc2.setDisable(true);
             chkRfmIsimUseIsc3.setDisable(true);
             chkRfmIsimUseIsc4.setDisable(true);
             chkRfmIsimUseGPin1.setDisable(true);
             chkRfmIsimUseLPin1.setDisable(true);
+            chkRfmIsimUseBadCaseAlw.setDisable(true);
+            chkRfmIsimUseBadCaseIsc1.setDisable(true);
+            chkRfmIsimUseBadCaseIsc2.setDisable(true);
+            chkRfmIsimUseBadCaseIsc3.setDisable(true);
+            chkRfmIsimUseBadCaseIsc4.setDisable(true);
+            chkRfmIsimUseBadCaseGPin1.setDisable(true);
+            chkRfmIsimUseBadCaseLPin1.setDisable(true);
             lblRfmIsimCustomTargetBadCase.setDisable(true);
-            txtRfmIsimCustomTargetEfBadCase.setDisable(true);
+//            txtRfmIsimCustomTargetEfBadCase.setDisable(true);
             txtRfmIsimTargetEf.setDisable(false);
             txtRfmIsimTargetEfBadCase.setDisable(false);
         }
         else {
             lblRfmIsimCustomTarget.setDisable(false);
+            chkRfmIsimUseAlw.setDisable(false);
             chkRfmIsimUseIsc1.setDisable(false);
             chkRfmIsimUseIsc2.setDisable(false);
             chkRfmIsimUseIsc3.setDisable(false);
             chkRfmIsimUseIsc4.setDisable(false);
             chkRfmIsimUseGPin1.setDisable(false);
             chkRfmIsimUseLPin1.setDisable(false);
+            chkRfmIsimUseBadCaseAlw.setDisable(false);
+            chkRfmIsimUseBadCaseIsc1.setDisable(false);
+            chkRfmIsimUseBadCaseIsc2.setDisable(false);
+            chkRfmIsimUseBadCaseIsc3.setDisable(false);
+            chkRfmIsimUseBadCaseIsc4.setDisable(false);
+            chkRfmIsimUseBadCaseGPin1.setDisable(false);
+            chkRfmIsimUseBadCaseLPin1.setDisable(false);
             lblRfmIsimCustomTargetBadCase.setDisable(false);
-            txtRfmIsimCustomTargetEfBadCase.setDisable(false);
+//            txtRfmIsimCustomTargetEfBadCase.setDisable(false);
             txtRfmIsimTargetEf.setDisable(true);
             txtRfmIsimTargetEfBadCase.setDisable(true);
         }
     }
 
+    // handle Positive Case
     @FXML private void handleIncludeIsc1Check() {
         if(chkRfmIsimUseIsc1.isSelected()){
             txtRfmIsimCustomTargetEfIsc1.setDisable(false);
+            chkRfmIsimUseBadCaseIsc1.setDisable(true);
         }
         else{
             txtRfmIsimCustomTargetEfIsc1.setDisable(true);
+            chkRfmIsimUseBadCaseIsc1.setDisable(false);
+        }
+    }
+
+    @FXML private void handleIncludeAlwCheck() {
+        if(chkRfmIsimUseAlw.isSelected()){
+            txtRfmIsimCustomTargetEfAlw.setDisable(false);
+            chkRfmIsimUseBadCaseAlw.setDisable(true);
+        }
+        else{
+            txtRfmIsimCustomTargetEfAlw.setDisable(true);
+            chkRfmIsimUseBadCaseAlw.setDisable(false);
         }
     }
 
     @FXML private void handleIncludeIsc2Check() {
         if(chkRfmIsimUseIsc2.isSelected()){
             txtRfmIsimCustomTargetEfIsc2.setDisable(false);
+            chkRfmIsimUseBadCaseIsc2.setDisable(true);
         }
         else{
             txtRfmIsimCustomTargetEfIsc2.setDisable(true);
+            chkRfmIsimUseBadCaseIsc2.setDisable(false);
         }
     }
 
     @FXML private void handleIncludeIsc3Check() {
         if(chkRfmIsimUseIsc3.isSelected()){
             txtRfmIsimCustomTargetEfIsc3.setDisable(false);
+            chkRfmIsimUseBadCaseIsc3.setDisable(true);
         }
         else{
             txtRfmIsimCustomTargetEfIsc3.setDisable(true);
+            chkRfmIsimUseBadCaseIsc3.setDisable(false);
         }
     }
 
     @FXML private void handleIncludeIsc4Check() {
         if(chkRfmIsimUseIsc4.isSelected()){
             txtRfmIsimCustomTargetEfIsc4.setDisable(false);
+            chkRfmIsimUseBadCaseIsc4.setDisable(true);
         }
         else{
             txtRfmIsimCustomTargetEfIsc4.setDisable(true);
+            chkRfmIsimUseBadCaseIsc4.setDisable(false);
         }
     }
 
     @FXML private void handleIncludeGPin1Check() {
         if(chkRfmIsimUseGPin1.isSelected()){
             txtRfmIsimCustomTargetEfGPin1.setDisable(false);
+            chkRfmIsimUseBadCaseGPin1.setDisable(true);
         }
         else{
             txtRfmIsimCustomTargetEfGPin1.setDisable(true);
+            chkRfmIsimUseBadCaseGPin1.setDisable(false);
         }
     }
 
     @FXML private void handleIncludeLPin1Check() {
         if(chkRfmIsimUseLPin1.isSelected()){
             txtRfmIsimCustomTargetEfLPin1.setDisable(false);
+            chkRfmIsimUseBadCaseLPin1.setDisable(true);
         }
         else{
             txtRfmIsimCustomTargetEfLPin1.setDisable(true);
+            chkRfmIsimUseBadCaseLPin1.setDisable(false);
         }
     }
+
+    // handle Negative Case
+
+    @FXML private void handleIncludeBadCaseAlwCheck() {
+        if(chkRfmIsimUseBadCaseAlw.isSelected()){
+            txtRfmIsimCustomTargetEfBadCaseAlw.setDisable(false);
+            chkRfmIsimUseAlw.setDisable(true);
+        }
+        else{
+            txtRfmIsimCustomTargetEfBadCaseAlw.setDisable(true);
+            chkRfmIsimUseAlw.setDisable(false);
+        }
+    }
+
+    @FXML private void handleIncludeBadCaseIsc1Check() {
+        if(chkRfmIsimUseBadCaseIsc1.isSelected()){
+            txtRfmIsimCustomTargetEfBadCaseIsc1.setDisable(false);
+            chkRfmIsimUseIsc1.setDisable(true);
+        }
+        else{
+            txtRfmIsimCustomTargetEfBadCaseIsc1.setDisable(true);
+            chkRfmIsimUseIsc1.setDisable(false);
+        }
+    }
+
+    @FXML private void handleIncludeBadCaseIsc2Check() {
+        if(chkRfmIsimUseBadCaseIsc2.isSelected()){
+            txtRfmIsimCustomTargetEfBadCaseIsc2.setDisable(false);
+            chkRfmIsimUseIsc2.setDisable(true);
+        }
+        else{
+            txtRfmIsimCustomTargetEfBadCaseIsc2.setDisable(true);
+            chkRfmIsimUseIsc2.setDisable(false);
+        }
+    }
+
+    @FXML private void handleIncludeBadCaseIsc3Check() {
+        if(chkRfmIsimUseBadCaseIsc3.isSelected()){
+            txtRfmIsimCustomTargetEfBadCaseIsc3.setDisable(false);
+            chkRfmIsimUseIsc3.setDisable(true);
+        }
+        else{
+            txtRfmIsimCustomTargetEfBadCaseIsc3.setDisable(true);
+            chkRfmIsimUseIsc3.setDisable(false);
+        }
+    }
+
+    @FXML private void handleIncludeBadCaseIsc4Check() {
+        if(chkRfmIsimUseBadCaseIsc4.isSelected()){
+            txtRfmIsimCustomTargetEfBadCaseIsc4.setDisable(false);
+            chkRfmIsimUseIsc4.setDisable(true);
+        }
+        else{
+            txtRfmIsimCustomTargetEfBadCaseIsc4.setDisable(true);
+            chkRfmIsimUseIsc4.setDisable(false);
+        }
+    }
+
+    @FXML private void handleIncludeBadCaseGPin1Check() {
+        if(chkRfmIsimUseBadCaseGPin1.isSelected()){
+            txtRfmIsimCustomTargetEfBadCaseGPin1.setDisable(false);
+            chkRfmIsimUseGPin1.setDisable(true);
+        }
+        else{
+            txtRfmIsimCustomTargetEfBadCaseGPin1.setDisable(true);
+            chkRfmIsimUseGPin1.setDisable(false);
+        }
+    }
+
+    @FXML private void handleIncludeBadCaseLPin1Check() {
+        if(chkRfmIsimUseBadCaseLPin1.isSelected()){
+            txtRfmIsimCustomTargetEfBadCaseLPin1.setDisable(false);
+            chkRfmIsimUseLPin1.setDisable(true);
+        }
+        else{
+            txtRfmIsimCustomTargetEfBadCaseLPin1.setDisable(true);
+            chkRfmIsimUseLPin1.setDisable(false);
+        }
+    }
+
 
     @FXML private void handleUseSpecificKeysetCheck() {
         if (chkUseSpecificKeyset.isSelected()) {
@@ -621,7 +764,7 @@ public class RfmIsimController {
             root.getRunSettings().getRfmIsim().setCustomTargetEfIsc4(txtRfmIsimCustomTargetEfIsc4.getText());
             root.getRunSettings().getRfmIsim().setCustomTargetEfGPin1(txtRfmIsimCustomTargetEfGPin1.getText());
             root.getRunSettings().getRfmIsim().setCustomTargetEfLPin1(txtRfmIsimCustomTargetEfLPin1.getText());
-            root.getRunSettings().getRfmIsim().setCustomTargetEfBadCase(txtRfmIsimCustomTargetEfBadCase.getText());
+//            root.getRunSettings().getRfmIsim().setCustomTargetEfBadCase(txtRfmIsimCustomTargetEfBadCase.getText());
             //save control Access Domain RFM ISIM
             AccessDomain rfmIsimAccessDomain = new AccessDomain();
             rfmIsimAccessDomain.setUseIsc1(chkRfmIsimUseIsc1.isSelected());

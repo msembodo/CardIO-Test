@@ -283,6 +283,24 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             FileManagement fileManagement = new FileManagement(true, false, null ,true, false, null,true, false, null,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,0,0,false);
             defaultSettings.setFileManagement(fileManagement);
 
+            MinimumSecurityLevel sdMsl = new MinimumSecurityLevel(true, "Cryptographic Checksum", "Counter must be higher");
+            sdMsl.setCipherAlgo("3DES - CBC 2 keys");
+            sdMsl.setSigningAlgo("3DES - CBC 2 keys");
+            sdMsl.setPorRequirement("PoR required");
+            sdMsl.setPorSecurity("response with no security");
+
+            ConnectionParameters connParams = new ConnectionParameters();
+            connParams.setUseDestinationAddress(true);
+            connParams.setDestinationAddress("127.0.0.1");
+            connParams.setBufferSize(1316);
+            connParams.setNetworkAcessName("ggpic6.tmn.pt");
+            connParams.setUseTransportLevel(true);
+            connParams.setTransportLevel(2);
+            connParams.setPort("8543");
+
+            AmmendmentB ammendmentB = new AmmendmentB("000000", null, null, sdMsl, connParams);
+            defaultSettings.setAmmendmentB(ammendmentB);
+
             ObjectMapper mapper = new ObjectMapper();
             try {
                 mapper.writerWithDefaultPrettyPrinter().writeValue(runSettingsFile, defaultSettings);

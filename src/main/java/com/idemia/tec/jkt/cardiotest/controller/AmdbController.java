@@ -1,11 +1,15 @@
 package com.idemia.tec.jkt.cardiotest.controller;
 
+import com.idemia.tec.jkt.cardiotest.model.ConnectionParameters;
 import com.idemia.tec.jkt.cardiotest.model.SCP80Keyset;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Modality;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class AmdbController {
@@ -40,6 +44,102 @@ public class AmdbController {
     public AmdbController() {}
 
     @FXML public void initialize() {
+        txtMslByte.setText(root.getRunSettings().getAmmendmentB().getSdMsl().getComputedMsl());
+
+        chkUseCipher.setSelected(root.getRunSettings().getAmmendmentB().getSdMsl().isUseCipher());
+
+        // initialize list of cipher algorithm
+        List<String> cipherAlgos = new ArrayList<>();
+        cipherAlgos.add("as defined in keyset");
+        cipherAlgos.add("no cipher");
+        cipherAlgos.add("DES - CBC");
+        cipherAlgos.add("AES - CBC");
+        cipherAlgos.add("XOR");
+        cipherAlgos.add("3DES - CBC 2 keys");
+        cipherAlgos.add("3DES - CBC 3 keys");
+        cipherAlgos.add("DES - ECB");
+        if (!(cmbCipherAlgo.getItems().size() > 0)) cmbCipherAlgo.getItems().addAll(cipherAlgos);
+        cmbCipherAlgo.setValue(root.getRunSettings().getAmmendmentB().getSdMsl().getCipherAlgo());
+
+        // initialize list of auth verification
+        List<String> authVerifs = new ArrayList<>();
+        authVerifs.add("No verification");
+        authVerifs.add("Redundancy Check");
+        authVerifs.add("Cryptographic Checksum");
+        authVerifs.add("Digital Signature");
+        if (!(cmbAuthVerif.getItems().size() > 0)) cmbAuthVerif.getItems().addAll(authVerifs);
+        cmbAuthVerif.setValue(root.getRunSettings().getAmmendmentB().getSdMsl().getAuthVerification());
+
+        // initialize list of signing algorithm
+        List<String> signingAlgos = new ArrayList<>();
+        signingAlgos.add("as defined in keyset");
+        signingAlgos.add("no algorithm");
+        signingAlgos.add("DES - CBC");
+        signingAlgos.add("AES - CMAC");
+        signingAlgos.add("XOR");
+        signingAlgos.add("3DES - CBC 2 keys");
+        signingAlgos.add("3DES - CBC 3 keys");
+        signingAlgos.add("DES - ECB");
+        signingAlgos.add("CRC32 (may be X5h)");
+        signingAlgos.add("CRC32 (may be X0h)");
+        signingAlgos.add("ISO9797 Algo 3 (auth value 8 byte)");
+        signingAlgos.add("ISO9797 Algo 3 (auth value 4 byte)");
+        signingAlgos.add("ISO9797 Algo 4 (auth value 4 byte)");
+        signingAlgos.add("ISO9797 Algo 4 (auth value 8 byte)");
+        signingAlgos.add("CRC16");
+        if (!(cmbSigningAlgo.getItems().size() > 0)) cmbSigningAlgo.getItems().addAll(signingAlgos);
+        cmbSigningAlgo.setValue(root.getRunSettings().getAmmendmentB().getSdMsl().getSigningAlgo());
+
+        // initialize list of counter checking
+        List<String> counterCheckings = new ArrayList<>();
+        counterCheckings.add("No counter available");
+        counterCheckings.add("Counter available no checking");
+        counterCheckings.add("Counter must be higher");
+        counterCheckings.add("Counter must be one higher");
+        if (!(cmbCounterCheck.getItems().size() > 0)) cmbCounterCheck.getItems().addAll(counterCheckings);
+        cmbCounterCheck.setValue(root.getRunSettings().getAmmendmentB().getSdMsl().getCounterChecking());
+
+        // initialize list of PoR requirement
+        List<String> porRequirements = new ArrayList<>();
+        porRequirements.add("No PoR");
+        porRequirements.add("PoR required");
+        porRequirements.add("PoR only if error");
+        if (!(cmbPorRequirement.getItems().size() > 0)) cmbPorRequirement.getItems().addAll(porRequirements);
+        cmbPorRequirement.setValue(root.getRunSettings().getAmmendmentB().getSdMsl().getPorRequirement());
+
+        chkCipherPor.setSelected(root.getRunSettings().getAmmendmentB().getSdMsl().isCipherPor());
+
+        // initialize list of PoR security
+        List<String> porSecurities = new ArrayList<>();
+        porSecurities.add("response with no security");
+        porSecurities.add("response with RC");
+        porSecurities.add("response with CC");
+        porSecurities.add("response with DS");
+        if (!(cmbPorSecurity.getItems().size() > 0)) cmbPorSecurity.getItems().addAll(porSecurities);
+        cmbPorSecurity.setValue(root.getRunSettings().getAmmendmentB().getSdMsl().getPorSecurity());
+
+        txtSdTar.setText(root.getRunSettings().getAmmendmentB().getSdTar());
+
+        // initialize list of available keysets for RFM USIM
+        if (root.getRunSettings().getAmmendmentB().getScp80CipherKeyset() != null) {
+            cmbCipherKeyset.setValue(root.getRunSettings().getAmmendmentB().getScp80CipherKeyset().getKeysetName());
+            for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets()) {
+                if (keyset.getKeysetName().equals(root.getRunSettings().getAmmendmentB().getScp80CipherKeyset().getKeysetName())) {
+                    lblKic.setText("Kic (hex): " + keyset.getComputedKic());
+                    break;
+                }
+            }
+        }
+        if (root.getRunSettings().getAmmendmentB().getScp80AuthKeyset() != null) {
+            cmbAuthKeyset.setValue(root.getRunSettings().getAmmendmentB().getScp80AuthKeyset().getKeysetName());
+            for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets()) {
+                if (keyset.getKeysetName().equals(root.getRunSettings().getAmmendmentB().getScp80AuthKeyset().getKeysetName())) {
+                    lblKid.setText("Kid (hex): " + keyset.getComputedKid());
+                    break;
+                }
+            }
+        }
+
         // TODO
     }
 
@@ -267,6 +367,12 @@ public class AmdbController {
         txtMslByte.setText(root.getRunSettings().getAmmendmentB().getSdMsl().getComputedMsl());
     }
 
+    private int encodeTransportProtocol(String type) {
+        if (type.equals("UDP; UICC in client mode")) return 0;
+        if (type.equals("TCP; UICC in client mode")) return 1;
+        return 0;
+    }
+
     public void saveControlState() {
         root.getRunSettings().getAmmendmentB().getSdMsl().setComputedMsl(txtMslByte.getText());
         root.getRunSettings().getAmmendmentB().getSdMsl().setUseCipher(chkUseCipher.isSelected());
@@ -332,9 +438,9 @@ public class AmdbController {
         if (root.getRunSettings().getAmmendmentB().getConnectionParameters().useNetworkAccessName())
             root.getRunSettings().getAmmendmentB().getConnectionParameters().setNetworkAcessName(txtNetworkAccessName.getText());
         if (root.getRunSettings().getAmmendmentB().getConnectionParameters().useTransportLevel()) {
-            
+            root.getRunSettings().getAmmendmentB().getConnectionParameters().setTransportLevel(encodeTransportProtocol(cmbTransportLevel.getSelectionModel().getSelectedItem()));
+            root.getRunSettings().getAmmendmentB().getConnectionParameters().setPort(txtPort.getText());
         }
-        // TODO
     }
 
 }

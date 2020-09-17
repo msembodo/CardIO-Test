@@ -29,6 +29,7 @@ public class RfmIsim {
     private String customTargetEfBadCase;
     private boolean useSpecificKeyset;
     private AccessDomain accessDomain;
+    private AccessDomain badCaseAccessDomain;
     private SCP80Keyset cipheringKeyset;
     private SCP80Keyset authKeyset;
     private MinimumSecurityLevel minimumSecurityLevel;
@@ -44,7 +45,7 @@ public class RfmIsim {
     public RfmIsim(boolean includeRfmIsim, boolean includeRfmIsimUpdateRecord, boolean includeRfmIsimExpandedMode,
                    String tar, String targetEf, String targetEfBadCase, boolean fullAccess, String customTargetAcc,
                    String customTargetEf, String customTargetEfAlw, String customTargetEfIsc1, String customTargetEfIsc2, String customTargetEfIsc3, String customTargetEfGPin1, String customTargetEfLPin1, String customTargetAccBadCase, String customTargetEfBadCase,
-                   boolean useSpecificKeyset, AccessDomain accessDomain, SCP80Keyset cipheringKeyset, SCP80Keyset authKeyset,
+                   boolean useSpecificKeyset, AccessDomain accessDomain, AccessDomain badCaseAccessDomain, SCP80Keyset cipheringKeyset, SCP80Keyset authKeyset,
                    MinimumSecurityLevel minimumSecurityLevel) {
         this.includeRfmIsim = includeRfmIsim;
         this.includeRfmIsimUpdateRecord = includeRfmIsimUpdateRecord;
@@ -65,6 +66,7 @@ public class RfmIsim {
         this.customTargetEfBadCase = customTargetEfBadCase;
         this.useSpecificKeyset = useSpecificKeyset;
         this.accessDomain = accessDomain;
+        this.badCaseAccessDomain = badCaseAccessDomain;
         this.cipheringKeyset = cipheringKeyset;
         this.authKeyset = authKeyset;
         this.minimumSecurityLevel = minimumSecurityLevel;
@@ -359,4 +361,11 @@ public class RfmIsim {
         this.accessDomain = accessDomain;
     }
 
+    public AccessDomain getRfmIsimBadCaseAccessDomain() {
+        return badCaseAccessDomain;
+    }
+
+    public void setRfmIsimBadCaseAccessDomain(AccessDomain badCaseAccessDomain) {
+       this.badCaseAccessDomain = badCaseAccessDomain;
+    }
 }

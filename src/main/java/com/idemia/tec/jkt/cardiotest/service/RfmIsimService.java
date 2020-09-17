@@ -470,7 +470,16 @@ public class RfmIsimService {
             + ".SET_BUFFER N " + authKeyset.getComputedKid() + "\n"
             + ".INIT_ENV_0348\n"
             + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
+            //TODO if need for update record failed (?)
+//        check 0348 isUpdateRecord
+//        if(!isUpdateRecord){
+//            routine.append(this.init_ENV_0348RfmIsim());
+//        }
+//        else {
+//            routine.append(this.init_SMS_0348RfmIsim());
+//        }
         );
+
         if (root.getRunSettings().getSmsUpdate().isUseWhiteList())
             routine.append(".CHANGE_TP_OA " + root.getRunSettings().getSmsUpdate().getTpOa() + "\n");
         routine.append(
@@ -486,13 +495,19 @@ public class RfmIsimService {
         );
         if (authKeyset.getKidMode().equals("AES - CMAC"))
             routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
+
+// Send OTA Command isFullAccess
+//        if(root.getRunSettings().getRfmIsim().isFullAccess()){
+//            routine.append(this.rfmIsimCommandViaOta());  // command(s) sent via OTA
+//        }
+//        else{
+//            routine.append(this.useRfmIsimCommandViaOtaBadCaseAccessDomain(root.getRunSettings().getRfmIsim())); // command(s) sent via OTA Bad Case Access Domain
+//        }
+
+        routine.append(this.useRfmIsimCommandViaOtaBadCaseAccessDomain(root.getRunSettings().getRfmIsim())); // command(s) sent via OTA Bad Case Access Domain
+
         routine.append(
-            "\n; command(s) sent via OTA\n"
-            + ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_ERR\n"
-            + ".APPEND_SCRIPT J\n"
-            + ".SET_BUFFER J 00 D6 00 00 <?> AA ; update binary\n"
-            + ".APPEND_SCRIPT J\n"
-            + ".END_MESSAGE G J\n"
+            ".END_MESSAGE G J\n"
             + "; show OTA message details\n"
             + ".DISPLAY_MESSAGE J\n"
             + "; send envelope\n"
@@ -500,25 +515,22 @@ public class RfmIsimService {
             + ".CLEAR_SCRIPT\n"
             + "; check PoR\n"
             + "A0 C0 00 00 W(2;1) [XX XX XX XX XX XX %TAR XX XX XX XX XX XX 00 XX 69 82] (9000) ; PoR OK, but failed to update\n"
-            + "\n; check update has failed\n"
-            + ".POWER_ON\n"
-            + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+//        check isUpdateRecord
+//        if(!isUpdateRecord){
+//            routine.append(this.sendEnvelopeRfmIsim("rfmIsimCase1"));
+//        }
+//        else {
+//            routine.append(this.updateSMSRecordRfmIsim("rfmIsimUpdateRecordCase1"));
+//        }
         );
-        if (root.getRunSettings().getSecretCodes().isUseIsc2())
-            routine.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
-        if (root.getRunSettings().getSecretCodes().isUseIsc3())
-            routine.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
-        if (root.getRunSettings().getSecretCodes().isUseIsc4())
-            routine.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+
+        routine.append(this.useRfmIsimCheckUpdateEfFailedAccessDomain(root.getRunSettings().getRfmIsim()));
+
         routine.append(
-            "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
-            + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
-            + "A0 A4 00 00 02 %DF_ID (9F22)\n"
-            + "A0 A4 00 00 02 %EF_ID_ERR (9F0F)\n"
-            + "A0 B0 00 00 01 [%EF_CONTENT_ERR] (9000)\n"
-            + "\n; increment counter by one\n"
+            "\n; increment counter by one\n"
             + ".INCREASE_BUFFER L(04:05) 0001\n"
         );
+
         return routine.toString();
     }
 
@@ -1271,6 +1283,9 @@ public class RfmIsimService {
 
         StringBuilder accessDomain = new StringBuilder();
 
+        if (rfmIsim.getRfmIsimAccessDomain().isUseAlways()){
+            accessDomain.append(".DEFINE %EF_ID_ISIM_ALW " + rfmIsim.getCustomTargetEfAlw() + "; EF protected by Always\n");
+        }
         if (rfmIsim.getRfmIsimAccessDomain().isUseIsc1()){
             accessDomain.append(".DEFINE %EF_ID_ISIM_ADM1 " + rfmIsim.getCustomTargetEfIsc1() + "; EF protected by ADM1\n");
         }
@@ -1291,6 +1306,35 @@ public class RfmIsimService {
         }
 
         return accessDomain.toString();
+    }
+
+    private String useRfmIsimEfBadCaseAccessDomain(RfmIsim rfmIsim){
+
+        StringBuilder badCaseAccessDomain = new StringBuilder();
+
+        if (rfmIsim.getRfmIsimBadCaseAccessDomain().isUseBadCaseAlways()){
+            badCaseAccessDomain.append(".DEFINE %EF_ID_ISIM_ERR_ALW " + rfmIsim.getCustomTargetEfBadCaseAlw() + "; EF is not protected by Always\n");
+        }
+        if (rfmIsim.getRfmIsimBadCaseAccessDomain().isUseBadCaseIsc1()){
+            badCaseAccessDomain.append(".DEFINE %EF_ID_ISIM_ERR_ADM1 " + rfmIsim.getCustomTargetEfBadCaseIsc1() + "; EF is not protected by ADM1\n");
+        }
+        if (rfmIsim.getRfmIsimBadCaseAccessDomain().isUseBadCaseIsc2()){
+            badCaseAccessDomain.append(".DEFINE %EF_ID_ISIM_ERR_ADM2 " + rfmIsim.getCustomTargetEfBadCaseIsc2() + "; EF is not protected by ADM2\n");
+        }
+        if (rfmIsim.getRfmIsimBadCaseAccessDomain().isUseBadCaseIsc3()){
+            badCaseAccessDomain.append(".DEFINE %EF_ID_ISIM_ERR_ADM3 " + rfmIsim.getCustomTargetEfBadCaseIsc3() + "; EF is not protected by ADM3\n");
+        }
+        if (rfmIsim.getRfmIsimBadCaseAccessDomain().isUseBadCaseIsc4()){
+            badCaseAccessDomain.append(".DEFINE %EF_ID_ISIM_ERR_ADM4 " + rfmIsim.getCustomTargetEfBadCaseIsc4() + "; EF is not protected by ADM4\n");
+        }
+        if (rfmIsim.getRfmIsimBadCaseAccessDomain().isUseBadCaseGPin1()){
+            badCaseAccessDomain.append(".DEFINE %EF_ID_ISIM_ERR_PIN1 " + rfmIsim.getCustomTargetEfBadCaseGPin1() + "; EF is not protected by PIN1\n");
+        }
+        if (rfmIsim.getRfmIsimBadCaseAccessDomain().isUseBadCaseLPin1()){
+            badCaseAccessDomain.append(".DEFINE %EF_ID_ISIM_ERR_PIN2 " + rfmIsim.getCustomTargetEfBadCaseLPin1() + "; EF is not protected by PIN2\n");
+        }
+
+        return badCaseAccessDomain.toString();
     }
 
     private String rfmIsimDefineTargetFiles(RfmIsim rfmIsim){
@@ -1315,7 +1359,8 @@ public class RfmIsimService {
             "\n; TAR is configured with access domain\n"
             + ".DEFINE %DF_ID " + root.getRunSettings().getCardParameters().getDfIsim() + "\n"
             + (this.useRfmIsimEfAccessDomain(rfmIsim))
-            +".DEFINE %EF_ID_ERR " + rfmIsim.getCustomTargetEfBadCase() + "\n"
+            + (this.useRfmIsimEfBadCaseAccessDomain(rfmIsim))
+
         );
 
         return targetFiles.toString();
@@ -1372,6 +1417,14 @@ public class RfmIsimService {
             + "A0 A4 00 00 02 %DF_ID (9F22)\n"
         );
 
+        if (rfmIsim.getRfmIsimAccessDomain().isUseAlways()){
+            checkInitialContent.append(
+                "; check content EF-" + rfmIsim.getCustomTargetEfAlw() +  "\n"
+                +"A0 A4 00 00 02 %EF_ID_ISIM_ALW (9F0F)\n"
+                + "A0 B0 00 00 01 (9000)\n"
+                + ".DEFINE %EF_CONTENT_ALW R\n"
+            );
+        }
         if (rfmIsim.getRfmIsimAccessDomain().isUseIsc1()){
             checkInitialContent.append(
                 "; check content EF-" + rfmIsim.getCustomTargetEfIsc1() +  "\n"
@@ -1426,6 +1479,89 @@ public class RfmIsimService {
         return checkInitialContent.toString();
     }
 
+    private String useRfmIsimCheckInitialContentEfBadCaseAccessDomain(RfmIsim rfmIsim){
+
+        StringBuilder checkInitialContentBadCase = new StringBuilder();
+
+        checkInitialContentBadCase.append(
+            "\n.POWER_ON\n"
+            + "; check initial content\n"
+            + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+        );
+
+        if (root.getRunSettings().getSecretCodes().isUseIsc2())
+            checkInitialContentBadCase.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+        if (root.getRunSettings().getSecretCodes().isUseIsc3())
+            checkInitialContentBadCase.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+        if (root.getRunSettings().getSecretCodes().isUseIsc4())
+            checkInitialContentBadCase.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+        checkInitialContentBadCase.append(
+                "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+                + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+                + "A0 A4 00 00 02 %DF_ID (9F22)\n"
+        );
+
+        if (rfmIsim.getRfmIsimBadCaseAccessDomain().isUseBadCaseAlways()){
+            checkInitialContentBadCase.append(
+                "; check content EF-" + rfmIsim.getCustomTargetEfBadCaseAlw() +  "\n"
+                +"A0 A4 00 00 02 %EF_ID_ISIM_ERR_ALW (9F0F)\n"
+                + "A0 B0 00 00 01 (9000)\n"
+                + ".DEFINE %EF_CONTENT_ERR_ALW R\n"
+            );
+        }
+        if (rfmIsim.getRfmIsimBadCaseAccessDomain().isUseBadCaseIsc1()){
+            checkInitialContentBadCase.append(
+                "; check content EF-" + rfmIsim.getCustomTargetEfBadCaseIsc1() +  "\n"
+                +"A0 A4 00 00 02 %EF_ID_ISIM_ERR_ADM1 (9F0F)\n"
+                + "A0 B0 00 00 01 (9000)\n"
+                + ".DEFINE %EF_CONTENT_ERR_ADM1 R\n"
+            );
+        }
+        if (rfmIsim.getRfmIsimBadCaseAccessDomain().isUseBadCaseIsc2()){
+            checkInitialContentBadCase.append(
+                "; check content EF-" + rfmIsim.getCustomTargetEfBadCaseIsc2() +  "\n"
+                +"A0 A4 00 00 02 %EF_ID_ISIM_ERR_ADM2 (9F0F)\n"
+                +"A0 B0 00 00 01 (9000)\n"
+                +".DEFINE %EF_CONTENT_ERR_ADM2 R\n"
+
+            );
+        }
+        if (rfmIsim.getRfmIsimBadCaseAccessDomain().isUseBadCaseIsc3()){
+            checkInitialContentBadCase.append(
+                "; check content EF-" + rfmIsim.getCustomTargetEfBadCaseIsc3() +  "\n"
+                +"A0 A4 00 00 02 %EF_ID_ISIM_ERR_ADM3 (9F0F)\n"
+                +"A0 B0 00 00 01 (9000)\n"
+                +".DEFINE %EF_CONTENT_ERR_ADM3 R\n"
+            );
+        }
+        if (rfmIsim.getRfmIsimBadCaseAccessDomain().isUseBadCaseIsc4()){
+            checkInitialContentBadCase.append(
+                "; check content EF-" + rfmIsim.getCustomTargetEfBadCaseIsc4() +  "\n"
+                +"A0 A4 00 00 02 %EF_ID_ISIM_ERR_ADM4 (9F0F)\n"
+                +"A0 B0 00 00 01 (9000)\n"
+                +".DEFINE %EF_CONTENT_ERR_ADM4 R\n"
+            );
+        }
+        if (rfmIsim.getRfmIsimBadCaseAccessDomain().isUseBadCaseGPin1()){
+            checkInitialContentBadCase.append(
+                "; check content EF-" + rfmIsim.getCustomTargetEfBadCaseGPin1() +  "\n"
+                +"A0 A4 00 00 02 %EF_ID_ISIM_ERR_PIN1 (9F0F)\n"
+                +"A0 B0 00 00 01 (9000)\n"
+                +".DEFINE %EF_CONTENT_ERR_PIN1 R\n"
+            );
+        }
+        if (rfmIsim.getRfmIsimBadCaseAccessDomain().isUseBadCaseLPin1()){
+            checkInitialContentBadCase.append(
+                "; check content EF-" + rfmIsim.getCustomTargetEfBadCaseLPin1() +  "\n"
+                +"A0 A4 00 00 02 %EF_ID_ISIM_ERR_PIN2 (9F0F)\n"
+                +"A0 B0 00 00 01 (9000)\n"
+                +".DEFINE %EF_CONTENT_ERR_PIN2 R\n"
+            );
+        }
+
+        return checkInitialContentBadCase.toString();
+    }
+
     private String rfmIsimCommandViaOta(){
 
         StringBuilder commandOta = new StringBuilder();
@@ -1448,6 +1584,14 @@ public class RfmIsimService {
 
         commandOta.append("\n; command(s) sent via OTA\n");
 
+        if (rfmIsim.getRfmIsimAccessDomain().isUseAlways()){
+            commandOta.append(
+                ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_ISIM_ALW ; select EF on Always\n"
+                + ".APPEND_SCRIPT J\n"
+                + ".SET_BUFFER J 00 B0 00 00 02 ; read binary\n"
+                + ".APPEND_SCRIPT J\n"
+            );
+        }
         if (rfmIsim.getRfmIsimAccessDomain().isUseIsc1()){
             commandOta.append(
                 ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_ISIM_ADM1 ; select EF on ADM1\n"
@@ -1498,6 +1642,72 @@ public class RfmIsimService {
         }
 
         return commandOta.toString();
+    }
+
+    private String useRfmIsimCommandViaOtaBadCaseAccessDomain(RfmIsim rfmIsim){
+
+        StringBuilder badCasecommandOta = new StringBuilder();
+
+        badCasecommandOta.append("\n; command(s) sent via OTA Bad Case\n");
+
+        if (rfmIsim.getRfmIsimBadCaseAccessDomain().isUseBadCaseAlways()){
+            badCasecommandOta.append(
+                ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_ISIM_ERR_ALW ; select EF on Bad Case Always\n"
+                + ".APPEND_SCRIPT J\n"
+                + ".SET_BUFFER J 00 B0 00 00 02 ; read binary\n"
+                + ".APPEND_SCRIPT J\n"
+            );
+        }
+        if (rfmIsim.getRfmIsimBadCaseAccessDomain().isUseBadCaseIsc1()){
+            badCasecommandOta.append(
+                ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_ISIM_ERR_ADM1 ; select EF on Bad Case ADM1\n"
+                + ".APPEND_SCRIPT J\n"
+                + ".SET_BUFFER J 00 D6 00 00 <?> A1 ; update binary\n"
+                + ".APPEND_SCRIPT J\n"
+            );
+        }
+        if (rfmIsim.getRfmIsimBadCaseAccessDomain().isUseBadCaseIsc2()){
+            badCasecommandOta.append(
+                ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_ISIM_ERR_ADM2 ; select EF on Bad Case ADM2\n"
+                + ".APPEND_SCRIPT J\n"
+                + ".SET_BUFFER J 00 D6 00 00 <?> A2 ; update binary\n"
+                + ".APPEND_SCRIPT J\n"
+            );
+        }
+        if (rfmIsim.getRfmIsimBadCaseAccessDomain().isUseBadCaseIsc3()){
+            badCasecommandOta.append(
+                ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_ISIM_ERR_ADM3 ; select EF on Bad Case ADM3\n"
+                + ".APPEND_SCRIPT J\n"
+                + ".SET_BUFFER J 00 D6 00 00 <?> A3 ; update binary\n"
+                + ".APPEND_SCRIPT J\n"
+            );
+        }
+        if (rfmIsim.getRfmIsimBadCaseAccessDomain().isUseBadCaseIsc4()){
+            badCasecommandOta.append(
+                ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_ISIM_ERR_ADM4 ; select EF on Bad Case ADM4\n"
+                + ".APPEND_SCRIPT J\n"
+                + ".SET_BUFFER J 00 D6 00 00 <?> A4 ; update binary\n"
+                + ".APPEND_SCRIPT J\n"
+            );
+        }
+        if (rfmIsim.getRfmIsimBadCaseAccessDomain().isUseBadCaseGPin1()){
+            badCasecommandOta.append(
+                ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_ISIM_ERR_PIN1 ; select EF on Bad Case PIN1\n"
+                + ".APPEND_SCRIPT J\n"
+                + ".SET_BUFFER J 00 D6 00 00 <?> A5 ; update binary\n"
+                + ".APPEND_SCRIPT J\n"
+            );
+        }
+        if (rfmIsim.getRfmIsimBadCaseAccessDomain().isUseBadCaseLPin1()){
+            badCasecommandOta.append(
+                ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_ISIM_ERR_PIN2 ; select EF on Bad Case PIN2\n"
+                + ".APPEND_SCRIPT J\n"
+                + ".SET_BUFFER J 00 D6 00 00 <?> A6 ; update binary\n"
+                + ".APPEND_SCRIPT J\n"
+            );
+        }
+
+        return badCasecommandOta.toString();
     }
 
     private String rfmIsimCheckUpdateEfDone(){
@@ -1551,6 +1761,13 @@ public class RfmIsimService {
         );
 
 
+        if(rfmIsim.getRfmIsimAccessDomain().isUseAlways()){
+            checkUpdateHasBeenDone.append(
+                "; check Read Binary on EF-" + rfmIsim.getCustomTargetEfAlw() +  "\n"
+                +"A0 A4 00 00 02 %EF_ID_ISIM_ALW (9F0F)\n"
+                + "A0 B0 00 00 02 [%EF_CONTENT_ALW] (9000)\n"
+            );
+        }
         if(rfmIsim.getRfmIsimAccessDomain().isUseIsc1()){
             checkUpdateHasBeenDone.append(
                 "; check update on EF-" + rfmIsim.getCustomTargetEfIsc1() +  "\n"
@@ -1595,6 +1812,82 @@ public class RfmIsimService {
         }
 
         return checkUpdateHasBeenDone.toString();
+    }
+
+    private String useRfmIsimCheckUpdateEfFailedAccessDomain(RfmIsim rfmIsim){
+
+        StringBuilder checkUpdateHasFailed = new StringBuilder();
+
+        checkUpdateHasFailed.append(
+            "\n; check update has failed on EF\n"
+            + ".POWER_ON\n"
+            + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+        );
+
+        if (root.getRunSettings().getSecretCodes().isUseIsc2())
+            checkUpdateHasFailed.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+        if (root.getRunSettings().getSecretCodes().isUseIsc3())
+            checkUpdateHasFailed.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+        if (root.getRunSettings().getSecretCodes().isUseIsc4())
+            checkUpdateHasFailed.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+        checkUpdateHasFailed.append(
+            "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+            + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+            + "A0 A4 00 00 02 %DF_ID (9F22)\n"
+        );
+
+
+        if(rfmIsim.getRfmIsimBadCaseAccessDomain().isUseBadCaseAlways()){
+            checkUpdateHasFailed.append(
+                "; check Read Binary on EF-" + rfmIsim.getCustomTargetEfBadCaseAlw() +  "\n"
+                +"A0 A4 00 00 02 %EF_ID_ISIM_ERR_ALW (9F0F)\n"
+                + "A0 B0 00 00 02 [%EF_CONTENT_ERR_ALW] (9000)\n"
+            );
+        }
+        if(rfmIsim.getRfmIsimBadCaseAccessDomain().isUseBadCaseIsc1()){
+            checkUpdateHasFailed.append(
+                "; check update failed on EF-" + rfmIsim.getCustomTargetEfBadCaseIsc1() +  "\n"
+                +"A0 A4 00 00 02 %EF_ID_ISIM_ERR_ADM1 (9F0F)\n"
+                + "A0 B0 00 00 01 [%EF_CONTENT_ERR_ADM1] (9000)\n"
+            );
+        }
+        if(rfmIsim.getRfmIsimBadCaseAccessDomain().isUseBadCaseIsc2()){
+            checkUpdateHasFailed.append(
+                "; check update failed on EF-" + rfmIsim.getCustomTargetEfBadCaseIsc2() +  "\n"
+                +"A0 A4 00 00 02 %EF_ID_ISIM_ERR_ADM2 (9F0F)\n"
+                + "A0 B0 00 00 01 [%EF_CONTENT_ERR_ADM2] (9000)\n"
+            );
+        }
+        if(rfmIsim.getRfmIsimBadCaseAccessDomain().isUseBadCaseIsc3()){
+            checkUpdateHasFailed.append(
+                "; check update failed on EF-" + rfmIsim.getCustomTargetEfBadCaseIsc3() +  "\n"
+                +"A0 A4 00 00 02 %EF_ID_ISIM_ERR_ADM3 (9F0F)\n"
+                + "A0 B0 00 00 01 [%EF_CONTENT_ERR_ADM3] (9000)\n"
+            );
+        }
+        if(rfmIsim.getRfmIsimBadCaseAccessDomain().isUseBadCaseIsc4()){
+            checkUpdateHasFailed.append(
+                "; check update failed on EF-" + rfmIsim.getCustomTargetEfBadCaseIsc4() +  "\n"
+                +"A0 A4 00 00 02 %EF_ID_ISIM_ERR_ADM4 (9F0F)\n"
+                + "A0 B0 00 00 01 [%EF_CONTENT_ERR_ADM4] (9000)\n"
+            );
+        }
+        if(rfmIsim.getRfmIsimBadCaseAccessDomain().isUseBadCaseGPin1()){
+            checkUpdateHasFailed.append(
+                "; check update failed on EF-" + rfmIsim.getCustomTargetEfBadCaseGPin1() +  "\n"
+                +"A0 A4 00 00 02 %EF_ID_ISIM_ERR_PIN1 (9F0F)\n"
+                + "A0 B0 00 00 01 [%EF_CONTENT_ERR_PIN1] (9000)\n"
+            );
+        }
+        if(rfmIsim.getRfmIsimBadCaseAccessDomain().isUseBadCaseLPin1()){
+            checkUpdateHasFailed.append(
+                "; check update failed on EF-" + rfmIsim.getCustomTargetEfBadCaseLPin1() +  "\n"
+                +"A0 A4 00 00 02 %EF_ID_ISIM_ERR_PIN2 (9F0F)\n"
+                + "A0 B0 00 00 01 [%EF_CONTENT_ERR_PIN2] (9000)\n"
+            );
+        }
+
+        return checkUpdateHasFailed.toString();
     }
 
     private String rfmIsimRestoreRfmIsimInitialContentEf(){
@@ -1648,6 +1941,13 @@ public class RfmIsimService {
         );
 
 
+        if(rfmIsim.getRfmIsimAccessDomain().isUseAlways()){
+            restoreInitialContent.append(
+                "; check Read Binary on EF-" + rfmIsim.getCustomTargetEfAlw() +  "\n"
+                +"A0 A4 00 00 02 %EF_ID_ISIM_ALW (9F0F)\n"
+                + "A0 B0 00 00 02 [%EF_CONTENT_ALW] (9000) ; Read Binary\n"
+            );
+        }
         if (rfmIsim.getRfmIsimAccessDomain().isUseIsc1()){
             restoreInitialContent.append(
                 "; restore content EF-" + rfmIsim.getCustomTargetEfIsc1() +  "\n"
@@ -1699,28 +1999,8 @@ public class RfmIsimService {
         StringBuilder performNegativeTest = new StringBuilder();
 
         if (!rfmIsim.isFullAccess()) {
-            performNegativeTest.append(
-                "\n; perform negative test: updating " + rfmIsim.getCustomTargetEfBadCase() + " Out of Access Domain\n"
-                + "\n.POWER_ON\n"
-                + "; check initial content of EF\n"
-                + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
-            );
-
-            if (root.getRunSettings().getSecretCodes().isUseIsc2())
-                performNegativeTest.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
-            if (root.getRunSettings().getSecretCodes().isUseIsc3())
-                performNegativeTest.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
-            if (root.getRunSettings().getSecretCodes().isUseIsc4())
-                performNegativeTest.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
-
-            performNegativeTest.append(
-                "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
-                + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
-                + "A0 A4 00 00 02 %DF_ID (9F22)\n"
-                + "A0 A4 00 00 02 %EF_ID_ERR (9FXX)\n"
-                + "A0 B0 00 00 01 (9000)\n"
-                + ".DEFINE %EF_CONTENT_ERR R\n"
-            );
+            performNegativeTest.append("\n\n ; ================ Perform Negative Test Access Domain ================\n");
+            performNegativeTest.append(this.useRfmIsimCheckInitialContentEfBadCaseAccessDomain(rfmIsim));
 
             if (rfmIsim.isUseSpecificKeyset())
                 performNegativeTest.append(rfmIsimCase1NegativeTest(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), rfmIsim.getMinimumSecurityLevel()));
@@ -1730,8 +2010,6 @@ public class RfmIsimService {
                     performNegativeTest.append(rfmIsimCase1NegativeTest(keyset, keyset, rfmIsim.getMinimumSecurityLevel()));
                 }
             }
-
-            performNegativeTest.append("\n.UNDEFINE %EF_CONTENT_ERR \n");
         }
 
         return performNegativeTest.toString();

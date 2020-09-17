@@ -159,6 +159,15 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             rfmIsimAccessDomain.setUseGPin1(false);
             rfmIsimAccessDomain.setUseLPin1(false);
 
+            AccessDomain rfmIsimBadCaseAccessDomain = new AccessDomain();
+            rfmIsimBadCaseAccessDomain.setUseBadCaseAlways(false);
+            rfmIsimBadCaseAccessDomain.setUseBadCaseIsc1(false);
+            rfmIsimBadCaseAccessDomain.setUseBadCaseIsc2(false);
+            rfmIsimBadCaseAccessDomain.setUseBadCaseIsc3(false);
+            rfmIsimBadCaseAccessDomain.setUseBadCaseIsc4(false);
+            rfmIsimBadCaseAccessDomain.setUseBadCaseGPin1(false);
+            rfmIsimBadCaseAccessDomain.setUseBadCaseLPin1(false);
+
             RfmIsim rfmIsim = new RfmIsim();
             rfmIsim.setIncludeRfmIsim(true);
             rfmIsim.setTar("B00025");
@@ -168,6 +177,7 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             rfmIsim.setMinimumSecurityLevel(rfmIsimMsl);
 
             rfmIsim.setRfmIsimAccessDomain(rfmIsimAccessDomain);
+            rfmIsim.setRfmIsimBadCaseAccessDomain(rfmIsimBadCaseAccessDomain);
             defaultSettings.setRfmIsim(rfmIsim);
 
             MinimumSecurityLevel ramMsl = new MinimumSecurityLevel(true, "Cryptographic Checksum", "Counter must be higher");

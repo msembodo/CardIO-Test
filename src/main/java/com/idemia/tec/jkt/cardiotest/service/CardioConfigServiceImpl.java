@@ -151,6 +151,7 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             rfmIsimMsl.setPorSecurity("response with no security");
 
             AccessDomain rfmIsimAccessDomain = new AccessDomain();
+            rfmIsimAccessDomain.setUseAlways(false);
             rfmIsimAccessDomain.setUseIsc1(false);
             rfmIsimAccessDomain.setUseIsc2(false);
             rfmIsimAccessDomain.setUseIsc3(false);

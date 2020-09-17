@@ -11,12 +11,20 @@ public class RfmIsim {
     private boolean fullAccess;
     private String customTargetAcc;
     private String customTargetEf;
+    private String customTargetEfAlw;
     private String customTargetEfIsc1;
     private String customTargetEfIsc2;
     private String customTargetEfIsc3;
     private String customTargetEfIsc4;
     private String customTargetEfGPin1;
     private String customTargetEfLPin1;
+    private String customTargetEfBadCaseAlw;
+    private String customTargetEfBadCaseIsc1;
+    private String customTargetEfBadCaseIsc2;
+    private String customTargetEfBadCaseIsc3;
+    private String customTargetEfBadCaseIsc4;
+    private String customTargetEfBadCaseGPin1;
+    private String customTargetEfBadCaseLPin1;
     private String customTargetAccBadCase;
     private String customTargetEfBadCase;
     private boolean useSpecificKeyset;
@@ -35,7 +43,7 @@ public class RfmIsim {
 
     public RfmIsim(boolean includeRfmIsim, boolean includeRfmIsimUpdateRecord, boolean includeRfmIsimExpandedMode,
                    String tar, String targetEf, String targetEfBadCase, boolean fullAccess, String customTargetAcc,
-                   String customTargetEf, String customTargetEfIsc1, String customTargetEfIsc2, String customTargetEfIsc3, String customTargetEfGPin1, String customTargetEfLPin1, String customTargetAccBadCase, String customTargetEfBadCase,
+                   String customTargetEf, String customTargetEfAlw, String customTargetEfIsc1, String customTargetEfIsc2, String customTargetEfIsc3, String customTargetEfGPin1, String customTargetEfLPin1, String customTargetAccBadCase, String customTargetEfBadCase,
                    boolean useSpecificKeyset, AccessDomain accessDomain, SCP80Keyset cipheringKeyset, SCP80Keyset authKeyset,
                    MinimumSecurityLevel minimumSecurityLevel) {
         this.includeRfmIsim = includeRfmIsim;
@@ -47,6 +55,7 @@ public class RfmIsim {
         this.fullAccess = fullAccess;
         this.customTargetAcc = customTargetAcc;
         this.customTargetEf = customTargetEf;
+        this.customTargetEfAlw = customTargetEfAlw;
         this.customTargetEfIsc1 = customTargetEfIsc1;
         this.customTargetEfIsc2 = customTargetEfIsc2;
         this.customTargetEfIsc3 = customTargetEfIsc3;
@@ -59,6 +68,7 @@ public class RfmIsim {
         this.cipheringKeyset = cipheringKeyset;
         this.authKeyset = authKeyset;
         this.minimumSecurityLevel = minimumSecurityLevel;
+        // TODO add Abtract on for Negative Case
     }
 
     public boolean isIncludeRfmIsim() {
@@ -141,6 +151,14 @@ public class RfmIsim {
         this.customTargetAccBadCase = customTargetAccBadCase;
     }
 
+    public String getCustomTargetEfAlw() {
+        return customTargetEfAlw;
+    }
+
+    public void setCustomTargetEfAlw(String customTargetEfAlw) {
+        this.customTargetEfAlw = customTargetEfAlw;
+    }
+
     public String getCustomTargetEfIsc1() {
         return customTargetEfIsc1;
     }
@@ -187,6 +205,62 @@ public class RfmIsim {
 
     public void setCustomTargetEfLPin1(String customTargetEfLPin1) {
         this.customTargetEfLPin1 = customTargetEfLPin1;
+    }
+
+    public String getCustomTargetEfBadCaseAlw() {
+        return customTargetEfBadCaseAlw;
+    }
+
+    public void setCustomTargetEfBadCaseAlw(String customTargetEfBadCaseAlw) {
+        this.customTargetEfBadCaseAlw = customTargetEfBadCaseAlw;
+    }
+
+    public String getCustomTargetEfBadCaseIsc1() {
+        return customTargetEfBadCaseIsc1;
+    }
+
+    public void setCustomTargetEfBadCaseIsc1(String customTargetEfBadCaseIsc1) {
+        this.customTargetEfBadCaseIsc1 = customTargetEfBadCaseIsc1;
+    }
+
+    public String getCustomTargetEfBadCaseIsc2() {
+        return customTargetEfBadCaseIsc2;
+    }
+
+    public void setCustomTargetEfBadCaseIsc2(String customTargetEfBadCaseIsc2) {
+        this.customTargetEfBadCaseIsc2 = customTargetEfBadCaseIsc2;
+    }
+
+    public String getCustomTargetEfBadCaseIsc3() {
+        return customTargetEfBadCaseIsc3;
+    }
+
+    public void setCustomTargetEfBadCaseIsc3(String customTargetEfBadCaseIsc3) {
+        this.customTargetEfBadCaseIsc3 = customTargetEfBadCaseIsc3;
+    }
+
+    public String getCustomTargetEfBadCaseIsc4() {
+        return customTargetEfBadCaseIsc4;
+    }
+
+    public void setCustomTargetEfBadCaseIsc4(String customTargetEfBadCaseIsc4) {
+        this.customTargetEfBadCaseIsc4 = customTargetEfBadCaseIsc4;
+    }
+
+    public String getCustomTargetEfBadCaseGPin1() {
+        return customTargetEfBadCaseGPin1;
+    }
+
+    public void setCustomTargetEfBadCaseGPin1(String customTargetEfBadCaseGPin1) {
+        this.customTargetEfBadCaseGPin1 = customTargetEfBadCaseGPin1;
+    }
+
+    public String getCustomTargetEfBadCaseLPin1() {
+        return customTargetEfBadCaseLPin1;
+    }
+
+    public void setCustomTargetEfBadCaseLPin1(String customTargetEfBadCaseLPin1) {
+        this.customTargetEfBadCaseLPin1 = customTargetEfBadCaseLPin1;
     }
 
     public String getCustomTargetEfBadCase() {

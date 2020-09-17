@@ -169,7 +169,16 @@ public class RfmIsimController {
         txtRfmIsimTargetEf.setText(root.getRunSettings().getRfmIsim().getTargetEf());
         txtRfmIsimTargetEfBadCase.setText(root.getRunSettings().getRfmIsim().getTargetEfBadCase());
 
-        // Initialize Access Domain
+        // Initialize Access Domain Positive Case
+        chkRfmIsimUseAlw.setSelected(root.getRunSettings().getRfmIsim().getRfmIsimAccessDomain().isUseAlways());
+        handleIncludeAlwCheck();
+        if (chkRfmIsimUseAlw.isSelected()){
+            txtRfmIsimCustomTargetEfAlw.setText(root.getRunSettings().getRfmIsim().getCustomTargetEfAlw());
+        }
+        else {
+            txtRfmIsimCustomTargetEfAlw.setText("");
+        }
+
         chkRfmIsimUseIsc1.setSelected(root.getRunSettings().getRfmIsim().getRfmIsimAccessDomain().isUseIsc1());
         handleIncludeIsc1Check();
         if (chkRfmIsimUseIsc1.isSelected()){
@@ -224,8 +233,69 @@ public class RfmIsimController {
             txtRfmIsimCustomTargetEfLPin1.setText("");
         }
 
-//        if (root.getRunSettings().getRfmIsim().getCustomTargetEfBadCase() != null)
-//            txtRfmIsimCustomTargetEfBadCase.setText(root.getRunSettings().getRfmIsim().getCustomTargetEfBadCase());
+        // Initialize Access Domain Negative Case
+        chkRfmIsimUseBadCaseAlw.setSelected(root.getRunSettings().getRfmIsim().getRfmIsimAccessDomain().isUseAlways());
+        handleIncludeAlwCheck();
+        if (chkRfmIsimUseBadCaseAlw.isSelected()){
+            txtRfmIsimCustomTargetEfBadCaseAlw.setText(root.getRunSettings().getRfmIsim().getCustomTargetEfBadCaseAlw());
+        }
+        else {
+            txtRfmIsimCustomTargetEfBadCaseAlw.setText("");
+        }
+
+        chkRfmIsimUseBadCaseIsc1.setSelected(root.getRunSettings().getRfmIsim().getRfmIsimAccessDomain().isUseIsc1());
+        handleIncludeIsc1Check();
+        if (chkRfmIsimUseBadCaseIsc1.isSelected()){
+            txtRfmIsimCustomTargetEfBadCaseIsc1.setText(root.getRunSettings().getRfmIsim().getCustomTargetEfBadCaseIsc1());
+        }
+        else {
+            txtRfmIsimCustomTargetEfBadCaseIsc1.setText("");
+        }
+
+        chkRfmIsimUseBadCaseIsc2.setSelected(root.getRunSettings().getRfmIsim().getRfmIsimAccessDomain().isUseIsc2());
+        handleIncludeIsc2Check();
+        if (chkRfmIsimUseBadCaseIsc2.isSelected()){
+            txtRfmIsimCustomTargetEfBadCaseIsc2.setText(root.getRunSettings().getRfmIsim().getCustomTargetEfBadCaseIsc2());
+        }
+        else {
+            txtRfmIsimCustomTargetEfBadCaseIsc2.setText("");
+        }
+
+        chkRfmIsimUseBadCaseIsc3.setSelected(root.getRunSettings().getRfmIsim().getRfmIsimAccessDomain().isUseIsc3());
+        handleIncludeIsc3Check();
+        if (chkRfmIsimUseBadCaseIsc3.isSelected()){
+            txtRfmIsimCustomTargetEfBadCaseIsc3.setText(root.getRunSettings().getRfmIsim().getCustomTargetEfBadCaseIsc3());
+        }
+        else {
+            txtRfmIsimCustomTargetEfBadCaseIsc3.setText("");
+        }
+
+        chkRfmIsimUseBadCaseIsc4.setSelected(root.getRunSettings().getRfmIsim().getRfmIsimAccessDomain().isUseIsc4());
+        handleIncludeIsc4Check();
+        if (chkRfmIsimUseBadCaseIsc4.isSelected()){
+            txtRfmIsimCustomTargetEfBadCaseIsc4.setText(root.getRunSettings().getRfmIsim().getCustomTargetEfBadCaseIsc4());
+        }
+        else {
+            txtRfmIsimCustomTargetEfBadCaseIsc4.setText("");
+        }
+
+        chkRfmIsimUseBadCaseGPin1.setSelected(root.getRunSettings().getRfmIsim().getRfmIsimAccessDomain().isUseGPin1());
+        handleIncludeGPin1Check();
+        if (chkRfmIsimUseBadCaseGPin1.isSelected()){
+            txtRfmIsimCustomTargetEfBadCaseGPin1.setText(root.getRunSettings().getRfmIsim().getCustomTargetEfBadCaseGPin1());
+        }
+        else {
+            txtRfmIsimCustomTargetEfBadCaseGPin1.setText("");
+        }
+
+        chkRfmIsimUseBadCaseLPin1.setSelected(root.getRunSettings().getRfmIsim().getRfmIsimAccessDomain().isUseLPin1());
+        handleIncludeLPin1Check();
+        if (chkRfmIsimUseBadCaseLPin1.isSelected()){
+            txtRfmIsimCustomTargetEfBadCaseLPin1.setText(root.getRunSettings().getRfmIsim().getCustomTargetEfBadCaseLPin1());
+        }
+        else {
+            txtRfmIsimCustomTargetEfBadCaseLPin1.setText("");
+        }
 
         chkRfmIsimFullAccess.setSelected(root.getRunSettings().getRfmIsim().isFullAccess());
         handleRfmIsimFullAccessCheck();
@@ -307,7 +377,6 @@ public class RfmIsimController {
             chkRfmIsimUseBadCaseGPin1.setDisable(true);
             chkRfmIsimUseBadCaseLPin1.setDisable(true);
             lblRfmIsimCustomTargetBadCase.setDisable(true);
-//            txtRfmIsimCustomTargetEfBadCase.setDisable(true);
             txtRfmIsimTargetEf.setDisable(false);
             txtRfmIsimTargetEfBadCase.setDisable(false);
         }
@@ -328,23 +397,12 @@ public class RfmIsimController {
             chkRfmIsimUseBadCaseGPin1.setDisable(false);
             chkRfmIsimUseBadCaseLPin1.setDisable(false);
             lblRfmIsimCustomTargetBadCase.setDisable(false);
-//            txtRfmIsimCustomTargetEfBadCase.setDisable(false);
             txtRfmIsimTargetEf.setDisable(true);
             txtRfmIsimTargetEfBadCase.setDisable(true);
         }
     }
 
-    // handle Positive Case
-    @FXML private void handleIncludeIsc1Check() {
-        if(chkRfmIsimUseIsc1.isSelected()){
-            txtRfmIsimCustomTargetEfIsc1.setDisable(false);
-            chkRfmIsimUseBadCaseIsc1.setDisable(true);
-        }
-        else{
-            txtRfmIsimCustomTargetEfIsc1.setDisable(true);
-            chkRfmIsimUseBadCaseIsc1.setDisable(false);
-        }
-    }
+    // handle Access Domain Positive Case
 
     @FXML private void handleIncludeAlwCheck() {
         if(chkRfmIsimUseAlw.isSelected()){
@@ -354,6 +412,17 @@ public class RfmIsimController {
         else{
             txtRfmIsimCustomTargetEfAlw.setDisable(true);
             chkRfmIsimUseBadCaseAlw.setDisable(false);
+        }
+    }
+
+    @FXML private void handleIncludeIsc1Check() {
+        if(chkRfmIsimUseIsc1.isSelected()){
+            txtRfmIsimCustomTargetEfIsc1.setDisable(false);
+            chkRfmIsimUseBadCaseIsc1.setDisable(true);
+        }
+        else{
+            txtRfmIsimCustomTargetEfIsc1.setDisable(true);
+            chkRfmIsimUseBadCaseIsc1.setDisable(false);
         }
     }
 
@@ -412,7 +481,7 @@ public class RfmIsimController {
         }
     }
 
-    // handle Negative Case
+    // handle Access Domain Negative Case
 
     @FXML private void handleIncludeBadCaseAlwCheck() {
         if(chkRfmIsimUseBadCaseAlw.isSelected()){
@@ -758,21 +827,36 @@ public class RfmIsimController {
         root.getRunSettings().getRfmIsim().setTargetEfBadCase(txtRfmIsimTargetEfBadCase.getText());
         root.getRunSettings().getRfmIsim().setFullAccess(chkRfmIsimFullAccess.isSelected());
         if (!root.getRunSettings().getRfmIsim().isFullAccess()) {
+            root.getRunSettings().getRfmIsim().setCustomTargetEfAlw(txtRfmIsimCustomTargetEfAlw.getText());
             root.getRunSettings().getRfmIsim().setCustomTargetEfIsc1(txtRfmIsimCustomTargetEfIsc1.getText());
             root.getRunSettings().getRfmIsim().setCustomTargetEfIsc2(txtRfmIsimCustomTargetEfIsc2.getText());
             root.getRunSettings().getRfmIsim().setCustomTargetEfIsc3(txtRfmIsimCustomTargetEfIsc3.getText());
             root.getRunSettings().getRfmIsim().setCustomTargetEfIsc4(txtRfmIsimCustomTargetEfIsc4.getText());
             root.getRunSettings().getRfmIsim().setCustomTargetEfGPin1(txtRfmIsimCustomTargetEfGPin1.getText());
             root.getRunSettings().getRfmIsim().setCustomTargetEfLPin1(txtRfmIsimCustomTargetEfLPin1.getText());
-//            root.getRunSettings().getRfmIsim().setCustomTargetEfBadCase(txtRfmIsimCustomTargetEfBadCase.getText());
+            root.getRunSettings().getRfmIsim().setCustomTargetEfBadCaseAlw(txtRfmIsimCustomTargetEfBadCaseAlw.getText());
+            root.getRunSettings().getRfmIsim().setCustomTargetEfBadCaseIsc1(txtRfmIsimCustomTargetEfBadCaseIsc1.getText());
+            root.getRunSettings().getRfmIsim().setCustomTargetEfBadCaseIsc2(txtRfmIsimCustomTargetEfBadCaseIsc2.getText());
+            root.getRunSettings().getRfmIsim().setCustomTargetEfBadCaseIsc3(txtRfmIsimCustomTargetEfBadCaseIsc3.getText());
+            root.getRunSettings().getRfmIsim().setCustomTargetEfBadCaseIsc4(txtRfmIsimCustomTargetEfBadCaseIsc4.getText());
+            root.getRunSettings().getRfmIsim().setCustomTargetEfBadCaseGPin1(txtRfmIsimCustomTargetEfBadCaseGPin1.getText());
+            root.getRunSettings().getRfmIsim().setCustomTargetEfBadCaseLPin1(txtRfmIsimCustomTargetEfBadCaseLPin1.getText());
             //save control Access Domain RFM ISIM
             AccessDomain rfmIsimAccessDomain = new AccessDomain();
+            rfmIsimAccessDomain.setUseAlways(chkRfmIsimUseAlw.isSelected());
             rfmIsimAccessDomain.setUseIsc1(chkRfmIsimUseIsc1.isSelected());
             rfmIsimAccessDomain.setUseIsc2(chkRfmIsimUseIsc2.isSelected());
             rfmIsimAccessDomain.setUseIsc3(chkRfmIsimUseIsc3.isSelected());
             rfmIsimAccessDomain.setUseIsc4(chkRfmIsimUseIsc4.isSelected());
             rfmIsimAccessDomain.setUseGPin1(chkRfmIsimUseGPin1.isSelected());
             rfmIsimAccessDomain.setUseLPin1(chkRfmIsimUseLPin1.isSelected());
+            rfmIsimAccessDomain.setUseAlways(chkRfmIsimUseBadCaseAlw.isSelected());
+            rfmIsimAccessDomain.setUseIsc1(chkRfmIsimUseBadCaseIsc1.isSelected());
+            rfmIsimAccessDomain.setUseIsc2(chkRfmIsimUseBadCaseIsc2.isSelected());
+            rfmIsimAccessDomain.setUseIsc3(chkRfmIsimUseBadCaseIsc3.isSelected());
+            rfmIsimAccessDomain.setUseIsc4(chkRfmIsimUseBadCaseIsc4.isSelected());
+            rfmIsimAccessDomain.setUseGPin1(chkRfmIsimUseBadCaseGPin1.isSelected());
+            rfmIsimAccessDomain.setUseLPin1(chkRfmIsimUseBadCaseLPin1.isSelected());
             root.getRunSettings().getRfmIsim().setRfmIsimAccessDomain(rfmIsimAccessDomain);
         }
 

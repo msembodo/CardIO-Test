@@ -1,6 +1,7 @@
 package com.idemia.tec.jkt.cardiotest.model;
 
 public class AccessDomain {
+    private boolean useAlways;
     private boolean useIsc1;
     private boolean useIsc2;
     private boolean useIsc3;
@@ -10,14 +11,23 @@ public class AccessDomain {
 
     public AccessDomain(){}
 
-    public AccessDomain(boolean useIsc1, boolean useIsc2,boolean useIsc3,boolean useIsc4,
+    public AccessDomain(boolean useAlways, boolean useIsc1, boolean useIsc2,boolean useIsc3,boolean useIsc4,
                         boolean useGPin1, boolean useLPin1){
+        this.useAlways = useAlways;
         this.useIsc1 = useIsc1;
         this.useIsc2 = useIsc2;
         this.useIsc3 = useIsc3;
         this.useIsc4 = useIsc4;
         this.useGPin1 = useGPin1;
         this.useLPin1 = useLPin1;
+    }
+
+    public boolean isUseAlways() {
+        return useAlways;
+    }
+
+    public void setUseAlways(boolean useAlways) {
+        this.useAlways = useAlways;
     }
 
     public boolean isUseIsc1() {

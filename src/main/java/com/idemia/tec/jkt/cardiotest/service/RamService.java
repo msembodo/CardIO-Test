@@ -328,6 +328,71 @@ public class RamService {
                 ramVerifGp.append(checkApplet(keyset, keyset, ram.getMinimumSecurityLevel(), ram.getIsd()));
             }
         }
+        Isd isd = ram.getIsd();
+
+        if(isd.getMethodForGpCommand().equals("with Card Manager Keyset")  || isd.getMethodForGpCommand().equals("SIMBiOs")) {
+            if(!isd.isSecuredState() || isd.getMethodForGpCommand().equals("SIMBiOs")) {
+                if(isd.getMethodForGpCommand().equals("SIMBiOs")) {
+                    ramVerifGp.append(
+                            "00 A4 04 00 <?> " + root.getRunSettings().getCardParameters().getCardManagerAid() + "\n" +
+                            "00 20 00 00 08 %" + isd.getCardManagerPin() + "\n"
+                    );
+                }
+                ramVerifGp.append(
+                        "; INSTALL FOR LOAD\n" +
+                        "80 E6 02 00 1F 0C A00000001853020000000010 00 00 0E EF 0C C6020000 C8020000 C7020000 00 (6101)\n" +
+                        "\n" +
+                        "; LOAD PACKAGE\n" +
+                        "80E8000067C48201CC010016DECAFFED01020400020CA0000000185302000000001002001F0016001F0010001E0046001A00C6000A001E0000009400000000000002010004001E02000107A0000000620101010210A0000000090003FFFFFFFF8910710002030010010CA000 (6101)\n" +
+                        "80E800016700001853020000000110001F06001A43800300FF00070300000035003800A4800200810101088100000700C6020048803E008800060093800B00A000060210188C00008D0001058B00027A05318F00033D8C00042E1B181D0441181D258B00057A00207A03221D (6101)\n" +
+                        "80E800026775006800020002000D001300588D00072E1B8B0008311B1E8B000910F06B4B1B1E04418B0009100C6B401B1E05418B000961371B1E06418B000910126B2C1B1E07418B00096123188B000A701D3B8D0001103C8B000B7012188B000A8D0001038B000B70053B70 (6101)\n" +
+                        "80E8000367027A041110178D000C601A8D000D2C19040310828B000E198B000F10206B06058D00107A08000A00000000000000000000050046001106800300068109000381090901000000060000110380030201810700068108000381080D03810204030000090381090C06 (6101)\n" +
+                        "80E880043481030006810A0003810A1503810A160681070009001E0000001A070806030406040C1705060B0B090B0606050603040D05090408 (6101) \n" +
+                        "; INSTALL FOR INSTALL\n" +
+                        "80E60C0048 0C A00000001853020000000010 0C A00000001853020000000110 0F A00000001853020000000110524648 01001AEF16C7020000C8020000CA0C0100FF000000000003524648C90000 (6101)\n" +
+                        "; DELETE INSTANCE\n" +
+                        "80E4000011 4F0F A00000001853020000000110524648 (6101)\n" +
+                        "; DELETE PACKAGE\n" +
+                        "80E400000E 4F0C A00000001853020000000010 (6101)\n"
+                );
+            } else {
+                ramVerifGp.append(
+                        "; INSTALL FOR LOAD\n" +
+                        ".SET_BUFFER N 80 E6 02 00 1F 0C A00000001853020000000010 00 00 0E EF 0C C6020000 C8020000 C7020000 00\n" +
+                        scp0255(isd) +
+                        "N (9000,6101)\n" +
+                        "\n" +
+                        "; LOAD PACKAGE\n" +
+                        ".SET_BUFFER N 80E8000067C48201CC010016DECAFFED01020400020CA0000000185302000000001002001F0016001F0010001E0046001A00C6000A001E0000009400000000000002010004001E02000107A0000000620101010210A0000000090003FFFFFFFF8910710002030010010CA000 \n" +
+                        scp0255(isd) +
+                        "N (9000,6101)\n" +
+                        ".SET_BUFFER N 80E800016700001853020000000110001F06001A43800300FF00070300000035003800A4800200810101088100000700C6020048803E008800060093800B00A000060210188C00008D0001058B00027A05318F00033D8C00042E1B181D0441181D258B00057A00207A03221D \n" +
+                        scp0255(isd) +
+                        "N (9000,6101)\n" +
+                        ".SET_BUFFER N 80E800026775006800020002000D001300588D00072E1B8B0008311B1E8B000910F06B4B1B1E04418B0009100C6B401B1E05418B000961371B1E06418B000910126B2C1B1E07418B00096123188B000A701D3B8D0001103C8B000B7012188B000A8D0001038B000B70053B70\n" +
+                        scp0255(isd) +
+                        "N (9000,6101)\n" +
+                        ".SET_BUFFER N 80E8000367027A041110178D000C601A8D000D2C19040310828B000E198B000F10206B06058D00107A08000A00000000000000000000050046001106800300068109000381090901000000060000110380030201810700068108000381080D03810204030000090381090C06\n" +
+                        scp0255(isd) +
+                        "N (9000,6101)\n" +
+                        ".SET_BUFFER N 80E880043481030006810A0003810A1503810A160681070009001E0000001A070806030406040C1705060B0B090B0606050603040D05090408\n" +
+                        scp0255(isd) +
+                        "N (9000,6101)\n" +
+                        "; INSTALL FOR INSTALL\n" +
+                        ".SET_BUFFER N 80E60C00480CA000000018530200000000100CA000000018530200000001100FA0000000185302000000011052464801001AEF16C7020000C8020000CA0C0100FF000000000003524648C90000 \n" +
+                        scp0255(isd) +
+                        "N (9000,6101) \n" +
+                        "; DELETE INSTANCE\n" +
+                        ".SET_BUFFER N 80E40000114F0FA00000001853020000000110524648  \n" +
+                        scp0255(isd) +
+                        "N (9000,6101)\n" +
+                        "; DELETE PACKAGE\n" +
+                        ".SET_BUFFER N 80E400000E4F0CA00000001853020000000010  \n" +
+                        scp0255(isd) +
+                        "N (9000,6101) \n"
+                );
+            }
+        }
         return ramVerifGp;
     }
     private String checkApplet(SCP80Keyset cipherKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel msl, Isd isd) {
@@ -359,8 +424,12 @@ public class RamService {
             if (authKeyset.getKidMode().equals("AES - CMAC"))
                 routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
 
-
+            int appletno = 1;
             for(AppletParam appletParam : root.getRunSettings().getAppletParams()) {
+                routine.append(
+                        ";APPLET " + appletno + " \n"
+                );
+                appletno++ ;
                 System.out.println("Here Generate");
                 routine.append(
                         ".CHANGE_COUNTER L\n" +
@@ -400,33 +469,58 @@ public class RamService {
             routine.append(
                     openChannel(isd)
             );
-            if (!isd.isSecuredState()) {
+            if (!isd.isSecuredState() || isd.getMethodForGpCommand().equals("SIMBiOs")) {
+                int appletno = 1;
                 for(AppletParam appletParam : root.getRunSettings().getAppletParams()) {
                     routine.append(
-                            ".DEFINE %Package_Aid " + appletParam.getPackageAid() + "\n" +
-                            "80F2 2000 <?> 4F <%Package_Aid> %Package_Aid \n" +
-                            "A0 C0 00 00 W(2;1) [<%Package_Aid> %Package_Aid 01 00] \n" +
-                            ".DEFINE %Instance_Aid " + appletParam.getInstanceAid() + "\n" +
-                            "80F2 4000 <?> 4F <%Instance_Aid> %Instance_Aid \n" +
-                            "A0 C0 00 00 W(2;1) [<%Instance_Aid> %Instance_Aid " + appletParam.getLifeCycle() + " 00]\n"
+                            ";APPLET " + appletno + " \n"
+                    );
+                    appletno++ ;
+                    if(!appletParam.getPackageAid().equals("")) {
+                        routine.append(
+                                ".DEFINE %Package_Aid " + appletParam.getPackageAid() + "\n" +
+                                "80F2 2000 <?> 4F <%Package_Aid> %Package_Aid \n" +
+                                "00 C0 00 00 W(2;1) [<%Package_Aid> %Package_Aid 01 00] \n"
+                        );
+                    }
+                    if(!appletParam.getInstanceAid().equals("")) {
+                        routine.append(
+                                ".DEFINE %Instance_Aid " + appletParam.getInstanceAid() + "\n" +
+                                "80F2 4000 <?> 4F <%Instance_Aid> %Instance_Aid \n" +
+                                "00 C0 00 00 W(2;1) [<%Instance_Aid> %Instance_Aid " + appletParam.getLifeCycle() + " 00]\n"
+
+                        );
+                    }
+                    routine.append(
+                            ".UNDEFINE %Package_Aid \n" +
+                            ".UNDEFINE %Instance_Aid \n" +
+                            "\n"
                     );
                 }
             } else {
                 for(AppletParam appletParam : root.getRunSettings().getAppletParams()) {
-                    routine.append(
-                            ".DEFINE %Package_Aid " + appletParam.getPackageAid() + "\n" +
-                            ".SET_BUFFER N 80F2 2000 <?> 4F <%Package_Aid> %Package_Aid \n" +
-                            scp0255(isd) +
-                            "N [<%Package_Aid> %Package_Aid 01 00]\n" +
+                    if(!appletParam.getPackageAid().equals("")) {
+                        routine.append(
+                                ".DEFINE %Package_Aid " + appletParam.getPackageAid() + "\n" +
+                                ".SET_BUFFER N 80F2 2000 <?> 4F <%Package_Aid> %Package_Aid \n" +
+                                scp0255(isd) +
+                                "N [<%Package_Aid> %Package_Aid 01 00]\n"
+                        );
+                    }
+                    if(!appletParam.getInstanceAid().equals("")) {
+                        routine.append(
                             ".DEFINE %Instance_Aid " + appletParam.getInstanceAid() + "\n" +
-                            ".SET_BUFFER N 80F2 2000 <?> 4F <%Instance_Aid> %Instance_Aid \n" +
+                            ".SET_BUFFER N 80F2 4000 <?> 4F <%Instance_Aid> %Instance_Aid \n" +
                             scp0255(isd) +
                             "N  [<%Instance_Aid> %Instance_Aid " + appletParam.getLifeCycle() + " 00]\n"
-
+                        );
+                    }
+                    routine.append(
+                            ".UNDEFINE %Package_Aid \n" +
+                            ".UNDEFINE %Instance_Aid \n" +
+                            "\n"
                     );
                 }
-
-
             }
         }
         return routine.toString();

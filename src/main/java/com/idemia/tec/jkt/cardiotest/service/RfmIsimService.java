@@ -109,7 +109,19 @@ public class RfmIsimService {
             }
 
             // perform negative test if not full access
-            rfmIsimBuffer.append(this.usePerformNegativeTest(rfmIsim));
+            if (!rfmIsim.isFullAccess()) {
+                rfmIsimBuffer.append("\n\n ; ================ Perform Negative Test Access Domain ================\n");
+                rfmIsimBuffer.append(this.useRfmIsimCheckInitialContentEfBadCaseAccessDomain(rfmIsim));
+
+                if (rfmIsim.isUseSpecificKeyset())
+                    rfmIsimBuffer.append(rfmIsimCase1NegativeTest(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), rfmIsim.getMinimumSecurityLevel(), false));
+                else {
+                    for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets()) {
+                        rfmIsimBuffer.append("\n; using keyset: " + keyset.getKeysetName() + "\n");
+                        rfmIsimBuffer.append(rfmIsimCase1NegativeTest(keyset, keyset, rfmIsim.getMinimumSecurityLevel(), false));
+                    }
+                }
+            }
 
         //end of case 1
 
@@ -264,6 +276,20 @@ public class RfmIsimService {
                     rfmIsimUpdateRecordBuffer.append(rfmIsimCase1(keyset, keyset, rfmIsim.getMinimumSecurityLevel(), true));
                 }
             }
+
+        if (!rfmIsim.isFullAccess()) {
+            rfmIsimUpdateRecordBuffer.append("\n\n ; ================ Perform Negative Test Access Domain ================\n");
+            rfmIsimUpdateRecordBuffer.append(this.useRfmIsimCheckInitialContentEfBadCaseAccessDomain(rfmIsim));
+
+            if (rfmIsim.isUseSpecificKeyset())
+                rfmIsimUpdateRecordBuffer.append(rfmIsimCase1NegativeTest(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), rfmIsim.getMinimumSecurityLevel(), true));
+            else {
+                for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets()) {
+                    rfmIsimUpdateRecordBuffer.append("\n; using keyset: " + keyset.getKeysetName() + "\n");
+                    rfmIsimUpdateRecordBuffer.append(rfmIsimCase1NegativeTest(keyset, keyset, rfmIsim.getMinimumSecurityLevel(), true));
+                }
+            }
+        }
 
         //end of case 1
 
@@ -458,7 +484,7 @@ public class RfmIsimService {
         return routine.toString();
     }
 
-    private String rfmIsimCase1NegativeTest(SCP80Keyset cipherKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel msl) {
+    private String rfmIsimCase1NegativeTest(SCP80Keyset cipherKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel msl, Boolean isUpdateRecord) {
         StringBuilder routine = new StringBuilder();
         routine.append(
             "\n.POWER_ON\n"
@@ -468,17 +494,16 @@ public class RfmIsimService {
             + ".SET_BUFFER Q %" + authKeyset.getKidValuation() + "\n"
             + ".SET_BUFFER M " + cipherKeyset.getComputedKic() + "\n"
             + ".SET_BUFFER N " + authKeyset.getComputedKid() + "\n"
-            + ".INIT_ENV_0348\n"
-            + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
             //TODO if need for update record failed (?)
-//        check 0348 isUpdateRecord
-//        if(!isUpdateRecord){
-//            routine.append(this.init_ENV_0348RfmIsim());
-//        }
-//        else {
-//            routine.append(this.init_SMS_0348RfmIsim());
-//        }
         );
+
+        // check 0348 isUpdateRecord
+        if(!isUpdateRecord){
+            routine.append(this.init_ENV_0348RfmIsim());
+        }
+        else {
+            routine.append(this.init_SMS_0348RfmIsim());
+        }
 
         if (root.getRunSettings().getSmsUpdate().isUseWhiteList())
             routine.append(".CHANGE_TP_OA " + root.getRunSettings().getSmsUpdate().getTpOa() + "\n");
@@ -496,7 +521,7 @@ public class RfmIsimService {
         if (authKeyset.getKidMode().equals("AES - CMAC"))
             routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
 
-// Send OTA Command isFullAccess
+        // Send OTA Command isFullAccess
 //        if(root.getRunSettings().getRfmIsim().isFullAccess()){
 //            routine.append(this.rfmIsimCommandViaOta());  // command(s) sent via OTA
 //        }
@@ -510,19 +535,15 @@ public class RfmIsimService {
             ".END_MESSAGE G J\n"
             + "; show OTA message details\n"
             + ".DISPLAY_MESSAGE J\n"
-            + "; send envelope\n"
-            + "A0 C2 00 00 G J (9FXX)\n"
-            + ".CLEAR_SCRIPT\n"
-            + "; check PoR\n"
-            + "A0 C0 00 00 W(2;1) [XX XX XX XX XX XX %TAR XX XX XX XX XX XX 00 XX 69 82] (9000) ; PoR OK, but failed to update\n"
-//        check isUpdateRecord
-//        if(!isUpdateRecord){
-//            routine.append(this.sendEnvelopeRfmIsim("rfmIsimCase1"));
-//        }
-//        else {
-//            routine.append(this.updateSMSRecordRfmIsim("rfmIsimUpdateRecordCase1"));
-//        }
         );
+
+        // check isUpdateRecord
+        if(!isUpdateRecord){
+            routine.append(this.sendEnvelopeRfmIsim("rfmIsimNegativeCase"));
+        }
+        else {
+            routine.append(this.updateSMSRecordRfmIsim("rfmIsimUpdateRecordNegativeCase"));
+        }
 
         routine.append(this.useRfmIsimCheckUpdateEfFailedAccessDomain(root.getRunSettings().getRfmIsim()));
 
@@ -1173,7 +1194,7 @@ public class RfmIsimService {
         String  POR_OK, POR_NOT_OK, BAD_CASE_WRONG_KEYSET,
                 BAD_CASE_WRONG_CLASS_3G, BAD_CASE_WRONG_CLASS_2G,
                  BAD_CASE_COUNTER_LOW,
-                BAD_CASE_WRONG_KEY_VALUE, BAD_CASE_INSUFFICIENT_MSL, BAD_CASE_WRONG_TAR;
+                BAD_CASE_WRONG_KEY_VALUE, BAD_CASE_INSUFFICIENT_MSL, BAD_CASE_WRONG_TAR, NEGATIVE_CASE;
 
         String result_set = "";
 
@@ -1186,6 +1207,7 @@ public class RfmIsimService {
         BAD_CASE_WRONG_KEY_VALUE    = "XX XX XX XX XX XX %TAR XX XX XX XX XX XX 01";
         BAD_CASE_INSUFFICIENT_MSL   = "XX XX XX XX XX XX %TAR XX XX XX XX XX XX 0A";
         BAD_CASE_WRONG_TAR          = "XX XX XX XX XX XX B0 FF FF XX XX XX XX XX XX 09";
+        NEGATIVE_CASE               = "XX XX XX XX XX XX %TAR XX XX XX XX XX XX 00 XX 69 82";
 
         switch (rfmIsimCases){
             case "rfmIsimCase1" :
@@ -1209,6 +1231,9 @@ public class RfmIsimService {
             case "rfmIsimCase7" :
                 result_set = BAD_CASE_INSUFFICIENT_MSL;
                 break;
+            case "rfmIsimNegativeCase" :
+                result_set = NEGATIVE_CASE;
+                break;
         }
 
         return result_set;
@@ -1219,7 +1244,7 @@ public class RfmIsimService {
         String  POR_OK, POR_NOT_OK, BAD_CASE_WRONG_KEYSET,
                 BAD_CASE_WRONG_CLASS_3G, BAD_CASE_WRONG_CLASS_2G,
                  BAD_CASE_COUNTER_LOW,
-                BAD_CASE_WRONG_KEY_VALUE, BAD_CASE_INSUFFICIENT_MSL; //BAD_CASE_WRONG_TAR;
+                BAD_CASE_WRONG_KEY_VALUE, BAD_CASE_INSUFFICIENT_MSL, NEGATIVE_CASE; //BAD_CASE_WRONG_TAR;
 
         String result_set = "";
 
@@ -1235,6 +1260,7 @@ public class RfmIsimService {
         BAD_CASE_COUNTER_LOW        = tag30UpdateRecord+" 02";
         BAD_CASE_WRONG_KEY_VALUE    = tag30UpdateRecord+" 01";
         BAD_CASE_INSUFFICIENT_MSL   = tag30UpdateRecord+" 0A";
+        NEGATIVE_CASE               = tag33UpdateRecord+" XX XX 69 82";
         //BAD_CASE_WRONG_TAR          = "D0 30 81 XX XX 13 XX 82 02 81 83 85 XX 86 "+scAddress+" 8B XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX B0 FF FF XX XX XX XX XX XX 09";
 
         switch (rfmIsimCases){
@@ -1255,6 +1281,9 @@ public class RfmIsimService {
                 break;
             case "rfmIsimUpdateRecordCase7" :
                 result_set = BAD_CASE_INSUFFICIENT_MSL;
+                break;
+            case "rfmIsimUpdateRecordNegativeCase" :
+                result_set = NEGATIVE_CASE;
                 break;
         }
 
@@ -1992,27 +2021,6 @@ public class RfmIsimService {
         }
 
         return restoreInitialContent.toString();
-    }
-
-    private String usePerformNegativeTest(RfmIsim rfmIsim){
-
-        StringBuilder performNegativeTest = new StringBuilder();
-
-        if (!rfmIsim.isFullAccess()) {
-            performNegativeTest.append("\n\n ; ================ Perform Negative Test Access Domain ================\n");
-            performNegativeTest.append(this.useRfmIsimCheckInitialContentEfBadCaseAccessDomain(rfmIsim));
-
-            if (rfmIsim.isUseSpecificKeyset())
-                performNegativeTest.append(rfmIsimCase1NegativeTest(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), rfmIsim.getMinimumSecurityLevel()));
-            else {
-                for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets()) {
-                    performNegativeTest.append("\n; using keyset: " + keyset.getKeysetName() + "\n");
-                    performNegativeTest.append(rfmIsimCase1NegativeTest(keyset, keyset, rfmIsim.getMinimumSecurityLevel()));
-                }
-            }
-        }
-
-        return performNegativeTest.toString();
     }
 
 //end of script

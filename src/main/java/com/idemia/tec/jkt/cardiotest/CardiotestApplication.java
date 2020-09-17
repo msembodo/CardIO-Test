@@ -56,11 +56,11 @@ public class CardiotestApplication extends Application {
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("CARDIO");
 
-//		Optional<CardioUser> cardioUser = domainLogin();
-//		cardioUser.ifPresent(account -> {
+		Optional<CardioUser> cardioUser = domainLogin();
+		cardioUser.ifPresent(account -> {
 			initRootLayout();
 			showCardioTest();
-//		});
+		});
 	}
 
 	public ObservableList<AdvSaveVariable> getAdvSaveVariables() { return advSaveVariables; }

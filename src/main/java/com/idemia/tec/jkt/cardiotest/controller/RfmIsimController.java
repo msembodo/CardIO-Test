@@ -71,6 +71,8 @@ public class RfmIsimController {
     @FXML private CheckBox chkRfmIsimUseBadCaseIsc4;
     @FXML private CheckBox chkRfmIsimUseBadCaseGPin1;
     @FXML private CheckBox chkRfmIsimUseBadCaseLPin1;
+    @FXML private Label lblRfmIsimTarget;
+    @FXML private Label lblRfmIsimTargetBadCase;
 
     @Autowired private RootLayoutController root;
     @Autowired private CardiotestController cardiotest;
@@ -168,6 +170,22 @@ public class RfmIsimController {
         txtRfmIsimTar.setText(root.getRunSettings().getRfmIsim().getTar());
         txtRfmIsimTargetEf.setText(root.getRunSettings().getRfmIsim().getTargetEf());
         txtRfmIsimTargetEfBadCase.setText(root.getRunSettings().getRfmIsim().getTargetEfBadCase());
+
+        // set Checkbox Access Domain Tooltip
+        chkRfmIsimUseAlw.setTooltip(new Tooltip("Read EF Access Domain ALW"));
+        chkRfmIsimUseIsc1.setTooltip(new Tooltip("Update EF Access Domain ISC1"));
+        chkRfmIsimUseIsc2.setTooltip(new Tooltip("Update EF Access Domain ISC2"));
+        chkRfmIsimUseIsc3.setTooltip(new Tooltip("Update EF Access Domain ISC3"));
+        chkRfmIsimUseIsc4.setTooltip(new Tooltip("Update EF Access Domain ISC4"));
+        chkRfmIsimUseGPin1.setTooltip(new Tooltip("Update EF Access Domain PIN1"));
+        chkRfmIsimUseLPin1.setTooltip(new Tooltip("Update EF Access Domain PIN2"));
+        chkRfmIsimUseBadCaseAlw.setTooltip(new Tooltip("Out of Access Domain ALW"));
+        chkRfmIsimUseBadCaseIsc1.setTooltip(new Tooltip("Out of Access Domain ISC1"));
+        chkRfmIsimUseBadCaseIsc2.setTooltip(new Tooltip("Out of Access Domain ISC2"));
+        chkRfmIsimUseBadCaseIsc3.setTooltip(new Tooltip("Out of Access Domain ISC3"));
+        chkRfmIsimUseBadCaseIsc4.setTooltip(new Tooltip("Out of Access Domain ISC4"));
+        chkRfmIsimUseBadCaseGPin1.setTooltip(new Tooltip("Out of Access Domain PIN1"));
+        chkRfmIsimUseBadCaseLPin1.setTooltip(new Tooltip("Out of Access Domain PIN2"));
 
         // Initialize Access Domain Positive Case
         chkRfmIsimUseAlw.setSelected(root.getRunSettings().getRfmIsim().getRfmIsimAccessDomain().isUseAlways());
@@ -379,6 +397,8 @@ public class RfmIsimController {
             lblRfmIsimCustomTargetBadCase.setDisable(true);
             txtRfmIsimTargetEf.setDisable(false);
             txtRfmIsimTargetEfBadCase.setDisable(false);
+            lblRfmIsimTarget.setDisable(false);
+            lblRfmIsimTargetBadCase.setDisable(false);
         }
         else {
             txtRfmIsimCustomTargetEfAlw.setDisable(false);
@@ -414,6 +434,8 @@ public class RfmIsimController {
             lblRfmIsimCustomTargetBadCase.setDisable(false);
             txtRfmIsimTargetEf.setDisable(true);
             txtRfmIsimTargetEfBadCase.setDisable(true);
+            lblRfmIsimTarget.setDisable(true);
+            lblRfmIsimTargetBadCase.setDisable(true);
         }
     }
 

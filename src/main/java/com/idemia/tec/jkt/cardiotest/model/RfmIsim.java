@@ -1,5 +1,7 @@
 package com.idemia.tec.jkt.cardiotest.model;
 
+import javax.swing.*;
+
 public class RfmIsim {
     
     private boolean includeRfmIsim;
@@ -39,6 +41,7 @@ public class RfmIsim {
     private String testRfmIsimUpdateRecordMessage;
     private boolean testRfmIsimExpandedModeOk;
     private String testRfmIsimExpandedModeMessage;
+    private String tooltipRfmIsim;
 
     public RfmIsim() {}
 
@@ -71,6 +74,14 @@ public class RfmIsim {
         this.authKeyset = authKeyset;
         this.minimumSecurityLevel = minimumSecurityLevel;
         // TODO add Abtract on for Negative Case
+    }
+
+    public String getTooltipRfmIsim() {
+        return tooltipRfmIsim;
+    }
+
+    public void setTooltipRfmIsim(String tooltipRfmIsim) {
+        this.tooltipRfmIsim = tooltipRfmIsim;
     }
 
     public boolean isIncludeRfmIsim() {

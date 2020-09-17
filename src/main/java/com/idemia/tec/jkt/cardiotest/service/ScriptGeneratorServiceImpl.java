@@ -22,6 +22,10 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
     @Autowired private RamService verifGp;
 
 
+    //-------------------
+    @Autowired private FileManagementService fileManagementService;
+    //-------------------
+
     @Override public StringBuilder generateAtr() {
         String composeAtrScript = ".CALL Mapping.txt\n"
             + ".CALL Options.txt\n\n"
@@ -120,18 +124,15 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
         return secretCodesService.generateSecretCodes3g(secretCodes);
     }
 
-    @Override
-    public StringBuilder generateRfmCustom(RfmCustom rfmCustom) {
+    @Override public StringBuilder generateRfmCustom(RfmCustom rfmCustom) {
         return rfmCustomService.generateRfmCustom(rfmCustom);
     }
 
-    @Override
-    public StringBuilder generateRfmCustomUpdateRecord(RfmCustom rfmCustom) {
+    @Override public StringBuilder generateRfmCustomUpdateRecord(RfmCustom rfmCustom) {
         return rfmCustomService.generateRfmCustomUpdateRecord(rfmCustom);
     }
 
-    @Override
-    public StringBuilder generateRfmCustomExpandedMode(RfmCustom rfmCustom) {
+    @Override public StringBuilder generateRfmCustomExpandedMode(RfmCustom rfmCustom) {
         StringBuilder rfmCustomExpandedModeBuffer = new StringBuilder();
         rfmCustomExpandedModeBuffer.append(
                 ".CALL Mapping.txt /LIST_OFF\n"
@@ -145,6 +146,27 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
         rfmCustomExpandedModeBuffer.append(".POWER_OFF\n");
         return rfmCustomExpandedModeBuffer;
     }
+
+
+    //-------------------
+    @Override public StringBuilder generateFilemanagementLinkFiles(FileManagement fileManagement) {
+        return fileManagementService.generateFilemanagementLinkFiles(fileManagement);
+    }
+
+    @Override public StringBuilder generateFilemanagementRuwi(FileManagement fileManagement) {
+        return fileManagementService.generateFilemanagementRuwi(fileManagement);
+    }
+        @Override public StringBuilder generateFilemanagementRuWI01_OK_To_Go(FileManagement fileManagement) {
+        return fileManagementService.generateFilemanagementRuWI01_OK_To_Go(fileManagement);
+    }
+        @Override public StringBuilder generateFilemanagementRuWI02_Method(FileManagement fileManagement) {
+        return fileManagementService.generateFilemanagementRuWI02_Method(fileManagement);
+    }
+
+    @Override public StringBuilder generateFilemanagementSfi(FileManagement fileManagement) {
+        return fileManagementService.generateFilemanagementSfi(fileManagement);
+    }
+    //-------------------
 
     @Override
     public StringBuilder generateRam(Ram ram) {
@@ -170,6 +192,7 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
         ramExpandedModeBuffer.append(".POWER_OFF\n");
         return ramExpandedModeBuffer;
     }
+
 
     @Override
     public StringBuilder generateVerifGp(Ram ram) {

@@ -136,6 +136,10 @@ public class CardiotestController {
     @Autowired private RamController ramController;
     @Autowired private RfmCustomController rfmCustomController;
 
+    //----------------------------------
+    @Autowired private FileManagementController fileManagementController;
+    //----------------------------------
+
     public CardiotestController() {}
 
     public void setMainApp(CardiotestApplication application) {
@@ -761,6 +765,10 @@ public class CardiotestController {
 
         //Verif GP
         root.getRunSettings().getRam().setIncludeVerifGp(chkIncludeVerifGp.isSelected());
+
+        // file management settings
+        fileManagementController.saveControlState();
+
     }
 
 }

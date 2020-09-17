@@ -669,6 +669,125 @@ public class ReportServiceImpl implements ReportService {
             html.append(createTableFooter());
         }
 
+        if (runSettings.getRam().isIncludeRam() || runSettings.getRam().isIncludeRamUpdateRecord() || runSettings.getRam().isIncludeRamExpandedMode()) {
+            html.append("\n<div><h2>RAM</h2></div>");
+            html.append("\n<div><h3>Test modules</h3></div>");
+            html.append(createTableHeaderModule());
+            if (runSettings.getRam().isIncludeRam()) {
+                html.append("\n<tr><td class=\"item\">RAM</td>");
+                if (runSettings.getRam().isTestRamOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
+                else {
+                    String[] messages = runSettings.getRam().getTestRamMessage().split(";");
+                    html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
+                }
+            }
+            else html.append("\n<tr><td class=\"item\">RAM</td><td>(not included)</td></tr>");
+            if (runSettings.getRam().isIncludeRamUpdateRecord()) {
+                html.append("\n<tr><td class=\"item\">RAM update record</td>");
+                if (runSettings.getRam().isTestRamUpdateRecordOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
+                else {
+                    String[] messages = runSettings.getRam().getTestRamUpdateRecordMessage().split(";");
+                    html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
+                }
+            }
+            else html.append("\n<tr><td class=\"item\">RAM update record</td><td>(not included)</td></tr>");
+            if (runSettings.getRam().isIncludeRamExpandedMode()) {
+                html.append("\n<tr><td class=\"item\">RAM expanded mode</td>");
+                if (runSettings.getRam().isTestRamExpandedModeOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
+                else {
+                    String[] messages = runSettings.getRam().getTestRamExpandedModeMessage().split(";");
+                    html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
+                }
+            }
+            else html.append("\n<tr><td class=\"item\">RAM expanded mode</td><td>(not included)</td></tr>");
+            html.append(createTableFooter());
+
+            html.append("\n<div><h3>Test parameters</h3></div>");
+            html.append(createTableHeaderModule());
+            html.append(
+                "\n<tr><td class=\"item\">TAR</td>"
+                + "<td>" + runSettings.getRam().getTar() + "</td></tr>"
+            );
+            if (runSettings.getRam().isUseSpecificKeyset()) {
+                html.append(
+                    "\n<tr><td class=\"item\">Specific cipher keyset</td>"
+                    + "<td>" + runSettings.getRam().getCipheringKeyset().getKeysetName() + "</td></tr>"
+                    + "\n<tr><td class=\"item\">Specific auth keyset</td>"
+                    + "<td>" + runSettings.getRam().getAuthKeyset().getKeysetName() + "</td></tr>"
+                );
+            }
+            html.append(createTableFooter());
+
+            html.append("\n<div><h3>ISD settings</h3></div>");
+            html.append(createTableHeaderModule());
+            html.append(
+                "\n<tr><td class=\"item\">Method for GP command</td>"
+                + "<td>" + runSettings.getRam().getIsd().getMethodForGpCommand() + "</td></tr>"
+                + "\n<tr><td class=\"item\">SCP mode</td>"
+                + "<td>" + runSettings.getRam().getIsd().getScpMode() + "</td></tr>"
+                + "\n<tr><td class=\"item\">SC level</td>"
+                + "<td>" + runSettings.getRam().getIsd().getScLevel() + "</td></tr>"
+            );
+            html.append("\n<tr><td class=\"item\">Secured state</td>");
+            if (runSettings.getRam().getIsd().isSecuredState()) html.append("<td>YES</td></tr>");
+            else html.append("<td>NO</td></tr>");
+            if (runSettings.getRam().getIsd().getMethodForGpCommand().equals("with Card Manager Keyset")) {
+                html.append(
+                    "\n<tr><td class=\"item\">Encryption key (ENC)</td>"
+                    + "<td>" + getValue(runSettings.getRam().getIsd().getCardManagerEnc()) + "</td></tr>"
+                    + "\n<tr><td class=\"item\">Message Auth Code key (MAC)</td>"
+                    + "<td>" + getValue(runSettings.getRam().getIsd().getCardManagerMac()) + "</td></tr>"
+                    + "\n<tr><td class=\"item\">Data Encryption key (KEK)</td>"
+                    + "<td>" + getValue(runSettings.getRam().getIsd().getCardManagerKey()) + "</td></tr>"
+                );
+            }
+            if (runSettings.getRam().getIsd().getMethodForGpCommand().equals("SIMBiOs")) {
+                html.append(
+                    "\n<tr><td class=\"item\">Card manager PIN</td>"
+                    + "<td>" + getValue(runSettings.getRam().getIsd().getCardManagerPin()) + "</td></tr>"
+                );
+            }
+            html.append(createTableFooter());
+
+            html.append("\n<div><h3>Minimum Security Level</h3></div>");
+            html.append(createTableHeaderModule());
+            html.append(
+                "\n<tr><td class=\"item\">Computed MSL</td>"
+                + "<td>" + runSettings.getRam().getMinimumSecurityLevel().getComputedMsl() + "</td></tr>"
+            );
+            html.append("\n<tr><td class=\"item\">Use cipher</td>");
+            if (runSettings.getRam().getMinimumSecurityLevel().isUseCipher()) html.append("<td>YES</td></tr>");
+            else html.append("<td>NO</td></tr>");
+            html.append(
+                "\n<tr><td class=\"item\">Cipher algo</td>"
+                + "<td>" + runSettings.getRam().getMinimumSecurityLevel().getCipherAlgo() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td class=\"item\">Auth verification</td>"
+                + "<td>" + runSettings.getRam().getMinimumSecurityLevel().getAuthVerification() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td class=\"item\">Signing algo</td>"
+                + "<td>" + runSettings.getRam().getMinimumSecurityLevel().getSigningAlgo() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td class=\"item\">Counter checking</td>"
+                + "<td>" + runSettings.getRam().getMinimumSecurityLevel().getCounterChecking() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td class=\"item\">PoR requirement</td>"
+                + "<td>" + runSettings.getRam().getMinimumSecurityLevel().getPorRequirement() + "</td></tr>"
+            );
+            html.append(
+                "\n<tr><td class=\"item\">PoR security</td>"
+                + "<td>" + runSettings.getRam().getMinimumSecurityLevel().getPorSecurity() + "</td></tr>"
+            );
+            html.append("\n<tr><td class=\"item\">Cipher PoR</td>");
+            if (runSettings.getRam().getMinimumSecurityLevel().isCipherPor()) html.append("<td>YES</td></tr>");
+            else html.append("<td>NO</td></tr>");
+            html.append(createTableFooter());
+        }
+
         // secret codes
         if (runSettings.getSecretCodes().isInclude3gScript() || runSettings.getSecretCodes().isInclude2gScript()) {
             html.append("\n<div><h2>Secret Codes</h2></div>");
@@ -835,6 +954,46 @@ public class ReportServiceImpl implements ReportService {
             }
             html.append(createTableFooter());
         }
+
+        // file management
+        if (runSettings.getFileManagement().isIncludeLinkFilesTest() || runSettings.getFileManagement().isIncludeRuwiTest() || runSettings.getFileManagement().isIncludeSfiTest()) {
+            html.append("\n<div><h2>File Management</h2></div>");
+            html.append("\n<div><h3>Test modules</h3></div>");
+            html.append(createTableHeaderModule());
+
+            if (runSettings.getFileManagement().isIncludeLinkFilesTest()) {
+                html.append("\n<tr><td class=\"item\">Link File Test</td>");
+                if (runSettings.getFileManagement().isTestLinkFilesOk())
+                    html.append("<td class=\"ok\">PASSED</td></tr>");
+                else {
+                    String[] messages = runSettings.getFileManagement().getTestLinkFilesMessage().split(";");
+                    html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
+                }
+            }
+            else html.append("\n<tr><td class=\"item\">Link File Test</td><td>(not included)</td></tr>");
+
+            if (runSettings.getFileManagement().isIncludeRuwiTest()) {
+                html.append("\n<tr><td class=\"item\">Readable & Updateable when Invalidated</td>");
+                if (runSettings.getFileManagement().isTestRuwiOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
+                else {
+                    String[] messages = runSettings.getFileManagement().getTestRuwiMessage().split(";");
+                    html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
+                }
+            }
+            else html.append("\n<tr><td class=\"item\">Readable & Updateable when Invalidated</td><td>(not included)</td></tr>");
+
+            if (runSettings.getFileManagement().isIncludeSfiTest()) {
+                html.append("\n<tr><td class=\"item\">SFI TEST</td>");
+                if (runSettings.getFileManagement().isTestSfiOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
+                else {
+                    String[] messages = runSettings.getFileManagement().getTestSfiMessage().split(";");
+                    html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
+                }
+            }
+            else html.append("\n<tr><td class=\"item\">SFI Check</td><td>(not included)</td></tr>");
+            html.append(createTableFooter());
+        }
+
         html.append("\n<div><h2>Other Tests</h2></div>");
         if (runSettings.getCustomScriptsSection1().size() > 0) printCustomScriptsReport(html, runSettings.getCustomScriptsSection1());
         if (runSettings.getCustomScriptsSection2().size() > 0) printCustomScriptsReport(html, runSettings.getCustomScriptsSection2());
@@ -1061,12 +1220,36 @@ public class ReportServiceImpl implements ReportService {
             if (runSettings.getRfmCustom().isTestRfmCustomExpandedModeOk()) testPass++;
             else testFail++;
         }
+        if (runSettings.getRam().isIncludeRam()) {
+            if (runSettings.getRam().isTestRamOk()) testPass ++;
+            else testFail++;
+        }
+        if (runSettings.getRam().isIncludeRamUpdateRecord()) {
+            if (runSettings.getRam().isTestRamUpdateRecordOk()) testPass++;
+            else testFail++;
+        }
+        if (runSettings.getRam().isIncludeRamExpandedMode()) {
+            if (runSettings.getRam().isTestRamExpandedModeOk()) testPass++;
+            else testFail++;
+        }
         if (runSettings.getSecretCodes().isInclude3gScript()) {
             if (runSettings.getSecretCodes().isTestCodes3gOk()) testPass++;
             else testFail++;
         }
         if (runSettings.getSecretCodes().isInclude2gScript()) {
             if (runSettings.getSecretCodes().isTestCodes2gOk()) testPass++;
+            else testFail++;
+        }
+        if (runSettings.getFileManagement().isIncludeLinkFilesTest()) {
+            if (runSettings.getFileManagement().isTestLinkFilesOk()) testPass++;
+            else testFail++;
+        }
+        if (runSettings.getFileManagement().isIncludeRuwiTest()) {
+            if (runSettings.getFileManagement().isTestRuwiOk()) testPass++;
+            else testFail++;
+        }
+        if (runSettings.getFileManagement().isIncludeSfiTest()) {
+            if (runSettings.getFileManagement().isTestSfiOk()) testPass++;
             else testFail++;
         }
         if (runSettings.getCustomScriptsSection1().size() > 0) {

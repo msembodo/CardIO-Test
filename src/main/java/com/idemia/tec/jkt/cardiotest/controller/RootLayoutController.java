@@ -89,6 +89,7 @@ public class RootLayoutController {
     @Autowired private CustomTabController customTabController;
     @Autowired private RamController ramController;
     @Autowired private FileManagementController fileManagementController;
+    @Autowired private AmdbController amdbController;
 
     @Autowired private CardioConfigService cardioConfigService;
     @Autowired private RunService runService;
@@ -297,6 +298,7 @@ public class RootLayoutController {
         secretCodesController.initialize();
         customTabController.initialize();
         fileManagementController.initialize();
+        amdbController.initialize();
     }
 
     @FXML private void handleMenuExportSettings() {

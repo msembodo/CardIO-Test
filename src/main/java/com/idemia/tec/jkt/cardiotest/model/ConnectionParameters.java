@@ -26,7 +26,7 @@ public class ConnectionParameters {
         this.port = port;
     }
 
-    public boolean useDestinationAddress() {
+    public boolean isUseDestinationAddress() {
         return useDestinationAddress;
     }
 
@@ -42,7 +42,7 @@ public class ConnectionParameters {
         this.destinationAddress = destinationAddress;
     }
 
-    public boolean useBufferSize() {
+    public boolean isUseBufferSize() {
         return useBufferSize;
     }
 
@@ -58,7 +58,7 @@ public class ConnectionParameters {
         this.bufferSize = bufferSize;
     }
 
-    public boolean useNetworkAccessName() {
+    public boolean isUseNetworkAccessName() {
         return useNetworkAccessName;
     }
 
@@ -74,7 +74,7 @@ public class ConnectionParameters {
         this.networkAcessName = networkAcessName;
     }
 
-    public boolean useTransportLevel() {
+    public boolean isUseTransportLevel() {
         return useTransportLevel;
     }
 

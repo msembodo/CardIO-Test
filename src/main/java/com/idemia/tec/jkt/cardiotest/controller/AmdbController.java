@@ -1,6 +1,5 @@
 package com.idemia.tec.jkt.cardiotest.controller;
 
-import com.idemia.tec.jkt.cardiotest.model.ConnectionParameters;
 import com.idemia.tec.jkt.cardiotest.model.SCP80Keyset;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -32,6 +31,11 @@ public class AmdbController {
     @FXML private CheckBox chkBufferSize;
     @FXML private CheckBox chkNetworkAccessName;
     @FXML private CheckBox chkTransportLevel;
+    @FXML private Label lblDestinationAddress;
+    @FXML private Label lblBufferSize;
+    @FXML private Label lblNetworkAccessName;
+    @FXML private Label lblTransportLevel;
+    @FXML private Label lblPort;
     @FXML private TextField txtDestinationAddress;
     @FXML private TextField txtBufferSize;
     @FXML private TextField txtNetworkAccessName;
@@ -140,7 +144,30 @@ public class AmdbController {
             }
         }
 
-        // TODO
+        txtDestinationAddress.setText(root.getRunSettings().getAmmendmentB().getConnectionParameters().getDestinationAddress());
+        txtBufferSize.setText(Integer.toString(root.getRunSettings().getAmmendmentB().getConnectionParameters().getBufferSize()));
+        txtNetworkAccessName.setText(root.getRunSettings().getAmmendmentB().getConnectionParameters().getNetworkAcessName());
+
+        // initialize list of transport protocol
+        List<String> transportProtocols = new ArrayList<>();
+        transportProtocols.add("UDP");
+        transportProtocols.add("TCP");
+        if (!(cmbTransportLevel.getItems().size() > 0)) cmbTransportLevel.getItems().addAll(transportProtocols);
+        cmbTransportLevel.setValue(decodeTransportProtocol(root.getRunSettings().getAmmendmentB().getConnectionParameters().getTransportLevel()));
+
+        txtPort.setText(root.getRunSettings().getAmmendmentB().getConnectionParameters().getPort());
+
+        chkDestinationAddress.setSelected(root.getRunSettings().getAmmendmentB().getConnectionParameters().isUseDestinationAddress());
+        handleUseDestinationAddressCheck();
+
+        chkBufferSize.setSelected(root.getRunSettings().getAmmendmentB().getConnectionParameters().isUseBufferSize());
+        handleUseBufferSizeCheck();
+
+        chkNetworkAccessName.setSelected(root.getRunSettings().getAmmendmentB().getConnectionParameters().isUseNetworkAccessName());
+        handleUseNetworkAccessNameCheck();
+
+        chkTransportLevel.setSelected(root.getRunSettings().getAmmendmentB().getConnectionParameters().isUseTransportLevel());
+        handleUseTransportLevelCheck();
     }
 
     @FXML private void handleCipherKeysetContextMenu() {
@@ -367,9 +394,37 @@ public class AmdbController {
         txtMslByte.setText(root.getRunSettings().getAmmendmentB().getSdMsl().getComputedMsl());
     }
 
+    @FXML private void handleUseDestinationAddressCheck() {
+        lblDestinationAddress.setDisable(!chkDestinationAddress.isSelected());
+        txtDestinationAddress.setDisable(!chkDestinationAddress.isSelected());
+    }
+
+    @FXML private void handleUseBufferSizeCheck() {
+        lblBufferSize.setDisable(!chkBufferSize.isSelected());
+        txtBufferSize.setDisable(!chkBufferSize.isSelected());
+    }
+
+    @FXML private void handleUseNetworkAccessNameCheck() {
+        lblNetworkAccessName.setDisable(!chkNetworkAccessName.isSelected());
+        txtNetworkAccessName.setDisable(!chkNetworkAccessName.isSelected());
+    }
+
+    @FXML private void handleUseTransportLevelCheck() {
+        lblTransportLevel.setDisable(!chkTransportLevel.isSelected());
+        cmbTransportLevel.setDisable(!chkTransportLevel.isSelected());
+        lblPort.setDisable(!chkTransportLevel.isSelected());
+        txtPort.setDisable(!chkTransportLevel.isSelected());
+    }
+
+    private String decodeTransportProtocol(int level) {
+        if (level == 1) return "UDP";
+        if (level == 2) return "TCP";
+        return null;
+    }
+
     private int encodeTransportProtocol(String type) {
-        if (type.equals("UDP; UICC in client mode")) return 0;
-        if (type.equals("TCP; UICC in client mode")) return 1;
+        if (type.equals("UDP")) return 1;
+        if (type.equals("TCP")) return 2;
         return 0;
     }
 
@@ -387,57 +442,61 @@ public class AmdbController {
 
         root.getRunSettings().getAmmendmentB().setSdTar(txtSdTar.getText());
 
-        SCP80Keyset scp80CipherKeyset = new SCP80Keyset();
-        scp80CipherKeyset.setKeysetName(cmbCipherKeyset.getSelectionModel().getSelectedItem());
-        for (SCP80Keyset registeredKeyset : root.getScp80Keysets()) {
-            if (registeredKeyset.getKeysetName().equals(scp80CipherKeyset.getKeysetName())) {
-                scp80CipherKeyset.setKeysetVersion(registeredKeyset.getKeysetVersion());
-                scp80CipherKeyset.setKeysetType(registeredKeyset.getKeysetType());
-                scp80CipherKeyset.setKicValuation(registeredKeyset.getKicValuation());
-                scp80CipherKeyset.setKicKeyLength(registeredKeyset.getKicKeyLength());
-                scp80CipherKeyset.setKicMode(registeredKeyset.getKicMode());
-                scp80CipherKeyset.setComputedKic(registeredKeyset.getComputedKic());
-                scp80CipherKeyset.setKidValuation(registeredKeyset.getKidValuation());
-                scp80CipherKeyset.setKidKeyLength(registeredKeyset.getKidKeyLength());
-                scp80CipherKeyset.setKidMode(registeredKeyset.getKidMode());
-                scp80CipherKeyset.setComputedKid(registeredKeyset.getComputedKid());
-                scp80CipherKeyset.setCmacLength(registeredKeyset.getCmacLength());
-                break;
+        if (cmbCipherKeyset.getSelectionModel().getSelectedItem() != null) {
+            SCP80Keyset scp80CipherKeyset = new SCP80Keyset();
+            scp80CipherKeyset.setKeysetName(cmbCipherKeyset.getSelectionModel().getSelectedItem());
+            for (SCP80Keyset registeredKeyset : root.getScp80Keysets()) {
+                if (registeredKeyset.getKeysetName().equals(scp80CipherKeyset.getKeysetName())) {
+                    scp80CipherKeyset.setKeysetVersion(registeredKeyset.getKeysetVersion());
+                    scp80CipherKeyset.setKeysetType(registeredKeyset.getKeysetType());
+                    scp80CipherKeyset.setKicValuation(registeredKeyset.getKicValuation());
+                    scp80CipherKeyset.setKicKeyLength(registeredKeyset.getKicKeyLength());
+                    scp80CipherKeyset.setKicMode(registeredKeyset.getKicMode());
+                    scp80CipherKeyset.setComputedKic(registeredKeyset.getComputedKic());
+                    scp80CipherKeyset.setKidValuation(registeredKeyset.getKidValuation());
+                    scp80CipherKeyset.setKidKeyLength(registeredKeyset.getKidKeyLength());
+                    scp80CipherKeyset.setKidMode(registeredKeyset.getKidMode());
+                    scp80CipherKeyset.setComputedKid(registeredKeyset.getComputedKid());
+                    scp80CipherKeyset.setCmacLength(registeredKeyset.getCmacLength());
+                    break;
+                }
             }
+            root.getRunSettings().getAmmendmentB().setScp80CipherKeyset(scp80CipherKeyset);
         }
-        root.getRunSettings().getAmmendmentB().setScp80CipherKeyset(scp80CipherKeyset);
 
-        SCP80Keyset scp80AuthKeyset = new SCP80Keyset();
-        scp80AuthKeyset.setKeysetName(cmbAuthKeyset.getSelectionModel().getSelectedItem());
-        for (SCP80Keyset registeredKeyset : root.getScp80Keysets()) {
-            if (registeredKeyset.getKeysetName().equals(scp80AuthKeyset.getKeysetName())) {
-                scp80AuthKeyset.setKeysetVersion(registeredKeyset.getKeysetVersion());
-                scp80AuthKeyset.setKeysetType(registeredKeyset.getKeysetType());
-                scp80AuthKeyset.setKicValuation(registeredKeyset.getKicValuation());
-                scp80AuthKeyset.setKicKeyLength(registeredKeyset.getKicKeyLength());
-                scp80AuthKeyset.setKicMode(registeredKeyset.getKicMode());
-                scp80AuthKeyset.setComputedKic(registeredKeyset.getComputedKic());
-                scp80AuthKeyset.setKidValuation(registeredKeyset.getKidValuation());
-                scp80AuthKeyset.setKidKeyLength(registeredKeyset.getKidKeyLength());
-                scp80AuthKeyset.setKidMode(registeredKeyset.getKidMode());
-                scp80AuthKeyset.setComputedKid(registeredKeyset.getComputedKid());
-                scp80AuthKeyset.setCmacLength(registeredKeyset.getCmacLength());
-                break;
+        if (cmbAuthKeyset.getSelectionModel().getSelectedItem() != null) {
+            SCP80Keyset scp80AuthKeyset = new SCP80Keyset();
+            scp80AuthKeyset.setKeysetName(cmbAuthKeyset.getSelectionModel().getSelectedItem());
+            for (SCP80Keyset registeredKeyset : root.getScp80Keysets()) {
+                if (registeredKeyset.getKeysetName().equals(scp80AuthKeyset.getKeysetName())) {
+                    scp80AuthKeyset.setKeysetVersion(registeredKeyset.getKeysetVersion());
+                    scp80AuthKeyset.setKeysetType(registeredKeyset.getKeysetType());
+                    scp80AuthKeyset.setKicValuation(registeredKeyset.getKicValuation());
+                    scp80AuthKeyset.setKicKeyLength(registeredKeyset.getKicKeyLength());
+                    scp80AuthKeyset.setKicMode(registeredKeyset.getKicMode());
+                    scp80AuthKeyset.setComputedKic(registeredKeyset.getComputedKic());
+                    scp80AuthKeyset.setKidValuation(registeredKeyset.getKidValuation());
+                    scp80AuthKeyset.setKidKeyLength(registeredKeyset.getKidKeyLength());
+                    scp80AuthKeyset.setKidMode(registeredKeyset.getKidMode());
+                    scp80AuthKeyset.setComputedKid(registeredKeyset.getComputedKid());
+                    scp80AuthKeyset.setCmacLength(registeredKeyset.getCmacLength());
+                    break;
+                }
             }
+            root.getRunSettings().getAmmendmentB().setScp80AuthKeyset(scp80AuthKeyset);
         }
-        root.getRunSettings().getAmmendmentB().setScp80AuthKeyset(scp80AuthKeyset);
 
         root.getRunSettings().getAmmendmentB().getConnectionParameters().setUseDestinationAddress(chkDestinationAddress.isSelected());
         root.getRunSettings().getAmmendmentB().getConnectionParameters().setUseBufferSize(chkBufferSize.isSelected());
         root.getRunSettings().getAmmendmentB().getConnectionParameters().setUseNetworkAccessName(chkNetworkAccessName.isSelected());
         root.getRunSettings().getAmmendmentB().getConnectionParameters().setUseTransportLevel(chkTransportLevel.isSelected());
-        if (root.getRunSettings().getAmmendmentB().getConnectionParameters().useDestinationAddress())
+        if (root.getRunSettings().getAmmendmentB().getConnectionParameters().isUseDestinationAddress())
             root.getRunSettings().getAmmendmentB().getConnectionParameters().setDestinationAddress(txtDestinationAddress.getText());
-        if (root.getRunSettings().getAmmendmentB().getConnectionParameters().useBufferSize())
+        if (root.getRunSettings().getAmmendmentB().getConnectionParameters().isUseBufferSize())
             root.getRunSettings().getAmmendmentB().getConnectionParameters().setBufferSize(Integer.parseInt(txtBufferSize.getText()));
-        if (root.getRunSettings().getAmmendmentB().getConnectionParameters().useNetworkAccessName())
+        if (root.getRunSettings().getAmmendmentB().getConnectionParameters().isUseNetworkAccessName())
             root.getRunSettings().getAmmendmentB().getConnectionParameters().setNetworkAcessName(txtNetworkAccessName.getText());
-        if (root.getRunSettings().getAmmendmentB().getConnectionParameters().useTransportLevel()) {
+        if (root.getRunSettings().getAmmendmentB().getConnectionParameters().isUseTransportLevel()) {
             root.getRunSettings().getAmmendmentB().getConnectionParameters().setTransportLevel(encodeTransportProtocol(cmbTransportLevel.getSelectionModel().getSelectedItem()));
             root.getRunSettings().getAmmendmentB().getConnectionParameters().setPort(txtPort.getText());
         }

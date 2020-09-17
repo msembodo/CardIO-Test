@@ -134,6 +134,7 @@ public class CardiotestController {
     @Autowired private RamController ramController;
     @Autowired private RfmCustomController rfmCustomController;
     @Autowired private FileManagementController fileManagementController;
+    @Autowired private AmdbController amdbController;
 
     public CardiotestController() {}
 
@@ -771,6 +772,9 @@ public class CardiotestController {
 
         // file management settings
         fileManagementController.saveControlState();
+
+        // amdb
+        amdbController.saveControlState();
 
     }
 

@@ -101,22 +101,23 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                       </rowConstraints>
                       <children>
-                        <CheckBox fx:id="chkDestinationAddress" mnemonicParsing="false" />
+                        <CheckBox fx:id="chkDestinationAddress" mnemonicParsing="false" onAction="#handleUseDestinationAddressCheck" />
                         <TextField fx:id="txtDestinationAddress" GridPane.columnIndex="2" />
-                        <CheckBox fx:id="chkBufferSize" mnemonicParsing="false" GridPane.rowIndex="1" />
+                        <CheckBox fx:id="chkBufferSize" mnemonicParsing="false" onAction="#handleUseBufferSizeCheck" GridPane.rowIndex="1" />
                         <TextField fx:id="txtBufferSize" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                        <CheckBox fx:id="chkNetworkAccessName" mnemonicParsing="false" GridPane.rowIndex="2" />
+                        <CheckBox fx:id="chkNetworkAccessName" mnemonicParsing="false" onAction="#handleUseNetworkAccessNameCheck" GridPane.rowIndex="2" />
                         <TextField fx:id="txtNetworkAccessName" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                        <CheckBox fx:id="chkTransportLevel" mnemonicParsing="false" GridPane.rowIndex="3" />
-                        <Label text="Destination address" GridPane.columnIndex="1" />
-                        <Label text="Buffer size" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <Label text="Network access name" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <Label text="Transport level" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <CheckBox fx:id="chkTransportLevel" mnemonicParsing="false" onAction="#handleUseTransportLevelCheck" GridPane.rowIndex="3" />
+                        <Label fx:id="lblDestinationAddress" text="Destination address" GridPane.columnIndex="1" />
+                        <Label fx:id="lblBufferSize" text="Buffer size" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label fx:id="lblNetworkAccessName" text="Network access name" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Label fx:id="lblTransportLevel" text="Transport level" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                         <ComboBox fx:id="cmbTransportLevel" prefWidth="160.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                        <Label text="Port" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <Label fx:id="lblPort" text="Port" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                         <TextField fx:id="txtPort" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                       </children>
                     </GridPane>
+                              <Button layoutX="20.0" layoutY="233.0" mnemonicParsing="false" text="Check for open channel" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="12.0" />
                   </children>
                 </AnchorPane>
               </content>

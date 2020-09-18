@@ -28,9 +28,12 @@
                       <MenuItem fx:id="menuAtr" mnemonicParsing="false" onAction="#handleMenuAtr" text="ATR" />
                         <MenuItem fx:id="menuDeltaTest" mnemonicParsing="false" onAction="#handleMenuDeltaTest" text="Milenage Delta Test" />
                         <MenuItem fx:id="menuSqnMax" mnemonicParsing="false" onAction="#handleMenuSqnMax" text="Milenage SQN Max" />
+                        <MenuItem fx:id="menuLinkFiles" mnemonicParsing="false" onAction="#handleMenuLinkFilesTest" text="Link Files Test" />
+                        <MenuItem fx:id="menuRuwi" mnemonicParsing="false" onAction="#handleMenuRuwiTest" text="Readable &amp; Updateable when Invalidated" />
+                        <MenuItem fx:id="menuSfi" mnemonicParsing="false" onAction="#handleMenuSfiTest" text="SFI Check" />
                         <MenuItem fx:id="menuRfmUsim" mnemonicParsing="false" onAction="#handleMenuRfmUsim" text="RFM USIM" />
                         <MenuItem fx:id="menuRfmUsimUpdateRecord" mnemonicParsing="false" onAction="#handleMenuRfmUsimUpdateRecord" text="RFM USIM Update Record" />
-                        <MenuItem fx:id="menuRfmUsimExpandedMode" mnemonicParsing="false" onAction="#handleMenuRfmUsimExpandedMode" text="RFM USIM Expanded Mode>" />
+                        <MenuItem fx:id="menuRfmUsimExpandedMode" mnemonicParsing="false" onAction="#handleMenuRfmUsimExpandedMode" text="RFM USIM Expanded Mode&gt;" />
                         <MenuItem fx:id="menuRfmGsm" mnemonicParsing="false" onAction="#handleMenuRfmGsm" text="RFM GSM" />
                         <MenuItem fx:id="menuRfmGsmUpdateRecord" mnemonicParsing="false" onAction="#handleMenuRfmGsmUpdateRecord" text="RFM GSM Update Record" />
                         <MenuItem fx:id="menuRfmGsmExpandedMode" mnemonicParsing="false" onAction="#handleMenuRfmGsmExpandedMode" text="RFM GSM Expanded Mode" />
@@ -43,6 +46,7 @@
                         <MenuItem fx:id="menuRam" mnemonicParsing="false" onAction="#handleMenuRam" text="RAM" />
                         <MenuItem fx:id="menuRamUpdateRecord" mnemonicParsing="false" onAction="#handleMenuRamUpdateRecord" text="RAM update record" />
                         <MenuItem fx:id="menuRamExpandedMode" mnemonicParsing="false" onAction="#handleMenuRamExpandedMode" text="RAM expanded mode" />
+                        <MenuItem fx:id="menuVerifGp" mnemonicParsing="false" onAction="#handleMenuVerifGp" text="Verif GP" />
                         <MenuItem fx:id="menuCodes3g" mnemonicParsing="false" onAction="#handleMenuCodes3g" text="Secret Codes 3G" />
                         <MenuItem fx:id="menuCodes2g" mnemonicParsing="false" onAction="#handleMenuCodes2g" text="Secret Codes 2G" />
                     </items>
@@ -59,7 +63,7 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Help">
                     <items>
-                        <MenuItem disable="true" mnemonicParsing="false" text="About" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleMenuAbout" text="About" />
                     </items>
                 </Menu>
             </menus>

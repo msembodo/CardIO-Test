@@ -1,9 +1,6 @@
 package com.idemia.tec.jkt.cardiotest.service;
 
-import com.idemia.tec.jkt.cardiotest.model.CustomScript;
-import com.idemia.tec.jkt.cardiotest.model.RunSettings;
-import com.idemia.tec.jkt.cardiotest.model.SCP80Keyset;
-import com.idemia.tec.jkt.cardiotest.model.VariableMapping;
+import com.idemia.tec.jkt.cardiotest.model.*;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -1286,6 +1283,37 @@ public class ReportServiceImpl implements ReportService {
             html.append(createTableFooter());
         }
 
+        // Verif GP
+        if (runSettings.getRam().isIncludeVerifGp()) {
+            html.append("\n<div><h2>Verif GP</h2></div>");
+            html.append("\n<div><h3>Test modules</h3></div>");
+            html.append(createTableHeaderModule());
+            html.append("\n<tr><td class=\"item\">Verif GP</td>");
+            if (runSettings.getRam().isTestVerifGpOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
+            else {
+                String[] messages = runSettings.getRam().getTestVerifGpMessage().split(";");
+                html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
+            }
+            html.append(createTableFooter());
+
+            html.append("\n<div><h3>Applet parameters</h3></div>");
+            html.append(createTableHeaderModule());
+            html.append(
+                    "\n<tr><td class=\"item\">Package AID</td>"
+                            + "<td class=\"item\">Instance AID</td>"
+                            + "<td class=\"item\">Life Cycle</td></tr>"
+            );
+            for(AppletParam appletParam : runSettings.getAppletParams()) {
+                html.append(
+                        "<tr><td>" + appletParam.getPackageAid() + "</td>"
+                        + "<td>" + appletParam.getInstanceAid() + "</td>"
+                        + "<td>" + appletParam.getLifeCycle() + "</td></tr>"
+                );
+            }
+            html.append(createTableFooter());
+
+        }
+
         // secret codes
         if (runSettings.getSecretCodes().isInclude3gScript() || runSettings.getSecretCodes().isInclude2gScript()) {
             html.append("\n<div><h2>Secret Codes</h2></div>");
@@ -1452,6 +1480,46 @@ public class ReportServiceImpl implements ReportService {
             }
             html.append(createTableFooter());
         }
+
+        // file management
+        if (runSettings.getFileManagement().isIncludeLinkFilesTest() || runSettings.getFileManagement().isIncludeRuwiTest() || runSettings.getFileManagement().isIncludeSfiTest()) {
+            html.append("\n<div><h2>File Management</h2></div>");
+            html.append("\n<div><h3>Test modules</h3></div>");
+            html.append(createTableHeaderModule());
+
+            if (runSettings.getFileManagement().isIncludeLinkFilesTest()) {
+                html.append("\n<tr><td class=\"item\">Link File Test</td>");
+                if (runSettings.getFileManagement().isTestLinkFilesOk())
+                    html.append("<td class=\"ok\">PASSED</td></tr>");
+                else {
+                    String[] messages = runSettings.getFileManagement().getTestLinkFilesMessage().split(";");
+                    html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
+                }
+            }
+            else html.append("\n<tr><td class=\"item\">Link File Test</td><td>(not included)</td></tr>");
+
+            if (runSettings.getFileManagement().isIncludeRuwiTest()) {
+                html.append("\n<tr><td class=\"item\">Readable & Updateable when Invalidated</td>");
+                if (runSettings.getFileManagement().isTestRuwiOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
+                else {
+                    String[] messages = runSettings.getFileManagement().getTestRuwiMessage().split(";");
+                    html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
+                }
+            }
+            else html.append("\n<tr><td class=\"item\">Readable & Updateable when Invalidated</td><td>(not included)</td></tr>");
+
+            if (runSettings.getFileManagement().isIncludeSfiTest()) {
+                html.append("\n<tr><td class=\"item\">SFI TEST</td>");
+                if (runSettings.getFileManagement().isTestSfiOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
+                else {
+                    String[] messages = runSettings.getFileManagement().getTestSfiMessage().split(";");
+                    html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
+                }
+            }
+            else html.append("\n<tr><td class=\"item\">SFI Check</td><td>(not included)</td></tr>");
+            html.append(createTableFooter());
+        }
+
         html.append("\n<div><h2>Other Tests</h2></div>");
         if (runSettings.getCustomScriptsSection1().size() > 0) printCustomScriptsReport(html, runSettings.getCustomScriptsSection1());
         if (runSettings.getCustomScriptsSection2().size() > 0) printCustomScriptsReport(html, runSettings.getCustomScriptsSection2());
@@ -1690,12 +1758,28 @@ public class ReportServiceImpl implements ReportService {
             if (runSettings.getRam().isTestRamExpandedModeOk()) testPass++;
             else testFail++;
         }
+        if (runSettings.getRam().isIncludeVerifGp()) {
+            if (runSettings.getRam().isTestVerifGpOk()) testPass ++;
+            else testFail++;
+        }
         if (runSettings.getSecretCodes().isInclude3gScript()) {
             if (runSettings.getSecretCodes().isTestCodes3gOk()) testPass++;
             else testFail++;
         }
         if (runSettings.getSecretCodes().isInclude2gScript()) {
             if (runSettings.getSecretCodes().isTestCodes2gOk()) testPass++;
+            else testFail++;
+        }
+        if (runSettings.getFileManagement().isIncludeLinkFilesTest()) {
+            if (runSettings.getFileManagement().isTestLinkFilesOk()) testPass++;
+            else testFail++;
+        }
+        if (runSettings.getFileManagement().isIncludeRuwiTest()) {
+            if (runSettings.getFileManagement().isTestRuwiOk()) testPass++;
+            else testFail++;
+        }
+        if (runSettings.getFileManagement().isIncludeSfiTest()) {
+            if (runSettings.getFileManagement().isTestSfiOk()) testPass++;
             else testFail++;
         }
         if (runSettings.getCustomScriptsSection1().size() > 0) {

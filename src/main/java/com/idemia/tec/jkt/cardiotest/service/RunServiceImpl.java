@@ -78,6 +78,12 @@ public class RunServiceImpl implements RunService {
         if (root.getRunSettings().getAuthentication().isIncludeDeltaTest() || root.getRunSettings().getAuthentication().isIncludeSqnMax())
             runAllBuffer.append(addAuthentication(root.getRunSettings().getAuthentication()));
 
+        //-------------------
+        // file management
+        if (root.getRunSettings().getFileManagement().isIncludeLinkFilesTest() || root.getRunSettings().getFileManagement().isIncludeRuwiTest() || root.getRunSettings().getFileManagement().isIncludeSfiTest()  )
+            runAllBuffer.append(addFileManagement(root.getRunSettings().getFileManagement()));
+        //-------------------
+
         // custom scripts section 2
         if (root.getRunSettings().getCustomScriptsSection2().size() > 0) {
             runAllBuffer.append(addCustomScripts(root.getRunSettings().getCustomScriptsSection2()));
@@ -107,7 +113,8 @@ public class RunServiceImpl implements RunService {
         // RAM
         if (root.getRunSettings().getRam().isIncludeRam() ||
                 root.getRunSettings().getRam().isIncludeRamUpdateRecord() ||
-                root.getRunSettings().getRam().isIncludeRamExpandedMode()) {
+                root.getRunSettings().getRam().isIncludeRamExpandedMode() ||
+                root.getRunSettings().getRam().isIncludeVerifGp()) {
             runAllBuffer.append(addRam(root.getRunSettings().getRam()));
         }
 
@@ -425,6 +432,61 @@ public class RunServiceImpl implements RunService {
         return rfmCustomRunAllString.toString();
     }
 
+    // ----------------------
+    private String addFileManagement(FileManagement fileManagement) {
+
+        StringBuilder flmngmtRunAllString = new StringBuilder();
+        flmngmtRunAllString.append("; File Management\n");
+
+        // add link file script to structure
+        if (fileManagement.isIncludeLinkFilesTest()) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "FileManagement_LinkFiles_TEST.txt"))) {
+                bw.append(scriptGenerator.generateFilemanagementLinkFiles(fileManagement));
+            }
+            catch (IOException e) { logger.error("Failed writing FileManagement_LinkFiles_TEST script"); }
+            flmngmtRunAllString.append(".EXECUTE scripts\\FileManagement_LinkFiles_TEST.txt /PATH logs\n");
+            flmngmtRunAllString.append(".ALLUNDEFINE\n\n");
+        }
+
+        // add ruwi script to structure
+        if (fileManagement.isIncludeRuwiTest()) {
+
+            //file ruwi helper_1
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RuWI01_OK_To_Go.txt"))) {
+                bw.append(scriptGenerator.generateFilemanagementRuWI01_OK_To_Go(fileManagement));
+            }
+            catch (IOException e) { logger.error("Failed RuWI01_OK_To_Go script"); }
+
+            //file ruwi helper_2
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "RuWI02_Method.txt"))) {
+                bw.append(scriptGenerator.generateFilemanagementRuWI02_Method(fileManagement));
+            }
+            catch (IOException e) { logger.error("Failed RuWI02_Method script"); }
+
+
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "FileManagement_Readable&UpdateablewhenInvalidated_TEST.txt"))) {
+                bw.append(scriptGenerator.generateFilemanagementRuwi(fileManagement));
+            }
+            catch (IOException e) { logger.error("Failed FileManagement_Readable&UpdateablewhenInvalidated_TEST script"); }
+            flmngmtRunAllString.append(".EXECUTE scripts\\FileManagement_Readable&UpdateablewhenInvalidated_TEST.txt /PATH logs\n");
+            flmngmtRunAllString.append(".ALLUNDEFINE\n\n");
+
+        }
+
+        // add sfi script to structure
+        if (fileManagement.isIncludeSfiTest()) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "FileManagement_SFI_TEST.txt"))) {
+                bw.append(scriptGenerator.generateFilemanagementSfi(fileManagement));
+            }
+            catch (IOException e) { logger.error("Failed FileManagement_SFI_TEST script"); }
+            flmngmtRunAllString.append(".EXECUTE scripts\\FileManagement_SFI_TEST.txt /PATH logs\n");
+            flmngmtRunAllString.append(".ALLUNDEFINE\n\n");
+        }
+
+        return flmngmtRunAllString.toString();
+    }
+    // ----------------------
+
     private String addRam(Ram ram) {
         // TODO: options buffer (if required)
 
@@ -460,6 +522,16 @@ public class RunServiceImpl implements RunService {
                 logger.error("Failed writing RAM_3G_ExpandedMode script");
             }
             ramRunAllString.append(".EXECUTE scripts\\RAM_3G_ExpandedMode.txt /PATH logs\n");
+            ramRunAllString.append(".ALLUNDEFINE\n\n");
+        }
+
+        if (ram.isIncludeVerifGp()) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "Verif_GP.txt"))) {
+                bw.append(scriptGenerator.generateVerifGp(ram));
+            } catch (IOException e) {
+                logger.error("Failed writing Verif_GP script");
+            }
+            ramRunAllString.append(".EXECUTE scripts\\Verif_GP.txt /PATH logs\n");
             ramRunAllString.append(".ALLUNDEFINE\n\n");
         }
 
@@ -639,6 +711,26 @@ public class RunServiceImpl implements RunService {
         return exitVal == 0;
     }
 
+    // ------------------------------
+    @Override public boolean runLinkFilesTest() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "FileManagement_LinkFiles_TEST.txt");
+        return exitVal == 0;
+    }
+
+    @Override public boolean runRuwiTest() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "FileManagement_Readable&UpdateablewhenInvalidated_TEST.txt");
+        return exitVal == 0;
+    }
+
+    @Override public boolean runSfiTest() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "FileManagement_SFI_TEST.txt");
+        return exitVal == 0;
+    }
+    // ------------------------------
+
     @Override  public boolean runRam() {
         composeScripts();
         runShellCommand("pcomconsole", scriptsDirectory + "RAM.txt");
@@ -654,6 +746,12 @@ public class RunServiceImpl implements RunService {
     @Override public boolean runRamExpandedMode() {
         composeScripts();
         runShellCommand("pcomconsole", scriptsDirectory + "RAM_3G_ExpandedMode.txt");
+        return exitVal == 0;
+    }
+
+    @Override  public boolean runVerifGp() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "Verif_GP.txt");
         return exitVal == 0;
     }
 

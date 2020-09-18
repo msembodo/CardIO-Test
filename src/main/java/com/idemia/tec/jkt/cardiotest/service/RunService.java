@@ -7,6 +7,7 @@ public interface RunService {
     TestSuiteResponse runAll();
     boolean runAtr();
     boolean runDeltaTest();
+
     boolean runSqnMax();
     boolean runRfmUsim();
     boolean runRfmUsimUpdateRecord();
@@ -20,14 +21,19 @@ public interface RunService {
     boolean runRam();
     boolean runRamUpdateRecord();
     boolean runRamExpandedMode();
+    boolean runVerifGp();
     boolean runSecretCodes3g();
     boolean runSecretCodes2g();
-
-    //Custom RFM --------------------------------------
     boolean runRfmCustom();
     boolean runRfmCustomUpdateRecord();
     boolean runRfmCustomExpandedMode();
-    // ------------------------------------------------
+
+    // --------
+    boolean runLinkFilesTest();
+    boolean runRuwiTest();
+    boolean runSfiTest();
+    // --------
+
 
 
 }

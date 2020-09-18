@@ -966,203 +966,202 @@ public class ReportServiceImpl implements ReportService {
         }
 
         // TODO RFM CUSTOM Generate Report
-        // RFM Custom
-        if (runSettings.getRfmCustom().isIncludeRfmCustom() || runSettings.getRfmCustom().isIncludeRfmCustomUpdateRecord() || runSettings.getRfmUsim().isIncludeRfmUsimExpandedMode()) {
-            html.append("\n<div><h2>RFM Custom</h2></div>");
+        // RFM CUSTOM
+        if (runSettings.getRfmCustom().isIncludeRfmCustom() || runSettings.getRfmCustom().isIncludeRfmCustomUpdateRecord() || runSettings.getRfmCustom().isIncludeRfmCustomExpandedMode()) {
+            html.append("\n<div><h2>RFM CUSTOM</h2></div>");
             html.append("\n<div><h3>Test modules</h3></div>");
             html.append(createTableHeaderModule());
-            if (runSettings.getRfmUsim().isIncludeRfmUsim()) {
-                html.append("\n<tr><td class=\"item\">RFM USIM</td>");
-                if (runSettings.getRfmUsim().isTestRfmUsimOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
+            if (runSettings.getRfmCustom().isIncludeRfmCustom()) {
+                html.append("\n<tr><td class=\"item\">RFM CUSTOM</td>");
+                if (runSettings.getRfmCustom().isTestRfmCustomOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
                 else {
-                    String[] messages = runSettings.getRfmUsim().getTestRfmUsimMessage().split(";");
+                    String[] messages = runSettings.getRfmCustom().getTestRfmCustomMessage().split(";");
                     html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
                 }
             }
-            else html.append("\n<tr><td class=\"item\">RFM USIM</td><td>(not included)</td></tr>");
-            if (runSettings.getRfmUsim().isIncludeRfmUsimUpdateRecord()) {
-                html.append("\n<tr><td class=\"item\">RFM USIM update record</td>");
-                if (runSettings.getRfmUsim().isTestRfmUsimUpdateRecordOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
+            else html.append("\n<tr><td class=\"item\">RFM CUSTOM</td><td>(not included)</td></tr>");
+            if (runSettings.getRfmCustom().isIncludeRfmCustomUpdateRecord()) {
+                html.append("\n<tr><td class=\"item\">RFM CUSTOM update record</td>");
+                if (runSettings.getRfmCustom().isTestRfmCustomUpdateRecordOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
                 else {
-                    String[] messages = runSettings.getRfmUsim().getTestRfmUsimUpdateRecordMessage().split(";");
+                    String[] messages = runSettings.getRfmCustom().getTestRfmCustomUpdateRecordMessage().split(";");
                     html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
                 }
             }
-            else html.append("\n<tr><td class=\"item\">RFM USIM update record</td><td>(not included)</td></tr>");
-            if (runSettings.getRfmUsim().isIncludeRfmUsimExpandedMode()) {
-                html.append("\n<tr><td class=\"item\">RFM USIM expanded mode</td>");
-                if (runSettings.getRfmUsim().isTestRfmUsimExpandedModeOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
+            else html.append("\n<tr><td class=\"item\">RFM CUSTOM update record</td><td>(not included)</td></tr>");
+            if (runSettings.getRfmCustom().isIncludeRfmCustomExpandedMode()) {
+                html.append("\n<tr><td class=\"item\">RFM CUSTOM expanded mode</td>");
+                if (runSettings.getRfmCustom().isTestRfmCustomExpandedModeOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
                 else {
-                    String[] messages = runSettings.getRfmUsim().getTestRfmUsimExpandedModeMessage().split(";");
+                    String[] messages = runSettings.getRfmCustom().getTestRfmCustomExpandedModeMessage().split(";");
                     html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
                 }
             }
-            else html.append("\n<tr><td class=\"item\">RFM USIM expanded mode</td><td>(not included)</td></tr>");
+            else html.append("\n<tr><td class=\"item\">RFM CUSTOM expanded mode</td><td>(not included)</td></tr>");
             html.append(createTableFooter());
-
             html.append("\n<div><h3>Test parameters</h3></div>");
             html.append(createTableHeaderModule());
             html.append(
                     "\n<tr><td class=\"item\">TAR</td>"
-                            + "<td>" + runSettings.getRfmUsim().getTar() + "</td></tr>"
+                            + "<td>" + runSettings.getRfmCustom().getTar() + "</td></tr>"
             );
-            if (runSettings.getRfmUsim().isFullAccess()) {
+            if (runSettings.getRfmCustom().isFullAccess()) {
                 html.append(
                         "\n<tr><td class=\"item\">Target EF</td>"
-                                + "<td>" + runSettings.getRfmUsim().getTargetEf() + "</td></tr>"
+                                + "<td>" + runSettings.getRfmCustom().getTargetEf() + "</td></tr>"
                 );
             }
             else {
+
                 // Positive Case Access Domain
 
-                if (runSettings.getRfmUsim().getRfmUsimAccessDomain().isUseAlways()){
+                if (runSettings.getRfmCustom().getRfmCustomBadCaseAccessDomain().isUseAlways()){
                     html.append(
-                            "\n<tr><td class=\"item\">Target EF Always</td>"
-                                    + "<td>" + runSettings.getRfmUsim().getCustomTargetEfAlw()
-                                    + "&nbsp;( Always Access Domain )</td></tr>"
+                        "\n<tr><td class=\"item\">Target EF Always</td>"
+                        + "<td>" + runSettings.getRfmCustom().getCustomTargetEfAlw()
+                        + "&nbsp;( Always Access Domain )</td></tr>"
                     );
                 }
-                if (runSettings.getRfmUsim().getRfmUsimAccessDomain().isUseIsc1()){
+                if (runSettings.getRfmCustom().getRfmCustomBadCaseAccessDomain().isUseIsc1()){
                     html.append(
-                            "\n<tr><td class=\"item\">Target EF ADM1</td>"
-                                    + "<td>" + runSettings.getRfmUsim().getCustomTargetEfIsc1()
-                                    + "&nbsp;( ADM1 Access Domain )</td></tr>"
+                        "\n<tr><td class=\"item\">Target EF ADM1</td>"
+                        + "<td>" + runSettings.getRfmCustom().getCustomTargetEfIsc1()
+                        + "&nbsp;( ADM1 Access Domain )</td></tr>"
                     );
                 }
-                if (runSettings.getRfmUsim().getRfmUsimAccessDomain().isUseIsc2()){
+                if (runSettings.getRfmCustom().getRfmCustomBadCaseAccessDomain().isUseIsc2()){
                     html.append(
-                            "\n<tr><td class=\"item\">Target EF ADM2</td>"
-                                    + "<td>" + runSettings.getRfmUsim().getCustomTargetEfIsc2()
-                                    + "&nbsp;( ADM2 Access Domain )</td></tr>"
+                        "\n<tr><td class=\"item\">Target EF ADM2</td>"
+                        + "<td>" + runSettings.getRfmCustom().getCustomTargetEfIsc2()
+                        + "&nbsp;( ADM2 Access Domain )</td></tr>"
                     );
                 }
-                if (runSettings.getRfmUsim().getRfmUsimAccessDomain().isUseIsc3()){
+                if (runSettings.getRfmCustom().getRfmCustomBadCaseAccessDomain().isUseIsc3()){
                     html.append(
-                            "\n<tr><td class=\"item\">Target EF ADM3</td>"
-                                    + "<td>" + runSettings.getRfmUsim().getCustomTargetEfIsc3()
-                                    + "&nbsp;( ADM3 Access Domain )</td></tr>"
+                        "\n<tr><td class=\"item\">Target EF ADM3</td>"
+                        + "<td>" + runSettings.getRfmCustom().getCustomTargetEfIsc3()
+                        + "&nbsp;( ADM3 Access Domain )</td></tr>"
                     );
                 }
-                if (runSettings.getRfmUsim().getRfmUsimAccessDomain().isUseIsc4()){
+                if (runSettings.getRfmCustom().getRfmCustomBadCaseAccessDomain().isUseIsc4()){
                     html.append(
-                            "\n<tr><td class=\"item\">Target EF ADM4</td>"
-                                    + "<td>" + runSettings.getRfmUsim().getCustomTargetEfIsc4()
-                                    + "&nbsp;( ADM4 Access Domain )</td></tr>"
+                        "\n<tr><td class=\"item\">Target EF ADM4</td>"
+                        + "<td>" + runSettings.getRfmCustom().getCustomTargetEfIsc4()
+                        + "&nbsp;( ADM4 Access Domain )</td></tr>"
                     );
                 }
-                if (runSettings.getRfmUsim().getRfmUsimAccessDomain().isUseGPin1()){
+                if (runSettings.getRfmCustom().getRfmCustomBadCaseAccessDomain().isUseGPin1()){
                     html.append(
-                            "\n<tr><td class=\"item\">Target EF PIN1</td>"
-                                    + "<td>" + runSettings.getRfmUsim().getCustomTargetEfGPin1()
-                                    + "&nbsp;( PIN1 Access Domain )</td></tr>"
+                        "\n<tr><td class=\"item\">Target EF PIN1</td>"
+                        + "<td>" + runSettings.getRfmCustom().getCustomTargetEfGPin1()
+                        + "&nbsp;( PIN1 Access Domain )</td></tr>"
                     );
                 }
-                if (runSettings.getRfmUsim().getRfmUsimAccessDomain().isUseLPin1()){
+                if (runSettings.getRfmCustom().getRfmCustomBadCaseAccessDomain().isUseLPin1()){
                     html.append(
-                            "\n<tr><td class=\"item\">Target EF PIN2</td>"
-                                    + "<td>" + runSettings.getRfmUsim().getCustomTargetEfLPin1()
-                                    + "&nbsp;( PIN2 Access Domain )</td></tr>"
+                        "\n<tr><td class=\"item\">Target EF PIN2</td>"
+                        + "<td>" + runSettings.getRfmCustom().getCustomTargetEfLPin1()
+                        + "&nbsp;( PIN2 Access Domain )</td></tr>"
                     );
                 }
 
                 // Negative Case Access Domain
 
-                if (runSettings.getRfmUsim().getRfmUsimBadCaseAccessDomain().isUseBadCaseAlways()){
+                if (runSettings.getRfmCustom().getRfmCustomBadCaseAccessDomain().isUseBadCaseAlways()){
                     html.append(
-                            "\n<tr><td class=\"item\">Target EF Always</td>"
-                                    + "<td>" + runSettings.getRfmUsim().getCustomTargetEfBadCaseAlw()
-                                    + "&nbsp;( Negative Case Always Access Domain )</td></tr>"
+                        "\n<tr><td class=\"item\">Target EF Always</td>"
+                        + "<td>" + runSettings.getRfmCustom().getCustomTargetEfBadCaseAlw()
+                        + "&nbsp;( Negative Case Always Access Domain )</td></tr>"
                     );
                 }
-                if (runSettings.getRfmUsim().getRfmUsimBadCaseAccessDomain().isUseBadCaseIsc1()){
+                if (runSettings.getRfmCustom().getRfmCustomBadCaseAccessDomain().isUseBadCaseIsc1()){
                     html.append(
-                            "\n<tr><td class=\"item\">Target EF ADM1</td>"
-                                    + "<td>" + runSettings.getRfmUsim().getCustomTargetEfBadCaseIsc1()
-                                    + "&nbsp;( Negative Case ADM1 Access Domain )</td></tr>"
+                        "\n<tr><td class=\"item\">Target EF ADM1</td>"
+                        + "<td>" + runSettings.getRfmCustom().getCustomTargetEfBadCaseIsc1()
+                        + "&nbsp;( Negative Case ADM1 Access Domain )</td></tr>"
                     );
                 }
-                if (runSettings.getRfmUsim().getRfmUsimBadCaseAccessDomain().isUseBadCaseIsc2()){
+                if (runSettings.getRfmCustom().getRfmCustomBadCaseAccessDomain().isUseBadCaseIsc2()){
                     html.append(
-                            "\n<tr><td class=\"item\">Target EF ADM2</td>"
-                                    + "<td>" + runSettings.getRfmUsim().getCustomTargetEfBadCaseIsc2()
-                                    + "&nbsp;( Negative Case ADM2 Access Domain )</td></tr>"
+                        "\n<tr><td class=\"item\">Target EF ADM2</td>"
+                        + "<td>" + runSettings.getRfmCustom().getCustomTargetEfBadCaseIsc2()
+                        + "&nbsp;( Negative Case ADM2 Access Domain )</td></tr>"
                     );
                 }
-                if (runSettings.getRfmUsim().getRfmUsimBadCaseAccessDomain().isUseBadCaseIsc3()){
+                if (runSettings.getRfmCustom().getRfmCustomBadCaseAccessDomain().isUseBadCaseIsc3()){
                     html.append(
-                            "\n<tr><td class=\"item\">Target EF ADM3</td>"
-                                    + "<td>" + runSettings.getRfmUsim().getCustomTargetEfBadCaseIsc3()
-                                    + "&nbsp;( Negative Case ADM3 Access Domain )</td></tr>"
+                        "\n<tr><td class=\"item\">Target EF ADM3</td>"
+                        + "<td>" + runSettings.getRfmCustom().getCustomTargetEfBadCaseIsc3()
+                        + "&nbsp;( Negative Case ADM3 Access Domain )</td></tr>"
                     );
                 }
-                if (runSettings.getRfmUsim().getRfmUsimBadCaseAccessDomain().isUseIsc4()){
+                if (runSettings.getRfmCustom().getRfmCustomBadCaseAccessDomain().isUseBadCaseIsc4()){
                     html.append(
-                            "\n<tr><td class=\"item\">Target EF ADM4</td>"
-                                    + "<td>" + runSettings.getRfmUsim().getCustomTargetEfBadCaseIsc4()
-                                    + "&nbsp;( Negative Case ADM4 Access Domain )</td></tr>"
+                        "\n<tr><td getRfmGsm=\"item\">Target EF ADM4</td>"
+                        + "<td>" + runSettings.getRfmCustom().getCustomTargetEfBadCaseIsc4()
+                        + "&nbsp;( Negative Case ADM4 Access Domain )</td></tr>"
                     );
                 }
-                if (runSettings.getRfmUsim().getRfmUsimBadCaseAccessDomain().isUseBadCaseGPin1()){
+                if (runSettings.getRfmCustom().getRfmCustomBadCaseAccessDomain().isUseBadCaseGPin1()){
                     html.append(
-                            "\n<tr><td class=\"item\">Target EF PIN1</td>"
-                                    + "<td>" + runSettings.getRfmUsim().getCustomTargetEfBadCaseGPin1()
-                                    + "&nbsp;( Negative Case PIN1 Access Domain )</td></tr>"
+                        "\n<tr><td class=\"item\">Target EF PIN1</td>"
+                        + "<td>" + runSettings.getRfmCustom().getCustomTargetEfBadCaseGPin1()
+                        + "&nbsp;( Negative Case PIN1 Access Domain )</td></tr>"
                     );
                 }
-                if (runSettings.getRfmUsim().getRfmUsimBadCaseAccessDomain().isUseBadCaseLPin1()){
+                if (runSettings.getRfmCustom().getRfmCustomBadCaseAccessDomain().isUseBadCaseLPin1()){
                     html.append(
-                            "\n<tr><td class=\"item\">Target EF PIN2</td>"
-                                    + "<td>" + runSettings.getRfmUsim().getCustomTargetEfBadCaseLPin1()
-                                    + "&nbsp;( Negative Case PIN2 Access Domain )</td></tr>"
+                        "\n<tr><td class=\"item\">Target EF PIN2</td>"
+                        + "<td>" + runSettings.getRfmCustom().getCustomTargetEfBadCaseLPin1()
+                        + "&nbsp;( Negative Case PIN2 Access Domain )</td></tr>"
                     );
                 }
-                // TODO RFM USIM Generate Report for not Full Access use Access Domain
+                // TODO RFM CUSTOM Generate Report for not Full Access use Access Domain
             }
-            if (runSettings.getRfmUsim().isUseSpecificKeyset()) {
+            if (runSettings.getRfmCustom().isUseSpecificKeyset()) {
                 html.append(
-                        "\n<tr><td class=\"item\">Specific cipher keyset</td>"
-                                + "<td>" + runSettings.getRfmUsim().getCipheringKeyset().getKeysetName() + "</td></tr>"
-                                + "\n<tr><td class=\"item\">Specific auth keyset</td>"
-                                + "<td>" + runSettings.getRfmUsim().getAuthKeyset().getKeysetName() + "</td></tr>"
+                    "\n<tr><td class=\"item\">Specific cipher keyset</td>"
+                    + "<td>" + runSettings.getRfmCustom().getCipheringKeyset().getKeysetName() + "</td></tr>"
+                    + "\n<tr><td class=\"item\">Specific auth keyset</td>"
+                    + "<td>" + runSettings.getRfmCustom().getAuthKeyset().getKeysetName() + "</td></tr>"
                 );
             }
             html.append(createTableFooter());
-
             html.append("\n<div><h3>Minimum Security Level</h3></div>");
             html.append(createTableHeaderModule());
             html.append(
-                    "\n<tr><td class=\"item\">Computed MSL</td>"
-                            + "<td>" + runSettings.getRfmUsim().getMinimumSecurityLevel().getComputedMsl() + "</td></tr>"
+                "\n<tr><td class=\"item\">Computed MSL</td>"
+                + "<td>" + runSettings.getRfmCustom().getMinimumSecurityLevel().getComputedMsl() + "</td></tr>"
             );
             html.append("\n<tr><td class=\"item\">Use cipher</td>");
-            if (runSettings.getRfmUsim().getMinimumSecurityLevel().isUseCipher()) html.append("<td>YES</td></tr>");
+            if (runSettings.getRfmCustom().getMinimumSecurityLevel().isUseCipher()) html.append("<td>YES</td></tr>");
             else html.append("<td>NO</td></tr>");
             html.append(
-                    "\n<tr><td class=\"item\">Cipher algo</td>"
-                            + "<td>" + runSettings.getRfmUsim().getMinimumSecurityLevel().getCipherAlgo() + "</td></tr>"
+                "\n<tr><td class=\"item\">Cipher algo</td>"
+                + "<td>" + runSettings.getRfmCustom().getMinimumSecurityLevel().getCipherAlgo() + "</td></tr>"
             );
             html.append(
-                    "\n<tr><td class=\"item\">Auth verification</td>"
-                            + "<td>" + runSettings.getRfmUsim().getMinimumSecurityLevel().getAuthVerification() + "</td></tr>"
+                "\n<tr><td class=\"item\">Auth verification</td>"
+                + "<td>" + runSettings.getRfmCustom().getMinimumSecurityLevel().getAuthVerification() + "</td></tr>"
             );
             html.append(
-                    "\n<tr><td class=\"item\">Signing algo</td>"
-                            + "<td>" + runSettings.getRfmUsim().getMinimumSecurityLevel().getSigningAlgo() + "</td></tr>"
+                "\n<tr><td class=\"item\">Signing algo</td>"
+                + "<td>" + runSettings.getRfmCustom().getMinimumSecurityLevel().getSigningAlgo() + "</td></tr>"
             );
             html.append(
-                    "\n<tr><td class=\"item\">Counter checking</td>"
-                            + "<td>" + runSettings.getRfmUsim().getMinimumSecurityLevel().getCounterChecking() + "</td></tr>"
+                "\n<tr><td class=\"item\">Counter checking</td>"
+                + "<td>" + runSettings.getRfmCustom().getMinimumSecurityLevel().getCounterChecking() + "</td></tr>"
             );
             html.append(
-                    "\n<tr><td class=\"item\">PoR requirement</td>"
-                            + "<td>" + runSettings.getRfmUsim().getMinimumSecurityLevel().getPorRequirement() + "</td></tr>"
+                "\n<tr><td class=\"item\">PoR requirement</td>"
+                    + "<td>" + runSettings.getRfmCustom().getMinimumSecurityLevel().getPorRequirement() + "</td></tr>"
             );
             html.append(
-                    "\n<tr><td class=\"item\">PoR security</td>"
-                            + "<td>" + runSettings.getRfmUsim().getMinimumSecurityLevel().getPorSecurity() + "</td></tr>"
+                "\n<tr><td class=\"item\">PoR security</td>"
+                + "<td>" + runSettings.getRfmCustom().getMinimumSecurityLevel().getPorSecurity() + "</td></tr>"
             );
             html.append("\n<tr><td class=\"item\">Cipher PoR</td>");
-            if (runSettings.getRfmUsim().getMinimumSecurityLevel().isCipherPor()) html.append("<td>YES</td></tr>");
+            if (runSettings.getRfmCustom().getMinimumSecurityLevel().isCipherPor()) html.append("<td>YES</td></tr>");
             else html.append("<td>NO</td></tr>");
             html.append(createTableFooter());
         }

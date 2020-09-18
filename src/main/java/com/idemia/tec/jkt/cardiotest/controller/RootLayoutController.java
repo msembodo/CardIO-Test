@@ -248,6 +248,7 @@ public class RootLayoutController {
         cardiotest.getCmbMccVar().getItems().clear();
         cardiotest.getMappedVariables().clear();
         scp80Keysets.clear();
+        appletParams.clear();
         customScriptsSection1.clear();
         customScriptsSection2.clear();
         customScriptsSection3.clear();

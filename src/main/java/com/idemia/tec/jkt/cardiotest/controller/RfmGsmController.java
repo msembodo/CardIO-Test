@@ -169,6 +169,22 @@ public class RfmGsmController {
         txtRfmGsmTargetEf.setText(root.getRunSettings().getRfmGsm().getTargetEf());
         txtRfmGsmTargetEfBadCase.setText(root.getRunSettings().getRfmGsm().getTargetEfBadCase());
 
+        // set Checkbox Access Domain Tooltip
+        chkRfmGsmUseAlw.setTooltip(new Tooltip("Read EF Access Domain ALW"));
+        chkRfmGsmUseIsc1.setTooltip(new Tooltip("Update EF Access Domain ISC1"));
+        chkRfmGsmUseIsc2.setTooltip(new Tooltip("Update EF Access Domain ISC2"));
+        chkRfmGsmUseIsc3.setTooltip(new Tooltip("Update EF Access Domain ISC3"));
+        chkRfmGsmUseIsc4.setTooltip(new Tooltip("Update EF Access Domain ISC4"));
+        chkRfmGsmUseGPin1.setTooltip(new Tooltip("Update EF Access Domain PIN1"));
+        chkRfmGsmUseLPin1.setTooltip(new Tooltip("Update EF Access Domain PIN2"));
+        chkRfmGsmUseBadCaseAlw.setTooltip(new Tooltip("Out of Access Domain ALW"));
+        chkRfmGsmUseBadCaseIsc1.setTooltip(new Tooltip("Out of Access Domain ISC1"));
+        chkRfmGsmUseBadCaseIsc2.setTooltip(new Tooltip("Out of Access Domain ISC2"));
+        chkRfmGsmUseBadCaseIsc3.setTooltip(new Tooltip("Out of Access Domain ISC3"));
+        chkRfmGsmUseBadCaseIsc4.setTooltip(new Tooltip("Out of Access Domain ISC4"));
+        chkRfmGsmUseBadCaseGPin1.setTooltip(new Tooltip("Out of Access Domain PIN1"));
+        chkRfmGsmUseBadCaseLPin1.setTooltip(new Tooltip("Out of Access Domain PIN2"));
+
         // Initialize Access Domain Positive Case
         chkRfmGsmUseAlw.setSelected(root.getRunSettings().getRfmGsm().getRfmGsmAccessDomain().isUseAlways());
         handleIncludeAlwCheck();

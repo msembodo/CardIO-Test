@@ -28,7 +28,6 @@ public class RfmGsmController {
     @FXML private ComboBox<String> cmbRfmGsmCounterCheck;
     @FXML private TextField txtRfmGsmTar;
     @FXML private TextField txtRfmGsmTargetEf;
-    @FXML private TextField txtRfmGsmTargetEfBadCase;
     @FXML private CheckBox chkRfmGsmFullAccess;
     @FXML private Label lblRfmGsmCustomTarget;
     @FXML private TextField txtRfmGsmCustomTargetEfAlw;
@@ -167,7 +166,6 @@ public class RfmGsmController {
 
         txtRfmGsmTar.setText(root.getRunSettings().getRfmGsm().getTar());
         txtRfmGsmTargetEf.setText(root.getRunSettings().getRfmGsm().getTargetEf());
-        txtRfmGsmTargetEfBadCase.setText(root.getRunSettings().getRfmGsm().getTargetEfBadCase());
 
         // set Checkbox Access Domain Tooltip
         chkRfmGsmUseAlw.setTooltip(new Tooltip("Read EF Access Domain ALW"));
@@ -394,7 +392,6 @@ public class RfmGsmController {
             chkRfmGsmUseBadCaseLPin1.setDisable(true);
             lblRfmGsmCustomTargetBadCase.setDisable(true);
             txtRfmGsmTargetEf.setDisable(false);
-            txtRfmGsmTargetEfBadCase.setDisable(false);
         }
         else {
             txtRfmGsmCustomTargetEfAlw.setDisable(false);
@@ -429,7 +426,6 @@ public class RfmGsmController {
             lblRfmGsmCustomTarget.setDisable(false);
             lblRfmGsmCustomTargetBadCase.setDisable(false);
             txtRfmGsmTargetEf.setDisable(true);
-            txtRfmGsmTargetEfBadCase.setDisable(true);
         }
     }
 
@@ -883,7 +879,6 @@ public class RfmGsmController {
 
         root.getRunSettings().getRfmGsm().setTar(txtRfmGsmTar.getText());
         root.getRunSettings().getRfmGsm().setTargetEf(txtRfmGsmTargetEf.getText());
-        root.getRunSettings().getRfmGsm().setTargetEfBadCase(txtRfmGsmTargetEfBadCase.getText());
         root.getRunSettings().getRfmGsm().setFullAccess(chkRfmGsmFullAccess.isSelected());
         if (!root.getRunSettings().getRfmGsm().isFullAccess()) {
             root.getRunSettings().getRfmGsm().setCustomTargetEfAlw(txtRfmGsmCustomTargetEfAlw.getText());

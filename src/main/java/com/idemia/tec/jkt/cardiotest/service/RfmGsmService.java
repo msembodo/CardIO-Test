@@ -94,7 +94,7 @@ public class RfmGsmService {
                 "\n; TAR is configured for full access\n"
                 + ".DEFINE %DF_ID " + root.getRunSettings().getCardParameters().getDfGsm() + "\n"
                 + ".DEFINE %EF_ID " + rfmGsm.getTargetEf() + "\n"
-                + ".DEFINE %EF_ID_ERR " + rfmGsm.getTargetEfBadCase() + "\n"
+                //+ ".DEFINE %EF_ID_ERR " + rfmGsm.getTargetEfBadCase() + "\n"
             );
         } else {
             rfmGsmBuffer.append(
@@ -284,7 +284,7 @@ public class RfmGsmService {
                 "\n; TAR is configured for full access\n"
                 + ".DEFINE %DF_ID " + root.getRunSettings().getCardParameters().getDfGsm() + "\n"
                 + ".DEFINE %EF_ID " + rfmGsm.getTargetEf() + "\n"
-                + ".DEFINE %EF_ID_ERR " + rfmGsm.getTargetEfBadCase() + "\n"
+                //+ ".DEFINE %EF_ID_ERR " + rfmGsm.getTargetEfBadCase() + "\n"
             );
         } else {
             rfmGsmUpdateRecordBuffer.append(

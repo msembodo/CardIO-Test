@@ -133,7 +133,7 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             rfmUsim.setIncludeRfmUsim(true);
             rfmUsim.setTar("B00001");
             rfmUsim.setTargetEf("6F7B");
-            rfmUsim.setTargetEfBadCase("6F05");
+            //rfmUsim.setTargetEfBadCase("6F05");
             rfmUsim.setFullAccess(true);
             rfmUsim.setMinimumSecurityLevel(rfmUsimMsl);
 
@@ -169,7 +169,7 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             rfmGsm.setIncludeRfmGsm(true);
             rfmGsm.setTar("B00001");
             rfmGsm.setTargetEf("6F7B");
-            rfmGsm.setTargetEfBadCase("6F05");
+            //rfmGsm.setTargetEfBadCase("6F05");
             rfmGsm.setFullAccess(true);
             rfmGsm.setMinimumSecurityLevel(rfmGsmMsl);
 
@@ -204,7 +204,7 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             rfmIsim.setIncludeRfmIsim(true);
             rfmIsim.setTar("B00025");
             rfmIsim.setTargetEf("6FAD");
-            rfmIsim.setTargetEfBadCase("6F02");
+            //rfmIsim.setTargetEfBadCase("6F02");
             rfmIsim.setFullAccess(true);
             rfmIsim.setMinimumSecurityLevel(rfmIsimMsl);
 
@@ -263,7 +263,6 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             rfmCustom.setTar("494D45");
             rfmCustom.setTargetDf("7FF0");
             rfmCustom.setTargetEf("6F7B");
-            rfmCustom.setTargetEfBadCase("6F05");
             rfmCustom.setFullAccess(true);
             rfmCustom.setMinimumSecurityLevel(rfmCustomMsl);
             rfmCustom.setRfmCustomAccessDomain(rfmCustomAccessDomain);

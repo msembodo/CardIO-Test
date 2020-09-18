@@ -1374,7 +1374,7 @@ public class RfmIsimService {
             "\n; TAR is configured for full access\n"
             + ".DEFINE %DF_ID " + root.getRunSettings().getCardParameters().getDfIsim() + "\n"
             + ".DEFINE %EF_ID " + rfmIsim.getTargetEf() + "\n"
-            + ".DEFINE %EF_ID_ERR " + rfmIsim.getTargetEfBadCase() + "\n"
+            //+ ".DEFINE %EF_ID_ERR " + rfmIsim.getTargetEfBadCase() + "\n"
         );
 
         return targetFiles.toString();

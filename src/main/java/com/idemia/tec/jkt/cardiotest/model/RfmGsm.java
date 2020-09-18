@@ -45,6 +45,7 @@ public class RfmGsm {
     public RfmGsm(boolean includeRfmGsm, boolean includeRfmGsmUpdateRecord, boolean includeRfmGsmExpandedMode,
                   String tar, String targetEf, String targetEfBadCase, boolean fullAccess, String customTargetAcc,
                   String customTargetEf, String customTargetEfAlw, String customTargetEfIsc1, String customTargetEfIsc2, String customTargetEfIsc3, String customTargetEfGPin1, String customTargetEfLPin1, String customTargetAccBadCase, String customTargetEfBadCase,
+                  String customTargetEfBadCaseAlw, String customTargetEfBadCaseIsc1, String customTargetEfBadCaseIsc2, String customTargetEfBadCaseIsc3, String customTargetEfBadCaseGPin1, String customTargetEfBadCaseLPin1,
                   boolean useSpecificKeyset, AccessDomain accessDomain, AccessDomain badCaseAccessDomain, SCP80Keyset cipheringKeyset, SCP80Keyset authKeyset,
                   MinimumSecurityLevel minimumSecurityLevel) {
         this.includeRfmGsm = includeRfmGsm;
@@ -62,6 +63,12 @@ public class RfmGsm {
         this.customTargetEfIsc3 = customTargetEfIsc3;
         this.customTargetEfGPin1 = customTargetEfGPin1;
         this.customTargetEfLPin1 = customTargetEfLPin1;
+        this.customTargetEfBadCaseAlw = customTargetEfBadCaseAlw;
+        this.customTargetEfBadCaseIsc1 = customTargetEfBadCaseIsc1;
+        this.customTargetEfBadCaseIsc2 = customTargetEfBadCaseIsc2;
+        this.customTargetEfBadCaseIsc3 = customTargetEfBadCaseIsc3;
+        this.customTargetEfBadCaseGPin1 = customTargetEfBadCaseGPin1;
+        this.customTargetEfBadCaseLPin1 = customTargetEfBadCaseLPin1;
         this.customTargetAccBadCase = customTargetAccBadCase;
         this.customTargetEfBadCase = customTargetEfBadCase;
         this.useSpecificKeyset = useSpecificKeyset;
@@ -70,7 +77,6 @@ public class RfmGsm {
         this.cipheringKeyset = cipheringKeyset;
         this.authKeyset = authKeyset;
         this.minimumSecurityLevel = minimumSecurityLevel;
-        // TODO add Abtract on for Negative Case
     }
 
     public boolean isIncludeRfmGsm() {

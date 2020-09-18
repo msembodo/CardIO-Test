@@ -18,30 +18,6 @@ public class RfmIsimService {
         StringBuilder headerScript = new StringBuilder();
 
         headerScript.append(
-            ";==================================================\n" +
-            ";================!!! CAUTION !!!===================\n" +
-            ";==================================================\n\n" +
-            "* Please check the last byte for the POR\n" +
-            "* '00' PoR OK.\n" +
-            "* '01' RC/CC/DS failed.\n" +
-            "* '02' CNTR low.\n" +
-            "* '03' CNTR high.\n" +
-            "* '04' CNTR Blocked\n" +
-            "* '05' Ciphering error.\n" +
-            "* '06' Unidentified security error. This code is for the case where the Receiving Entity cannot correctly\n" +
-            "* interpret the Command Header and the Response Packet is sent unciphered with no RC/CC/DS.\n" +
-            "* '07' Insufficient memory to process incoming message.\n" +
-            "* '08' This status code \"more time\" should be used if the Receiving Entity/Application needs more time\n" +
-            "* to process the Command Packet due to timing constraints. In this case a later Response Packet\n" +
-            "* should be returned to the Sending Entity once processing has been completed.\n" +
-            "* '09' TAR Unknown\n" +
-            "* '0A' Insufficient security level\n\n" +
-            ";=======================\n\n"
-        );
-
-        headerScript.append("; ---------------------------------------- RFM ISIM ------------------------------------------------------\n\n");
-
-        headerScript.append(
             // call mappings and load DLLs
             ".CALL Mapping.txt /LIST_OFF\n"
             + ".CALL Options.txt /LIST_OFF\n\n"
@@ -277,20 +253,20 @@ public class RfmIsimService {
                 }
             }
 
-        if (!rfmIsim.isFullAccess()) {
-            rfmIsimUpdateRecordBuffer.append("\n\n ; ================ Perform Negative Test Access Domain ================\n");
-            rfmIsimUpdateRecordBuffer.append(this.useRfmIsimCheckInitialContentEfBadCaseAccessDomain(rfmIsim));
+            // perform negative test if not full access
+            if (!rfmIsim.isFullAccess()) {
+                rfmIsimUpdateRecordBuffer.append("\n\n ; ================ Perform Negative Test Access Domain ================\n");
+                rfmIsimUpdateRecordBuffer.append(this.useRfmIsimCheckInitialContentEfBadCaseAccessDomain(rfmIsim));
 
-            if (rfmIsim.isUseSpecificKeyset())
-                rfmIsimUpdateRecordBuffer.append(rfmIsimCase1NegativeTest(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), rfmIsim.getMinimumSecurityLevel(), true));
-            else {
-                for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets()) {
-                    rfmIsimUpdateRecordBuffer.append("\n; using keyset: " + keyset.getKeysetName() + "\n");
-                    rfmIsimUpdateRecordBuffer.append(rfmIsimCase1NegativeTest(keyset, keyset, rfmIsim.getMinimumSecurityLevel(), true));
+                if (rfmIsim.isUseSpecificKeyset())
+                    rfmIsimUpdateRecordBuffer.append(rfmIsimCase1NegativeTest(rfmIsim.getCipheringKeyset(), rfmIsim.getAuthKeyset(), rfmIsim.getMinimumSecurityLevel(), true));
+                else {
+                    for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets()) {
+                        rfmIsimUpdateRecordBuffer.append("\n; using keyset: " + keyset.getKeysetName() + "\n");
+                        rfmIsimUpdateRecordBuffer.append(rfmIsimCase1NegativeTest(keyset, keyset, rfmIsim.getMinimumSecurityLevel(), true));
+                    }
                 }
             }
-        }
-
         //end of case 1
 
         // case 2

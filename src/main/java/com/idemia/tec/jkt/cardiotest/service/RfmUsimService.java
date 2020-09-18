@@ -98,7 +98,6 @@ public class RfmUsimService {
                 }
             }
         }
-
         //end of case 1
 
         // case 2
@@ -253,6 +252,20 @@ public class RfmUsimService {
             }
         }
 
+        // perform negative test if not full access
+        if (!rfmUsim.isFullAccess()) {
+            rfmUsimUpdateRecordBuffer.append("\n\n ; ================ Perform Negative Test Access Domain ================\n");
+            rfmUsimUpdateRecordBuffer.append(this.useRfmUsimCheckInitialContentEfBadCaseAccessDomain(rfmUsim));
+
+            if (rfmUsim.isUseSpecificKeyset())
+                rfmUsimUpdateRecordBuffer.append(rfmUsimCase1NegativeTest(rfmUsim.getCipheringKeyset(), rfmUsim.getAuthKeyset(), rfmUsim.getMinimumSecurityLevel(), true));
+            else {
+                for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets()) {
+                    rfmUsimUpdateRecordBuffer.append("\n; using keyset: " + keyset.getKeysetName() + "\n");
+                    rfmUsimUpdateRecordBuffer.append(rfmUsimCase1NegativeTest(keyset, keyset, rfmUsim.getMinimumSecurityLevel(), true));
+                }
+            }
+        }
         //end of case 1
 
         // case 2
@@ -480,12 +493,12 @@ public class RfmUsimService {
         );
         if (authKeyset.getKidMode().equals("AES - CMAC"))
             routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
-        routine.append(this.useRfmUsimCommandViaOtaBadCaseAccessDomain(root.getRunSettings().getRfmIsim())); // command(s) sent via OTA Bad Case Access Domain
+        routine.append(this.useRfmUsimCommandViaOtaBadCaseAccessDomain(root.getRunSettings().getRfmUsim())); // command(s) sent via OTA Bad Case Access Domain
 
         routine.append(
-                ".END_MESSAGE G J\n"
-                        + "; show OTA message details\n"
-                        + ".DISPLAY_MESSAGE J\n"
+            ".END_MESSAGE G J\n"
+            + "; show OTA message details\n"
+            + ".DISPLAY_MESSAGE J\n"
         );
 
         // check isUpdateRecord
@@ -499,8 +512,8 @@ public class RfmUsimService {
         routine.append(this.useRfmUsimCheckUpdateEfFailedAccessDomain(root.getRunSettings().getRfmUsim()));
 
         routine.append(
-                "\n; increment counter by one\n"
-                        + ".INCREASE_BUFFER L(04:05) 0001\n"
+            "\n; increment counter by one\n"
+            + ".INCREASE_BUFFER L(04:05) 0001\n"
         );
 
         return routine.toString();
@@ -1118,7 +1131,7 @@ public class RfmUsimService {
         String  POR_OK, POR_NOT_OK, BAD_CASE_WRONG_KEYSET,
                 BAD_CASE_WRONG_CLASS_3G, BAD_CASE_WRONG_CLASS_2G,
                 BAD_CASE_COUNTER_LOW,
-                BAD_CASE_WRONG_KEY_VALUE, BAD_CASE_INSUFFICIENT_MSL, BAD_CASE_WRONG_TAR;
+                BAD_CASE_WRONG_KEY_VALUE, BAD_CASE_INSUFFICIENT_MSL, BAD_CASE_WRONG_TAR, NEGATIVE_CASE;
 
         String result_set = "";
 
@@ -1131,6 +1144,7 @@ public class RfmUsimService {
         BAD_CASE_WRONG_KEY_VALUE    = "XX XX XX XX XX XX %TAR XX XX XX XX XX XX 01";
         BAD_CASE_INSUFFICIENT_MSL   = "XX XX XX XX XX XX %TAR XX XX XX XX XX XX 0A";
         BAD_CASE_WRONG_TAR          = "XX XX XX XX XX XX B0 FF FF XX XX XX XX XX XX 09";
+        NEGATIVE_CASE               = "XX XX XX XX XX XX %TAR XX XX XX XX XX XX 00 XX 69 82";
 
         switch (rfmUsimCases){
             case "rfmUsimCase1" :
@@ -1154,6 +1168,9 @@ public class RfmUsimService {
             case "rfmUsimCase7" :
                 result_set = BAD_CASE_INSUFFICIENT_MSL;
                 break;
+            case "rfmUsimNegativeCase" :
+                result_set = NEGATIVE_CASE;
+                break;
         }
 
         return result_set;
@@ -1164,7 +1181,7 @@ public class RfmUsimService {
         String  POR_OK, POR_NOT_OK, BAD_CASE_WRONG_KEYSET,
                 BAD_CASE_WRONG_CLASS_3G, BAD_CASE_WRONG_CLASS_2G,
                 BAD_CASE_COUNTER_LOW,
-                BAD_CASE_WRONG_KEY_VALUE, BAD_CASE_INSUFFICIENT_MSL; //BAD_CASE_WRONG_TAR;
+                BAD_CASE_WRONG_KEY_VALUE, BAD_CASE_INSUFFICIENT_MSL, NEGATIVE_CASE; //BAD_CASE_WRONG_TAR;
 
         String result_set = "";
 
@@ -1180,6 +1197,7 @@ public class RfmUsimService {
         BAD_CASE_COUNTER_LOW        = tag30UpdateRecord+" 02";
         BAD_CASE_WRONG_KEY_VALUE    = tag30UpdateRecord+" 01";
         BAD_CASE_INSUFFICIENT_MSL   = tag30UpdateRecord+" 0A";
+        NEGATIVE_CASE               = tag33UpdateRecord+" XX XX 69 82";
         //BAD_CASE_WRONG_TAR          = "D0 30 81 XX XX 13 XX 82 02 81 83 85 XX 86 "+scAddress+" 8B XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX B0 FF FF XX XX XX XX XX XX 09";
 
         switch (rfmUsimCases){
@@ -1200,6 +1218,9 @@ public class RfmUsimService {
                 break;
             case "rfmUsimUpdateRecordCase7" :
                 result_set = BAD_CASE_INSUFFICIENT_MSL;
+                break;
+            case "rfmUsimUpdateRecordNegativeCase" :
+                result_set = NEGATIVE_CASE;
                 break;
         }
 
@@ -1256,7 +1277,7 @@ public class RfmUsimService {
         StringBuilder accessDomain = new StringBuilder();
 
         if (rfmUsim.getRfmUsimAccessDomain().isUseAlways()){
-            accessDomain.append(".DEFINE %EF_ID_USIM_ALW " + rfmUsim.getCustomTargetEfIsc1() + "; EF protected by Always\n");
+            accessDomain.append(".DEFINE %EF_ID_USIM_ALW " + rfmUsim.getCustomTargetEfAlw() + "; EF protected by Always\n");
         }
         if (rfmUsim.getRfmUsimAccessDomain().isUseIsc1()){
             accessDomain.append(".DEFINE %EF_ID_USIM_ADM1 " + rfmUsim.getCustomTargetEfIsc1() + "; EF protected by ADM1\n");
@@ -1284,26 +1305,26 @@ public class RfmUsimService {
 
         StringBuilder badCaseAccessDomain = new StringBuilder();
 
-        if (rfmUsim.getRfmUsimAccessDomain().isUseAlways()){
-            badCaseAccessDomain.append(".DEFINE %EF_ID_USIM_ERR_ALW " + rfmUsim.getCustomTargetEfIsc1() + "; EF protected by Always\n");
+        if (rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseAlways()){
+            badCaseAccessDomain.append(".DEFINE %EF_ID_USIM_ERR_ALW " + rfmUsim.getCustomTargetEfBadCaseIsc1() + "; EF is not protected by Always\n");
         }
-        if (rfmUsim.getRfmUsimAccessDomain().isUseIsc1()){
-            badCaseAccessDomain.append(".DEFINE %EF_ID_USIM_ERR_ADM1 " + rfmUsim.getCustomTargetEfIsc1() + "; EF protected by ADM1\n");
+        if (rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseIsc1()){
+            badCaseAccessDomain.append(".DEFINE %EF_ID_USIM_ERR_ADM1 " + rfmUsim.getCustomTargetEfBadCaseIsc1() + "; EF is not protected by ADM1\n");
         }
-        if (rfmUsim.getRfmUsimAccessDomain().isUseIsc2()){
-            badCaseAccessDomain.append(".DEFINE %EF_ID_USIM_ERR_ADM2 " + rfmUsim.getCustomTargetEfIsc2() + "; EF protected by ADM2\n");
+        if (rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseIsc2()){
+            badCaseAccessDomain.append(".DEFINE %EF_ID_USIM_ERR_ADM2 " + rfmUsim.getCustomTargetEfBadCaseIsc2() + "; EF is not protected by ADM2\n");
         }
-        if (rfmUsim.getRfmUsimAccessDomain().isUseIsc3()){
-            badCaseAccessDomain.append(".DEFINE %EF_ID_USIM_ERR_ADM3 " + rfmUsim.getCustomTargetEfIsc3() + "; EF protected by ADM3\n");
+        if (rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseIsc3()){
+            badCaseAccessDomain.append(".DEFINE %EF_ID_USIM_ERR_ADM3 " + rfmUsim.getCustomTargetEfBadCaseIsc3() + "; EF is not protected by ADM3\n");
         }
-        if (rfmUsim.getRfmUsimAccessDomain().isUseIsc4()){
-            badCaseAccessDomain.append(".DEFINE %EF_ID_USIM_ERR_ADM4 " + rfmUsim.getCustomTargetEfIsc4() + "; EF protected by ADM4\n");
+        if (rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseIsc4()){
+            badCaseAccessDomain.append(".DEFINE %EF_ID_USIM_ERR_ADM4 " + rfmUsim.getCustomTargetEfBadCaseIsc4() + "; EF is not protected by ADM4\n");
         }
-        if (rfmUsim.getRfmUsimAccessDomain().isUseGPin1()){
-            badCaseAccessDomain.append(".DEFINE %EF_ID_USIM_ERR_PIN1 " + rfmUsim.getCustomTargetEfGPin1() + "; EF protected by PIN1\n");
+        if (rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseGPin1()){
+            badCaseAccessDomain.append(".DEFINE %EF_ID_USIM_ERR_PIN1 " + rfmUsim.getCustomTargetEfBadCaseGPin1() + "; EF is not protected by PIN1\n");
         }
-        if (rfmUsim.getRfmUsimAccessDomain().isUseLPin1()){
-            badCaseAccessDomain.append(".DEFINE %EF_ID_USIM_ERR_PIN2 " + rfmUsim.getCustomTargetEfLPin1() + "; EF protected by PIN2\n");
+        if (rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseLPin1()){
+            badCaseAccessDomain.append(".DEFINE %EF_ID_USIM_ERR_PIN2 " + rfmUsim.getCustomTargetEfBadCaseLPin1() + "; EF is not protected by PIN2\n");
         }
 
         return badCaseAccessDomain.toString();
@@ -1390,7 +1411,7 @@ public class RfmUsimService {
 
         if (rfmUsim.getRfmUsimAccessDomain().isUseAlways()){
             checkInitialContent.append(
-                "; check content EF-" + rfmUsim.getCustomTargetEfIsc1() +  "\n"
+                "; check content EF-" + rfmUsim.getCustomTargetEfAlw() +  "\n"
                 +"A0 A4 00 00 02 %EF_ID_USIM_ALW (9F0F)\n"
                 + "A0 B0 00 00 01 (9000)\n"
                 + ".DEFINE %EF_CONTENT_ALW R\n"
@@ -1472,62 +1493,61 @@ public class RfmUsimService {
             + "A0 A4 00 00 02 %DF_ID (9F22)\n"
         );
 
-        if (rfmUsim.getRfmUsimAccessDomain().isUseBadCaseAlways()){
+        if (rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseAlways()){
             checkInitialContentBadCase.append(
-                "; check content EF-" + rfmUsim.getCustomTargetEfIsc1() +  "\n"
+                "; check content EF-" + rfmUsim.getCustomTargetEfBadCaseAlw() +  "\n"
                 +"A0 A4 00 00 02 %EF_ID_USIM_ERR_ALW (9F0F)\n"
                 + "A0 B0 00 00 01 (9000)\n"
                 + ".DEFINE %EF_CONTENT_ERR_ALW R\n"
             );
         }
-        if (rfmUsim.getRfmUsimAccessDomain().isUseBadCaseIsc1()){
+        if (rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseIsc1()){
             checkInitialContentBadCase.append(
-                "; check content EF-" + rfmUsim.getCustomTargetEfIsc1() +  "\n"
+                "; check content EF-" + rfmUsim.getCustomTargetEfBadCaseIsc1() +  "\n"
                 +"A0 A4 00 00 02 %EF_ID_USIM_ERR_ADM1 (9F0F)\n"
                 + "A0 B0 00 00 01 (9000)\n"
                 + ".DEFINE %EF_CONTENT_ERR_ADM1 R\n"
             );
         }
-        if (rfmUsim.getRfmUsimAccessDomain().isUseBadCaseIsc2()){
+        if (rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseIsc2()){
             checkInitialContentBadCase.append(
-                "; check content EF-" + rfmUsim.getCustomTargetEfIsc2() +  "\n"
+                "; check content EF-" + rfmUsim.getCustomTargetEfBadCaseIsc2() +  "\n"
                 +"A0 A4 00 00 02 %EF_ID_USIM_ERR_ADM2 (9F0F)\n"
                 +"A0 B0 00 00 01 (9000)\n"
                 +".DEFINE %EF_CONTENT_ERR_ADM2 R\n"
 
             );
         }
-        if (rfmUsim.getRfmUsimAccessDomain().isUseBadCaseIsc3()){
+        if (rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseIsc3()){
             checkInitialContentBadCase.append(
-                "; check content EF-" + rfmUsim.getCustomTargetEfIsc3() +  "\n"
+                "; check content EF-" + rfmUsim.getCustomTargetEfBadCaseIsc3() +  "\n"
                 +"A0 A4 00 00 02 %EF_ID_USIM_ERR_ADM3 (9F0F)\n"
                 +"A0 B0 00 00 01 (9000)\n"
                 +".DEFINE %EF_CONTENT_ERR_ADM3 R\n"
             );
         }
-        if (rfmUsim.getRfmUsimAccessDomain().isUseBadCaseIsc4()){
+        if (rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseIsc4()){
             checkInitialContentBadCase.append(
-                "; check content EF-" + rfmUsim.getCustomTargetEfIsc4() +  "\n"
+                "; check content EF-" + rfmUsim.getCustomTargetEfBadCaseIsc4() +  "\n"
                 +"A0 A4 00 00 02 %EF_ID_USIM_ERR_ADM4 (9F0F)\n"
                 +"A0 B0 00 00 01 (9000)\n"
                 +".DEFINE %EF_CONTENT_ERR_ADM4 R\n"
             );
         }
-        if (rfmUsim.getRfmUsimAccessDomain().isUseBadCaseGPin1()){
+        if (rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseGPin1()){
             checkInitialContentBadCase.append(
-                "; check content EF-" + rfmUsim.getCustomTargetEfGPin1() +  "\n"
+                "; check content EF-" + rfmUsim.getCustomTargetEfBadCaseGPin1() +  "\n"
                 +"A0 A4 00 00 02 %EF_ID_USIM_ERR_PIN1 (9F0F)\n"
                 +"A0 B0 00 00 01 (9000)\n"
                 +".DEFINE %EF_CONTENT_ERR_PIN1 R\n"
             );
         }
-        if (rfmUsim.getRfmUsimAccessDomain().isUseBadCaseLPin1()){
+        if (rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseLPin1()){
             checkInitialContentBadCase.append(
-                "; check content EF-" + rfmUsim.getCustomTargetEfLPin1() +  "\n"
+                "; check content EF-" + rfmUsim.getCustomTargetEfBadCaseLPin1() +  "\n"
                 +"A0 A4 00 00 02 %EF_ID_USIM_ERR_PIN2 (9F0F)\n"
                 +"A0 B0 00 00 01 (9000)\n"
                 +".DEFINE %EF_CONTENT_ERR_PIN2 R\n"
-
             );
         }
 
@@ -1619,60 +1639,60 @@ public class RfmUsimService {
 
     private String useRfmUsimCommandViaOtaBadCaseAccessDomain(RfmUsim rfmUsim){
 
-        StringBuilder commandOta = new StringBuilder();
+        StringBuilder badCasecommandOta = new StringBuilder();
 
-        commandOta.append("\n; command(s) sent via OTA\n");
+        badCasecommandOta.append("\n; command(s) sent via OTA\n");
 
-        if (rfmUsim.getRfmUsimAccessDomain().isUseAlways()){
-            commandOta.append(
+        if (rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseAlways()){
+            badCasecommandOta.append(
                 ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_USIM_ERR_ALW ; select EF on Always\n"
                 + ".APPEND_SCRIPT J\n"
                 + ".SET_BUFFER J 00 B0 00 00 02 ; read binary\n"
                 + ".APPEND_SCRIPT J\n"
             );
         }
-        if (rfmUsim.getRfmUsimAccessDomain().isUseIsc1()){
-            commandOta.append(
+        if (rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseIsc1()){
+            badCasecommandOta.append(
                 ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_USIM_ERR_ADM1 ; select EF on ADM1\n"
                 + ".APPEND_SCRIPT J\n"
                 + ".SET_BUFFER J 00 D6 00 00 <?> A1 ; update binary\n"
                 + ".APPEND_SCRIPT J\n"
             );
         }
-        if (rfmUsim.getRfmUsimAccessDomain().isUseIsc2()){
-            commandOta.append(
+        if (rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseIsc2()){
+            badCasecommandOta.append(
                 ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_USIM_ERR_ADM2 ; select EF on ADM2\n"
                 + ".APPEND_SCRIPT J\n"
                 + ".SET_BUFFER J 00 D6 00 00 <?> A2 ; update binary\n"
                 + ".APPEND_SCRIPT J\n"
             );
         }
-        if (rfmUsim.getRfmUsimAccessDomain().isUseIsc3()){
-            commandOta.append(
+        if (rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseIsc3()){
+            badCasecommandOta.append(
                 ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_USIM_ERR_ADM3 ; select EF on ADM3\n"
                 + ".APPEND_SCRIPT J\n"
                 + ".SET_BUFFER J 00 D6 00 00 <?> A3 ; update binary\n"
                 + ".APPEND_SCRIPT J\n"
             );
         }
-        if (rfmUsim.getRfmUsimAccessDomain().isUseIsc4()){
-            commandOta.append(
+        if (rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseIsc4()){
+            badCasecommandOta.append(
                 ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_USIM_ERR_ADM4 ; select EF on ADM4\n"
                 + ".APPEND_SCRIPT J\n"
                 + ".SET_BUFFER J 00 D6 00 00 <?> A4 ; update binary\n"
                 + ".APPEND_SCRIPT J\n"
             );
         }
-        if (rfmUsim.getRfmUsimAccessDomain().isUseGPin1()){
-            commandOta.append(
+        if (rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseGPin1()){
+            badCasecommandOta.append(
                 ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_USIM_ERR_PIN1 ; select EF on PIN1\n"
                 + ".APPEND_SCRIPT J\n"
                 + ".SET_BUFFER J 00 D6 00 00 <?> A5 ; update binary\n"
                 + ".APPEND_SCRIPT J\n"
             );
         }
-        if (rfmUsim.getRfmUsimAccessDomain().isUseLPin1()){
-            commandOta.append(
+        if (rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseLPin1()){
+            badCasecommandOta.append(
                 ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_USIM_ERR_PIN2 ; select EF on PIN2\n"
                 + ".APPEND_SCRIPT J\n"
                 + ".SET_BUFFER J 00 D6 00 00 <?> A6 ; update binary\n"
@@ -1680,7 +1700,7 @@ public class RfmUsimService {
             );
         }
 
-        return commandOta.toString();
+        return badCasecommandOta.toString();
     }
 
     private String rfmUsimCheckUpdateEfDone(){
@@ -1735,7 +1755,7 @@ public class RfmUsimService {
 
         if(rfmUsim.getRfmUsimAccessDomain().isUseAlways()){
             checkUpdateHasBeenDone.append(
-                "; check Read Binary on EF-" + rfmUsim.getCustomTargetEfIsc1() +  "\n"
+                "; check Read Binary on EF-" + rfmUsim.getCustomTargetEfAlw() +  "\n"
                 +"A0 A4 00 00 02 %EF_ID_USIM_ALW (9F0F)\n"
                 + "A0 B0 00 00 02 [%EF_CONTENT_ALW] (9000)\n"
             );
@@ -1808,53 +1828,53 @@ public class RfmUsimService {
             + "A0 A4 00 00 02 %DF_ID (9F22)\n"
         );
 
-        if(rfmUsim.getRfmUsimAccessDomain().isUseBadCaseAlways()){
+        if(rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseAlways()){
             checkUpdateHasFailed.append(
-                "; check Read Binary on EF-" + rfmUsim.getCustomTargetEfIsc1() +  "\n"
+                "; check Read Binary on EF-" + rfmUsim.getCustomTargetEfBadCaseAlw() +  "\n"
                 +"A0 A4 00 00 02 %EF_ID_USIM_ERR_ERR_ALW (9F0F)\n"
                 + "A0 B0 00 00 02 [%EF_CONTENT_ERR_ALW] (9000)\n"
         );
         }
-        if(rfmUsim.getRfmUsimAccessDomain().isUseBadCaseIsc1()){
+        if(rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseIsc1()){
             checkUpdateHasFailed.append(
-                "; check update failed on EF-" + rfmUsim.getCustomTargetEfIsc1() +  "\n"
+                "; check update failed on EF-" + rfmUsim.getCustomTargetEfBadCaseIsc1() +  "\n"
                 +"A0 A4 00 00 02 %EF_ID_USIM_ERR_ADM1 (9F0F)\n"
                 + "A0 B0 00 00 01 [%EF_CONTENT_ERR_ADM1] (9000)\n"
             );
         }
-        if(rfmUsim.getRfmUsimAccessDomain().isUseBadCaseIsc2()){
+        if(rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseIsc2()){
             checkUpdateHasFailed.append(
-                "; check update failed on EF-" + rfmUsim.getCustomTargetEfIsc2() +  "\n"
+                "; check update failed on EF-" + rfmUsim.getCustomTargetEfBadCaseIsc2() +  "\n"
                 +"A0 A4 00 00 02 %EF_ID_USIM_ERR_ADM2 (9F0F)\n"
-                + "A0 B0 00 00 01 [%EF_CONTENT_ERR_ADM1] (9000)\n"
+                + "A0 B0 00 00 01 [%EF_CONTENT_ERR_ADM2] (9000)\n"
             );
         }
-        if(rfmUsim.getRfmUsimAccessDomain().isUseBadCaseIsc3()){
+        if(rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseIsc3()){
             checkUpdateHasFailed.append(
-                "; check update failed on EF-" + rfmUsim.getCustomTargetEfIsc3() +  "\n"
+                "; check update failed on EF-" + rfmUsim.getCustomTargetEfBadCaseIsc3() +  "\n"
                 +"A0 A4 00 00 02 %EF_ID_USIM_ERR_ADM3 (9F0F)\n"
-                + "A0 B0 00 00 01 [%EF_CONTENT_ERR_ADM1] (9000)\n"
+                + "A0 B0 00 00 01 [%EF_CONTENT_ERR_ADM3] (9000)\n"
             );
         }
-        if(rfmUsim.getRfmUsimAccessDomain().isUseBadCaseIsc4()){
+        if(rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseIsc4()){
             checkUpdateHasFailed.append(
-                "; check update failed on EF-" + rfmUsim.getCustomTargetEfIsc4() +  "\n"
+                "; check update failed on EF-" + rfmUsim.getCustomTargetEfBadCaseIsc4() +  "\n"
                 +"A0 A4 00 00 02 %EF_ID_USIM_ERR_ADM4 (9F0F)\n"
-                + "A0 B0 00 00 01 [%EF_CONTENT_ERR_ADM1] (9000)\n"
+                + "A0 B0 00 00 01 [%EF_CONTENT_ERR_ADM4] (9000)\n"
             );
         }
-        if(rfmUsim.getRfmUsimAccessDomain().isUseBadCaseGPin1()){
+        if(rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseGPin1()){
             checkUpdateHasFailed.append(
-                "; check update failed on EF-" + rfmUsim.getCustomTargetEfGPin1() +  "\n"
+                "; check update failed on EF-" + rfmUsim.getCustomTargetEfBadCaseGPin1() +  "\n"
                 +"A0 A4 00 00 02 %EF_ID_USIM_ERR_PIN1 (9F0F)\n"
-                + "A0 B0 00 00 01 [%EF_CONTENT_ERR_ADM1] (9000)\n"
+                + "A0 B0 00 00 01 [%EF_CONTENT_ERR_PIN1] (9000)\n"
             );
         }
-        if(rfmUsim.getRfmUsimAccessDomain().isUseBadCaseLPin1()){
+        if(rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseLPin1()){
             checkUpdateHasFailed.append(
-                "; check update failed on EF-" + rfmUsim.getCustomTargetEfLPin1() +  "\n"
+                "; check update failed on EF-" + rfmUsim.getCustomTargetEfBadCaseLPin1() +  "\n"
                 +"A0 A4 00 00 02 %EF_ID_USIM_ERR_PIN2 (9F0F)\n"
-                + "A0 B0 00 00 01 [%EF_CONTENT_ERR_ADM1] (9000)\n"
+                + "A0 B0 00 00 01 [%EF_CONTENT_ERR_PIN1] (9000)\n"
             );
         }
 
@@ -1963,49 +1983,6 @@ public class RfmUsimService {
         }
 
         return restoreInitialContent.toString();
-    }
-
-    private String usePerformNegativeTest(RfmUsim rfmUsim){
-
-        StringBuilder performNegativeTest = new StringBuilder();
-
-        if (!rfmUsim.isFullAccess()) {
-            performNegativeTest.append(
-                "\n; perform negative test: updating " + rfmUsim.getCustomTargetEfBadCase() + " Out of Access Domain\n"
-                + "\n.POWER_ON\n"
-                + "; check initial content of EF\n"
-                + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
-            );
-
-            if (root.getRunSettings().getSecretCodes().isUseIsc2())
-                performNegativeTest.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
-            if (root.getRunSettings().getSecretCodes().isUseIsc3())
-                performNegativeTest.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
-            if (root.getRunSettings().getSecretCodes().isUseIsc4())
-                performNegativeTest.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
-
-            performNegativeTest.append(
-                "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
-                + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
-                + "A0 A4 00 00 02 %DF_ID (9F22)\n"
-                + "A0 A4 00 00 02 %EF_ID_ERR (9FXX)\n"
-                + "A0 B0 00 00 01 (9000)\n"
-                + ".DEFINE %EF_CONTENT_ERR R\n"
-            );
-
-            if (rfmUsim.isUseSpecificKeyset())
-                performNegativeTest.append(rfmUsimCase1NegativeTest(rfmUsim.getCipheringKeyset(), rfmUsim.getAuthKeyset(), rfmUsim.getMinimumSecurityLevel()));
-            else {
-                for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets()) {
-                    performNegativeTest.append("\n; using keyset: " + keyset.getKeysetName() + "\n");
-                    performNegativeTest.append(rfmUsimCase1NegativeTest(keyset, keyset, rfmUsim.getMinimumSecurityLevel()));
-                }
-            }
-
-            performNegativeTest.append("\n.UNDEFINE %EF_CONTENT_ERR \n");
-        }
-
-        return performNegativeTest.toString();
     }
 
 //end of script

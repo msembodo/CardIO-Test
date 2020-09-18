@@ -231,7 +231,7 @@ public class RfmGsmService {
         rfmGsmUpdateRecordBuffer.append("\n*********\n; CASE 1: RFM GSM Update Record with correct security settings\n*********\n");
 
             // Target Files and Check Initial Content EFs isFullAccess
-            if(rfmGsm.isFullAccess()){
+            if (rfmGsm.isFullAccess()) {
                 rfmGsmUpdateRecordBuffer.append(this.rfmGsmDefineTargetFiles(rfmGsm)); // define Target Files
                 rfmGsmUpdateRecordBuffer.append(this.rfmGsmCheckInitialContentEf()); // check Initial Content of EF
             }
@@ -264,10 +264,10 @@ public class RfmGsmService {
                     }
                 }
             }
-        //end of case 1
+            //end of case 1
 
         // case 2
-        rfmGsmUpdateRecordBuffer.append("\n*********\n; CASE 2: (Bad Case) RFM with keyset which is not allowed in Gsm TAR\n*********\n");
+            rfmGsmUpdateRecordBuffer.append("\n*********\n; CASE 2: (Bad Case) RFM with keyset which is not allowed in Gsm TAR\n*********\n");
             if (rfmGsm.isUseSpecificKeyset())
                 rfmGsmUpdateRecordBuffer.append(rfmGsmCase2(rfmGsm.getCipheringKeyset(), rfmGsm.getAuthKeyset(), rfmGsm.getMinimumSecurityLevel(), true));
             else {
@@ -279,7 +279,7 @@ public class RfmGsmService {
         //end of case 2
 
         // case 3
-        rfmGsmUpdateRecordBuffer.append("\n*********\n; CASE 3: (Bad Case) send 3G command to GSM TAR\n*********\n");
+            rfmGsmUpdateRecordBuffer.append("\n*********\n; CASE 3: (Bad Case) send 3G command to GSM TAR\n*********\n");
             if (rfmGsm.isUseSpecificKeyset())
                 rfmGsmUpdateRecordBuffer.append(rfmGsmCase3(rfmGsm.getCipheringKeyset(), rfmGsm.getAuthKeyset(), rfmGsm.getMinimumSecurityLevel(), true));
             else {
@@ -291,7 +291,7 @@ public class RfmGsmService {
         //end of case 3
 
         // case 4
-        rfmGsmUpdateRecordBuffer.append("\n*********\n; CASE 4: (Bad Case) use unknown TAR\n*********\n");
+            rfmGsmUpdateRecordBuffer.append("\n*********\n; CASE 4: (Bad Case) use unknown TAR\n*********\n");
             if (rfmGsm.isUseSpecificKeyset())
                 rfmGsmUpdateRecordBuffer.append(rfmGsmCase4(rfmGsm.getCipheringKeyset(), rfmGsm.getAuthKeyset(), rfmGsm.getMinimumSecurityLevel(), true));
             else {
@@ -303,7 +303,7 @@ public class RfmGsmService {
         //end of case 4
 
         // case 5
-        rfmGsmUpdateRecordBuffer.append("\n*********\n; CASE 5: (Bad Case) counter is low\n*********\n");
+            rfmGsmUpdateRecordBuffer.append("\n*********\n; CASE 5: (Bad Case) counter is low\n*********\n");
             if (Integer.parseInt(rfmGsm.getMinimumSecurityLevel().getComputedMsl(), 16) < 16)
                 rfmGsmUpdateRecordBuffer.append("\n; MSL: " + rfmGsm.getMinimumSecurityLevel().getComputedMsl() + " -- no need to check counter\n");
             else {
@@ -319,7 +319,7 @@ public class RfmGsmService {
         //end of case 5
 
         // case 6
-        rfmGsmUpdateRecordBuffer.append("\n*********\n; CASE 6: (Bad Case) use bad key for authentication\n*********\n");
+            rfmGsmUpdateRecordBuffer.append("\n*********\n; CASE 6: (Bad Case) use bad key for authentication\n*********\n");
             if (rfmGsm.isUseSpecificKeyset())
                 rfmGsmUpdateRecordBuffer.append(rfmGsmCase6(rfmGsm.getCipheringKeyset(), rfmGsm.getAuthKeyset(), rfmGsm.getMinimumSecurityLevel(), true));
             else {
@@ -331,7 +331,7 @@ public class RfmGsmService {
         //end of case 6
 
         // case 7
-        rfmGsmUpdateRecordBuffer.append("\n*********\n; CASE 7: (Bad Case) insufficient MSL\n*********\n");
+            rfmGsmUpdateRecordBuffer.append("\n*********\n; CASE 7: (Bad Case) insufficient MSL\n*********\n");
             if (rfmGsm.getMinimumSecurityLevel().getComputedMsl().equals("00"))
                 rfmGsmUpdateRecordBuffer.append("\n; MSL: " + rfmGsm.getMinimumSecurityLevel().getComputedMsl() + " -- case 7 is not executed\n");
             else {
@@ -354,8 +354,8 @@ public class RfmGsmService {
 
         // save counter
         rfmGsmUpdateRecordBuffer.append(
-            "\n; save counter state\n"
-            + ".EXPORT_BUFFER L COUNTER.bin\n"
+                "\n; save counter state\n"
+                        + ".EXPORT_BUFFER L COUNTER.bin\n"
         );
 
         // disable pin if required
@@ -364,10 +364,10 @@ public class RfmGsmService {
 
         // unload DLLs
         rfmGsmUpdateRecordBuffer.append(
-            "\n.UNLOAD Calcul.dll\n"
-            + ".UNLOAD OTA2.dll\n"
-            + ".UNLOAD Var_Reader.dll\n"
-            + "\n.POWER_OFF\n"
+                "\n.UNLOAD Calcul.dll\n"
+                        + ".UNLOAD OTA2.dll\n"
+                        + ".UNLOAD Var_Reader.dll\n"
+                        + "\n.POWER_OFF\n"
         );
 
         return rfmGsmUpdateRecordBuffer;
@@ -1337,7 +1337,7 @@ public class RfmGsmService {
             "\n; TAR is configured for full access\n"
             + ".DEFINE %DF_ID " + root.getRunSettings().getCardParameters().getDfGsm() + "\n"
             + ".DEFINE %EF_ID " + rfmGsm.getTargetEf() + "\n"
-            + ".DEFINE %EF_ID_ERR " + rfmGsm.getTargetEfBadCase() + "\n"
+//            + ".DEFINE %EF_ID_ERR " + rfmGsm.getTargetEfBadCase() + "\n"
         );
 
         return targetFiles.toString();

@@ -9,7 +9,6 @@ public class RfmCustom {
     private String targetEf;
     private String targetDf;
     private String customRfmDesc;
-    private String targetEfBadCase;
     private boolean fullAccess;
     private String customTargetAcc;
     private String customTargetEf;
@@ -49,7 +48,7 @@ public class RfmCustom {
 
     public RfmCustom() {}
 
-    public RfmCustom(boolean includeRfmCustom, boolean includeRfmCustomUpdateRecord, boolean includeRfmCustomExpandedMode, String tar, String targetEf, String targetDf, String customRfmDesc, String targetEfBadCase, boolean fullAccess, String customTargetAcc, String customTargetEf, String customTargetEfAlw, String customTargetEfIsc1, String customTargetEfIsc2, String customTargetEfIsc3, String customTargetEfIsc4, String customTargetEfGPin1, String customTargetEfLPin1, String customTargetEfBadCaseAlw, String customTargetEfBadCaseIsc1, String customTargetEfBadCaseIsc2, String customTargetEfBadCaseIsc3, String customTargetEfBadCaseIsc4, String customTargetEfBadCaseGPin1, String customTargetEfBadCaseLPin1, String customTargetAccBadCase, String customTargetEfBadCase, boolean useSpecificKeyset, AccessDomain accessDomain, AccessDomain badCaseAccessDomain, SCP80Keyset cipheringKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel minimumSecurityLevel, boolean testRfmCustomOk, String testRfmCustomMessage, boolean testRfmCustomUpdateRecordOk, String testRfmCustomUpdateRecordMessage, boolean testRfmCustomExpandedModeOk, String testRfmCustomExpandedModeMessage) {
+    public RfmCustom(boolean includeRfmCustom, boolean includeRfmCustomUpdateRecord, boolean includeRfmCustomExpandedMode, String tar, String targetEf, String targetDf, String customRfmDesc, boolean fullAccess, String customTargetAcc, String customTargetEf, String customTargetEfAlw, String customTargetEfIsc1, String customTargetEfIsc2, String customTargetEfIsc3, String customTargetEfIsc4, String customTargetEfGPin1, String customTargetEfLPin1, String customTargetEfBadCaseAlw, String customTargetEfBadCaseIsc1, String customTargetEfBadCaseIsc2, String customTargetEfBadCaseIsc3, String customTargetEfBadCaseIsc4, String customTargetEfBadCaseGPin1, String customTargetEfBadCaseLPin1, String customTargetAccBadCase, String customTargetEfBadCase, boolean useSpecificKeyset, AccessDomain accessDomain, AccessDomain badCaseAccessDomain, SCP80Keyset cipheringKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel minimumSecurityLevel, boolean testRfmCustomOk, String testRfmCustomMessage, boolean testRfmCustomUpdateRecordOk, String testRfmCustomUpdateRecordMessage, boolean testRfmCustomExpandedModeOk, String testRfmCustomExpandedModeMessage) {
         this.includeRfmCustom = includeRfmCustom;
         this.includeRfmCustomUpdateRecord = includeRfmCustomUpdateRecord;
         this.includeRfmCustomExpandedMode = includeRfmCustomExpandedMode;
@@ -57,7 +56,6 @@ public class RfmCustom {
         this.targetEf = targetEf;
         this.targetDf = targetDf;
         this.customRfmDesc = customRfmDesc;
-        this.targetEfBadCase = targetEfBadCase;
         this.fullAccess = fullAccess;
         this.customTargetAcc = customTargetAcc;
         this.customTargetEf = customTargetEf;
@@ -145,14 +143,6 @@ public class RfmCustom {
 
     public void setTargetEf(String targetEf) {
         this.targetEf = targetEf;
-    }
-
-    public String getTargetEfBadCase() {
-        return targetEfBadCase;
-    }
-
-    public void setTargetEfBadCase(String targetEfBadCase) {
-        this.targetEfBadCase = targetEfBadCase;
     }
 
     public boolean isFullAccess() {

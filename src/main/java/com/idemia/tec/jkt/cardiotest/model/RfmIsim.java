@@ -9,7 +9,7 @@ public class RfmIsim {
     private boolean includeRfmIsimExpandedMode;
     private String tar;
     private String targetEf;
-    private String targetEfBadCase;
+    //private String targetEfBadCase;
     private boolean fullAccess;
     private String customTargetAcc;
     private String customTargetEf;
@@ -45,7 +45,7 @@ public class RfmIsim {
     public RfmIsim() {}
 
     public RfmIsim(boolean includeRfmIsim, boolean includeRfmIsimUpdateRecord, boolean includeRfmIsimExpandedMode,
-                   String tar, String targetEf, String targetEfBadCase, boolean fullAccess, String customTargetAcc,
+                   String tar, String targetEf, boolean fullAccess, String customTargetAcc,
                    String customTargetEf, String customTargetEfAlw, String customTargetEfIsc1, String customTargetEfIsc2, String customTargetEfIsc3, String customTargetEfGPin1, String customTargetEfLPin1, String customTargetAccBadCase, String customTargetEfBadCase,
                    String customTargetEfBadCaseAlw, String customTargetEfBadCaseIsc1, String customTargetEfBadCaseIsc2, String customTargetEfBadCaseIsc3, String customTargetEfBadCaseGPin1, String customTargetEfBadCaseLPin1,
                    boolean useSpecificKeyset, AccessDomain accessDomain, AccessDomain badCaseAccessDomain, SCP80Keyset cipheringKeyset, SCP80Keyset authKeyset,
@@ -55,7 +55,6 @@ public class RfmIsim {
         this.includeRfmIsimExpandedMode = includeRfmIsimExpandedMode;
         this.tar = tar;
         this.targetEf = targetEf;
-        this.targetEfBadCase = targetEfBadCase;
         this.fullAccess = fullAccess;
         this.customTargetAcc = customTargetAcc;
         this.customTargetEf = customTargetEf;
@@ -119,14 +118,6 @@ public class RfmIsim {
 
     public void setTargetEf(String targetEf) {
         this.targetEf = targetEf;
-    }
-
-    public String getTargetEfBadCase() {
-        return targetEfBadCase;
-    }
-
-    public void setTargetEfBadCase(String targetEfBadCase) {
-        this.targetEfBadCase = targetEfBadCase;
     }
 
     public boolean isFullAccess() {

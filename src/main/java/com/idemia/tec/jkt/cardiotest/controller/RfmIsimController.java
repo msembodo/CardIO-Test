@@ -28,7 +28,7 @@ public class RfmIsimController {
     @FXML private ComboBox<String> cmbRfmIsimCounterCheck;
     @FXML private TextField txtRfmIsimTar;
     @FXML private TextField txtRfmIsimTargetEf;
-    @FXML private TextField txtRfmIsimTargetEfBadCase;
+    //@FXML private TextField txtRfmIsimTargetEfBadCase;
     @FXML private CheckBox chkRfmIsimFullAccess;
     @FXML private Label lblRfmIsimCustomTarget;
     @FXML private TextField txtRfmIsimCustomTargetEfAlw;
@@ -72,7 +72,7 @@ public class RfmIsimController {
     @FXML private CheckBox chkRfmIsimUseBadCaseGPin1;
     @FXML private CheckBox chkRfmIsimUseBadCaseLPin1;
     @FXML private Label lblRfmIsimTarget;
-    @FXML private Label lblRfmIsimTargetBadCase;
+    //@FXML private Label lblRfmIsimTargetBadCase;
 
     @Autowired private RootLayoutController root;
     @Autowired private CardiotestController cardiotest;
@@ -169,7 +169,7 @@ public class RfmIsimController {
 
         txtRfmIsimTar.setText(root.getRunSettings().getRfmIsim().getTar());
         txtRfmIsimTargetEf.setText(root.getRunSettings().getRfmIsim().getTargetEf());
-        txtRfmIsimTargetEfBadCase.setText(root.getRunSettings().getRfmIsim().getTargetEfBadCase());
+        //txtRfmIsimTargetEfBadCase.setText(root.getRunSettings().getRfmIsim().getTargetEfBadCase());
 
         // set Checkbox Access Domain Tooltip
         chkRfmIsimUseAlw.setTooltip(new Tooltip("Read EF Access Domain ALW"));
@@ -396,9 +396,9 @@ public class RfmIsimController {
             chkRfmIsimUseBadCaseLPin1.setDisable(true);
             lblRfmIsimCustomTargetBadCase.setDisable(true);
             txtRfmIsimTargetEf.setDisable(false);
-            txtRfmIsimTargetEfBadCase.setDisable(false);
+            //txtRfmIsimTargetEfBadCase.setDisable(false);
             lblRfmIsimTarget.setDisable(false);
-            lblRfmIsimTargetBadCase.setDisable(false);
+            //lblRfmIsimTargetBadCase.setDisable(false);
         }
         else {
             txtRfmIsimCustomTargetEfAlw.setDisable(false);
@@ -433,9 +433,9 @@ public class RfmIsimController {
             lblRfmIsimCustomTarget.setDisable(false);
             lblRfmIsimCustomTargetBadCase.setDisable(false);
             txtRfmIsimTargetEf.setDisable(true);
-            txtRfmIsimTargetEfBadCase.setDisable(true);
+            //txtRfmIsimTargetEfBadCase.setDisable(true);
             lblRfmIsimTarget.setDisable(true);
-            lblRfmIsimTargetBadCase.setDisable(true);
+            //lblRfmIsimTargetBadCase.setDisable(true);
         }
     }
 
@@ -889,7 +889,7 @@ public class RfmIsimController {
 
         root.getRunSettings().getRfmIsim().setTar(txtRfmIsimTar.getText());
         root.getRunSettings().getRfmIsim().setTargetEf(txtRfmIsimTargetEf.getText());
-        root.getRunSettings().getRfmIsim().setTargetEfBadCase(txtRfmIsimTargetEfBadCase.getText());
+        //root.getRunSettings().getRfmIsim().setTargetEfBadCase(txtRfmIsimTargetEfBadCase.getText());
         root.getRunSettings().getRfmIsim().setFullAccess(chkRfmIsimFullAccess.isSelected());
         if (!root.getRunSettings().getRfmIsim().isFullAccess()) {
             root.getRunSettings().getRfmIsim().setCustomTargetEfAlw(txtRfmIsimCustomTargetEfAlw.getText());

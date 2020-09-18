@@ -1338,7 +1338,7 @@ public class RfmUsimService {
             "\n; TAR is configured for full access\n"
             + ".DEFINE %DF_ID " + root.getRunSettings().getCardParameters().getDfUsim() + "\n"
             + ".DEFINE %EF_ID " + rfmUsim.getTargetEf() + "\n"
-            + ".DEFINE %EF_ID_ERR " + rfmUsim.getTargetEfBadCase() + "\n"
+            //+ ".DEFINE %EF_ID_ERR " + rfmUsim.getTargetEfBadCase() + "\n"
         );
 
         return targetFiles.toString();

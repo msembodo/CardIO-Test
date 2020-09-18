@@ -29,7 +29,6 @@ public class RfmCustomController {
     @FXML private TextField txtRfmCustomTar;
     @FXML private TextField txtRfmCustomTargetDf;
     @FXML private TextField txtRfmCustomTargetEf;
-    @FXML private TextField txtRfmCustomTargetEfBadCase;
     @FXML private CheckBox chkRfmCustomFullAccess;
 
     @FXML private Label lblRfmCustomCustomTarget;
@@ -181,143 +180,139 @@ public class RfmCustomController {
 
         txtRfmCustomTar.setText(root.getRunSettings().getRfmCustom().getTar());
         txtRfmCustomTargetEf.setText(root.getRunSettings().getRfmCustom().getTargetEf());
-        txtRfmCustomTargetEfBadCase.setText(root.getRunSettings().getRfmCustom().getTargetEfBadCase());
         txtRfmCustomTargetDf.setText(root.getRunSettings().getRfmCustom().getTargetDf());
         txtCustomRfmDesc.setText(root.getRunSettings().getRfmCustom().getCustomRfmDesc());
 
-//        // Initialize Access Domain Positive Case
-//        chkRfmCustomUseAlw.setSelected(root.getRunSettings().getRfmCustom().getRfmCustomAccessDomain().isUseAlways());
-//        handleIncludeAlwCheck();
-//        if (chkRfmCustomUseAlw.isSelected()){
-//            txtRfmCustomCustomTargetEfAlw.setText(root.getRunSettings().getRfmCustom().getCustomTargetEfAlw());
-//        }
-//        else {
-//            txtRfmCustomCustomTargetEfAlw.setText("");
-//        }
-//
-//        chkRfmCustomUseIsc1.setSelected(root.getRunSettings().getRfmCustom().getRfmCustomAccessDomain().isUseIsc1());
-//        handleIncludeIsc1Check();
-//        if (chkRfmCustomUseIsc1.isSelected()){
-//            txtRfmCustomCustomTargetEfIsc1.setText(root.getRunSettings().getRfmCustom().getCustomTargetEfIsc1());
-//        }
-//        else {
-//            txtRfmCustomCustomTargetEfIsc1.setText("");
-//        }
-//
-//        chkRfmCustomUseIsc2.setSelected(root.getRunSettings().getRfmCustom().getRfmCustomAccessDomain().isUseIsc2());
-//        handleIncludeIsc2Check();
-//        if (chkRfmCustomUseIsc2.isSelected()){
-//            txtRfmCustomCustomTargetEfIsc2.setText(root.getRunSettings().getRfmCustom().getCustomTargetEfIsc2());
-//        }
-//        else {
-//            txtRfmCustomCustomTargetEfIsc2.setText("");
-//        }
-//
-//        chkRfmCustomUseIsc3.setSelected(root.getRunSettings().getRfmCustom().getRfmCustomAccessDomain().isUseIsc3());
-//        handleIncludeIsc3Check();
-//        if (chkRfmCustomUseIsc3.isSelected()){
-//            txtRfmCustomCustomTargetEfIsc3.setText(root.getRunSettings().getRfmCustom().getCustomTargetEfIsc3());
-//        }
-//        else {
-//            txtRfmCustomCustomTargetEfIsc3.setText("");
-//        }
-//
-//        chkRfmCustomUseIsc4.setSelected(root.getRunSettings().getRfmCustom().getRfmCustomAccessDomain().isUseIsc4());
-//        handleIncludeIsc4Check();
-//        if (chkRfmCustomUseIsc4.isSelected()){
-//            txtRfmCustomCustomTargetEfIsc4.setText(root.getRunSettings().getRfmCustom().getCustomTargetEfIsc4());
-//        }
-//        else {
-//            txtRfmCustomCustomTargetEfIsc4.setText("");
-//        }
-//
-//        chkRfmCustomUseGPin1.setSelected(root.getRunSettings().getRfmCustom().getRfmCustomAccessDomain().isUseGPin1());
-//        handleIncludeGPin1Check();
-//        if (chkRfmCustomUseGPin1.isSelected()){
-//            txtRfmCustomCustomTargetEfGPin1.setText(root.getRunSettings().getRfmCustom().getCustomTargetEfGPin1());
-//        }
-//        else {
-//            txtRfmCustomCustomTargetEfGPin1.setText("");
-//        }
-//
-//        chkRfmCustomUseLPin1.setSelected(root.getRunSettings().getRfmCustom().getRfmCustomAccessDomain().isUseLPin1());
-//        handleIncludeLPin1Check();
-//        if (chkRfmCustomUseLPin1.isSelected()){
-//            txtRfmCustomCustomTargetEfLPin1.setText(root.getRunSettings().getRfmCustom().getCustomTargetEfLPin1());
-//        }
-//        else {
-//            txtRfmCustomCustomTargetEfLPin1.setText("");
-//        }
-//
-//        // Initialize Access Domain Negative Case
-//        chkRfmCustomUseBadCaseAlw.setSelected(root.getRunSettings().getRfmCustom().getRfmCustomBadCaseAccessDomain().isUseBadCaseAlways());
-//        handleIncludeAlwCheck();
-//        if (chkRfmCustomUseBadCaseAlw.isSelected()){
-//            txtRfmCustomCustomTargetEfBadCaseAlw.setText(root.getRunSettings().getRfmCustom().getCustomTargetEfBadCaseAlw());
-//        }
-//        else {
-//            txtRfmCustomCustomTargetEfBadCaseAlw.setText("");
-//        }
-//
-//        chkRfmCustomUseBadCaseIsc1.setSelected(root.getRunSettings().getRfmCustom().getRfmCustomBadCaseAccessDomain().isUseBadCaseIsc1());
-//        handleIncludeIsc1Check();
-//        if (chkRfmCustomUseBadCaseIsc1.isSelected()){
-//            txtRfmCustomCustomTargetEfBadCaseIsc1.setText(root.getRunSettings().getRfmCustom().getCustomTargetEfBadCaseIsc1());
-//        }
-//        else {
-//            txtRfmCustomCustomTargetEfBadCaseIsc1.setText("");
-//        }
-//
-//        chkRfmCustomUseBadCaseIsc2.setSelected(root.getRunSettings().getRfmCustom().getRfmCustomBadCaseAccessDomain().isUseBadCaseIsc2());
-//        handleIncludeIsc2Check();
-//        if (chkRfmCustomUseBadCaseIsc2.isSelected()){
-//            txtRfmCustomCustomTargetEfBadCaseIsc2.setText(root.getRunSettings().getRfmCustom().getCustomTargetEfBadCaseIsc2());
-//        }
-//        else {
-//            txtRfmCustomCustomTargetEfBadCaseIsc2.setText("");
-//        }
-//
-//        chkRfmCustomUseBadCaseIsc3.setSelected(root.getRunSettings().getRfmCustom().getRfmCustomBadCaseAccessDomain().isUseBadCaseIsc3());
-//        handleIncludeIsc3Check();
-//        if (chkRfmCustomUseBadCaseIsc3.isSelected()){
-//            txtRfmCustomCustomTargetEfBadCaseIsc3.setText(root.getRunSettings().getRfmCustom().getCustomTargetEfBadCaseIsc3());
-//        }
-//        else {
-//            txtRfmCustomCustomTargetEfBadCaseIsc3.setText("");
-//        }
-//
-//        chkRfmCustomUseBadCaseIsc4.setSelected(root.getRunSettings().getRfmCustom().getRfmCustomBadCaseAccessDomain().isUseBadCaseIsc4());
-//        handleIncludeIsc4Check();
-//        if (chkRfmCustomUseBadCaseIsc4.isSelected()){
-//            txtRfmCustomCustomTargetEfBadCaseIsc4.setText(root.getRunSettings().getRfmCustom().getCustomTargetEfBadCaseIsc4());
-//        }
-//        else {
-//            txtRfmCustomCustomTargetEfBadCaseIsc4.setText("");
-//        }
-//
-//        chkRfmCustomUseBadCaseGPin1.setSelected(root.getRunSettings().getRfmCustom().getRfmCustomBadCaseAccessDomain().isUseBadCaseGPin1());
-//        handleIncludeGPin1Check();
-//        if (chkRfmCustomUseBadCaseGPin1.isSelected()){
-//            txtRfmCustomCustomTargetEfBadCaseGPin1.setText(root.getRunSettings().getRfmCustom().getCustomTargetEfBadCaseGPin1());
-//        }
-//        else {
-//            txtRfmCustomCustomTargetEfBadCaseGPin1.setText("");
-//        }
-//
-//        chkRfmCustomUseBadCaseLPin1.setSelected(root.getRunSettings().getRfmCustom().getRfmCustomBadCaseAccessDomain().isUseBadCaseLPin1());
-//        handleIncludeLPin1Check();
-//        if (chkRfmCustomUseBadCaseLPin1.isSelected()){
-//            txtRfmCustomCustomTargetEfBadCaseLPin1.setText(root.getRunSettings().getRfmCustom().getCustomTargetEfBadCaseLPin1());
-//        }
-//        else {
-//            txtRfmCustomCustomTargetEfBadCaseLPin1.setText("");
-//        }
+        // Initialize Access Domain Positive Case
+        chkRfmCustomUseAlw.setSelected(root.getRunSettings().getRfmCustom().getRfmCustomAccessDomain().isUseAlways());
+        handleIncludeAlwCheck();
+        if (chkRfmCustomUseAlw.isSelected()){
+            txtRfmCustomCustomTargetEfAlw.setText(root.getRunSettings().getRfmCustom().getCustomTargetEfAlw());
+        }
+        else {
+            txtRfmCustomCustomTargetEfAlw.setText("");
+        }
+
+        chkRfmCustomUseIsc1.setSelected(root.getRunSettings().getRfmCustom().getRfmCustomAccessDomain().isUseIsc1());
+        handleIncludeIsc1Check();
+        if (chkRfmCustomUseIsc1.isSelected()){
+            txtRfmCustomCustomTargetEfIsc1.setText(root.getRunSettings().getRfmCustom().getCustomTargetEfIsc1());
+        }
+        else {
+            txtRfmCustomCustomTargetEfIsc1.setText("");
+        }
+
+        chkRfmCustomUseIsc2.setSelected(root.getRunSettings().getRfmCustom().getRfmCustomAccessDomain().isUseIsc2());
+        handleIncludeIsc2Check();
+        if (chkRfmCustomUseIsc2.isSelected()){
+            txtRfmCustomCustomTargetEfIsc2.setText(root.getRunSettings().getRfmCustom().getCustomTargetEfIsc2());
+        }
+        else {
+            txtRfmCustomCustomTargetEfIsc2.setText("");
+        }
+
+        chkRfmCustomUseIsc3.setSelected(root.getRunSettings().getRfmCustom().getRfmCustomAccessDomain().isUseIsc3());
+        handleIncludeIsc3Check();
+        if (chkRfmCustomUseIsc3.isSelected()){
+            txtRfmCustomCustomTargetEfIsc3.setText(root.getRunSettings().getRfmCustom().getCustomTargetEfIsc3());
+        }
+        else {
+            txtRfmCustomCustomTargetEfIsc3.setText("");
+        }
+
+        chkRfmCustomUseIsc4.setSelected(root.getRunSettings().getRfmCustom().getRfmCustomAccessDomain().isUseIsc4());
+        handleIncludeIsc4Check();
+        if (chkRfmCustomUseIsc4.isSelected()){
+            txtRfmCustomCustomTargetEfIsc4.setText(root.getRunSettings().getRfmCustom().getCustomTargetEfIsc4());
+        }
+        else {
+            txtRfmCustomCustomTargetEfIsc4.setText("");
+        }
+
+        chkRfmCustomUseGPin1.setSelected(root.getRunSettings().getRfmCustom().getRfmCustomAccessDomain().isUseGPin1());
+        handleIncludeGPin1Check();
+        if (chkRfmCustomUseGPin1.isSelected()){
+            txtRfmCustomCustomTargetEfGPin1.setText(root.getRunSettings().getRfmCustom().getCustomTargetEfGPin1());
+        }
+        else {
+            txtRfmCustomCustomTargetEfGPin1.setText("");
+        }
+
+        chkRfmCustomUseLPin1.setSelected(root.getRunSettings().getRfmCustom().getRfmCustomAccessDomain().isUseLPin1());
+        handleIncludeLPin1Check();
+        if (chkRfmCustomUseLPin1.isSelected()){
+            txtRfmCustomCustomTargetEfLPin1.setText(root.getRunSettings().getRfmCustom().getCustomTargetEfLPin1());
+        }
+        else {
+            txtRfmCustomCustomTargetEfLPin1.setText("");
+        }
+
+        // Initialize Access Domain Negative Case
+        chkRfmCustomUseBadCaseAlw.setSelected(root.getRunSettings().getRfmCustom().getRfmCustomBadCaseAccessDomain().isUseBadCaseAlways());
+        handleIncludeAlwCheck();
+        if (chkRfmCustomUseBadCaseAlw.isSelected()){
+            txtRfmCustomCustomTargetEfBadCaseAlw.setText(root.getRunSettings().getRfmCustom().getCustomTargetEfBadCaseAlw());
+        }
+        else {
+            txtRfmCustomCustomTargetEfBadCaseAlw.setText("");
+        }
+
+        chkRfmCustomUseBadCaseIsc1.setSelected(root.getRunSettings().getRfmCustom().getRfmCustomBadCaseAccessDomain().isUseBadCaseIsc1());
+        handleIncludeIsc1Check();
+        if (chkRfmCustomUseBadCaseIsc1.isSelected()){
+            txtRfmCustomCustomTargetEfBadCaseIsc1.setText(root.getRunSettings().getRfmCustom().getCustomTargetEfBadCaseIsc1());
+        }
+        else {
+            txtRfmCustomCustomTargetEfBadCaseIsc1.setText("");
+        }
+
+        chkRfmCustomUseBadCaseIsc2.setSelected(root.getRunSettings().getRfmCustom().getRfmCustomBadCaseAccessDomain().isUseBadCaseIsc2());
+        handleIncludeIsc2Check();
+        if (chkRfmCustomUseBadCaseIsc2.isSelected()){
+            txtRfmCustomCustomTargetEfBadCaseIsc2.setText(root.getRunSettings().getRfmCustom().getCustomTargetEfBadCaseIsc2());
+        }
+        else {
+            txtRfmCustomCustomTargetEfBadCaseIsc2.setText("");
+        }
+
+        chkRfmCustomUseBadCaseIsc3.setSelected(root.getRunSettings().getRfmCustom().getRfmCustomBadCaseAccessDomain().isUseBadCaseIsc3());
+        handleIncludeIsc3Check();
+        if (chkRfmCustomUseBadCaseIsc3.isSelected()){
+            txtRfmCustomCustomTargetEfBadCaseIsc3.setText(root.getRunSettings().getRfmCustom().getCustomTargetEfBadCaseIsc3());
+        }
+        else {
+            txtRfmCustomCustomTargetEfBadCaseIsc3.setText("");
+        }
+
+        chkRfmCustomUseBadCaseIsc4.setSelected(root.getRunSettings().getRfmCustom().getRfmCustomBadCaseAccessDomain().isUseBadCaseIsc4());
+        handleIncludeIsc4Check();
+        if (chkRfmCustomUseBadCaseIsc4.isSelected()){
+            txtRfmCustomCustomTargetEfBadCaseIsc4.setText(root.getRunSettings().getRfmCustom().getCustomTargetEfBadCaseIsc4());
+        }
+        else {
+            txtRfmCustomCustomTargetEfBadCaseIsc4.setText("");
+        }
+
+        chkRfmCustomUseBadCaseGPin1.setSelected(root.getRunSettings().getRfmCustom().getRfmCustomBadCaseAccessDomain().isUseBadCaseGPin1());
+        handleIncludeGPin1Check();
+        if (chkRfmCustomUseBadCaseGPin1.isSelected()){
+            txtRfmCustomCustomTargetEfBadCaseGPin1.setText(root.getRunSettings().getRfmCustom().getCustomTargetEfBadCaseGPin1());
+        }
+        else {
+            txtRfmCustomCustomTargetEfBadCaseGPin1.setText("");
+        }
+
+        chkRfmCustomUseBadCaseLPin1.setSelected(root.getRunSettings().getRfmCustom().getRfmCustomBadCaseAccessDomain().isUseBadCaseLPin1());
+        handleIncludeLPin1Check();
+        if (chkRfmCustomUseBadCaseLPin1.isSelected()){
+            txtRfmCustomCustomTargetEfBadCaseLPin1.setText(root.getRunSettings().getRfmCustom().getCustomTargetEfBadCaseLPin1());
+        }
+        else {
+            txtRfmCustomCustomTargetEfBadCaseLPin1.setText("");
+        }
 
         chkRfmCustomFullAccess.setSelected(root.getRunSettings().getRfmCustom().isFullAccess());
         handleRfmCustomFullAccessCheck();
-
-
-
 
         chkRfmCustomFullAccess.setSelected(root.getRunSettings().getRfmCustom().isFullAccess());
         handleRfmCustomFullAccessCheck();
@@ -415,7 +410,6 @@ public class RfmCustomController {
             chkRfmCustomUseBadCaseLPin1.setDisable(true);
             lblRfmCustomCustomTargetBadCase.setDisable(true);
             txtRfmCustomTargetEf.setDisable(false);
-            txtRfmCustomTargetEfBadCase.setDisable(false);
         } else {
             txtRfmCustomCustomTargetEfAlw.setDisable(false);
             txtRfmCustomCustomTargetEfIsc1.setDisable(false);
@@ -449,7 +443,6 @@ public class RfmCustomController {
             lblRfmCustomCustomTarget.setDisable(false);
             lblRfmCustomCustomTargetBadCase.setDisable(false);
             txtRfmCustomTargetEf.setDisable(true);
-            txtRfmCustomTargetEfBadCase.setDisable(true);
         }
     }
 
@@ -638,12 +631,6 @@ public class RfmCustomController {
             chkRfmCustomUseLPin1.setDisable(false);
         }
     }
-
-
-
-
-
-
 
     @FXML private void handleRfmCustomUseSpecificKeysetCheck() {
         if (chkRfmCustomUseSpecificKeyset.isSelected()) {
@@ -927,7 +914,6 @@ public class RfmCustomController {
         root.getRunSettings().getRfmCustom().setCustomRfmDesc(txtCustomRfmDesc.getText());
 
         root.getRunSettings().getRfmCustom().setTargetEf(txtRfmCustomTargetEf.getText());
-        root.getRunSettings().getRfmCustom().setTargetEfBadCase(txtRfmCustomTargetEfBadCase.getText());
         root.getRunSettings().getRfmCustom().setFullAccess(chkRfmCustomFullAccess.isSelected());
         if (!root.getRunSettings().getRfmCustom().isFullAccess()) {
             root.getRunSettings().getRfmCustom().setCustomTargetEfAlw(txtRfmCustomCustomTargetEfAlw.getText());

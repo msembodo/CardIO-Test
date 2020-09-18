@@ -39,10 +39,8 @@
                       <children>
                         <Label text="TAR" />
                         <Label text="EF" GridPane.rowIndex="1" />
-                        <Label text="EF (bad case)" GridPane.rowIndex="2" />
                         <TextField fx:id="txtRfmGsmTar" maxWidth="60.0" GridPane.columnIndex="1" />
                         <TextField fx:id="txtRfmGsmTargetEf" maxWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <TextField fx:id="txtRfmGsmTargetEfBadCase" maxWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                       </children>
                     </GridPane>
                     <GridPane hgap="4.0" layoutX="181.0" layoutY="51.0" prefHeight="253.0" prefWidth="250.0" AnchorPane.bottomAnchor="115.0" AnchorPane.leftAnchor="185.0" AnchorPane.rightAnchor="314.60000000000014" AnchorPane.topAnchor="42.0">

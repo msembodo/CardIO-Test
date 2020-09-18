@@ -28,7 +28,7 @@ public class RfmUsimController {
     @FXML private ComboBox<String> cmbRfmUsimCounterCheck;
     @FXML private TextField txtRfmUsimTar;
     @FXML private TextField txtRfmUsimTargetEf;
-    @FXML private TextField txtRfmUsimTargetEfBadCase;
+    //@FXML private TextField txtRfmUsimTargetEfBadCase;
     @FXML private CheckBox chkRfmUsimFullAccess;
     @FXML private Label lblRfmUsimCustomTarget;
     @FXML private TextField txtRfmUsimCustomTargetEfAlw;
@@ -167,7 +167,7 @@ public class RfmUsimController {
 
         txtRfmUsimTar.setText(root.getRunSettings().getRfmUsim().getTar());
         txtRfmUsimTargetEf.setText(root.getRunSettings().getRfmUsim().getTargetEf());
-        txtRfmUsimTargetEfBadCase.setText(root.getRunSettings().getRfmUsim().getTargetEfBadCase());
+        //txtRfmUsimTargetEfBadCase.setText(root.getRunSettings().getRfmUsim().getTargetEfBadCase());
 
         // set Checkbox Access Domain Tooltip
         chkRfmUsimUseAlw.setTooltip(new Tooltip("Read EF Access Domain ALW"));
@@ -394,7 +394,7 @@ public class RfmUsimController {
             chkRfmUsimUseBadCaseLPin1.setDisable(true);
             lblRfmUsimCustomTargetBadCase.setDisable(true);
             txtRfmUsimTargetEf.setDisable(false);
-            txtRfmUsimTargetEfBadCase.setDisable(false);
+            //txtRfmUsimTargetEfBadCase.setDisable(false);
         }
         else {
             txtRfmUsimCustomTargetEfAlw.setDisable(false);
@@ -429,7 +429,7 @@ public class RfmUsimController {
             lblRfmUsimCustomTarget.setDisable(false);
             lblRfmUsimCustomTargetBadCase.setDisable(false);
             txtRfmUsimTargetEf.setDisable(true);
-            txtRfmUsimTargetEfBadCase.setDisable(true);
+            //txtRfmUsimTargetEfBadCase.setDisable(true);
         }
     }
 
@@ -883,7 +883,7 @@ public class RfmUsimController {
 
         root.getRunSettings().getRfmUsim().setTar(txtRfmUsimTar.getText());
         root.getRunSettings().getRfmUsim().setTargetEf(txtRfmUsimTargetEf.getText());
-        root.getRunSettings().getRfmUsim().setTargetEfBadCase(txtRfmUsimTargetEfBadCase.getText());
+        //root.getRunSettings().getRfmUsim().setTargetEfBadCase(txtRfmUsimTargetEfBadCase.getText());
         root.getRunSettings().getRfmUsim().setFullAccess(chkRfmUsimFullAccess.isSelected());
         if (!root.getRunSettings().getRfmUsim().isFullAccess()) {
             root.getRunSettings().getRfmUsim().setCustomTargetEfAlw(txtRfmUsimCustomTargetEfAlw.getText());

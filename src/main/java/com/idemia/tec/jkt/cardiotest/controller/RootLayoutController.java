@@ -626,6 +626,21 @@ public class RootLayoutController {
                 runSettings.getRam().setTestRamExpandedModeMessage(errFailure);
             }
         }
+        if (module.getName().equals("Verif_GP")) {
+            runSettings.getRam().setTestVerifGpOk(true);
+            runSettings.getRam().setTestVerifGpMessage("OK");
+            String errFailure = "";
+            if (module.getError() != null) {
+                runSettings.getRam().setTestVerifGpOk(false);
+                errFailure += module.getError().replace("\n", ";");
+                runSettings.getRam().setTestVerifGpMessage(errFailure);
+            }
+            if (module.getFailure() != null) {
+                runSettings.getRam().setTestVerifGpOk(false);
+                errFailure += module.getFailure().replace("\n", ";");
+                runSettings.getRam().setTestVerifGpMessage(errFailure);
+            }
+        }
 
         if (runSettings.getCustomScriptsSection1().size() > 0)
             setCustomScriptsTestStatus(module, runSettings.getCustomScriptsSection1());

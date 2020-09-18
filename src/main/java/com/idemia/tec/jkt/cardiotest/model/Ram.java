@@ -18,6 +18,8 @@ public class Ram {
     private String testRamUpdateRecordMessage;
     private boolean testRamExpandedModeOk;
     private String testRamExpandedModeMessage;
+    private boolean testVerifGpOk;
+    private String testVerifGpMessage;
 
     public Ram() {}
 
@@ -154,6 +156,22 @@ public class Ram {
 
     public void setTestRamExpandedModeMessage(String testRamExpandedModeMessage) {
         this.testRamExpandedModeMessage = testRamExpandedModeMessage;
+    }
+
+    public boolean isTestVerifGpOk() {
+        return testVerifGpOk;
+    }
+
+    public void setTestVerifGpOk(boolean testVerifGpOk) {
+        this.testVerifGpOk = testVerifGpOk;
+    }
+
+    public String getTestVerifGpMessage() {
+        return testVerifGpMessage;
+    }
+
+    public void setTestVerifGpMessage(String testVerifGpMessage) {
+        this.testVerifGpMessage = testVerifGpMessage;
     }
 
     public Isd getIsd() {

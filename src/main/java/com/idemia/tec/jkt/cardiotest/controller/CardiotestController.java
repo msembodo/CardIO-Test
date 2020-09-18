@@ -105,7 +105,6 @@ public class CardiotestController {
 
     private ObservableList<String> scp80KeysetLabels;
 
-
     // Application Param for Verif GP
     @FXML private CheckBox chkIncludeVerifGp;
     @FXML private TableView<AppletParam> tblAppletParam;
@@ -115,7 +114,6 @@ public class CardiotestController {
     @FXML private TextField packageAidTextField;
     @FXML private TextField instanceAidTextField;
     @FXML private TextField lifeCycleTextField;
-
 
     // bottom tab pane
     @FXML private TabPane tabBottom;
@@ -135,10 +133,7 @@ public class CardiotestController {
     @Autowired private RfmIsimController rfmIsimController;
     @Autowired private RamController ramController;
     @Autowired private RfmCustomController rfmCustomController;
-
-    //----------------------------------
     @Autowired private FileManagementController fileManagementController;
-    //----------------------------------
 
     public CardiotestController() {}
 
@@ -381,13 +376,13 @@ public class CardiotestController {
         chkIncludeVerifGp.setSelected(root.getRunSettings().getRam().isIncludeVerifGp());
         handleIncludeVerifGp();
 
-        //initialize applet params
+        // initialize applet params
         clmPackage.setCellValueFactory(celldata -> celldata.getValue().packageAidProperty());
         clmInstance.setCellValueFactory(celldata -> celldata.getValue().instanceAidProperty());
         clmLifeCycle.setCellValueFactory(celldata -> celldata.getValue().lifeCycleProperty());
-        // clear keyset fields
+        // clear fields
         showApplet(null);
-        // listen for selection changes and show keyset detail when changed
+        // listen for selection changes and show detail when changed
         tblAppletParam.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> showApplet(newValue)
         );

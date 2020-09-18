@@ -22,6 +22,7 @@ public class RunSettings {
     private CardParameters cardParameters;
     private Authentication authentication;
     private List<SCP80Keyset> scp80Keysets;
+    private List<AppletParam> appletParams;
     private SmsUpdate smsUpdate;
     private RfmUsim rfmUsim;
     private RfmGsm rfmGsm;
@@ -45,7 +46,8 @@ public class RunSettings {
                        CardParameters cardParameters, Authentication authentication, List<SCP80Keyset> scp80Keysets,
                        SmsUpdate smsUpdate, RfmUsim rfmUsim, RfmGsm rfmGsm, RfmIsim rfmIsim, RfmCustom rfmCustom,
                        Ram ram, List<CustomScript> customScriptsSection1, List<CustomScript> customScriptsSection2,
-                       List<CustomScript> customScriptsSection3, FileManagement fileManagement, FMLinkFiles fMLinkFiles, FMRuwi fMRuwi) {
+                       List<CustomScript> customScriptsSection3, FileManagement fileManagement, FMLinkFiles fMLinkFiles,
+                       FMRuwi fMRuwi, List<AppletParam> appletParams) {
 
         this.projectPath = projectPath;
         this.advSaveVariablesPath = advSaveVariablesPath;
@@ -65,6 +67,7 @@ public class RunSettings {
         this.cardParameters = cardParameters;
         this.authentication = authentication;
         this.scp80Keysets = scp80Keysets;
+        this.appletParams = appletParams;
         this.smsUpdate = smsUpdate;
         this.rfmUsim = rfmUsim;
         this.rfmGsm = rfmGsm;
@@ -222,6 +225,14 @@ public class RunSettings {
 
     public void setScp80Keysets(List<SCP80Keyset> scp80Keysets) {
         this.scp80Keysets = scp80Keysets;
+    }
+
+    public List<AppletParam> getAppletParams() {
+        return appletParams;
+    }
+
+    public void setAppletParams(List<AppletParam> appletParams) {
+        this.appletParams = appletParams;
     }
 
     public SmsUpdate getSmsUpdate() {

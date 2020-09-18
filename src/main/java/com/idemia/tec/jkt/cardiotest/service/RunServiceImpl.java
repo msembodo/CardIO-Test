@@ -113,7 +113,8 @@ public class RunServiceImpl implements RunService {
         // RAM
         if (root.getRunSettings().getRam().isIncludeRam() ||
                 root.getRunSettings().getRam().isIncludeRamUpdateRecord() ||
-                root.getRunSettings().getRam().isIncludeRamExpandedMode()) {
+                root.getRunSettings().getRam().isIncludeRamExpandedMode() ||
+                root.getRunSettings().getRam().isIncludeVerifGp()) {
             runAllBuffer.append(addRam(root.getRunSettings().getRam()));
         }
 
@@ -524,6 +525,16 @@ public class RunServiceImpl implements RunService {
             ramRunAllString.append(".ALLUNDEFINE\n\n");
         }
 
+        if (ram.isIncludeVerifGp()) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "Verif_GP.txt"))) {
+                bw.append(scriptGenerator.generateVerifGp(ram));
+            } catch (IOException e) {
+                logger.error("Failed writing Verif_GP script");
+            }
+            ramRunAllString.append(".EXECUTE scripts\\Verif_GP.txt /PATH logs\n");
+            ramRunAllString.append(".ALLUNDEFINE\n\n");
+        }
+
         return ramRunAllString.toString();
     }
 
@@ -735,6 +746,12 @@ public class RunServiceImpl implements RunService {
     @Override public boolean runRamExpandedMode() {
         composeScripts();
         runShellCommand("pcomconsole", scriptsDirectory + "RAM_3G_ExpandedMode.txt");
+        return exitVal == 0;
+    }
+
+    @Override  public boolean runVerifGp() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "Verif_GP.txt");
         return exitVal == 0;
     }
 

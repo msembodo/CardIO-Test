@@ -7,7 +7,7 @@ public class RfmUsim {
     private boolean includeRfmUsimExpandedMode;
     private String tar;
     private String targetEf;
-    private String targetEfBadCase;
+    //private String targetEfBadCase;
     private boolean fullAccess;
     private String customTargetAcc;
     private String customTargetEf;
@@ -43,7 +43,7 @@ public class RfmUsim {
     public RfmUsim() {}
 
     public RfmUsim(boolean includeRfmUsim, boolean includeRfmUsimUpdateRecord, boolean includeRfmUsimExpandedMode,
-                   String tar, String targetEf, String targetEfBadCase, boolean fullAccess, String customTargetAcc,
+                   String tar, String targetEf, boolean fullAccess, String customTargetAcc,
                    String customTargetEf, String customTargetEfAlw, String customTargetEfIsc1, String customTargetEfIsc2, String customTargetEfIsc3, String customTargetEfGPin1, String customTargetEfLPin1, String customTargetAccBadCase, String customTargetEfBadCase,
                    boolean useSpecificKeyset, AccessDomain accessDomain, AccessDomain badCaseAccessDomain, SCP80Keyset cipheringKeyset, SCP80Keyset authKeyset,
                    MinimumSecurityLevel minimumSecurityLevel) {
@@ -52,7 +52,6 @@ public class RfmUsim {
         this.includeRfmUsimExpandedMode = includeRfmUsimExpandedMode;
         this.tar = tar;
         this.targetEf = targetEf;
-        this.targetEfBadCase = targetEfBadCase;
         this.fullAccess = fullAccess;
         this.customTargetAcc = customTargetAcc;
         this.customTargetEf = customTargetEf;
@@ -111,14 +110,6 @@ public class RfmUsim {
 
     public void setTargetEf(String targetEf) {
         this.targetEf = targetEf;
-    }
-
-    public String getTargetEfBadCase() {
-        return targetEfBadCase;
-    }
-
-    public void setTargetEfBadCase(String targetEfBadCase) {
-        this.targetEfBadCase = targetEfBadCase;
     }
 
     public boolean isFullAccess() {

@@ -39,10 +39,8 @@
                       <children>
                         <Label text="TAR" />
                         <Label fx:id="lblRfmIsimTarget" text="EF" GridPane.rowIndex="1" />
-                        <Label fx:id="lblRfmIsimTargetBadCase" text="EF (bad case)" GridPane.rowIndex="2" />
                         <TextField fx:id="txtRfmIsimTar" maxWidth="60.0" text="B00000" GridPane.columnIndex="1" />
                         <TextField fx:id="txtRfmIsimTargetEf" maxWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <TextField fx:id="txtRfmIsimTargetEfBadCase" maxWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                       </children>
                     </GridPane>
                     <CheckBox fx:id="chkUseSpecificKeyset" layoutX="20.0" layoutY="169.0" mnemonicParsing="false" onAction="#handleUseSpecificKeysetCheck" text="Use specific keyset:" AnchorPane.bottomAnchor="78.0" AnchorPane.leftAnchor="8.0" />

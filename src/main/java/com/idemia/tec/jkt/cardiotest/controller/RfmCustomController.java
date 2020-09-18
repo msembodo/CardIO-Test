@@ -29,7 +29,6 @@ public class RfmCustomController {
     @FXML private TextField txtRfmCustomTar;
     @FXML private TextField txtRfmCustomTargetDf;
     @FXML private TextField txtRfmCustomTargetEf;
-    @FXML private TextField txtRfmCustomTargetEfBadCase;
     @FXML private CheckBox chkRfmCustomFullAccess;
 
     @FXML private Label lblRfmCustomCustomTarget;
@@ -181,12 +180,8 @@ public class RfmCustomController {
 
         txtRfmCustomTar.setText(root.getRunSettings().getRfmCustom().getTar());
         txtRfmCustomTargetEf.setText(root.getRunSettings().getRfmCustom().getTargetEf());
-        txtRfmCustomTargetEfBadCase.setText(root.getRunSettings().getRfmCustom().getTargetEfBadCase());
         txtRfmCustomTargetDf.setText(root.getRunSettings().getRfmCustom().getTargetDf());
         txtCustomRfmDesc.setText(root.getRunSettings().getRfmCustom().getCustomRfmDesc());
-
-
-
 
 
         // Initialize Access Domain Positive Case
@@ -419,7 +414,6 @@ public class RfmCustomController {
             chkRfmCustomUseBadCaseLPin1.setDisable(true);
             lblRfmCustomCustomTargetBadCase.setDisable(true);
             txtRfmCustomTargetEf.setDisable(false);
-            txtRfmCustomTargetEfBadCase.setDisable(false);
         } else {
             txtRfmCustomCustomTargetEfAlw.setDisable(false);
             txtRfmCustomCustomTargetEfIsc1.setDisable(false);
@@ -453,7 +447,6 @@ public class RfmCustomController {
             lblRfmCustomCustomTarget.setDisable(false);
             lblRfmCustomCustomTargetBadCase.setDisable(false);
             txtRfmCustomTargetEf.setDisable(true);
-            txtRfmCustomTargetEfBadCase.setDisable(true);
         }
     }
 
@@ -935,7 +928,6 @@ public class RfmCustomController {
         root.getRunSettings().getRfmCustom().setCustomRfmDesc(txtCustomRfmDesc.getText());
 
         root.getRunSettings().getRfmCustom().setTargetEf(txtRfmCustomTargetEf.getText());
-        root.getRunSettings().getRfmCustom().setTargetEfBadCase(txtRfmCustomTargetEfBadCase.getText());
         root.getRunSettings().getRfmCustom().setFullAccess(chkRfmCustomFullAccess.isSelected());
         if (!root.getRunSettings().getRfmCustom().isFullAccess()) {
             root.getRunSettings().getRfmCustom().setCustomTargetEfAlw(txtRfmCustomCustomTargetEfAlw.getText());

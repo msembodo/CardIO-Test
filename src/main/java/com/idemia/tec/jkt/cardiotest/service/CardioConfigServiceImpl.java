@@ -66,7 +66,7 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             cardParameters.setCardManagerAid("A000000151000000");
             cardParameters.setUsimAid("A0000000871002FFFFFFFF89");
             cardParameters.setDfUsim("7FF0");
-            cardParameters.setDfGsm("3F00");
+            cardParameters.setDfGsm("7F20");
             cardParameters.setDfGsmAccess("5F3B");
             cardParameters.setDfTelecom("7F10");
             cardParameters.setIsimAid("A0000000871004FFFFFFFF89");
@@ -113,13 +113,34 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             rfmUsimMsl.setPorRequirement("PoR required");
             rfmUsimMsl.setPorSecurity("response with no security");
 
+            AccessDomain rfmUsimAccessDomain = new AccessDomain();
+            rfmUsimAccessDomain.setUseAlways(false);
+            rfmUsimAccessDomain.setUseIsc1(false);
+            rfmUsimAccessDomain.setUseIsc2(false);
+            rfmUsimAccessDomain.setUseIsc3(false);
+            rfmUsimAccessDomain.setUseIsc4(false);
+            rfmUsimAccessDomain.setUseGPin1(false);
+            rfmUsimAccessDomain.setUseLPin1(false);
+
+            AccessDomain rfmUsimBadCaseAccessDomain = new AccessDomain();
+            rfmUsimBadCaseAccessDomain.setUseBadCaseAlways(false);
+            rfmUsimBadCaseAccessDomain.setUseBadCaseIsc1(false);
+            rfmUsimBadCaseAccessDomain.setUseBadCaseIsc2(false);
+            rfmUsimBadCaseAccessDomain.setUseBadCaseIsc3(false);
+            rfmUsimBadCaseAccessDomain.setUseBadCaseIsc4(false);
+            rfmUsimBadCaseAccessDomain.setUseBadCaseGPin1(false);
+            rfmUsimBadCaseAccessDomain.setUseBadCaseLPin1(false);
+
             RfmUsim rfmUsim = new RfmUsim();
             rfmUsim.setIncludeRfmUsim(true);
             rfmUsim.setTar("B00001");
             rfmUsim.setTargetEf("6F7B");
-            rfmUsim.setTargetEfBadCase("6F05");
+            //rfmUsim.setTargetEfBadCase("6F05");
             rfmUsim.setFullAccess(true);
             rfmUsim.setMinimumSecurityLevel(rfmUsimMsl);
+
+            rfmUsim.setRfmUsimAccessDomain(rfmUsimAccessDomain);
+            rfmUsim.setRfmUsimBadCaseAccessDomain(rfmUsimBadCaseAccessDomain);
             defaultSettings.setRfmUsim(rfmUsim);
 
             MinimumSecurityLevel rfmGsmMsl = new MinimumSecurityLevel(true, "Cryptographic Checksum", "Counter must be higher");
@@ -128,13 +149,34 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             rfmGsmMsl.setPorRequirement("PoR required");
             rfmGsmMsl.setPorSecurity("response with no security");
 
+            AccessDomain rfmGsmAccessDomain = new AccessDomain();
+            rfmGsmAccessDomain.setUseAlways(false);
+            rfmGsmAccessDomain.setUseIsc1(false);
+            rfmGsmAccessDomain.setUseIsc2(false);
+            rfmGsmAccessDomain.setUseIsc3(false);
+            rfmGsmAccessDomain.setUseIsc4(false);
+            rfmGsmAccessDomain.setUseGPin1(false);
+            rfmGsmAccessDomain.setUseLPin1(false);
+
+            AccessDomain rfmGsmBadCaseAccessDomain = new AccessDomain();
+            rfmGsmBadCaseAccessDomain.setUseBadCaseAlways(false);
+            rfmGsmBadCaseAccessDomain.setUseBadCaseIsc1(false);
+            rfmGsmBadCaseAccessDomain.setUseBadCaseIsc2(false);
+            rfmGsmBadCaseAccessDomain.setUseBadCaseIsc3(false);
+            rfmGsmBadCaseAccessDomain.setUseBadCaseIsc4(false);
+            rfmGsmBadCaseAccessDomain.setUseBadCaseGPin1(false);
+            rfmGsmBadCaseAccessDomain.setUseBadCaseLPin1(false);
+
             RfmGsm rfmGsm = new RfmGsm();
             rfmGsm.setIncludeRfmGsm(true);
             rfmGsm.setTar("B00001");
             rfmGsm.setTargetEf("6F7B");
-            rfmGsm.setTargetEfBadCase("6F05");
+            //rfmGsm.setTargetEfBadCase("6F05");
             rfmGsm.setFullAccess(true);
             rfmGsm.setMinimumSecurityLevel(rfmGsmMsl);
+
+            rfmGsm.setRfmGsmAccessDomain(rfmGsmAccessDomain);
+            rfmGsm.setRfmGsmBadCaseAccessDomain(rfmGsmBadCaseAccessDomain);
             defaultSettings.setRfmGsm(rfmGsm);
 
             MinimumSecurityLevel rfmIsimMsl = new MinimumSecurityLevel(true, "Cryptographic Checksum", "Counter must be higher");
@@ -142,13 +184,34 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             rfmIsimMsl.setPorRequirement("PoR required");
             rfmIsimMsl.setPorSecurity("response with no security");
 
+            AccessDomain rfmIsimAccessDomain = new AccessDomain();
+            rfmIsimAccessDomain.setUseAlways(false);
+            rfmIsimAccessDomain.setUseIsc1(false);
+            rfmIsimAccessDomain.setUseIsc2(false);
+            rfmIsimAccessDomain.setUseIsc3(false);
+            rfmIsimAccessDomain.setUseIsc4(false);
+            rfmIsimAccessDomain.setUseGPin1(false);
+            rfmIsimAccessDomain.setUseLPin1(false);
+
+            AccessDomain rfmIsimBadCaseAccessDomain = new AccessDomain();
+            rfmIsimBadCaseAccessDomain.setUseBadCaseAlways(false);
+            rfmIsimBadCaseAccessDomain.setUseBadCaseIsc1(false);
+            rfmIsimBadCaseAccessDomain.setUseBadCaseIsc2(false);
+            rfmIsimBadCaseAccessDomain.setUseBadCaseIsc3(false);
+            rfmIsimBadCaseAccessDomain.setUseBadCaseIsc4(false);
+            rfmIsimBadCaseAccessDomain.setUseBadCaseGPin1(false);
+            rfmIsimBadCaseAccessDomain.setUseBadCaseLPin1(false);
+
             RfmIsim rfmIsim = new RfmIsim();
             rfmIsim.setIncludeRfmIsim(true);
             rfmIsim.setTar("B00025");
             rfmIsim.setTargetEf("6FAD");
-            rfmIsim.setTargetEfBadCase("6F02");
+            //rfmIsim.setTargetEfBadCase("6F02");
             rfmIsim.setFullAccess(true);
             rfmIsim.setMinimumSecurityLevel(rfmIsimMsl);
+
+            rfmIsim.setRfmIsimAccessDomain(rfmIsimAccessDomain);
+            rfmIsim.setRfmIsimBadCaseAccessDomain(rfmIsimBadCaseAccessDomain);
             defaultSettings.setRfmIsim(rfmIsim);
 
             MinimumSecurityLevel ramMsl = new MinimumSecurityLevel(true, "Cryptographic Checksum", "Counter must be higher");
@@ -179,16 +242,35 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             rfmCustomMsl.setPorRequirement("PoR required");
             rfmCustomMsl.setPorSecurity("response with no security");
 
+            AccessDomain rfmCustomAccessDomain = new AccessDomain();
+            rfmCustomAccessDomain.setUseAlways(false);
+            rfmCustomAccessDomain.setUseIsc1(false);
+            rfmCustomAccessDomain.setUseIsc2(false);
+            rfmCustomAccessDomain.setUseIsc3(false);
+            rfmCustomAccessDomain.setUseIsc4(false);
+            rfmCustomAccessDomain.setUseGPin1(false);
+            rfmCustomAccessDomain.setUseLPin1(false);
+
+            AccessDomain rfmCustomBadCaseAccessDomain = new AccessDomain();
+            rfmCustomBadCaseAccessDomain.setUseBadCaseAlways(false);
+            rfmCustomBadCaseAccessDomain.setUseBadCaseIsc1(false);
+            rfmCustomBadCaseAccessDomain.setUseBadCaseIsc2(false);
+            rfmCustomBadCaseAccessDomain.setUseBadCaseIsc3(false);
+            rfmCustomBadCaseAccessDomain.setUseBadCaseIsc4(false);
+            rfmCustomBadCaseAccessDomain.setUseBadCaseGPin1(false);
+            rfmCustomBadCaseAccessDomain.setUseBadCaseLPin1(false);
+
             RfmCustom rfmCustom = new RfmCustom();
             rfmCustom.setIncludeRfmCustom(true);
             rfmCustom.setTar("494D45");
             rfmCustom.setTargetDf("7FF0");
             rfmCustom.setTargetEf("6F7B");
-            rfmCustom.setTargetEfBadCase("6F05");
             rfmCustom.setFullAccess(true);
             rfmCustom.setMinimumSecurityLevel(rfmCustomMsl);
+            rfmCustom.setRfmCustomAccessDomain(rfmCustomAccessDomain);
+            rfmCustom.setRfmCustomBadCaseAccessDomain(rfmCustomBadCaseAccessDomain);
             defaultSettings.setRfmCustom(rfmCustom);
-            rfmCustom.setCustomRfmDesc("RFM ...");
+
 
             FileManagement fileManagement = new FileManagement(true, false, null ,true, false, null,true, false, null,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,0,0,false);
             defaultSettings.setFileManagement(fileManagement);

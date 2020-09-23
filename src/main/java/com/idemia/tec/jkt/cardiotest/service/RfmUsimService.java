@@ -1934,9 +1934,9 @@ public class RfmUsimService {
         if (root.getRunSettings().getSecretCodes().isUseIsc4())
             restoreInitialContent.append("00 20 00 0D 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
         restoreInitialContent.append(
-                "00 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
-                        + "00 20 00 81 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
-                        + "00 A4 00 04 02 %DF_ID (61XX)\n"
+            "00 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+            + "00 20 00 81 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+            + "00 A4 00 04 02 %DF_ID (61XX)\n"
         );
 
 

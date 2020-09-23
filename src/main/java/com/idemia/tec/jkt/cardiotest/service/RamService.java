@@ -55,15 +55,15 @@ public class RamService {
         ramBuffer.append("\n*********\n; CASE 1: Install Applet via OTA by sending single SMS one by one\n*********\n");
         ramBuffer.append(
                 "\n.POWER_ON\n"
-                        + "; check initial content of EF\n"
-                        + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+//                        + "; check initial content of EF\n"
+//                        + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
         );
-        if (root.getRunSettings().getSecretCodes().isUseIsc2())
-            ramBuffer.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
-        if (root.getRunSettings().getSecretCodes().isUseIsc3())
-            ramBuffer.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
-        if (root.getRunSettings().getSecretCodes().isUseIsc4())
-            ramBuffer.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+//        if (root.getRunSettings().getSecretCodes().isUseIsc2())
+//            ramBuffer.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+//        if (root.getRunSettings().getSecretCodes().isUseIsc3())
+//            ramBuffer.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+//        if (root.getRunSettings().getSecretCodes().isUseIsc4())
+//            ramBuffer.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
 
         // some TAR may be configured with specific keyset or use all available keysets
         if (ram.isUseSpecificKeyset())
@@ -188,15 +188,15 @@ public class RamService {
         ramBuffer.append("\n*********\n; CASE 1: Install Applet via OTA by sending single SMS one by one\n*********\n");
         ramBuffer.append(
                 "\n.POWER_ON\n"
-                        + "; check initial content of EF\n"
-                        + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+//                        + "; check initial content of EF\n"
+//                        + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
         );
-        if (root.getRunSettings().getSecretCodes().isUseIsc2())
-            ramBuffer.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
-        if (root.getRunSettings().getSecretCodes().isUseIsc3())
-            ramBuffer.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
-        if (root.getRunSettings().getSecretCodes().isUseIsc4())
-            ramBuffer.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+//        if (root.getRunSettings().getSecretCodes().isUseIsc2())
+//            ramBuffer.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+//        if (root.getRunSettings().getSecretCodes().isUseIsc3())
+//            ramBuffer.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+//        if (root.getRunSettings().getSecretCodes().isUseIsc4())
+//            ramBuffer.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
 
         // some TAR may be configured with specific keyset or use all available keysets
         if (ram.isUseSpecificKeyset())

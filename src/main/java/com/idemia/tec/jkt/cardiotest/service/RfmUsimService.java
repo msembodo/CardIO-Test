@@ -686,7 +686,7 @@ public class RfmUsimService {
             routine.append(
                 "\n; update EF SMS record\n" // Case 4 (Bad Case) use unknown TAR, code manually
                 + "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000)\n"
-                + "A0 A4 00 00 02 7F10 (9F22) ;select DF Telecom\n"
+                + "A0 A4 00 00 02 7F10 (9FXX) ;select DF Telecom\n"
                 + "A0 A4 00 00 02 6F3C (9F0F) ;select EF SMS\n"
                 + "A0 DC 01 04 G J (9000) ;update EF SMS\n"
                 + ".CLEAR_SCRIPT\n"
@@ -1113,7 +1113,7 @@ public class RfmUsimService {
         updateSMSRecord.append(
             "\n; update EF SMS record\n"
             + "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000)\n"
-            + "A0 A4 00 00 02 7F10 (9F22) ;select DF Telecom\n"
+            + "A0 A4 00 00 02 7F10 (9FXX) ;select DF Telecom\n"
             + "A0 A4 00 00 02 6F3C (9F0F) ;select EF SMS\n"
             + "A0 DC 01 04 G J (91XX) ;update EF SMS\n"
             + ".CLEAR_SCRIPT\n"
@@ -1377,7 +1377,7 @@ public class RfmUsimService {
         checkInitialContent.append(
                 "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
                 + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
-                + "A0 A4 00 00 02 %DF_ID (9F22)\n"
+                + "A0 A4 00 00 02 %DF_ID (9FXX)\n"
                 +"A0 A4 00 00 02 %EF_ID (9F0F)\n"
                 +"A0 B0 00 00 01 (9000)\n"
                 +".DEFINE %EF_CONTENT R\n"
@@ -1406,7 +1406,7 @@ public class RfmUsimService {
         checkInitialContent.append(
             "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
             + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
-            + "A0 A4 00 00 02 %DF_ID (9F22)\n"
+            + "A0 A4 00 00 02 %DF_ID (9FXX)\n"
         );
 
         if (rfmUsim.getRfmUsimAccessDomain().isUseAlways()){
@@ -1490,7 +1490,7 @@ public class RfmUsimService {
         checkInitialContentBadCase.append(
             "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
             + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
-            + "A0 A4 00 00 02 %DF_ID (9F22)\n"
+            + "A0 A4 00 00 02 %DF_ID (9FXX)\n"
         );
 
         if (rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseAlways()){
@@ -1722,7 +1722,7 @@ public class RfmUsimService {
         checkUpdateHasBeenDone.append(
             "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
             + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
-            + "A0 A4 00 00 02 %DF_ID (9F22)\n"
+            + "A0 A4 00 00 02 %DF_ID (9FXX)\n"
             +"A0 A4 00 00 02 %EF_ID (9F0F)\n"
             + "A0 B0 00 00 01 [AA] (9000)\n"
         );
@@ -1750,7 +1750,7 @@ public class RfmUsimService {
         checkUpdateHasBeenDone.append(
             "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
             + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
-            + "A0 A4 00 00 02 %DF_ID (9F22)\n"
+            + "A0 A4 00 00 02 %DF_ID (9FXX)\n"
         );
 
         if(rfmUsim.getRfmUsimAccessDomain().isUseAlways()){
@@ -1825,7 +1825,7 @@ public class RfmUsimService {
         checkUpdateHasFailed.append(
             "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
             + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
-            + "A0 A4 00 00 02 %DF_ID (9F22)\n"
+            + "A0 A4 00 00 02 %DF_ID (9FXX)\n"
         );
 
         if(rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseAlways()){
@@ -1900,7 +1900,7 @@ public class RfmUsimService {
         restoreInitialContent.append(
             "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
             + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
-            + "A0 A4 00 00 02 %DF_ID (9F22)\n"
+            + "A0 A4 00 00 02 %DF_ID (9FXX)\n"
             +"A0 A4 00 00 02 %EF_ID (9F0F)\n"
             + "A0 D6 00 00 01 %EF_CONTENT (9000)\n"
         );
@@ -1928,7 +1928,7 @@ public class RfmUsimService {
         restoreInitialContent.append(
                 "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
                         + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
-                        + "A0 A4 00 00 02 %DF_ID (9F22)\n"
+                        + "A0 A4 00 00 02 %DF_ID (9FXX)\n"
         );
 
 

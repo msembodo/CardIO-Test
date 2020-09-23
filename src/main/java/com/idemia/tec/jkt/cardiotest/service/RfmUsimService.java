@@ -556,7 +556,7 @@ public class RfmUsimService {
             routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
         routine.append(
             "\n; command(s) sent via OTA\n"
-            + ".SET_BUFFER J 00 A4 00 00 02 3F00\n"
+            + ".SET_BUFFER J 00 A4 00 04 02 3F00\n"
             + ".APPEND_SCRIPT J\n"
             + ".END_MESSAGE G J\n"
         );
@@ -673,7 +673,7 @@ public class RfmUsimService {
             routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
         routine.append(
             "\n; command(s) sent via OTA\n"
-            + ".SET_BUFFER J 00 A4 00 00 02 3F00\n"
+            + ".SET_BUFFER J 00 A4 00 04 02 3F00\n"
             + ".APPEND_SCRIPT J\n"
             + ".END_MESSAGE G J\n"
         );
@@ -740,7 +740,7 @@ public class RfmUsimService {
             routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
         routine.append(
             "\n; command(s) sent via OTA\n"
-            + ".SET_BUFFER J 00 A4 00 00 02 3F00\n"
+            + ".SET_BUFFER J 00 A4 00 04 02 3F00\n"
             + ".APPEND_SCRIPT J\n"
             + ".END_MESSAGE G J\n"
         );
@@ -798,7 +798,7 @@ public class RfmUsimService {
             routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
         routine.append(
             "\n; command(s) sent via OTA\n"
-            + ".SET_BUFFER J 00 A4 00 00 02 3F00\n"
+            + ".SET_BUFFER J 00 A4 00 04 02 3F00\n"
             + ".APPEND_SCRIPT J\n"
             + ".END_MESSAGE G J\n"
         );
@@ -856,7 +856,7 @@ public class RfmUsimService {
             routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
         routine.append(
             "\n; command(s) sent via OTA\n"
-            + ".SET_BUFFER J 00 A4 00 00 02 3F00\n"
+            + ".SET_BUFFER J 00 A4 00 04 02 3F00\n"
             + ".APPEND_SCRIPT J\n"
             + ".END_MESSAGE G J\n"
         );
@@ -907,7 +907,7 @@ public class RfmUsimService {
             routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
         routine.append(
             "\n; command(s) sent via OTA\n"
-            + ".SET_BUFFER J 00 A4 00 00 02 3F00\n"
+            + ".SET_BUFFER J 00 A4 00 04 02 3F00\n"
             + ".APPEND_SCRIPT J\n"
             + ".END_MESSAGE G J\n"
             + "; send envelope\n"
@@ -1084,7 +1084,7 @@ public class RfmUsimService {
         int index = 0;
         for (int i = 0; i < step; i++) {
             routine.append(
-                    ".SET_BUFFER J 00 A4 00 00 02 " + fid.substring(index, index + 4) + "\n"
+                    ".SET_BUFFER J 00 A4 00 04 02 " + fid.substring(index, index + 4) + "\n"
                     + ".APPEND_SCRIPT J\n"
             );
             index += 4;
@@ -1564,7 +1564,7 @@ public class RfmUsimService {
         commandOta.append("\n; command(s) sent via OTA\n");
 
         commandOta.append(
-            ".SET_BUFFER J 00 A4 00 00 02 %EF_ID ; select EF\n"
+            ".SET_BUFFER J 00 A4 00 04 02 %EF_ID ; select EF\n"
             + ".APPEND_SCRIPT J\n"
             + ".SET_BUFFER J 00 D6 00 00 <?> AA ; update binary\n"
             + ".APPEND_SCRIPT J\n"
@@ -1582,7 +1582,7 @@ public class RfmUsimService {
 
         if (rfmUsim.getRfmUsimAccessDomain().isUseAlways()){
             commandOta.append(
-                ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_USIM_ALW ; select EF on Always\n"
+                ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_USIM_ALW ; select EF on Always\n"
                 + ".APPEND_SCRIPT J\n"
                 + ".SET_BUFFER J 00 B0 00 00 02 ; read binary\n"
                 + ".APPEND_SCRIPT J\n"
@@ -1590,7 +1590,7 @@ public class RfmUsimService {
         }
         if (rfmUsim.getRfmUsimAccessDomain().isUseIsc1()){
             commandOta.append(
-                ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_USIM_ADM1 ; select EF on ADM1\n"
+                ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_USIM_ADM1 ; select EF on ADM1\n"
                 + ".APPEND_SCRIPT J\n"
                 + ".SET_BUFFER J 00 D6 00 00 <?> A1 ; update binary\n"
                 + ".APPEND_SCRIPT J\n"
@@ -1598,7 +1598,7 @@ public class RfmUsimService {
         }
         if (rfmUsim.getRfmUsimAccessDomain().isUseIsc2()){
             commandOta.append(
-                ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_USIM_ADM2 ; select EF on ADM2\n"
+                ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_USIM_ADM2 ; select EF on ADM2\n"
                 + ".APPEND_SCRIPT J\n"
                 + ".SET_BUFFER J 00 D6 00 00 <?> A2 ; update binary\n"
                 + ".APPEND_SCRIPT J\n"
@@ -1606,7 +1606,7 @@ public class RfmUsimService {
         }
         if (rfmUsim.getRfmUsimAccessDomain().isUseIsc3()){
             commandOta.append(
-                ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_USIM_ADM3 ; select EF on ADM3\n"
+                ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_USIM_ADM3 ; select EF on ADM3\n"
                 + ".APPEND_SCRIPT J\n"
                 + ".SET_BUFFER J 00 D6 00 00 <?> A3 ; update binary\n"
                 + ".APPEND_SCRIPT J\n"
@@ -1614,7 +1614,7 @@ public class RfmUsimService {
         }
         if (rfmUsim.getRfmUsimAccessDomain().isUseIsc4()){
             commandOta.append(
-                ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_USIM_ADM4 ; select EF on ADM4\n"
+                ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_USIM_ADM4 ; select EF on ADM4\n"
                 + ".APPEND_SCRIPT J\n"
                 + ".SET_BUFFER J 00 D6 00 00 <?> A4 ; update binary\n"
                 + ".APPEND_SCRIPT J\n"
@@ -1622,7 +1622,7 @@ public class RfmUsimService {
         }
         if (rfmUsim.getRfmUsimAccessDomain().isUseGPin1()){
             commandOta.append(
-                ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_USIM_PIN1 ; select EF on PIN1\n"
+                ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_USIM_PIN1 ; select EF on PIN1\n"
                 + ".APPEND_SCRIPT J\n"
                 + ".SET_BUFFER J 00 D6 00 00 <?> A5 ; update binary\n"
                 + ".APPEND_SCRIPT J\n"
@@ -1630,7 +1630,7 @@ public class RfmUsimService {
         }
         if (rfmUsim.getRfmUsimAccessDomain().isUseLPin1()){
             commandOta.append(
-                ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_USIM_PIN2 ; select EF on PIN2\n"
+                ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_USIM_PIN2 ; select EF on PIN2\n"
                 + ".APPEND_SCRIPT J\n"
                 + ".SET_BUFFER J 00 D6 00 00 <?> A6 ; update binary\n"
                 + ".APPEND_SCRIPT J\n"
@@ -1648,7 +1648,7 @@ public class RfmUsimService {
 
         if (rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseAlways()){
             badCasecommandOta.append(
-                ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_USIM_ERR_ALW ; select EF on Always\n"
+                ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_USIM_ERR_ALW ; select EF on Always\n"
                 + ".APPEND_SCRIPT J\n"
                 + ".SET_BUFFER J 00 B0 00 00 02 ; read binary\n"
                 + ".APPEND_SCRIPT J\n"
@@ -1656,7 +1656,7 @@ public class RfmUsimService {
         }
         if (rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseIsc1()){
             badCasecommandOta.append(
-                ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_USIM_ERR_ADM1 ; select EF on ADM1\n"
+                ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_USIM_ERR_ADM1 ; select EF on ADM1\n"
                 + ".APPEND_SCRIPT J\n"
                 + ".SET_BUFFER J 00 D6 00 00 <?> A1 ; update binary\n"
                 + ".APPEND_SCRIPT J\n"
@@ -1664,7 +1664,7 @@ public class RfmUsimService {
         }
         if (rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseIsc2()){
             badCasecommandOta.append(
-                ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_USIM_ERR_ADM2 ; select EF on ADM2\n"
+                ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_USIM_ERR_ADM2 ; select EF on ADM2\n"
                 + ".APPEND_SCRIPT J\n"
                 + ".SET_BUFFER J 00 D6 00 00 <?> A2 ; update binary\n"
                 + ".APPEND_SCRIPT J\n"
@@ -1672,7 +1672,7 @@ public class RfmUsimService {
         }
         if (rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseIsc3()){
             badCasecommandOta.append(
-                ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_USIM_ERR_ADM3 ; select EF on ADM3\n"
+                ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_USIM_ERR_ADM3 ; select EF on ADM3\n"
                 + ".APPEND_SCRIPT J\n"
                 + ".SET_BUFFER J 00 D6 00 00 <?> A3 ; update binary\n"
                 + ".APPEND_SCRIPT J\n"
@@ -1680,7 +1680,7 @@ public class RfmUsimService {
         }
         if (rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseIsc4()){
             badCasecommandOta.append(
-                ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_USIM_ERR_ADM4 ; select EF on ADM4\n"
+                ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_USIM_ERR_ADM4 ; select EF on ADM4\n"
                 + ".APPEND_SCRIPT J\n"
                 + ".SET_BUFFER J 00 D6 00 00 <?> A4 ; update binary\n"
                 + ".APPEND_SCRIPT J\n"
@@ -1688,7 +1688,7 @@ public class RfmUsimService {
         }
         if (rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseGPin1()){
             badCasecommandOta.append(
-                ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_USIM_ERR_PIN1 ; select EF on PIN1\n"
+                ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_USIM_ERR_PIN1 ; select EF on PIN1\n"
                 + ".APPEND_SCRIPT J\n"
                 + ".SET_BUFFER J 00 D6 00 00 <?> A5 ; update binary\n"
                 + ".APPEND_SCRIPT J\n"
@@ -1696,7 +1696,7 @@ public class RfmUsimService {
         }
         if (rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseLPin1()){
             badCasecommandOta.append(
-                ".SET_BUFFER J 00 A4 00 00 02 %EF_ID_USIM_ERR_PIN2 ; select EF on PIN2\n"
+                ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_USIM_ERR_PIN2 ; select EF on PIN2\n"
                 + ".APPEND_SCRIPT J\n"
                 + ".SET_BUFFER J 00 D6 00 00 <?> A6 ; update binary\n"
                 + ".APPEND_SCRIPT J\n"

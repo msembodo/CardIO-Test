@@ -210,7 +210,7 @@ public class RfmUsimService {
 
         // disable pin if required
         if (root.getRunSettings().getSecretCodes().isPin1disabled())
-            rfmUsimBuffer.append("\n00 26 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000) ; disable GPIN1\n");
+            rfmUsimBuffer.append("\nA0 26 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000) ; disable GPIN1\n");
 
         // unload DLLs
         rfmUsimBuffer.append(
@@ -362,7 +362,7 @@ public class RfmUsimService {
 
         // disable pin if required
         if (root.getRunSettings().getSecretCodes().isPin1disabled())
-            rfmUsimUpdateRecordBuffer.append("\n00 26 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000) ; disable GPIN1\n");
+            rfmUsimUpdateRecordBuffer.append("\nA0 26 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000) ; disable GPIN1\n");
 
         // unload DLLs
         rfmUsimUpdateRecordBuffer.append(

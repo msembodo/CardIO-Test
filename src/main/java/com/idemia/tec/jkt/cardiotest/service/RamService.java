@@ -982,12 +982,12 @@ public class RamService {
             );
             if (!isd.isSecuredState()) {
                 routine.append(
-                        "80F220000E4F0CA00000001853020000000010 (61 13)\n" +
+                        "80F220000E4F0CA00000001853020000000010 (61 0F)\n" +
                         "00C000000F [0C  A00000001853020000000010 0100]\n"
                 );
             } else {
                 routine.append(
-                        ".SET_BUFFER N 80F220000E4F0CA00000001853020000000010 (61 13)\n" +
+                        ".SET_BUFFER N 80F220000E4F0CA00000001853020000000010 (61 0F)\n" +
                         scp0255(isd) +
                         "N [0C  A00000001853020000000010 0100]\n"
                 );

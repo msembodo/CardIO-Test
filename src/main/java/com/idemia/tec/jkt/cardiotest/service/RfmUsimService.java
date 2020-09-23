@@ -688,7 +688,7 @@ public class RfmUsimService {
                 + "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000)\n"
                 + "A0 A4 00 00 02 7F10 (9FXX) ;select DF Telecom\n"
                 + "A0 A4 00 00 02 6F3C (9F0F) ;select EF SMS\n"
-                + "A0 DC 01 00 G J (9000) ;update EF SMS\n"
+                + "A0 DC 01 04 G J (9000) ;update EF SMS\n"
                 + ".CLEAR_SCRIPT\n"
                 + "\n;Check SMS Content\n"
                 + "A0 B2 01 04 B0\n"
@@ -1115,7 +1115,7 @@ public class RfmUsimService {
             + "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000)\n"
             + "A0 A4 00 00 02 7F10 (9FXX) ;select DF Telecom\n"
             + "A0 A4 00 00 02 6F3C (9F0F) ;select EF SMS\n"
-            + "A0 DC 01 00 G J (91XX) ;update EF SMS\n"
+            + "A0 DC 01 04 G J (91XX) ;update EF SMS\n"
             + ".CLEAR_SCRIPT\n"
             + "\n;Check SMS Content\n" // CHECK_SMS_CONTENT
             + "A0 B2 01 04 B0\n" // READ_SMS

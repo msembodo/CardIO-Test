@@ -55,15 +55,15 @@ public class RamService {
         ramBuffer.append("\n*********\n; CASE 1: Install Applet via OTA by sending single SMS one by one\n*********\n");
         ramBuffer.append(
                 "\n.POWER_ON\n"
-                        + "; check initial content of EF\n"
-                        + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+//                        + "; check initial content of EF\n"
+//                        + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
         );
-        if (root.getRunSettings().getSecretCodes().isUseIsc2())
-            ramBuffer.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
-        if (root.getRunSettings().getSecretCodes().isUseIsc3())
-            ramBuffer.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
-        if (root.getRunSettings().getSecretCodes().isUseIsc4())
-            ramBuffer.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+//        if (root.getRunSettings().getSecretCodes().isUseIsc2())
+//            ramBuffer.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+//        if (root.getRunSettings().getSecretCodes().isUseIsc3())
+//            ramBuffer.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+//        if (root.getRunSettings().getSecretCodes().isUseIsc4())
+//            ramBuffer.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
 
         // some TAR may be configured with specific keyset or use all available keysets
         if (ram.isUseSpecificKeyset())
@@ -122,11 +122,11 @@ public class RamService {
             lowMsl.setPorSecurity("response with no security");
             lowMsl.setCipherPor(false);
             if (ram.isUseSpecificKeyset())
-                ramBuffer.append(ramCase5(ram.getCipheringKeyset(), ram.getAuthKeyset(), lowMsl, true));
+                ramBuffer.append(ramCase5(ram.getCipheringKeyset(), ram.getAuthKeyset(), lowMsl, false));
             else {
                 for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets()) {
                     ramBuffer.append("\n; using keyset: " + keyset.getKeysetName() + "\n");
-                    ramBuffer.append(ramCase5(keyset, keyset, lowMsl, true));
+                    ramBuffer.append(ramCase5(keyset, keyset, lowMsl, false));
                 }
             }
         }
@@ -188,15 +188,15 @@ public class RamService {
         ramBuffer.append("\n*********\n; CASE 1: Install Applet via OTA by sending single SMS one by one\n*********\n");
         ramBuffer.append(
                 "\n.POWER_ON\n"
-                        + "; check initial content of EF\n"
-                        + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+//                        + "; check initial content of EF\n"
+//                        + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
         );
-        if (root.getRunSettings().getSecretCodes().isUseIsc2())
-            ramBuffer.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
-        if (root.getRunSettings().getSecretCodes().isUseIsc3())
-            ramBuffer.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
-        if (root.getRunSettings().getSecretCodes().isUseIsc4())
-            ramBuffer.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+//        if (root.getRunSettings().getSecretCodes().isUseIsc2())
+//            ramBuffer.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+//        if (root.getRunSettings().getSecretCodes().isUseIsc3())
+//            ramBuffer.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+//        if (root.getRunSettings().getSecretCodes().isUseIsc4())
+//            ramBuffer.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
 
         // some TAR may be configured with specific keyset or use all available keysets
         if (ram.isUseSpecificKeyset())
@@ -430,7 +430,6 @@ public class RamService {
                         ";APPLET " + appletno + " \n"
                 );
                 appletno++ ;
-                System.out.println("Here Generate");
                 routine.append(
                         ".CHANGE_COUNTER L\n" +
                         ".INCREASE_BUFFER L(04:05) 0001 \n" +
@@ -854,31 +853,27 @@ public class RamService {
                 ";send SMS\n" +
                 ";==================================================================\n" +
                 ";INSTALL FOR LOAD\n" +
-                ".SET_BUFFER J 80E602002310A000000077010760110002000000007000000EEF0CC6020000C8020000C702000000\n" +
+                ".SET_BUFFER J 80E602001F0C A0000000185302000000001000000EEF0CC6020000C8020000C702000000\n" +
                 ".APPEND_SCRIPT J\n" +
                 "\n" +
                 ";LOAD PACKAGE\n" +
-                ".SET_BUFFER\tJ 80E80000FCC482052A01001ADECAFFED010204000110A000000077010760110002000000007002001F001A001F0014003B00960018032C0012009B0000000300020001000504010004003B04000107A0000000620101060210A0000000090003FFFFFFFF8910710002020210A0000000090003FFFFFFFF8910710001000107A00000006200010300140110A000000077010760110002010000007000310600184380030C00040702000002CD02D08101010881000080020007032C0601C9804F023500240219801A02350024026E804002C9002402AF801302C9002402C3800502C9002402ED803A0328002406338F00223D8C00112E1B181D0441181D258B001C\n" +
+                ".SET_BUFFER\tJ 80E8000067C48201CC010016DECAFFED01020400020CA0000000185302000000001002001F0016001F0010001E0046001A00C6000A001E0000009400000000000002010004001E02000107A0000000620101010210A0000000090003FFFFFFFF8910710002030010010CA000\n" +
                 ".APPEND_SCRIPT J\n" +
                 "\n" +
                 ";LOAD PACKAGE\n" +
-                ".SET_BUFFER\tJ 80E80001F81B8D002087048D001F3D2804048B001E1504107F8B001E1B1032048D002187051B0388081B0388091B03880A1B03880B1B117FDE1111597B000C7B000C92038C00103B1B117FDE1111581B83051009048C0010602B1B1B8305048D001889001B1B8305068D001889021B1B8305088D001889011B1B830510078D001889031B1B83051B85001B85028C000F3D2905600D1B1605900B87061B0488081B1B83051B85011B85038C000F3D2905600D1B1605900B87071B0488097A0210188C001D03B70003B70103B70203B7037A061018117FDE111158AD0504048C00106072AD050325103D6A6AAE086032AE0A612E18AF00AF02AD06AD0692\n" +
+                ".SET_BUFFER\tJ 80E800016700001853020000000110001F06001A43800300FF00070300000035003800A4800200810101088100000700C6020048803E008800060093800B00A000060210188C00008D0001058B00027A05318F00033D8C00042E1B181D0441181D258B00057A00207A03221D\n" +
                 ".APPEND_SCRIPT J\n" +
                 "\n" +
                 ";LOAD PACKAGE\n" +
-                ".SET_BUFFER\tJ 80E80002F8048C00103BAD0503AD0692038D001B3B18AF00AF02AD05AD0692038C00103B04B60AAE096032AE0B612E18AF01AF03AD07AD0792048C00103BAD0503AD0792038D001B3B18AF01AF03AD05AD0792038C00103B04B60B7A061218117FDE111158AD0504048C00109800C6AD050325103D6A09101E8D001261037A18117FDE111159AD0508048C001061037A8D00172C1910260410828B0015198B00163B8D00142D1A1014AD05088B00133BAD05083E25100F5538AD0510093E2510F05538AD0503AD0508088D001A602DAD05037B000C037B000C928D001A60037AAD0508AD0503088D00193B18117FDE111159AD0508038C00103B70042C\n" +
+                ".SET_BUFFER\tJ 80E800026775006800020002000D001300588D00072E1B8B0008311B1E8B000910F06B4B1B1E04418B0009100C6B401B1E05418B000961371B1E06418B000910126B2C1B1E07418B00096123188B000A701D3B8D0001103C8B000B7012188B000A8D0001038B000B70053B70\n" +
                 ".APPEND_SCRIPT J\n" +
                 "\n" +
                 ";LOAD PACKAGE\n" +
-                ".SET_BUFFER\tJ 80E80003F87AAE086018AE0A601418AF00AF02AD06AD0692038C00103B03B60AAE096018AE0B601418AF01AF03AD07AD0792038C00103B03B60B7A0542AD04113F008E02002307AD041E8E02002307AD041F190310328E05002306290419032510626B30052905160516046D251916052510806B0B19160505418D0018781605191605044125054141290559050170D9037819058D0018782804037800207A01201D750017000200010013007F000D188C000D7006188C000E7A0561AD04113F008E02002307AD041D8E02002307AD041E8E0200230716056011AD04031B0316048E050023093B700EAD04031B0316048E0500230A0478280603780800\n" +
+                ".SET_BUFFER\tJ 80E8000367027A041110178D000C601A8D000D2C19040310828B000E198B000F10206B06058D00107A08000A00000000000000000000050046001106800300068109000381090901000000060000110380030201810700068108000381080D03810204030000090381090C06\n" +
                 ".APPEND_SCRIPT J\n" +
                 "\n" +
                 ";LOAD PACKAGE\n" +
-                ".SET_BUFFER\tJ 80E80004F812000200010001030005FFFFFFFFFF000000000500960025020000040200000502000006020000070200000002000001020000020200000302000008020000090200000A0200000B0500000006000112060001950600026C060002EB060000FF06810300038105050681050003810A1503810A1606810A000680100406801001068010000680100303800302068003000381090906810900068201000680080D01000000018200000183020009009B005B4B1A040404041D0C060406040604070403030F040403030F040A0303030C0908040502020208030902020209020405020202080309020202090C0A172307090A030911030F0C04\n" +
-                ".APPEND_SCRIPT J\n" +
-                "\n" +
-                ";LOAD PACKAGE\n" +
-                ".SET_BUFFER\tJ 80E8800552050202020902040502020209050A086D0A080C0F003C07080808080805040C04050707071C0305110A0A0A0B0F1D171D200B0F1A0B0F151011060A04040A1E0804040D0F1B1A10080C231A1C060C0808100F\n" +
+                ".SET_BUFFER\tJ 80E880043481030006810A0003810A1503810A160681070009001E0000001A070806030406040C1705060B0B090B0606050603040D05090408\n" +
                 ".APPEND_SCRIPT J\n" +
                 "\n" +
                 ".END_MESSAGE G J\n" +
@@ -897,24 +892,12 @@ public class RamService {
                     ".GET_NEXT_MESSAGE G J\n" +
                     "A0 DC 01 04 G J (90XX) ;update EF SMS\n" +
                     ".GET_NEXT_MESSAGE G J\n" +
-                    "A0 DC 01 04 G J (90XX) ;update EF SMS\n" +
-                    ".GET_NEXT_MESSAGE G J\n" +
-                    "A0 DC 01 04 G J (90XX) ;update EF SMS\n" +
-                    ".GET_NEXT_MESSAGE G J\n" +
-                    "A0 DC 01 04 G J (90XX) ;update EF SMS\n" +
-                    ".GET_NEXT_MESSAGE G J\n" +
-                    "A0 DC 01 04 G J (90XX) ;update EF SMS\n" +
-                    ".GET_NEXT_MESSAGE G J\n" +
-                    "A0 DC 01 04 G J (90XX) ;update EF SMS\n" +
-                    ".GET_NEXT_MESSAGE G J\n" +
-                    "A0 DC 01 04 G J (90XX) ;update EF SMS\n" +
-                    ".GET_NEXT_MESSAGE G J\n" +
-                    "A0 DC 01 04 G J (91XX) ;update EF SMS" +
+                    "A0 DC 01 04 G J (91XX) ;update EF SMS\n" +
                     ".CLEAR_SCRIPT \n" +
                     "\n" +
                     "A0 B2 01 04 B0\n" +
                     "\n" +
-                    "A0 12 0000 W(2;1) [XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 07 61XX] (9000)\n" +
+                    "A0 12 0000 W(2;1) [XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 06 61XX] (9000)\n" +
                     "A0 14 0000 0C 8103011300 82028183 830100 (9000)\n" +
                     "\n" +
                     ".EXPORT_BUFFER L COUNTER.bin\n"
@@ -938,35 +921,11 @@ public class RamService {
                     "\n" +
                     "; SMS 5\n" +
                     ".GET_NEXT_MESSAGE G J\n" +
-                    "A0 C2 00 00 G J (90XX)\n" +
-                    "\n" +
-                    ";SMS 6\n" +
-                    ".GET_NEXT_MESSAGE G J\n" +
-                    "A0 C2 00 00 G J (90XX)\n" +
-                    "\n" +
-                    ";SMS 7\n" +
-                    ".GET_NEXT_MESSAGE G J\n" +
-                    "A0 C2 00 00 G J (90XX)\n" +
-                    "\n" +
-                    ";SMS 8\n" +
-                    ".GET_NEXT_MESSAGE G J\n" +
-                    "A0 C2 00 00 G J (90XX)\n" +
-                    "\n" +
-                    ";SMS 9\n" +
-                    ".GET_NEXT_MESSAGE G J\n" +
-                    "A0 C2 00 00 G J (90XX)\n" +
-                    "\n" +
-                    ";SMS 10\n" +
-                    ".GET_NEXT_MESSAGE G J\n" +
-                    "A0 C2 00 00 G J (90XX)\n" +
-                    "\n" +
-                    ";SMS 11\n" +
-                    ".GET_NEXT_MESSAGE G J\n" +
                     "A0 C2 00 00 G J (9FXX)\n" +
                     "\n" +
                     ".CLEAR_SCRIPT \n" +
                     "\n" +
-                    "A0 C0 00 00 W(2;1) [XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX0761XX]\n" +
+                    "A0 C0 00 00 W(2;1) [XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX0661XX]\n" +
                     "\n" +
                     ".EXPORT_BUFFER L COUNTER.bin \n"
             );
@@ -1008,7 +967,7 @@ public class RamService {
                 routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
 
             routine.append(
-                    ".SET_BUFFER J 80F22000124F10A0000000770107601100020000000070\n" +
+                    ".SET_BUFFER J 80F220000E4F0CA00000001853020000000010\n" +
                             ".APPEND_SCRIPT J\n" +
                             ".END_MESSAGE G J\n" +
                             "\n" +
@@ -1023,14 +982,14 @@ public class RamService {
             );
             if (!isd.isSecuredState()) {
                 routine.append(
-                        "80F22000124F10A0000000770107601100020000000070 (61 13)\n" +
-                        "00C0000013 [10  A0000000770107601100020000000070 0100]\n"
+                        "80F220000E4F0CA00000001853020000000010 (61 0F)\n" +
+                        "00C000000F [0C  A00000001853020000000010 0100]\n"
                 );
             } else {
                 routine.append(
-                        ".SET_BUFFER N 80F22000124F10A0000000770107601100020000000070 (61 13)\n" +
+                        ".SET_BUFFER N 80F220000E4F0CA00000001853020000000010 (61 0F)\n" +
                         scp0255(isd) +
-                        "N [10  A0000000770107601100020000000070 0100]\n"
+                        "N [0C  A00000001853020000000010 0100]\n"
                 );
             }
         }
@@ -1086,7 +1045,7 @@ public class RamService {
             routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
 
         routine.append(
-                ".SET_BUFFER J 80E40000124F10A0000000770107601100020000000070\n" +
+                ".SET_BUFFER J 80E400000E 4F0C A00000001853020000000010\n" +
                         ".APPEND_SCRIPT J\n" +
                         ".END_MESSAGE G J\n" +
                         "\n" +

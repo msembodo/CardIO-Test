@@ -78,11 +78,10 @@ public class RunServiceImpl implements RunService {
         if (root.getRunSettings().getAuthentication().isIncludeDeltaTest() || root.getRunSettings().getAuthentication().isIncludeSqnMax())
             runAllBuffer.append(addAuthentication(root.getRunSettings().getAuthentication()));
 
-        //-------------------
         // file management
         if (root.getRunSettings().getFileManagement().isIncludeLinkFilesTest() || root.getRunSettings().getFileManagement().isIncludeRuwiTest() || root.getRunSettings().getFileManagement().isIncludeSfiTest()  )
             runAllBuffer.append(addFileManagement(root.getRunSettings().getFileManagement()));
-        //-------------------
+
 
         // custom scripts section 2
         if (root.getRunSettings().getCustomScriptsSection2().size() > 0) {
@@ -110,6 +109,12 @@ public class RunServiceImpl implements RunService {
             runAllBuffer.append(addRfmIsim(root.getRunSettings().getRfmIsim()));
         }
 
+        //Custom RFM
+        if (root.getRunSettings().getRfmCustom().isIncludeRfmCustom() ||
+                root.getRunSettings().getRfmCustom().isIncludeRfmCustomUpdateRecord() ||
+                root.getRunSettings().getRfmCustom().isIncludeRfmCustomExpandedMode()) {
+            runAllBuffer.append(addRfmCustom(root.getRunSettings().getRfmCustom()));}
+
         // RAM
         if (root.getRunSettings().getRam().isIncludeRam() ||
                 root.getRunSettings().getRam().isIncludeRamUpdateRecord() ||
@@ -122,12 +127,6 @@ public class RunServiceImpl implements RunService {
         if (root.getRunSettings().getCustomScriptsSection3().size() > 0) {
             runAllBuffer.append(addCustomScripts(root.getRunSettings().getCustomScriptsSection3()));
         }
-
-        //Custom RFM --------------------------------------
-        if (root.getRunSettings().getRfmCustom().isIncludeRfmCustom() ||
-                root.getRunSettings().getRfmCustom().isIncludeRfmCustomUpdateRecord() ||
-                root.getRunSettings().getRfmCustom().isIncludeRfmCustomExpandedMode()) {
-            runAllBuffer.append(addRfmCustom(root.getRunSettings().getRfmCustom()));}
 
         // secret codes
         if (root.getRunSettings().getSecretCodes().isInclude3gScript() || root.getRunSettings().getSecretCodes().isInclude2gScript())

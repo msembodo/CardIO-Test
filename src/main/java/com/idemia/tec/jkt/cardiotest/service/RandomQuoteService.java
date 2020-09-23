@@ -47,7 +47,7 @@ public class RandomQuoteService {
         ObjectMapper mapper = new ObjectMapper();
 //        try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build()) {
         try (CloseableHttpClient client = HttpClients.createSystem()) {
-            HttpGet request = new HttpGet("http://api.quotable.io/random?maxLength=40");
+            HttpGet request = new HttpGet("http://api.quotable.io/random?maxLength=60");
             return client.execute(request, httpResponse ->
                     mapper.readValue(httpResponse.getEntity().getContent(), RandomQuoteResponse.class));
         }

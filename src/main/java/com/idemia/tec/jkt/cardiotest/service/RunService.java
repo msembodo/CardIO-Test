@@ -27,12 +27,9 @@ public interface RunService {
     boolean runRfmCustom();
     boolean runRfmCustomUpdateRecord();
     boolean runRfmCustomExpandedMode();
-
-    // --------
     boolean runLinkFilesTest();
     boolean runRuwiTest();
     boolean runSfiTest();
-    // --------
 
 
 

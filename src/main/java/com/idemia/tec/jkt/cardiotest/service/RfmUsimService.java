@@ -1378,7 +1378,7 @@ public class RfmUsimService {
         checkInitialContent.append(
                 "00 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
                 + "00 20 00 81 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
-                + "00 A4 00 04 02 %DF_ID (61XX\n"
+                + "00 A4 00 04 02 %DF_ID (61XX)\n"
                 +"00 A4 00 04 02 %EF_ID (61XX)\n"
                 +"00 B0 00 00 01 (9000)\n"
                 +".DEFINE %EF_CONTENT R\n"

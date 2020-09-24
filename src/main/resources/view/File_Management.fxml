@@ -20,18 +20,18 @@
       <content>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="630.0" prefWidth="1530.0">
           <children>
-            <CheckBox fx:id="chkIncludeLinkFileTest" layoutX="276.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleIncludeLinkFileCheck" selected="true" text="Include 'Link Files'" AnchorPane.leftAnchor="250.0" AnchorPane.topAnchor="12.0" />
-            <CheckBox fx:id="chkIncludeRuwiTest" layoutX="653.0" layoutY="13.0" mnemonicParsing="false" onAction="#handleIncludeRuwiCheck" selected="true" text="Include 'Readable &amp; Updateable when Invalidated'" AnchorPane.leftAnchor="540.0" AnchorPane.topAnchor="12.0" />
-            <CheckBox fx:id="chkIncludeSfiTest" layoutX="1050.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleIncludeSfiCheck" selected="true" text="Include 'SFI Check'" AnchorPane.leftAnchor="950.0" AnchorPane.topAnchor="12.0" />
-            <TitledPane animated="false" collapsible="false" focusTraversable="false" layoutX="530.0" layoutY="300.0" prefHeight="540.0" prefWidth="590.0" text="Linked File Test" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="1010.0" AnchorPane.topAnchor="46.0">
+            <CheckBox fx:id="chkIncludeLinkFileTest" layoutX="12.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleIncludeLinkFileCheck" selected="true" text="Include 'Link Files'" AnchorPane.leftAnchor="280.0" AnchorPane.topAnchor="12.0" />
+            <CheckBox fx:id="chkIncludeRuwiTest" layoutX="653.0" layoutY="13.0" mnemonicParsing="false" onAction="#handleIncludeRuwiCheck" selected="true" text="Include 'Readable &amp; Updateable when Invalidated'" AnchorPane.leftAnchor="560.0" AnchorPane.topAnchor="12.0" />
+            <CheckBox fx:id="chkIncludeSfiTest" layoutX="1050.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleIncludeSfiCheck" selected="true" text="Include 'SFI Check'" AnchorPane.leftAnchor="970.0" AnchorPane.topAnchor="12.0" />
+            <TitledPane animated="false" collapsible="false" focusTraversable="false" layoutX="530.0" layoutY="300.0" prefHeight="540.0" prefWidth="590.0" text="Linked File Test" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="990.0" AnchorPane.topAnchor="46.0">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="514.0" prefWidth="590.0">
                   <children>
-                    <TextField fx:id="path_MasterTextField" layoutX="25.0" layoutY="22.0" prefHeight="25.0" prefWidth="120.0" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="8.0" />
-                    <TextField fx:id="path_GhostTextField" layoutX="25.0" layoutY="22.0" prefHeight="25.0" prefWidth="120.0" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="40.0" />
+                    <TextField fx:id="path_MasterTextField" layoutX="19.0" layoutY="34.0" prefHeight="25.0" prefWidth="161.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="350.0" AnchorPane.topAnchor="8.0" />
+                    <TextField fx:id="path_GhostTextField" layoutX="29.0" layoutY="315.0" prefHeight="21.0" prefWidth="141.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="350.0" AnchorPane.topAnchor="40.0" />
                     <Button fx:id="addLinkFileButton" layoutX="40.0" layoutY="135.0" mnemonicParsing="false" onAction="#newPathButtonPushed" prefWidth="65.0" text="Add" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="75.0" />
                     <Button fx:id="deleteLinkFileButton" layoutX="129.0" layoutY="132.0" mnemonicParsing="false" onMouseClicked="#deletePathButtonPusshed" prefWidth="65.0" text="Delete" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="110.0" />
-                    <TableView fx:id="tblLinkFileTest" layoutX="308.6" layoutY="39.6" prefHeight="426.0" prefWidth="297.0" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="8.0">
+                    <TableView fx:id="tblLinkFileTest" layoutX="308.6" layoutY="39.6" prefHeight="426.0" prefWidth="297.0" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="180.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="8.0">
                       <columns>
                         <TableColumn fx:id="clmMaster" onEditCommit="#changePath_MasterCellEvent" prefWidth="-1.0" text="Master" />
                         <TableColumn fx:id="clmGhost" onEditCommit="#changePath_GhostCellEvent" prefWidth="-1.0" text="Ghost" />
@@ -44,11 +44,11 @@
                 </AnchorPane>
               </content>
             </TitledPane>
-            <TitledPane animated="false" collapsible="false" focusTraversable="false" layoutX="653.0" layoutY="49.0" prefHeight="535.0" prefWidth="285.0" text="Readable &amp; Updateable when Invalidated" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="540.0" AnchorPane.rightAnchor="600.0" AnchorPane.topAnchor="46.0">
+            <TitledPane animated="false" collapsible="false" focusTraversable="false" layoutX="653.0" layoutY="49.0" prefHeight="535.0" prefWidth="285.0" text="Readable &amp; Updateable when Invalidated" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="560.0" AnchorPane.rightAnchor="580.0" AnchorPane.topAnchor="46.0">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="514.0" prefWidth="301.0">
                   <children>
-                    <TextField fx:id="path_RuwiTextField" layoutX="25.0" layoutY="22.0" prefHeight="25.0" prefWidth="120.0" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="8.0" />
+                    <TextField fx:id="path_RuwiTextField" layoutX="25.0" layoutY="22.0" prefHeight="25.0" prefWidth="86.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="230.0" AnchorPane.topAnchor="8.0" />
                     <Button fx:id="addRuwiButton" layoutX="68.0" layoutY="116.0" mnemonicParsing="false" onAction="#newPathButtonRuwiPushed" prefWidth="65.0" text="Add" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="43.0" />
                     <Button fx:id="deleteRuwiButton" layoutX="66.0" layoutY="149.0" mnemonicParsing="false" onAction="#deletePathButtonRuwiPusshed" prefWidth="65.0" text="Delete" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="78.0" />
                     <TableView fx:id="tblRuwi" layoutX="26.6" layoutY="206.6" prefHeight="297.0" prefWidth="246.0" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="160.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="8.0">
@@ -63,7 +63,7 @@
                 </AnchorPane>
               </content>
             </TitledPane>
-            <TitledPane animated="false" collapsible="false" focusTraversable="false" layoutX="961.0" layoutY="50.0" text="SFI Check" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="950.0" AnchorPane.rightAnchor="130.0" AnchorPane.topAnchor="46.0">
+            <TitledPane animated="false" collapsible="false" focusTraversable="false" layoutX="961.0" layoutY="50.0" text="SFI Check" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="970.0" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="46.0">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="120.0" prefWidth="576.0">
                   <children>

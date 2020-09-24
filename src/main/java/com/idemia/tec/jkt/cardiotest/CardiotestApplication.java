@@ -23,6 +23,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import jfxtras.styles.jmetro.JMetro;
+import jfxtras.styles.jmetro.Style;
 import org.apache.log4j.BasicConfigurator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -56,14 +58,11 @@ public class CardiotestApplication extends Application {
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("card.io");
 
-		Optional<CardioUser> cardioUser = domainLogin();
-		cardioUser.ifPresent(account -> {
+//		Optional<CardioUser> cardioUser = domainLogin();
+//		cardioUser.ifPresent(account -> {
 			initRootLayout();
 			showCardioTest();
-		});
-
-//		initRootLayout();
-//		showCardioTest();
+//		});
 	}
 
 	public ObservableList<AdvSaveVariable> getAdvSaveVariables() { return advSaveVariables; }
@@ -84,6 +83,9 @@ public class CardiotestApplication extends Application {
 			controller.setMainApp(this);
 
 			Scene scene = new Scene(rootLayout);
+
+			JMetro jMetro = new JMetro(Style.DARK);
+			jMetro.setScene(scene);
 
 			primaryStage.setScene(scene);
 			primaryStage.show();

@@ -592,7 +592,7 @@ public class RfmCustomService {
             routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
         routine.append(
                 "\n; command(s) sent via OTA\n"
-                        + ".SET_BUFFER J 00 A4 00 00 02 3F00\n"
+                        + ".SET_BUFFER J 00 A4 00 04 02 3F00\n"
                         + ".APPEND_SCRIPT J\n"
                         + ".END_MESSAGE G J\n"
         );
@@ -650,7 +650,7 @@ public class RfmCustomService {
             routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
         routine.append(
                 "\n; command(s) sent via OTA\n"
-                        + ".SET_BUFFER J A0 A4 00 00 02 3F00 ; this command isn't supported by CUSTOM\n"
+                        + ".SET_BUFFER J A0 A4 00 04 02 3F00 ; this command isn't supported by CUSTOM\n"
                         + ".APPEND_SCRIPT J\n"
                         + ".END_MESSAGE G J\n"
         );
@@ -708,7 +708,7 @@ public class RfmCustomService {
             routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
         routine.append(
                 "\n; command(s) sent via OTA\n"
-                        + ".SET_BUFFER J 00 A4 00 00 02 3F00\n"
+                        + ".SET_BUFFER J 00 A4 00 04 02 3F00\n"
                         + ".APPEND_SCRIPT J\n"
                         + ".END_MESSAGE G J\n"
         );
@@ -775,7 +775,7 @@ public class RfmCustomService {
             routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
         routine.append(
                 "\n; command(s) sent via OTA\n"
-                        + ".SET_BUFFER J 00 A4 00 00 02 3F00\n"
+                        + ".SET_BUFFER J 00 A4 00 04 02 3F00\n"
                         + ".APPEND_SCRIPT J\n"
                         + ".END_MESSAGE G J\n"
         );
@@ -834,7 +834,7 @@ public class RfmCustomService {
             routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
         routine.append(
                 "\n; command(s) sent via OTA\n"
-                        + ".SET_BUFFER J 00 A4 00 00 02 3F00\n"
+                        + ".SET_BUFFER J 00 A4 00 04 02 3F00\n"
                         + ".APPEND_SCRIPT J\n"
                         + ".END_MESSAGE G J\n"
         );
@@ -892,7 +892,7 @@ public class RfmCustomService {
             routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
         routine.append(
                 "\n; command(s) sent via OTA\n"
-                        + ".SET_BUFFER J 00 A4 00 00 02 3F00\n"
+                        + ".SET_BUFFER J 00 A4 00 04 02 3F00\n"
                         + ".APPEND_SCRIPT J\n"
                         + ".END_MESSAGE G J\n"
         );
@@ -943,7 +943,7 @@ public class RfmCustomService {
             routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
         routine.append(
                 "\n; command(s) sent via OTA\n"
-                        + ".SET_BUFFER J 00 A4 00 00 02 3F00\n"
+                        + ".SET_BUFFER J 00 A4 00 04 02 3F00\n"
                         + ".APPEND_SCRIPT J\n"
                         + ".END_MESSAGE G J\n"
                         + "; send envelope\n"
@@ -1120,7 +1120,7 @@ public class RfmCustomService {
         int index = 0;
         for (int i = 0; i < step; i++) {
             routine.append(
-                    ".SET_BUFFER J 00 A4 00 00 02 " + fid.substring(index, index + 4) + "\n"
+                    ".SET_BUFFER J 00 A4 00 04 02 " + fid.substring(index, index + 4) + "\n"
                             + ".APPEND_SCRIPT J\n"
             );
             index += 4;
@@ -1598,10 +1598,7 @@ public class RfmCustomService {
         commandOta.append("\n; command(s) sent via OTA\n");
 
         commandOta.append(
-                //".SET_BUFFER J 00 A4 00 00 02 3F00 ; select MF\n"
-                ".SET_BUFFER J 00 A4 00 00 02 %DF_ID ; select DF\n"
-                        + ".APPEND_SCRIPT J\n"
-                +".SET_BUFFER J 00 A4 00 00 02 %EF_ID ; select EF\n"
+                ".SET_BUFFER J 00 A4 00 04 02 %EF_ID ; select EF\n"
                         + ".APPEND_SCRIPT J\n"
                         + ".SET_BUFFER J 00 D6 00 00 <?> AA ; update binary\n"
                         + ".APPEND_SCRIPT J\n"
@@ -1618,10 +1615,8 @@ public class RfmCustomService {
 
         if (rfmCustom.getRfmCustomAccessDomain().isUseAlways()){
             commandOta.append(
-                    //".SET_BUFFER J 00 A4 00 00 02 3F00 ; select MF\n"
-                    ".SET_BUFFER J 00 A4 00 00 02 %DF_ID ; select DF\n"
-                            + ".APPEND_SCRIPT J\n"
-                            +".SET_BUFFER J 00 A4 00 00 02 %EF_ID_CUSTOM_ALW ; select EF on Always\n"
+
+                            ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_CUSTOM_ALW ; select EF on Always\n"
                             + ".APPEND_SCRIPT J\n"
                             + ".SET_BUFFER J 00 B0 00 00 02 ; read binary\n"
                             + ".APPEND_SCRIPT J\n"
@@ -1629,10 +1624,8 @@ public class RfmCustomService {
         }
         if (rfmCustom.getRfmCustomAccessDomain().isUseIsc1()){
             commandOta.append(
-                    //".SET_BUFFER J 00 A4 00 00 02 3F00 ; select MF\n"
-                    ".SET_BUFFER J 00 A4 00 00 02 %DF_ID ; select DF\n"
-                            + ".APPEND_SCRIPT J\n"
-                            +".SET_BUFFER J 00 A4 00 00 02 %EF_ID_CUSTOM_ADM1 ; select EF on ADM1\n"
+
+                    ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_CUSTOM_ADM1 ; select EF on ADM1\n"
                             + ".APPEND_SCRIPT J\n"
                             + ".SET_BUFFER J 00 D6 00 00 <?> A1 ; update binary\n"
                             + ".APPEND_SCRIPT J\n"
@@ -1640,10 +1633,8 @@ public class RfmCustomService {
         }
         if (rfmCustom.getRfmCustomAccessDomain().isUseIsc2()){
             commandOta.append(
-                    //".SET_BUFFER J 00 A4 00 00 02 3F00 ; select MF\n"
-                    ".SET_BUFFER J 00 A4 00 00 02 %DF_ID ; select DF\n"
-                            + ".APPEND_SCRIPT J\n"
-                            +".SET_BUFFER J 00 A4 00 00 02 %EF_ID_CUSTOM_ADM2 ; select EF on ADM2\n"
+
+                    ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_CUSTOM_ADM2 ; select EF on ADM2\n"
                             + ".APPEND_SCRIPT J\n"
                             + ".SET_BUFFER J 00 D6 00 00 <?> A2 ; update binary\n"
                             + ".APPEND_SCRIPT J\n"
@@ -1651,10 +1642,8 @@ public class RfmCustomService {
         }
         if (rfmCustom.getRfmCustomAccessDomain().isUseIsc3()){
             commandOta.append(
-                    //".SET_BUFFER J 00 A4 00 00 02 3F00 ; select MF\n"
-                    ".SET_BUFFER J 00 A4 00 00 02 %DF_ID ; select DF\n"
-                            + ".APPEND_SCRIPT J\n"
-                            +".SET_BUFFER J 00 A4 00 00 02 %EF_ID_CUSTOM_ADM3 ; select EF on ADM3\n"
+
+                    ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_CUSTOM_ADM3 ; select EF on ADM3\n"
                             + ".APPEND_SCRIPT J\n"
                             + ".SET_BUFFER J 00 D6 00 00 <?> A3 ; update binary\n"
                             + ".APPEND_SCRIPT J\n"
@@ -1662,10 +1651,8 @@ public class RfmCustomService {
         }
         if (rfmCustom.getRfmCustomAccessDomain().isUseIsc4()){
             commandOta.append(
-                    //".SET_BUFFER J 00 A4 00 00 02 3F00 ; select MF\n"
-                    ".SET_BUFFER J 00 A4 00 00 02 %DF_ID ; select DF\n"
-                            + ".APPEND_SCRIPT J\n"
-                            +".SET_BUFFER J 00 A4 00 00 02 %EF_ID_CUSTOM_ADM4 ; select EF on ADM4\n"
+
+                    ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_CUSTOM_ADM4 ; select EF on ADM4\n"
                             + ".APPEND_SCRIPT J\n"
                             + ".SET_BUFFER J 00 D6 00 00 <?> A4 ; update binary\n"
                             + ".APPEND_SCRIPT J\n"
@@ -1673,10 +1660,8 @@ public class RfmCustomService {
         }
         if (rfmCustom.getRfmCustomAccessDomain().isUseGPin1()){
             commandOta.append(
-                    //".SET_BUFFER J 00 A4 00 00 02 3F00 ; select MF\n"
-                            ".SET_BUFFER J 00 A4 00 00 02 %DF_ID ; select DF\n"
-                            + ".APPEND_SCRIPT J\n"
-                            +".SET_BUFFER J 00 A4 00 00 02 %EF_ID_CUSTOM_PIN1 ; select EF on PIN1\n"
+
+                    ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_CUSTOM_PIN1 ; select EF on PIN1\n"
                             + ".APPEND_SCRIPT J\n"
                             + ".SET_BUFFER J 00 D6 00 00 <?> A5 ; update binary\n"
                             + ".APPEND_SCRIPT J\n"
@@ -1684,10 +1669,8 @@ public class RfmCustomService {
         }
         if (rfmCustom.getRfmCustomAccessDomain().isUseLPin1()){
             commandOta.append(
-                    //".SET_BUFFER J 00 A4 00 00 02 3F00 ; select MF\n"
-                    ".SET_BUFFER J 00 A4 00 00 02 %DF_ID ; select DF\n"
-                            + ".APPEND_SCRIPT J\n"
-                            +".SET_BUFFER J 00 A4 00 00 02 %EF_ID_CUSTOM_PIN2 ; select EF on PIN2\n"
+
+                    ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_CUSTOM_PIN2 ; select EF on PIN2\n"
                             + ".APPEND_SCRIPT J\n"
                             + ".SET_BUFFER J 00 D6 00 00 <?> A6 ; update binary\n"
                             + ".APPEND_SCRIPT J\n"
@@ -1705,10 +1688,8 @@ public class RfmCustomService {
 
         if (rfmCustom.getRfmCustomBadCaseAccessDomain().isUseBadCaseAlways()){
             badCasecommandOta.append(
-                    //".SET_BUFFER J 00 A4 00 00 02 3F00 ; select MF\n"
-                    ".SET_BUFFER J 00 A4 00 00 02 %DF_ID ; select DF\n"
-                            + ".APPEND_SCRIPT J\n"
-                            +".SET_BUFFER J 00 A4 00 00 02 %EF_ID_CUSTOM_ERR_ALW ; select EF on Bad Case Always\n"
+
+                    ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_CUSTOM_ERR_ALW ; select EF on Bad Case Always\n"
                             + ".APPEND_SCRIPT J\n"
                             + ".SET_BUFFER J 00 B0 00 00 02 ; read binary\n"
                             + ".APPEND_SCRIPT J\n"
@@ -1716,10 +1697,8 @@ public class RfmCustomService {
         }
         if (rfmCustom.getRfmCustomBadCaseAccessDomain().isUseBadCaseIsc1()){
             badCasecommandOta.append(
-                    //".SET_BUFFER J 00 A4 00 00 02 3F00 ; select MF\n"
-                    ".SET_BUFFER J 00 A4 00 00 02 %DF_ID ; select DF\n"
-                            + ".APPEND_SCRIPT J\n"
-                            +".SET_BUFFER J 00 A4 00 00 02 %EF_ID_CUSTOM_ERR_ADM1 ; select EF on Bad Case ADM1\n"
+
+                    ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_CUSTOM_ERR_ADM1 ; select EF on Bad Case ADM1\n"
                             + ".APPEND_SCRIPT J\n"
                             + ".SET_BUFFER J 00 D6 00 00 <?> A1 ; update binary\n"
                             + ".APPEND_SCRIPT J\n"
@@ -1727,10 +1706,8 @@ public class RfmCustomService {
         }
         if (rfmCustom.getRfmCustomBadCaseAccessDomain().isUseBadCaseIsc2()){
             badCasecommandOta.append(
-                    //".SET_BUFFER J 00 A4 00 00 02 3F00 ; select MF\n"
-                    ".SET_BUFFER J 00 A4 00 00 02 %DF_ID ; select DF\n"
-                            + ".APPEND_SCRIPT J\n"
-                            +".SET_BUFFER J 00 A4 00 00 02 %EF_ID_CUSTOM_ERR_ADM2 ; select EF on Bad Case ADM2\n"
+
+                    ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_CUSTOM_ERR_ADM2 ; select EF on Bad Case ADM2\n"
                             + ".APPEND_SCRIPT J\n"
                             + ".SET_BUFFER J 00 D6 00 00 <?> A2 ; update binary\n"
                             + ".APPEND_SCRIPT J\n"
@@ -1738,10 +1715,8 @@ public class RfmCustomService {
         }
         if (rfmCustom.getRfmCustomBadCaseAccessDomain().isUseBadCaseIsc3()){
             badCasecommandOta.append(
-                    //".SET_BUFFER J 00 A4 00 00 02 3F00 ; select MF\n"
-                    ".SET_BUFFER J 00 A4 00 00 02 %DF_ID ; select DF\n"
-                            + ".APPEND_SCRIPT J\n"
-                            +".SET_BUFFER J 00 A4 00 00 02 %EF_ID_CUSTOM_ERR_ADM3 ; select EF on Bad Case ADM3\n"
+
+                    ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_CUSTOM_ERR_ADM3 ; select EF on Bad Case ADM3\n"
                             + ".APPEND_SCRIPT J\n"
                             + ".SET_BUFFER J 00 D6 00 00 <?> A3 ; update binary\n"
                             + ".APPEND_SCRIPT J\n"
@@ -1749,10 +1724,8 @@ public class RfmCustomService {
         }
         if (rfmCustom.getRfmCustomBadCaseAccessDomain().isUseBadCaseIsc4()){
             badCasecommandOta.append(
-                    //".SET_BUFFER J 00 A4 00 00 02 3F00 ; select MF\n"
-                    ".SET_BUFFER J 00 A4 00 00 02 %DF_ID ; select DF\n"
-                            + ".APPEND_SCRIPT J\n"
-                            +".SET_BUFFER J 00 A4 00 00 02 %EF_ID_CUSTOM_ERR_ADM4 ; select EF on Bad Case ADM4\n"
+
+                    ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_CUSTOM_ERR_ADM4 ; select EF on Bad Case ADM4\n"
                             + ".APPEND_SCRIPT J\n"
                             + ".SET_BUFFER J 00 D6 00 00 <?> A4 ; update binary\n"
                             + ".APPEND_SCRIPT J\n"
@@ -1760,10 +1733,8 @@ public class RfmCustomService {
         }
         if (rfmCustom.getRfmCustomBadCaseAccessDomain().isUseBadCaseGPin1()){
             badCasecommandOta.append(
-                    //".SET_BUFFER J 00 A4 00 00 02 3F00 ; select MF\n"
-                            ".SET_BUFFER J 00 A4 00 00 02 %DF_ID ; select DF\n"
-                            + ".APPEND_SCRIPT J\n"
-                            +".SET_BUFFER J 00 A4 00 00 02 %EF_ID_CUSTOM_ERR_PIN1 ; select EF on Bad Case PIN1\n"
+
+                    ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_CUSTOM_ERR_PIN1 ; select EF on Bad Case PIN1\n"
                             + ".APPEND_SCRIPT J\n"
                             + ".SET_BUFFER J 00 D6 00 00 <?> A5 ; update binary\n"
                             + ".APPEND_SCRIPT J\n"
@@ -1771,10 +1742,8 @@ public class RfmCustomService {
         }
         if (rfmCustom.getRfmCustomBadCaseAccessDomain().isUseBadCaseLPin1()){
             badCasecommandOta.append(
-                    //".SET_BUFFER J 00 A4 00 00 02 3F00 ; select MF\n"
-                    ".SET_BUFFER J 00 A4 00 00 02 %DF_ID ; select DF\n"
-                            + ".APPEND_SCRIPT J\n"
-                            +".SET_BUFFER J 00 A4 00 00 02 %EF_ID_CUSTOM_ERR_PIN2 ; select EF on Bad Case PIN2\n"
+
+                    ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_CUSTOM_ERR_PIN2 ; select EF on Bad Case PIN2\n"
                             + ".APPEND_SCRIPT J\n"
                             + ".SET_BUFFER J 00 D6 00 00 <?> A6 ; update binary\n"
                             + ".APPEND_SCRIPT J\n"

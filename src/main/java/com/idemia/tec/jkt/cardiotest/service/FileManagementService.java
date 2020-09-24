@@ -303,7 +303,7 @@ public class FileManagementService {
                 if (root.getRunSettings().getFileManagement().getData_master(j).substring(0, 4).equals(root.getRunSettings().getCardParameters().getDfUsim()))
                 {
                     routine.append(
-                            "00A4000402 7FFF  (61xx)\n"
+                            "00 A4 04 00 <?> %USIM_AID\t(9000, 61xx)\n"
                                     + "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(j).substring(4,8) + " (61xx)\n"
                     );
                 }
@@ -334,7 +334,7 @@ public class FileManagementService {
                 if (root.getRunSettings().getFileManagement().getData_master(j).substring(0,4).equals(root.getRunSettings().getCardParameters().getDfUsim()))
                 {
                     routine.append(
-                            "00A4000402 7FFF (61xx)\n"
+                            "00 A4 04 00 <?> %USIM_AID\t(9000, 61xx)\n"
                                     + "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(j).substring(4,8) + " (61xx)\n\n"
                                     + "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(j).substring(8,12) + " (61xx)\n\n"
                     );
@@ -344,7 +344,7 @@ public class FileManagementService {
                 {
                     routine.append(
                             "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(j).substring(0,4) + " (61xx)\n"
-                                    + "00A4000402 7FFF (61xx)\n"
+                                    + "00 A4 04 00 <?> %USIM_AID\t(9000, 61xx)\n"
                                     + "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(j).substring(8,12) + " (61xx)\n\n"
                     );
                 }
@@ -380,7 +380,7 @@ public class FileManagementService {
                 if (root.getRunSettings().getFileManagement().getData_master(j).substring(0,4).equals(root.getRunSettings().getCardParameters().getDfUsim()))
                 {
                     routine.append(
-                            "00A4000402 7FFF (61xx)\n"
+                            "00 A4 04 00 <?> %USIM_AID\t(9000, 61xx)\n"
                                     + "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(j).substring(4,8) + " (61xx)\n\n"
                                     + "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(j).substring(8,12) + " (61xx)\n\n"
                                     + "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(j).substring(12,16) + " (61xx)\n"
@@ -391,18 +391,8 @@ public class FileManagementService {
                 {
                     routine.append(
                             "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(j).substring(0,4) + " (61xx)\n"
-                                    + "00A4000402 7FFF (61xx)\n"
+                                    + "00 A4 04 00 <?> %USIM_AID\t(9000, 61xx)\n"
                                     + "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(j).substring(8,12) + " (61xx)\n\n"
-                                    + "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(j).substring(12,16) + " (61xx)\n"
-                    );
-                }
-
-                else if (root.getRunSettings().getFileManagement().getData_master(j).substring(8,12).equals(root.getRunSettings().getCardParameters().getDfUsim()))
-                {
-                    routine.append(
-                            "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(j).substring(0,4) + " (61xx)\n"
-                                    + "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(j).substring(4,8) + " (61xx)\n"
-                                    + "00A4000402 7FFF (61xx)\n"
                                     + "00A4000402 " + root.getRunSettings().getFileManagement().getData_master(j).substring(12,16) + " (61xx)\n"
                     );
                 }
@@ -450,7 +440,7 @@ public class FileManagementService {
                 if (root.getRunSettings().getFileManagement().getData_ghost(j).substring(0, 4).equals(root.getRunSettings().getCardParameters().getDfUsim()))
                 {
                     routine.append(
-                            "00A4000402 7FFF  (61xx)\n"
+                            "00 A4 04 00 <?> %USIM_AID\t(9000, 61xx)\n"
                                     + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ghost(j).substring(4,8) + " (61xx)\n"
                     );
                 }
@@ -480,7 +470,7 @@ public class FileManagementService {
                 if (root.getRunSettings().getFileManagement().getData_ghost(j).substring(0,4).equals(root.getRunSettings().getCardParameters().getDfUsim()))
                 {
                     routine.append(
-                            "00A4000402 7FFF (61xx)\n"
+                            "00 A4 04 00 <?> %USIM_AID\t(9000, 61xx)\n"
                                     + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ghost(j).substring(4,8) + " (61xx)\n\n"
                                     + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ghost(j).substring(8,12) + " (61xx)\n\n"
                     );
@@ -490,7 +480,7 @@ public class FileManagementService {
                 {
                     routine.append(
                             "00A4000402 " + root.getRunSettings().getFileManagement().getData_ghost(j).substring(0,4) + " (61xx)\n"
-                                    + "00A4000402 7FFF (61xx)\n"
+                                    + "00 A4 04 00 <?> %USIM_AID\t(9000, 61xx)\n"
                                     + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ghost(j).substring(8,12) + " (61xx)\n\n"
                     );
                 }
@@ -525,7 +515,7 @@ public class FileManagementService {
                 if (root.getRunSettings().getFileManagement().getData_ghost(j).substring(0,4).equals(root.getRunSettings().getCardParameters().getDfUsim()))
                 {
                     routine.append(
-                            "00A4000402 7FFF (61xx)\n"
+                            "00 A4 04 00 <?> %USIM_AID\t(9000, 61xx)\n"
                                     + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ghost(j).substring(4,8) + " (61xx)\n\n"
                                     + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ghost(j).substring(8,12) + " (61xx)\n\n"
                                     + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ghost(j).substring(12,16) + " (61xx)\n"
@@ -536,21 +526,12 @@ public class FileManagementService {
                 {
                     routine.append(
                             "00A4000402 " + root.getRunSettings().getFileManagement().getData_ghost(j).substring(0,4) + " (61xx)\n"
-                                    + "00A4000402 7FFF (61xx)\n"
+                                    + "00 A4 04 00 <?> %USIM_AID\t(9000, 61xx)\n"
                                     + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ghost(j).substring(8,12) + " (61xx)\n\n"
                                     + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ghost(j).substring(12,16) + " (61xx)\n"
                     );
                 }
 
-                else if (root.getRunSettings().getFileManagement().getData_ghost(j).substring(8,12).equals(root.getRunSettings().getCardParameters().getDfUsim()))
-                {
-                    routine.append(
-                            "00A4000402 " + root.getRunSettings().getFileManagement().getData_ghost(j).substring(0,4) + " (61xx)\n"
-                                    + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ghost(j).substring(4,8) + " (61xx)\n"
-                                    + "00A4000402 7FFF (61xx)\n"
-                                    + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ghost(j).substring(12,16) + " (61xx)\n"
-                    );
-                }
 
                 else
                 {
@@ -623,11 +604,10 @@ public class FileManagementService {
                 ruwiTestBuffer.append(
                         "00 20 00 0A 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
                                 + "00 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000)\n\n"
-                                //+ "00 20 00 81 08 %" + root.getRunSettings().getSecretCodes().getLpin() + " (9000)\n\n"
                 );
 
                 ruwiTestBuffer.append(
-                        "00A40400<?> %USIM_AID\t(61xx)\n"
+                        "00A40400<?> %USIM_AID\t(9000, 61xx)\n"
                                 + "00 20 00 81 08 %" + root.getRunSettings().getSecretCodes().getLpin() + " (9000)\n\n"
                 );
 
@@ -654,8 +634,7 @@ public class FileManagementService {
                     ruwiTestBuffer.append(".DEFINE %_VERIFY_ADM4_ 00 2000 0D 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
 
                 ruwiTestBuffer.append(
-                        "\n;.DEFINE %_SELECT_USIM_AID_ 00A4040C\n"
-                        +"\n.DEFINE %_SELECT_ \t\t\t00 A4 00 04 02\n"
+                        "\n.DEFINE %_SELECT_ \t\t\t00 A4 00 04 02\n"
                                 + ".DEFINE %_GET_RESPONSE_ \t00 C00000\n"
                                 + ".DEFINE %_READ_BINARY_ \t\t00 B0 0000\n"
                                 + ".DEFINE %_READ_RECORD_ \t\t00 B2 0104  ; read 1st reacord\n"
@@ -664,44 +643,19 @@ public class FileManagementService {
                                 + ".DEFINE %_UPDATE_RECORD_C_ \t00 DC 0003\n"
                                 + ".DEFINE %_INVALIDATE_ \t\t00 04 0000\n"
                                 + ".DEFINE %_REHABILITATE_ \t00 44 0000\n\n"
-                                + "; %_SELECT_ 3F00 (61 XX)\n"
                                 + "%_SELECT_ 3F00 (61 XX)\n"
-                                + ";%_SELECT_USIM_AID_  <?> %USIM_AID (9000)\n\n"
                 );
 
 
                 for (int i=0;i < root.getRunSettings().getFileManagement().getRowRuwi() ;i++) {
                     ruwiTestBuffer.append(
-                            "\n; -------------------\n"
-                                    + "; == RUwI Test - " + (i + 1) + " ==\n"
-                                    + "; -------------------\n\n"
+                            "\n; --------------------------------\n"
+                                    + "; ====== RUwI Test File - " + (i + 1) + " ======\n"
+                                    + "; --------------------------------\n\n"
                     );
 
-                    int length_pathruwi;
 
-                    length_pathruwi = root.getRunSettings().getFileManagement().getData_ruwi(i).length();
-
-                    if (length_pathruwi == 8) {
-                        ruwiTestBuffer.append(
-                                "00 A4 0004 02 " + root.getRunSettings().getFileManagement().getData_ruwi(i).substring(0, 4) + " (9FXX, 61XX)\n"
-                                        + "00 A4 0004 02 " + root.getRunSettings().getFileManagement().getData_ruwi(i).substring(4, 8) + " (9FXX, 61XX)\n"
-                        );
-                    }
-                    else if (length_pathruwi == 12) {
-                        ruwiTestBuffer.append(
-                                "00 A4 0004 02 " + root.getRunSettings().getFileManagement().getData_ruwi(i).substring(0, 4) + " (9FXX, 61XX)\n"
-                                        + "00 A4 0004 02 " + root.getRunSettings().getFileManagement().getData_ruwi(i).substring(4, 8) + " (9FXX, 61XX)\n"
-                                        + "00 A4 0004 02 " + root.getRunSettings().getFileManagement().getData_ruwi(i).substring(8, 12) + " (9FXX, 61XX)\n\n"
-                        );
-                    }
-                    else if (length_pathruwi == 16) {
-                        ruwiTestBuffer.append(
-                                "00 A4 0004 02 " + root.getRunSettings().getFileManagement().getData_ruwi(i).substring(0, 4) + " (9FXX, 61XX)\n"
-                                        + "00 A4 0004 02 " + root.getRunSettings().getFileManagement().getData_ruwi(i).substring(4, 8) + " (9FXX, 61XX)\n"
-                                        + "00 A4 0004 02 " + root.getRunSettings().getFileManagement().getData_ruwi(i).substring(8, 12) + " (9FXX, 61XX)\n"
-                                        + "00 A4 0004 02 " + root.getRunSettings().getFileManagement().getData_ruwi(i).substring(12, 16) + " (9FXX, 61XX)\n"
-                        );
-                    }
+                    ruwiTestBuffer.append(SelectPathRuwi(i));
 
                     ruwiTestBuffer.append(
                             ".UNDEFINE %VBUF\n"
@@ -715,64 +669,7 @@ public class FileManagementService {
                                     +"\n"
                     );
 
-                    ruwiTestBuffer.append(
-                            ";====== Search_Tag_From_Buffer_M.pcom =====\n"
-                            +";;;;;RESET BUFFER H -> FOR LENGTH CONTAINER\n"
-                                    +".SET_BUFFER H 00 00\n\n"
-                                    +"\n"
-                                    +";;;;SET OFFSET\n"
-                                    +";;;FOR RESPONSE CONTENT\n"
-                                    +".SET_BUFFER I 00 01\n\n"
-                                    +"\n"
-                                    +"\n"
-                                    +"***SEARCH TAG 7F21***\n"
-                                    +".BEGIN_LOOP\n"
-                                    +"\t.SWITCH G(I;J)\n"
-                                    +"\t\t.CASE M\n"
-                                    +"\t\t\t.INCREASE_BUFFER I J\n"
-                                    +"\t\t\t.MESSAGE ****************\n"
-                                    +"\t\t\t.PRINT M\n"
-                                    +"\t\t\t.MESSAGE TAG Found!\n"
-                                    +"\t\t\t.APPEND_IFDEF PARSE_TAG_85_ON;\n"
-                                    +"\t\t\t.QUITLOOP\n"
-                                    +"\t\t\t.BREAK\n"
-                                    +"\t\t.DEFAULT\n"
-                                    +"\t\t\t.PRINT G(I;J)\n"
-                                    +"\t\t\t.INCREASE_BUFFER I 01\n"
-                                    +"\t\t.BREAK\n"
-                                    +"\t.ENDSWITCH\n"
-                                    +".LOOP 500\n"
-                                    +"***END SEARCH TAG 85***\n\n"
-                                    +"\n"
-                                    +"****EXTRACT CONTENT LENGTH****\n"
-                                    +".DISPLAY G(I;1)\n"
-                                    +"\n"
-                                    +".SWITCH G(I;1)\n"
-                                    +"\t.CASE 81\n"
-                                    +"\t\t.INCREASE_BUFFER I 01\n"
-                                    +"\t\t.SET_BUFFER H G(I;1)\n"
-                                    +"\t\t.INCREASE_BUFFER I 01\n"
-                                    +"\t\t.BREAK\n"
-                                    +"\n"
-                                    +"\t.CASE 82\n"
-                                    +"\t\t.INCREASE_BUFFER I 01\n"
-                                    +"\t\t.SET_BUFFER H G(I;2)\n"
-                                    +"\t\t.INCREASE_BUFFER I 02\n"
-                                    +"\t\t.BREAK\n"
-                                    +"\n"
-                                    +"\t.CASE 83\n"
-                                    +"\t\t.INCREASE_BUFFER I 01\n"
-                                    +"\t\t.SET_BUFFER H G(I;3)\n"
-                                    +"\t\t.INCREASE_BUFFER I 03\n"
-                                    +"\t\t.BREAK\n"
-                                    +"\n"
-                                    +"\t.DEFAULT\n"
-                                    +"\t\t.SET_BUFFER H G(I;1)\n"
-                                    +"\t\t.INCREASE_BUFFER I 01\n"
-                                    +"\t\t.BREAK\n"
-                                    +".ENDSWITCH\n"
-                                    +";====== END Search_Tag_From_Buffer_M.pcom =====\n"
-                    );
+                    ruwiTestBuffer.append(SearchTagFromBufferMSimbiois());
 
                     ruwiTestBuffer.append(
                             ".SET_BUFFER G G(I;H)\t\t;UPDATE BUFFER G\n"
@@ -781,82 +678,23 @@ public class FileManagementService {
                                     +"\n"
                     );
 
-                    ruwiTestBuffer.append(
-                            ";====== Search_Tag_From_Buffer_M.pcom =====\n"
-                                    +";;;;;RESET BUFFER H -> FOR LENGTH CONTAINER\n"
-                                    +".SET_BUFFER H 00 00\n\n"
-                                    +"\n"
-                                    +";;;;SET OFFSET\n"
-                                    +";;;FOR RESPONSE CONTENT\n"
-                                    +".SET_BUFFER I 00 01\n\n"
-                                    +"\n"
-                                    +"\n"
-                                    +"***SEARCH TAG 7F21***\n"
-                                    +".BEGIN_LOOP\n"
-                                    +"\t.SWITCH G(I;J)\n"
-                                    +"\t\t.CASE M\n"
-                                    +"\t\t\t.INCREASE_BUFFER I J\n"
-                                    +"\t\t\t.MESSAGE ****************\n"
-                                    +"\t\t\t.PRINT M\n"
-                                    +"\t\t\t.MESSAGE TAG Found!\n"
-                                    +"\t\t\t.APPEND_IFDEF PARSE_TAG_85_ON;\n"
-                                    +"\t\t\t.QUITLOOP\n"
-                                    +"\t\t\t.BREAK\n"
-                                    +"\t\t.DEFAULT\n"
-                                    +"\t\t\t.PRINT G(I;J)\n"
-                                    +"\t\t\t.INCREASE_BUFFER I 01\n"
-                                    +"\t\t.BREAK\n"
-                                    +"\t.ENDSWITCH\n"
-                                    +".LOOP 500\n"
-                                    +"***END SEARCH TAG 85***\n\n"
-                                    +"\n"
-                                    +"****EXTRACT CONTENT LENGTH****\n"
-                                    +".DISPLAY G(I;1)\n"
-                                    +"\n"
-                                    +".SWITCH G(I;1)\n"
-                                    +"\t.CASE 81\n"
-                                    +"\t\t.INCREASE_BUFFER I 01\n"
-                                    +"\t\t.SET_BUFFER H G(I;1)\n"
-                                    +"\t\t.INCREASE_BUFFER I 01\n"
-                                    +"\t\t.BREAK\n"
-                                    +"\n"
-                                    +"\t.CASE 82\n"
-                                    +"\t\t.INCREASE_BUFFER I 01\n"
-                                    +"\t\t.SET_BUFFER H G(I;2)\n"
-                                    +"\t\t.INCREASE_BUFFER I 02\n"
-                                    +"\t\t.BREAK\n"
-                                    +"\n"
-                                    +"\t.CASE 83\n"
-                                    +"\t\t.INCREASE_BUFFER I 01\n"
-                                    +"\t\t.SET_BUFFER H G(I;3)\n"
-                                    +"\t\t.INCREASE_BUFFER I 03\n"
-                                    +"\t\t.BREAK\n"
-                                    +"\n"
-                                    +"\t.DEFAULT\n"
-                                    +"\t\t.SET_BUFFER H G(I;1)\n"
-                                    +"\t\t.INCREASE_BUFFER I 01\n"
-                                    +"\t\t.BREAK\n"
-                                    +".ENDSWITCH\n"
-                                    +";====== END Search_Tag_From_Buffer_M.pcom =====\n"
-                    );
+                    ruwiTestBuffer.append(SearchTagFromBufferMSimbiois());
 
                     ruwiTestBuffer.append(
                             ".SET_BUFFER L G(I;H)\n"
-                            +".SHIFT_LEFT J L 01\n"
+                            +".SHIFT_LEFT J L 01\n\n"
                     );
 
                     ruwiTestBuffer.append(
                             ".SWITCH J\n"
                                     +"\t.CASE 80 ;this is TR for SIMBiOS mode\n"
                                     +"\n\t\t;Validate the EF has SET for ruwi (byte 15th for TR , byte 18th = 40)\n"
-                                    +"\t\t;%_GET_RESPONSE_ %VBUF [XXXXXXXXXXXXXXXXXXXX A5XX C00140] (9000)\n"
-                                    + ".MESSAGE \"ruwi set\"\n"
+                                    + "\t\t.MESSAGE \"ruwi set\"\n"
                                     +"\t.BREAK\n\n"
                                     +"\n"
                                     +"\t.CASE 00 ;this is LF/CY for SIMBiOS mode\n"
                                     +"\n\t\t;Validate the EF has SET for ruwi (byte 15th for TR , byte 18th = 40)\n"
-                                    +"\t\t;%_GET_RESPONSE_ %VBUF [XXXXXXXXXXXXXXXXXXXXXXXXXX A5XX C00140] (9000)\n"
-                                    +".MESSAGE \"ruwi NOT set ERROR\"\n"
+                                    +"\t\t.MESSAGE \"ruwi NOT set ERROR\"\n"
                                     +"\t.BREAK\n"
                                     +"\n"
                                     +"\t.DEFAULT ;not TR/LF/CY\n"
@@ -866,8 +704,7 @@ public class FileManagementService {
                     );
 
                     ruwiTestBuffer.append(
-                            ";Check is TR or NOT(LF,CY) byte 04th this is actually the length\n"
-                            +";02=TR 05=LF/CY for SIMBiOS mode\n"
+                            ";Check is TR or NOT(LF,CY) byte 04th this is actually the length\n\n"
                                     +".SET_BUFFER J R(05;1)\n"
                                     +".SHIFT_LEFT I J 05\n"
                                     +".SET_BUFFER J I\n"
@@ -880,7 +717,7 @@ public class FileManagementService {
                             ";FOR EF\n"
                             +" .SWITCH J\n"
                                     +"\t.CASE 00 ;00=TR\n"
-                                    +"\t.CASE 20 ;this is TR for SIMBiOS mode\t\n"
+                                    +"\t.CASE 20 ;this is TR for SIMBiOS mode\t\n\n"
                                     +"\t\t.INCREASE_BUFFER M 01\n"
                                     +"\t\t%_UPDATE_BINARY_ 01  M  (9000)\n"
                                     +"\t\t%_READ_BINARY_   01 [M] (9000)\n\n"
@@ -1048,36 +885,8 @@ public class FileManagementService {
                                     + "; -------------------\n\n"
                     );
 
-                    int length_pathruwi;
 
-                    length_pathruwi = root.getRunSettings().getFileManagement().getData_ruwi(i).length();
-
-                    if (length_pathruwi == 8)
-                    {
-                        ruwiTestBuffer.append(
-                                "A0A4000002 " + root.getRunSettings().getFileManagement().getData_ruwi(i).substring(0,4) + " (9FXX, 61XX)\n"
-                                        + "A0A4000002 " + root.getRunSettings().getFileManagement().getData_ruwi(i).substring(4,8) + " (9FXX, 61XX)\n"
-                        );
-                    }
-
-                    else if (length_pathruwi == 12)
-                    {
-                        ruwiTestBuffer.append(
-                                "A0A4000002 " + root.getRunSettings().getFileManagement().getData_ruwi(i).substring(0,4) + " (9FXX, 61XX)\n"
-                                        + "A0A4000002 " + root.getRunSettings().getFileManagement().getData_ruwi(i).substring(4,8) + " (9FXX, 61XX)\n"
-                                        + "A0A4000002 " + root.getRunSettings().getFileManagement().getData_ruwi(i).substring(8,12) + " (9FXX, 61XX)\n\n"
-                        );
-                    }
-
-                    else if (length_pathruwi == 16)
-                    {
-                        ruwiTestBuffer.append(
-                                "A0A4000002 " + root.getRunSettings().getFileManagement().getData_ruwi(i).substring(0,4) + " (9FXX, 61XX)\n"
-                                        + "A0A4000002 " + root.getRunSettings().getFileManagement().getData_ruwi(i).substring(4,8) + " (9FXX, 61XX)\n"
-                                        + "A0A4000002 " + root.getRunSettings().getFileManagement().getData_ruwi(i).substring(8,12) + " (9FXX, 61XX)\n"
-                                        + "A0A4000002 " + root.getRunSettings().getFileManagement().getData_ruwi(i).substring(12,16) + " (9FXX, 61XX)\n"
-                        );
-                    }
+                    ruwiTestBuffer.append(SelectPathRuwi(i));
 
                     ruwiTestBuffer.append(
                             ".DEFINE %VBUF W(2;1)\n\n"
@@ -1128,6 +937,204 @@ public class FileManagementService {
         ruwiTestBuffer.append(".POWER_OFF\n");
         return ruwiTestBuffer;
     }
+
+        private String SelectPathRuwi (int j) {
+
+        StringBuilder routine = new StringBuilder();
+
+            int length_pathruwi;
+
+            length_pathruwi = root.getRunSettings().getFileManagement().getData_ruwi(j).length();
+
+        if (length_pathruwi == 8)
+        {
+            if (FMCon.getSimbiosCtdCheckbox().isSelected())
+            {
+                if (root.getRunSettings().getFileManagement().getData_ruwi(j).substring(0, 4).equals(root.getRunSettings().getCardParameters().getDfUsim()))
+                {
+                    routine.append(
+                            "00 A4 04 00 <?> %USIM_AID\t(9000, 61xx)\n"
+                                    + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(4,8) + " (61xx)\n"
+                    );
+                }
+
+                else
+                {
+                    routine.append(
+                            "00A4000402 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(0,4) + " (61xx)\n"
+                                    + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(4,8) + " (61xx)\n"
+                    );
+                }
+            }
+
+            else
+            {
+                routine.append(
+                        "00A4000402 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(0,4) + " (61xx)\n"
+                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(4,8) + " (61xx)\n"
+                );
+            }
+
+        }
+
+        else if (length_pathruwi == 12)
+        {
+            if (FMCon.getSimbiosCtdCheckbox().isSelected())
+            {
+                if (root.getRunSettings().getFileManagement().getData_ruwi(j).substring(0,4).equals(root.getRunSettings().getCardParameters().getDfUsim()))
+                {
+                    routine.append(
+                            "00 A4 04 00 <?> %USIM_AID\t(9000, 61xx)\n"
+                                    + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(4,8) + " (61xx)\n\n"
+                                    + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(8,12) + " (61xx)\n\n"
+                    );
+                }
+
+                else if (root.getRunSettings().getFileManagement().getData_ruwi(j).substring(4, 8).equals(root.getRunSettings().getCardParameters().getDfUsim()))
+                {
+                    routine.append(
+                            "00A4000402 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(0,4) + " (61xx)\n"
+                                    + "00 A4 04 00 <?> %USIM_AID\t(9000, 61xx)\n"
+                                    + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(8,12) + " (61xx)\n\n"
+                    );
+                }
+
+                else
+                {
+                    routine.append(
+                            "00A4000402 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(0,4) + " (61xx)\n"
+                                    + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(4,8) + " (61xx)\n"
+                                    + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(8,12) + " (61xx)\n\n"
+                    );
+                }
+
+            }
+
+            else
+            {
+                routine.append(
+                        "00A4000402 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(0,4) + " (61xx)\n"
+                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(4,8) + " (61xx)\n"
+                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(8,12) + " (61xx)\n\n"
+                );
+            }
+
+        }
+
+        else if (length_pathruwi == 16)
+        {
+
+            if (FMCon.getSimbiosCtdCheckbox().isSelected())
+            {
+                if (root.getRunSettings().getFileManagement().getData_ruwi(j).substring(0,4).equals(root.getRunSettings().getCardParameters().getDfUsim()))
+                {
+                    routine.append(
+                            "00 A4 04 00 <?> %USIM_AID\t(9000, 61xx)\n"
+                                    + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(4,8) + " (61xx)\n\n"
+                                    + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(8,12) + " (61xx)\n\n"
+                                    + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(12,16) + " (61xx)\n"
+                    );
+                }
+
+                else if (root.getRunSettings().getFileManagement().getData_ruwi(j).substring(4, 8).equals(root.getRunSettings().getCardParameters().getDfUsim()))
+                {
+                    routine.append(
+                            "00A4000402 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(0,4) + " (61xx)\n"
+                                    + "00 A4 04 00 <?> %USIM_AID\t(9000, 61xx)\n"
+                                    + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(8,12) + " (61xx)\n\n"
+                                    + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(12,16) + " (61xx)\n"
+                    );
+                }
+
+                else
+                {
+                    routine.append(
+                            "00A4000402 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(0,4) + " (61xx)\n"
+                                    + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(4,8) + " (61xx)\n"
+                                    + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(8,12) + " (61xx)\n"
+                                    + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(12,16) + " (61xx)\n"
+                    );
+                }
+
+            }
+
+            else
+            {
+                routine.append(
+                        "00A4000402 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(0,4) + " (61xx)\n"
+                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(4,8) + " (61xx)\n"
+                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(8,12) + " (61xx)\n"
+                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(12,16) + " (61xx)\n"
+                );
+            }
+
+
+        }
+
+        return routine.toString();
+    }
+
+        private String SearchTagFromBufferMSimbiois () {
+            StringBuilder routine = new StringBuilder();
+
+            routine.append(
+                    ";====== Search_Tag_From_Buffer_M =====\n\n"
+                            +";;;;;RESET BUFFER H -> FOR LENGTH CONTAINER\n"
+                            +".SET_BUFFER H 00 00\n\n"
+                            +";;;;SET OFFSET\n"
+                            +";;;FOR RESPONSE CONTENT\n"
+                            +".SET_BUFFER I 00 01\n\n"
+                            +"***SEARCH TAG 85***\n\n"
+                            +".BEGIN_LOOP\n"
+                            +"\t.SWITCH G(I;J)\n"
+                            +"\t\t.CASE M\n"
+                            +"\t\t\t.INCREASE_BUFFER I J\n"
+                            +"\t\t\t.MESSAGE ****************\n"
+                            +"\t\t\t.PRINT M\n"
+                            +"\t\t\t.MESSAGE TAG Found!\n"
+                            +"\t\t\t.APPEND_IFDEF PARSE_TAG_85_ON;\n"
+                            +"\t\t\t.QUITLOOP\n"
+                            +"\t\t\t.BREAK\n"
+                            +"\t\t.DEFAULT\n"
+                            +"\t\t\t.PRINT G(I;J)\n"
+                            +"\t\t\t.INCREASE_BUFFER I 01\n"
+                            +"\t\t.BREAK\n"
+                            +"\t.ENDSWITCH\n"
+                            +".LOOP 500\n\n"
+                            +"***END SEARCH TAG 85***\n\n"
+                            +"\n"
+                            +"****EXTRACT CONTENT LENGTH****\n\n"
+                            +".DISPLAY G(I;1)\n"
+                            +"\n"
+                            +".SWITCH G(I;1)\n"
+                            +"\t.CASE 81\n"
+                            +"\t\t.INCREASE_BUFFER I 01\n"
+                            +"\t\t.SET_BUFFER H G(I;1)\n"
+                            +"\t\t.INCREASE_BUFFER I 01\n"
+                            +"\t\t.BREAK\n"
+                            +"\n"
+                            +"\t.CASE 82\n"
+                            +"\t\t.INCREASE_BUFFER I 01\n"
+                            +"\t\t.SET_BUFFER H G(I;2)\n"
+                            +"\t\t.INCREASE_BUFFER I 02\n"
+                            +"\t\t.BREAK\n"
+                            +"\n"
+                            +"\t.CASE 83\n"
+                            +"\t\t.INCREASE_BUFFER I 01\n"
+                            +"\t\t.SET_BUFFER H G(I;3)\n"
+                            +"\t\t.INCREASE_BUFFER I 03\n"
+                            +"\t\t.BREAK\n"
+                            +"\n"
+                            +"\t.DEFAULT\n"
+                            +"\t\t.SET_BUFFER H G(I;1)\n"
+                            +"\t\t.INCREASE_BUFFER I 01\n"
+                            +"\t\t.BREAK\n"
+                            +".ENDSWITCH\n\n"
+                            +";====== END Search_Tag_From_Buffer_M =====\n\n\n"
+            );
+
+            return routine.toString();
+        }
 
         public StringBuilder generateFilemanagementRuWI01_OK_To_Go(FileManagement fileManagement) {
             StringBuilder RuWI01_OK_To_GoBuffer = new StringBuilder();
@@ -1300,7 +1307,7 @@ public class FileManagementService {
 
 
             sfiTestBuffer.append(
-                    "00 A4 04 00 <?> %USIM_AID\t(61xx)\n"
+                    "00 A4 04 00 <?> %USIM_AID\t(9000,61xx)\n"
                             + "00 20 00 81 08 %" + root.getRunSettings().getSecretCodes().getLpin() + " (9000)\n\n"
                             + "00 A4 00 04 02 3F00 \t(61xx,9000)\n"
             );

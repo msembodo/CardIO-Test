@@ -13,14 +13,20 @@
                 <Menu mnemonicParsing="false" text="File">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#handleMenuLoadVariables" text="Load Variables" />
-                        <MenuItem mnemonicParsing="false" onAction="#handleMenuSaveSettings" text="Save Settings" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" onAction="#handleMenuImportSettings" text="Import Settings" />
-                        <MenuItem mnemonicParsing="false" onAction="#handleMenuExportSettings" text="Export Settings" />
                         <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem mnemonicParsing="false" onAction="#handleMenuQuit" text="Quit" />
                     </items>
                 </Menu>
+            <Menu mnemonicParsing="false" text="Session">
+              <items>
+                <MenuItem disable="true" mnemonicParsing="false" text="New" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem fx:id="menuSave" mnemonicParsing="false" onAction="#handleMenuSaveSettings" text="Save" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleMenuImportSettings" text="Import" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleMenuExportSettings" text="Export" />
+              </items>
+            </Menu>
                 <Menu mnemonicParsing="false" text="Modules">
                     <items>
                   <Menu mnemonicParsing="false" text="Run Module">
@@ -52,12 +58,14 @@
                     </items>
                   </Menu>
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" onAction="#handleMenuRunAll" text="Run All" />
+                        <MenuItem fx:id="menuRunAll" mnemonicParsing="false" onAction="#handleMenuRunAll" text="Run All" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Tools">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#handleMenuSelectReader" text="Select Reader" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleMenuCustomAPDU" text="Custom APDU" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem mnemonicParsing="false" onAction="#handleMenuToolOptions" text="Options" />
                     </items>
                 </Menu>

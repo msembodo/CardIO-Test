@@ -587,7 +587,7 @@
                      <Insets left="4.0" />
                   </GridPane.margin>
                </Label>
-               <TextField disable="true" text="A0" GridPane.rowIndex="1">
+               <TextField disable="true" text="00" GridPane.rowIndex="1">
                   <GridPane.margin>
                      <Insets left="4.0" right="4.0" />
                   </GridPane.margin>
@@ -665,7 +665,7 @@
                      <Insets left="4.0" />
                   </GridPane.margin>
                </Label>
-               <TextField disable="true" text="A0" GridPane.rowIndex="1">
+               <TextField disable="true" text="00" GridPane.rowIndex="1">
                   <GridPane.margin>
                      <Insets left="4.0" right="4.0" />
                   </GridPane.margin>
@@ -743,7 +743,7 @@
                      <Insets left="4.0" />
                   </GridPane.margin>
                </Label>
-               <TextField disable="true" text="A0" GridPane.rowIndex="1">
+               <TextField disable="true" text="00" GridPane.rowIndex="1">
                   <GridPane.margin>
                      <Insets left="4.0" right="4.0" />
                   </GridPane.margin>
@@ -821,7 +821,7 @@
                      <Insets left="4.0" />
                   </GridPane.margin>
                </Label>
-               <TextField disable="true" text="A0" GridPane.rowIndex="1">
+               <TextField disable="true" text="00" GridPane.rowIndex="1">
                   <GridPane.margin>
                      <Insets left="4.0" right="4.0" />
                   </GridPane.margin>
@@ -899,7 +899,7 @@
                      <Insets left="4.0" />
                   </GridPane.margin>
                </Label>
-               <TextField disable="true" text="A0" GridPane.rowIndex="1">
+               <TextField disable="true" text="00" GridPane.rowIndex="1">
                   <GridPane.margin>
                      <Insets left="4.0" right="4.0" />
                   </GridPane.margin>
@@ -977,7 +977,7 @@
                      <Insets left="4.0" />
                   </GridPane.margin>
                </Label>
-               <TextField disable="true" text="A0" GridPane.rowIndex="1">
+               <TextField disable="true" text="00" GridPane.rowIndex="1">
                   <GridPane.margin>
                      <Insets left="4.0" right="4.0" />
                   </GridPane.margin>

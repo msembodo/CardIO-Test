@@ -14,6 +14,9 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.geometry.Orientation;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -119,6 +122,9 @@ public class RootLayoutController {
     @FXML private MenuItem menuRuwi;
     @FXML private MenuItem menuSfi;
 
+    @FXML private MenuItem menuSave;
+    @FXML private MenuItem menuRunAll;
+
     private StatusBar appStatusBar;
     private Label lblTerminalInfo;
 
@@ -132,6 +138,9 @@ public class RootLayoutController {
     public RunSettings getRunSettings() { return runSettings; }
 
     @FXML private void initialize() {
+        menuSave.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
+        menuRunAll.setAccelerator(new KeyCodeCombination(KeyCode.F5));
+
         appStatusBar = new StatusBar();
         rootBorderPane.setBottom(appStatusBar);
 
@@ -207,6 +216,7 @@ public class RootLayoutController {
         runSettings.setCustomScriptsSection2(customScriptsSection2);
         runSettings.setCustomScriptsSection3(customScriptsSection3);
         cardioConfigService.saveConfig(runSettings);
+        appStatusBar.setText("Session saved.");
     }
 
     @FXML private void handleMenuImportSettings() {
@@ -283,6 +293,8 @@ public class RootLayoutController {
     @FXML private void handleMenuSelectReader() { application.showSelectReader(); }
 
     @FXML private void handleMenuToolOptions() { application.showToolOptions(); }
+
+    @FXML private void handleMenuCustomAPDU() { application.showCustomApdu(); }
 
     @FXML private void handleMenuAbout() { application.showAbout(); }
 

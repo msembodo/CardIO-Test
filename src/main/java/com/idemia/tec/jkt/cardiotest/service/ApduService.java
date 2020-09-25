@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class apduService {
+public class ApduService {
 
     @Autowired private RootLayoutController root;
 

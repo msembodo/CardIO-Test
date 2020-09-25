@@ -456,7 +456,7 @@ public class RamService {
                         "A0 C2 00 00 G J (9FXX)\n" +
                         ".CLEAR_SCRIPT \n" +
                         "\n" +
-                        "A0 C0 00 00 W(2;1) [XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX <%Instance_Aid> %Instance_Aid " + appletParam.getLifeCycle() + " 00]\n" +
+                        "A0 C0 00 00 W(2;1) [XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX <%Instance_Aid> %Instance_Aid " + appletParam.interpretLifeCycle(appletParam.getLifeCycle()) + " 00]\n" +
                         ".UNDEFINE %Package_Aid \n" +
                         ".UNDEFINE %Instance_Aid \n"
                 );
@@ -486,7 +486,7 @@ public class RamService {
                         routine.append(
                                 ".DEFINE %Instance_Aid " + appletParam.getInstanceAid() + "\n" +
                                 "80F2 4000 <?> 4F <%Instance_Aid> %Instance_Aid \n" +
-                                "00 C0 00 00 W(2;1) [<%Instance_Aid> %Instance_Aid " + appletParam.getLifeCycle() + " 00]\n"
+                                "00 C0 00 00 W(2;1) [<%Instance_Aid> %Instance_Aid " + appletParam.interpretLifeCycle(appletParam.getLifeCycle()) + " 00]\n"
 
                         );
                     }
@@ -511,7 +511,7 @@ public class RamService {
                             ".DEFINE %Instance_Aid " + appletParam.getInstanceAid() + "\n" +
                             ".SET_BUFFER N 80F2 4000 <?> 4F <%Instance_Aid> %Instance_Aid \n" +
                             scp0255(isd) +
-                            "N  [<%Instance_Aid> %Instance_Aid " + appletParam.getLifeCycle() + " 00]\n"
+                            "N  [<%Instance_Aid> %Instance_Aid " + appletParam.interpretLifeCycle(appletParam.getLifeCycle()) + " 00]\n"
                         );
                     }
                     routine.append(

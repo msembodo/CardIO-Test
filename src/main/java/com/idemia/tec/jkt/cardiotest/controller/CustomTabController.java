@@ -105,6 +105,10 @@ public class CustomTabController {
         btnCs3Edit.setTooltip(new Tooltip("Edit custom script"));
 
         scriptsDirectory = root.getRunSettings().getProjectPath() + "\\scripts\\";
+        File scriptsDir = new File(scriptsDirectory);
+        if(!scriptsDir.exists()) {
+            scriptsDir.mkdir();
+        }
     }
 
     // section 1 handlers
@@ -120,6 +124,11 @@ public class CustomTabController {
     }
 
     @FXML private void handleBtnCs1Choose() {
+        scriptsDirectory = root.getRunSettings().getProjectPath() + "\\scripts\\";
+        File scriptsDir = new File(scriptsDirectory);
+        if(!scriptsDir.exists()) {
+            scriptsDir.mkdir();
+        }
         // choose from available script and copy to target script folder
         FileChooser cs1FileChooser = new FileChooser();
         cs1FileChooser.setTitle("Select custom script");
@@ -129,6 +138,9 @@ public class CustomTabController {
         File cs1ChooseFile = cs1FileChooser.showOpenDialog(btnCs1Choose.getScene().getWindow());
         if (cs1ChooseFile != null) {
             File targetFile = new File(scriptsDirectory + cs1ChooseFile.getName());
+            if(!targetFile.exists()) {
+
+            }
             try {
                 Files.copy(cs1ChooseFile.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                 txtCs1ScriptName.setText(cs1ChooseFile.getName());
@@ -138,6 +150,7 @@ public class CustomTabController {
     }
 
     @FXML private void handleBtnCs1Edit() {
+        scriptsDirectory = root.getRunSettings().getProjectPath() + "\\scripts\\";
         // edit the specified script or, if not exists, create one
         String cs1EditFilePath = scriptsDirectory + txtCs1ScriptName.getText();
         File cs1EditFile = new File(cs1EditFilePath);
@@ -185,6 +198,7 @@ public class CustomTabController {
     }
 
     @FXML private void handleBtnCs1Delete() {
+        scriptsDirectory = root.getRunSettings().getProjectPath() + "\\scripts\\";
         if (root.getCustomScriptsSection1().size() > 0) {
             // delete from scripts directory
             String cs1DeleteFilePath = scriptsDirectory + txtCs1ScriptName.getText();
@@ -217,6 +231,11 @@ public class CustomTabController {
     }
 
     @FXML private void handleBtnCs2Choose() {
+        scriptsDirectory = root.getRunSettings().getProjectPath() + "\\scripts\\";
+        File scriptsDir = new File(scriptsDirectory);
+        if(!scriptsDir.exists()) {
+            scriptsDir.mkdir();
+        }
         // choose from available script and copy to target script folder
         FileChooser cs2FileChooser = new FileChooser();
         cs2FileChooser.setTitle("Select custom script");
@@ -236,6 +255,7 @@ public class CustomTabController {
     }
 
     @FXML private void handleBtnCs2Edit() {
+        scriptsDirectory = root.getRunSettings().getProjectPath() + "\\scripts\\";
         // edit the specified script or, if not exists, create one
         String cs2EditFilePath = scriptsDirectory + txtCs2ScriptName.getText();
         File cs2EditFile = new File(cs2EditFilePath);
@@ -283,6 +303,7 @@ public class CustomTabController {
     }
 
     @FXML private void handleBtnCs2Delete() {
+        scriptsDirectory = root.getRunSettings().getProjectPath() + "\\scripts\\";
         if (root.getCustomScriptsSection2().size() > 0) {
             // delete from scripts directory
             String cs2DeleteFilePath = scriptsDirectory + txtCs2ScriptName.getText();
@@ -315,6 +336,11 @@ public class CustomTabController {
     }
 
     @FXML private void handleBtnCs3Choose() {
+        scriptsDirectory = root.getRunSettings().getProjectPath() + "\\scripts\\";
+        File scriptsDir = new File(scriptsDirectory);
+        if(!scriptsDir.exists()) {
+            scriptsDir.mkdir();
+        }
         // choose from available script and copy to target script folder
         FileChooser cs3FileChooser = new FileChooser();
         cs3FileChooser.setTitle("Select custom script");
@@ -334,6 +360,7 @@ public class CustomTabController {
     }
 
     @FXML private void handleBtnCs3Edit() {
+        scriptsDirectory = root.getRunSettings().getProjectPath() + "\\scripts\\";
         // edit the specified script or, if not exists, create one
         String cs3EditFilePath = scriptsDirectory + txtCs3ScriptName.getText();
         File cs3EditFile = new File(cs3EditFilePath);
@@ -381,6 +408,7 @@ public class CustomTabController {
     }
 
     @FXML private void handleBtnCs3Delete() {
+        scriptsDirectory = root.getRunSettings().getProjectPath() + "\\scripts\\";
         if (root.getCustomScriptsSection3().size() > 0) {
             // delete from scripts directory
             String cs3DeleteFilePath = scriptsDirectory + txtCs3ScriptName.getText();

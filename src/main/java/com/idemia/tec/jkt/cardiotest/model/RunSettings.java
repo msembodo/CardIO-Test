@@ -1,5 +1,7 @@
 package com.idemia.tec.jkt.cardiotest.model;
 
+import com.idemia.tec.jkt.cardiotest.model.customapdu.CustomApdu;
+
 import java.util.List;
 
 public class RunSettings {
@@ -17,6 +19,7 @@ public class RunSettings {
     private String developerName;
     private String testerName;
     private List<VariableMapping> variableMappings;
+    private CustomApdu customApdu;
     private ATR atr;
     private SecretCodes secretCodes;
     private CardParameters cardParameters;
@@ -42,7 +45,7 @@ public class RunSettings {
     public RunSettings(String projectPath, String advSaveVariablesPath, int readerNumber, boolean stopOnError,
                        String requestId, String requestName, String profileName, int profileVersion,
                        String cardImageItemId, String customer, String developerName, String testerName,
-                       List<VariableMapping> variableMappings, ATR atr, SecretCodes secretCodes,
+                       List<VariableMapping> variableMappings, CustomApdu customApdu, ATR atr, SecretCodes secretCodes,
                        CardParameters cardParameters, Authentication authentication, List<SCP80Keyset> scp80Keysets,
                        SmsUpdate smsUpdate, RfmUsim rfmUsim, RfmGsm rfmGsm, RfmIsim rfmIsim, RfmCustom rfmCustom,
                        Ram ram, List<CustomScript> customScriptsSection1, List<CustomScript> customScriptsSection2,
@@ -62,6 +65,7 @@ public class RunSettings {
         this.developerName = developerName;
         this.testerName = testerName;
         this.variableMappings = variableMappings;
+        this.customApdu = customApdu;
         this.atr = atr;
         this.secretCodes = secretCodes;
         this.cardParameters = cardParameters;
@@ -187,6 +191,14 @@ public class RunSettings {
         this.variableMappings = variableMappings;
     }
 
+    public CustomApdu getCustomApdu() {
+        return customApdu;
+    }
+
+    public void setCustomApdu(CustomApdu customApdu) {
+        this.customApdu = customApdu;
+    }
+
     public ATR getAtr() {
         return atr;
     }
@@ -306,7 +318,6 @@ public class RunSettings {
         this.customScriptsSection3 = customScriptsSection3;
 
     }
-
 
     public FileManagement getFileManagement() {
         return fileManagement;

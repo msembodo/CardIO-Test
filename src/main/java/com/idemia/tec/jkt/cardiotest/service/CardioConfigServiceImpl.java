@@ -3,7 +3,10 @@ package com.idemia.tec.jkt.cardiotest.service;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.idemia.tec.jkt.cardiotest.controller.CustomAPDUController;
 import com.idemia.tec.jkt.cardiotest.model.*;
+import com.idemia.tec.jkt.cardiotest.model.customapdu.CustomApdu;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -14,6 +17,8 @@ import java.util.ArrayList;
 public class CardioConfigServiceImpl implements CardioConfigService {
 
     private File runSettingsFile;
+
+    @Autowired private CustomAPDUController customAPDUController;
 
     @Override public RunSettings initConfig() {
         runSettingsFile = new File("run-settings.json");
@@ -55,6 +60,9 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             defaultSettings.setDeveloperName(DEVELOPER_NAME);
             defaultSettings.setTesterName(TESTER_NAME);
             defaultSettings.setVariableMappings(new ArrayList<>());
+
+            CustomApdu defaultCustomApdu = customAPDUController.getDefaultApduParams();
+            defaultSettings.setCustomApdu(defaultCustomApdu);
 
             defaultSettings.setAtr(new ATR(true, "", "", ""));
             defaultSettings.setSecretCodes(new SecretCodes(true, true, true, false, false, false, false, false));

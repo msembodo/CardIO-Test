@@ -1588,15 +1588,6 @@ public class RfmUsimService {
 
         commandOta.append("\n; command(s) sent via OTA\n");
 
-
-        if (rfmUsim.getRfmUsimAccessDomain().isUseAlways()){
-            commandOta.append(
-                ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_USIM_ALW ; select EF on Always\n"
-                + ".APPEND_SCRIPT J\n"
-                + ".SET_BUFFER J 00 B0 00 00 02 ; read binary\n"
-                + ".APPEND_SCRIPT J\n"
-            );
-        }
         if (rfmUsim.getRfmUsimAccessDomain().isUseIsc1()){
             commandOta.append(
                 ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_USIM_ADM1 ; select EF on ADM1\n"
@@ -1645,6 +1636,14 @@ public class RfmUsimService {
                 + ".APPEND_SCRIPT J\n"
             );
         }
+        if (rfmUsim.getRfmUsimAccessDomain().isUseAlways()){
+            commandOta.append(
+                ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_USIM_ALW ; select EF on Always\n"
+                + ".APPEND_SCRIPT J\n"
+                + ".SET_BUFFER J 00 B0 00 00 02 ; read binary\n"
+                + ".APPEND_SCRIPT J\n"
+            );
+        }
 
         return commandOta.toString();
     }
@@ -1655,14 +1654,6 @@ public class RfmUsimService {
 
         badCasecommandOta.append("\n; command(s) sent via OTA\n");
 
-        if (rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseAlways()){
-            badCasecommandOta.append(
-                ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_USIM_ERR_ALW ; select EF on Always\n"
-                + ".APPEND_SCRIPT J\n"
-                + ".SET_BUFFER J 00 B0 00 00 02 ; read binary\n"
-                + ".APPEND_SCRIPT J\n"
-            );
-        }
         if (rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseIsc1()){
             badCasecommandOta.append(
                 ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_USIM_ERR_ADM1 ; select EF on ADM1\n"
@@ -1708,6 +1699,14 @@ public class RfmUsimService {
                 ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_USIM_ERR_PIN2 ; select EF on PIN2\n"
                 + ".APPEND_SCRIPT J\n"
                 + ".SET_BUFFER J 00 D6 00 00 <?> A6 ; update binary\n"
+                + ".APPEND_SCRIPT J\n"
+            );
+        }
+        if (rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseAlways()){
+            badCasecommandOta.append(
+                ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_USIM_ERR_ALW ; select EF on Always\n"
+                + ".APPEND_SCRIPT J\n"
+                + ".SET_BUFFER J 00 B0 00 00 02 ; read binary\n"
                 + ".APPEND_SCRIPT J\n"
             );
         }

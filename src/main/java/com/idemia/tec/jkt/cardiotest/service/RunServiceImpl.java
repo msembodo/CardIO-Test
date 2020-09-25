@@ -123,6 +123,12 @@ public class RunServiceImpl implements RunService {
             runAllBuffer.append(addRam(root.getRunSettings().getRam()));
         }
 
+        //Custom RFM --------------------------------------
+        if (root.getRunSettings().getRfmCustom().isIncludeRfmCustom() ||
+                root.getRunSettings().getRfmCustom().isIncludeRfmCustomUpdateRecord() ||
+                root.getRunSettings().getRfmCustom().isIncludeRfmCustomExpandedMode()) {
+            runAllBuffer.append(addRfmCustom(root.getRunSettings().getRfmCustom()));}
+
         // custom scripts section 3
         if (root.getRunSettings().getCustomScriptsSection3().size() > 0) {
             runAllBuffer.append(addCustomScripts(root.getRunSettings().getCustomScriptsSection3()));
@@ -431,7 +437,6 @@ public class RunServiceImpl implements RunService {
         return rfmCustomRunAllString.toString();
     }
 
-    // ----------------------
     private String addFileManagement(FileManagement fileManagement) {
 
         StringBuilder flmngmtRunAllString = new StringBuilder();
@@ -484,7 +489,6 @@ public class RunServiceImpl implements RunService {
 
         return flmngmtRunAllString.toString();
     }
-    // ----------------------
 
     private String addRam(Ram ram) {
         // TODO: options buffer (if required)
@@ -710,7 +714,6 @@ public class RunServiceImpl implements RunService {
         return exitVal == 0;
     }
 
-    // ------------------------------
     @Override public boolean runLinkFilesTest() {
         composeScripts();
         runShellCommand("pcomconsole", scriptsDirectory + "FileManagement_LinkFiles_TEST.txt");
@@ -728,7 +731,6 @@ public class RunServiceImpl implements RunService {
         runShellCommand("pcomconsole", scriptsDirectory + "FileManagement_SFI_TEST.txt");
         return exitVal == 0;
     }
-    // ------------------------------
 
     @Override  public boolean runRam() {
         composeScripts();

@@ -20,11 +20,7 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
     @Autowired private RfmCustomService rfmCustomService;
     @Autowired private RamService ramService;
     @Autowired private RamService verifGp;
-
-
-    //-------------------
     @Autowired private FileManagementService fileManagementService;
-    //-------------------
 
     @Override public StringBuilder generateAtr() {
         String composeAtrScript = ".CALL Mapping.txt\n"
@@ -147,8 +143,6 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
         return rfmCustomExpandedModeBuffer;
     }
 
-
-    //-------------------
     @Override public StringBuilder generateFilemanagementLinkFiles(FileManagement fileManagement) {
         return fileManagementService.generateFilemanagementLinkFiles(fileManagement);
     }
@@ -166,7 +160,6 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
     @Override public StringBuilder generateFilemanagementSfi(FileManagement fileManagement) {
         return fileManagementService.generateFilemanagementSfi(fileManagement);
     }
-    //-------------------
 
     @Override
     public StringBuilder generateRam(Ram ram) {
@@ -192,7 +185,6 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
         ramExpandedModeBuffer.append(".POWER_OFF\n");
         return ramExpandedModeBuffer;
     }
-
 
     @Override
     public StringBuilder generateVerifGp(Ram ram) {

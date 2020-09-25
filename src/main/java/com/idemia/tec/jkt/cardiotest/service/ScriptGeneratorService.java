@@ -34,14 +34,11 @@ public interface ScriptGeneratorService {
     StringBuilder generateRfmCustom(RfmCustom rfmCustom);
     StringBuilder generateRfmCustomUpdateRecord(RfmCustom rfmCustom);
     StringBuilder generateRfmCustomExpandedMode(RfmCustom rfmCustom);
-
-
-    // ------------------------------------------------
     StringBuilder generateFilemanagementLinkFiles(FileManagement fileManagement);
     StringBuilder generateFilemanagementRuwi(FileManagement fileManagement);
         StringBuilder generateFilemanagementRuWI01_OK_To_Go(FileManagement fileManagement);
         StringBuilder generateFilemanagementRuWI02_Method(FileManagement fileManagement);
     StringBuilder generateFilemanagementSfi(FileManagement fileManagement);
-    // ------------------------------------------------
+
 
 }

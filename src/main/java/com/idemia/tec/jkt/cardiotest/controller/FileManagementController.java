@@ -20,6 +20,8 @@ public class FileManagementController  {
     @Autowired private RootLayoutController root;
     @Autowired private CardiotestController cardiotest;
 
+    @FXML private CheckBox SimbiosCtdCheckbox;
+
     @FXML private CheckBox chkIncludeLinkFileTest;
     @FXML private TableView<FMLinkFiles> tblLinkFileTest;
     @FXML private TableColumn<FMLinkFiles, String> clmMaster;
@@ -30,7 +32,6 @@ public class FileManagementController  {
     @FXML private TextField path_GhostTextField;
 
     @FXML private CheckBox chkIncludeRuwiTest;
-    @FXML private CheckBox RuwiSimbiosCtdCheckbox;
     @FXML private TableView<FMRuwi> tblRuwi;
     @FXML private TableColumn<FMRuwi, String> clmRuwi;
     @FXML private Button addRuwiButton;
@@ -77,7 +78,7 @@ public class FileManagementController  {
         loadRuwiData();
 
         chkIncludeRuwiTest.setSelected(root.getRunSettings().getFileManagement().isIncludeRuwiTest());
-        RuwiSimbiosCtdCheckbox.setSelected(root.getRunSettings().getFileManagement().isRuwiSimbiosCtd_bool());
+        SimbiosCtdCheckbox.setSelected(root.getRunSettings().getFileManagement().isSimbiosCtd_bool());
 
         handleIncludeRuwiCheck();
 
@@ -459,7 +460,7 @@ public class FileManagementController  {
         SFI_PSLOCI_6F73_0C_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_PSLOCI_6F73_0C_bool());
         SFI_FPLMN_6F7B_0D_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_FPLMN_6F7B_0D_bool());
         SFI_CBMID_6F48_0E_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_CBMID_6F48_0E_bool());
-        SFI_Kc_4F20_01_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_Kc_4F20_01_bool());
+        //SFI_Kc_4F20_01_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_Kc_4F20_01_bool());
         SFI_ARR_2F06_06_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_ARR_2F06_06_bool());
         SFI_Dir_2F00_1E_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_Dir_2F00_1E_bool());
         SFI_StartHFN_6F5B_0F_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_StartHFN_6F5B_0F_bool());
@@ -476,7 +477,7 @@ public class FileManagementController  {
         SFI_OPL_6FC6_1A_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_OPL_6FC6_1A_bool());
         SFI_SPDI_6FCD_1B_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_SPDI_6FCD_1B_bool());
         SFI_ACM_6F39_1C_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_ACM_6F39_1C_bool());
-        SFI_KcGPRS_4F52_02_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_KcGPRS_4F52_02_bool());
+        //SFI_KcGPRS_4F52_02_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_KcGPRS_4F52_02_bool());
     }
 
     public void saveControlState() {
@@ -485,7 +486,7 @@ public class FileManagementController  {
 
         root.getRunSettings().getFileManagement().setIncludeRuwiTest(chkIncludeRuwiTest.isSelected());
         SaveRuwiData();
-        root.getRunSettings().getFileManagement().setRuwiSimbiosCtd_bool(RuwiSimbiosCtdCheckbox.isSelected());
+        root.getRunSettings().getFileManagement().setSimbiosCtd_bool(SimbiosCtdCheckbox.isSelected());
 
         root.getRunSettings().getFileManagement().setIncludeSfiTest(chkIncludeSfiTest.isSelected());
         root.getRunSettings().getFileManagement().setSFI_Iccid_2FE2_02_bool(SFI_Iccid_2FE2_02_Checkbox.isSelected());
@@ -942,12 +943,12 @@ public class FileManagementController  {
         LinkFilesTableData = linkFilesTableData;
     }
 
-    public CheckBox getRuwiSimbiosCtdCheckbox() {
-        return RuwiSimbiosCtdCheckbox;
+    public CheckBox getSimbiosCtdCheckbox() {
+        return SimbiosCtdCheckbox;
     }
 
-    public void setRuwiSimbiosCtdCheckbox(CheckBox ruwiSimbiosCtdCheckbox) {
-        RuwiSimbiosCtdCheckbox = ruwiSimbiosCtdCheckbox;
+    public void setSimbiosCtdCheckbox(CheckBox simbiosCtdCheckbox) {
+        SimbiosCtdCheckbox = simbiosCtdCheckbox;
     }
 
     public ObservableList<FMRuwi> getRuwiTableData() {

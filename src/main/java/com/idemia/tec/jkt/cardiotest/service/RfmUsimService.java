@@ -688,10 +688,19 @@ public class RfmUsimService {
                 + "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000)\n"
                 + "A0 A4 00 00 02 7F10 (9FXX) ;select DF Telecom\n"
                 + "A0 A4 00 00 02 6F3C (9F0F) ;select EF SMS\n"
-                + "A0 DC 01 04 G J (9000) ;update EF SMS\n"
+                + "A0 DC 01 04 G J (9000, 91XX) ;update EF SMS\n\n"
                 + ".CLEAR_SCRIPT\n"
-                + "\n;Check SMS Content\n"
-                + "A0 B2 01 04 B0\n"
+                + ";Check SMS Content\n"
+                + "A0 B2 01 04 B0 (9000, 91XX) ;FOR SIMbiOS CTD will have SW 91 XX\n\n"
+                + ".SWITCH W(2:2) \n"
+                +    ".CASE 00\n"
+                +       ";can not check PoR\n"
+                +   ".BREAK\n"
+                +   ".DEFAULT\n"
+                +       ";check PoR\n"
+                +       "A0 12 00 00 W(2:2) [XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX XXXXXX XXXXXX 09] (9000)\n"
+                +       "A0 14 00 00 0C 8103011300 82028183 830100 (9000)\n"
+                + ".ENDSWITCH\n"
             );
         }
 
@@ -1186,8 +1195,8 @@ public class RfmUsimService {
         String result_set = "";
 
         String scAddress            = root.getRunSettings().getSmsUpdate().getScAddress();
-        String tag33UpdateRecord    = "D0 33 81 XX XX 13 XX 82 02 81 83 85 XX 86 " + scAddress + " 8B XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX %TAR XX XX XX XX XX XX";
-        String tag30UpdateRecord    = "D0 30 81 XX XX 13 XX 82 02 81 83 85 XX 86 " + scAddress + " 8B XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX %TAR XX XX XX XX XX XX";
+        String tag33UpdateRecord    = "D0 33 X1 XX XX 13 XX X2 02 X1 X3 X5 XX X6 " + scAddress + " XB XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX %TAR XX XX XX XX XX XX";
+        String tag30UpdateRecord    = "D0 30 X1 XX XX 13 XX X2 02 X1 X3 X5 XX X6 " + scAddress + " XB XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX %TAR XX XX XX XX XX XX";
 
         POR_OK                      = tag33UpdateRecord+" XX XX 90 00";
         POR_NOT_OK                  = tag33UpdateRecord+" XX XX 98 04";
@@ -1579,15 +1588,6 @@ public class RfmUsimService {
 
         commandOta.append("\n; command(s) sent via OTA\n");
 
-
-        if (rfmUsim.getRfmUsimAccessDomain().isUseAlways()){
-            commandOta.append(
-                ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_USIM_ALW ; select EF on Always\n"
-                + ".APPEND_SCRIPT J\n"
-                + ".SET_BUFFER J 00 B0 00 00 02 ; read binary\n"
-                + ".APPEND_SCRIPT J\n"
-            );
-        }
         if (rfmUsim.getRfmUsimAccessDomain().isUseIsc1()){
             commandOta.append(
                 ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_USIM_ADM1 ; select EF on ADM1\n"
@@ -1636,6 +1636,14 @@ public class RfmUsimService {
                 + ".APPEND_SCRIPT J\n"
             );
         }
+        if (rfmUsim.getRfmUsimAccessDomain().isUseAlways()){
+            commandOta.append(
+                ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_USIM_ALW ; select EF on Always\n"
+                + ".APPEND_SCRIPT J\n"
+                + ".SET_BUFFER J 00 B0 00 00 02 ; read binary\n"
+                + ".APPEND_SCRIPT J\n"
+            );
+        }
 
         return commandOta.toString();
     }
@@ -1646,14 +1654,6 @@ public class RfmUsimService {
 
         badCasecommandOta.append("\n; command(s) sent via OTA\n");
 
-        if (rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseAlways()){
-            badCasecommandOta.append(
-                ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_USIM_ERR_ALW ; select EF on Always\n"
-                + ".APPEND_SCRIPT J\n"
-                + ".SET_BUFFER J 00 B0 00 00 02 ; read binary\n"
-                + ".APPEND_SCRIPT J\n"
-            );
-        }
         if (rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseIsc1()){
             badCasecommandOta.append(
                 ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_USIM_ERR_ADM1 ; select EF on ADM1\n"
@@ -1699,6 +1699,14 @@ public class RfmUsimService {
                 ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_USIM_ERR_PIN2 ; select EF on PIN2\n"
                 + ".APPEND_SCRIPT J\n"
                 + ".SET_BUFFER J 00 D6 00 00 <?> A6 ; update binary\n"
+                + ".APPEND_SCRIPT J\n"
+            );
+        }
+        if (rfmUsim.getRfmUsimBadCaseAccessDomain().isUseBadCaseAlways()){
+            badCasecommandOta.append(
+                ".SET_BUFFER J 00 A4 00 04 02 %EF_ID_USIM_ERR_ALW ; select EF on Always\n"
+                + ".APPEND_SCRIPT J\n"
+                + ".SET_BUFFER J 00 B0 00 00 02 ; read binary\n"
                 + ".APPEND_SCRIPT J\n"
             );
         }

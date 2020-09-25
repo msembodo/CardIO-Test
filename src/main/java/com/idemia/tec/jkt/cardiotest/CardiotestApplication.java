@@ -61,6 +61,9 @@ public class CardiotestApplication extends Application {
 			initRootLayout();
 			showCardioTest();
 		});
+
+//		initRootLayout();
+//		showCardioTest();
 	}
 
 	public ObservableList<AdvSaveVariable> getAdvSaveVariables() { return advSaveVariables; }

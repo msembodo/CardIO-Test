@@ -24,7 +24,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.TextFlow?>
 
-<AnchorPane prefHeight="900.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.idemia.tec.jkt.cardiotest.controller.CardiotestController">
+<AnchorPane prefHeight="900.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.idemia.tec.jkt.cardiotest.controller.CardiotestController">
   <children>
     <StackPane fx:id="stackPane" layoutX="507.0" layoutY="219.0" prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <children>
@@ -442,7 +442,8 @@
                                                         <children>
                                                           <TextField fx:id="packageAidTextField" prefHeight="25.0" prefWidth="300.0" promptText="Package AID" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="14.0" />
                                                           <TextField fx:id="instanceAidTextField" prefHeight="21.0" prefWidth="300.0" promptText="Instance AID" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="48.0" />
-                                                          <TextField fx:id="lifeCycleTextField" prefHeight="21.0" prefWidth="300.0" promptText="Life Cycle State" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="82.0" />
+                                                                                       <Label text="Life Cycle" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="84.0" />
+                                                                                       <ComboBox fx:id="cmbLifeCycle" prefWidth="150.0" AnchorPane.leftAnchor="80.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="82.0" />
                                                           <ButtonBar layoutX="65.0" prefHeight="40.0" prefWidth="162.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="114.0">
                                                             <buttons>
                                                               <Button fx:id="addAppletParamButton" mnemonicParsing="false" onAction="#handleButtonAddAppletParam" prefWidth="55.0" text="Add" />

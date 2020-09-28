@@ -48,7 +48,6 @@ public class ExportImportService {
         RunSettings rs = ersMapper.readValue(exportRunSettingsFile, RunSettings.class);
         rs.setProjectPath(projectDir.getAbsolutePath());
         rs.setAdvSaveVariablesPath(advSaveVar.getAbsolutePath());
-        // TODO get readerNumber from current
         rs.setReaderNumber(root.getRunSettings().getReaderNumber());
 
         // copy custom scripts (if any)

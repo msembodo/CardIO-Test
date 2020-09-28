@@ -32,6 +32,7 @@ import javax.smartcardio.CardException;
 import javax.smartcardio.CardTerminal;
 import javax.smartcardio.TerminalFactory;
 import java.io.*;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -122,6 +123,7 @@ public class RootLayoutController {
     @FXML private MenuItem menuRuwi;
     @FXML private MenuItem menuSfi;
 
+    @FXML private MenuItem menuNewSession;
     @FXML private MenuItem menuSave;
     @FXML private MenuItem menuRunAll;
 
@@ -138,6 +140,7 @@ public class RootLayoutController {
     public RunSettings getRunSettings() { return runSettings; }
 
     @FXML private void initialize() {
+        menuNewSession.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN));
         menuSave.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
         menuRunAll.setAccelerator(new KeyCodeCombination(KeyCode.F5));
 
@@ -205,6 +208,25 @@ public class RootLayoutController {
             }
         }
         catch (FileNotFoundException e) { e.printStackTrace(); }
+    }
+
+    @FXML private void handleMenuNewSession() {
+        Alert newSessionAlert = new Alert(Alert.AlertType.WARNING);
+        newSessionAlert.initModality(Modality.APPLICATION_MODAL);
+        newSessionAlert.initOwner(application.getPrimaryStage());
+        newSessionAlert.setTitle("Confirm new session");
+        newSessionAlert.setHeaderText(null);
+        newSessionAlert.setContentText("This will clear your current configuration.");
+        ButtonType btnCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+        newSessionAlert.getButtonTypes().add(btnCancel);
+        Optional<ButtonType> result = newSessionAlert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            // delete run-settings.json
+            File settingsFile = new File("run-settings.json");
+            try { Files.deleteIfExists(settingsFile.toPath()); }
+            catch (IOException e) { e.printStackTrace(); }
+            reinitConfig();
+        }
     }
 
     @FXML private void handleMenuSaveSettings() {

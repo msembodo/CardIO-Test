@@ -23,6 +23,9 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import jfxtras.styles.jmetro.JMetro;
+import jfxtras.styles.jmetro.Style;
+import org.apache.commons.cli.*;
 import org.apache.log4j.BasicConfigurator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -46,9 +49,21 @@ public class CardiotestApplication extends Application {
 	private ObservableList<AdvSaveVariable> advSaveVariables = FXCollections.observableArrayList();
 	private ObservableList<VariableMapping> mappings = FXCollections.observableArrayList();
 
+	private static boolean darkMode;
+
 	public CardiotestApplication() {}
 
-	public static void main(String[] args) { launch(CardiotestApplication.class, args); }
+	public static void main(String[] args) throws ParseException {
+		Options options = new Options();
+		options.addOption("d", "dark", false, "dark mode");
+
+		CommandLineParser parser = new DefaultParser();
+		CommandLine cmd = parser.parse(options, args);
+
+		if (cmd.hasOption("-d")) darkMode = true;
+
+		launch(CardiotestApplication.class, args);
+	}
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -81,6 +96,11 @@ public class CardiotestApplication extends Application {
 			controller.setMainApp(this);
 
 			Scene scene = new Scene(rootLayout);
+
+			if (darkMode) {
+				JMetro jMetro = new JMetro(Style.DARK);
+				jMetro.setScene(scene);
+			}
 
 			primaryStage.setScene(scene);
 			primaryStage.show();

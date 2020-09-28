@@ -19,7 +19,7 @@
                 </Menu>
             <Menu mnemonicParsing="false" text="Session">
               <items>
-                <MenuItem disable="true" mnemonicParsing="false" text="New" />
+                <MenuItem fx:id="menuNewSession" mnemonicParsing="false" onAction="#handleMenuNewSession" text="New" />
                         <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem fx:id="menuSave" mnemonicParsing="false" onAction="#handleMenuSaveSettings" text="Save" />
                   <SeparatorMenuItem mnemonicParsing="false" />

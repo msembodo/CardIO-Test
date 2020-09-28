@@ -50,6 +50,24 @@ public class AppletParam {
     }public SimpleStringProperty lifeCycleProperty() {
         return lifeCycle;
     }
+    public String interpretLifeCycle(String lifeCycle) {
+        String lifeCycleHex = "XX";
+        switch(lifeCycle) {
+            case "Installed":
+                lifeCycleHex = "03";
+                break;
+            case "Selectable":
+                lifeCycleHex = "07";
+                break;
+            case "Personalized":
+                lifeCycleHex = "0F";
+                break;
+            case "Locked":
+                lifeCycleHex = "8X";
+                break;
+        }
+        return lifeCycleHex;
+    }
 
 
 

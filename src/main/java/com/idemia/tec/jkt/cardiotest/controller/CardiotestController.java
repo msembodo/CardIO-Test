@@ -113,7 +113,7 @@ public class CardiotestController {
     @FXML private TableColumn<AppletParam, String> clmLifeCycle;
     @FXML private TextField packageAidTextField;
     @FXML private TextField instanceAidTextField;
-    @FXML private TextField lifeCycleTextField;
+    @FXML private ComboBox<String> cmbLifeCycle;
 
     // bottom tab pane
     @FXML private TabPane tabBottom;
@@ -374,6 +374,14 @@ public class CardiotestController {
 
         // Verif GP
         chkIncludeVerifGp.setSelected(root.getRunSettings().getRam().isIncludeVerifGp());
+        cmbLifeCycle.getItems().clear();
+        List<String> lifeCycles = new ArrayList<>();
+        lifeCycles.add("Installed");
+        lifeCycles.add("Selectable");
+        lifeCycles.add("Personalized");
+        lifeCycles.add("Locked");
+        cmbLifeCycle.getItems().addAll(lifeCycles);
+
         handleIncludeVerifGp();
 
         // initialize applet params
@@ -440,12 +448,12 @@ public class CardiotestController {
         if (appletParam != null) {
             packageAidTextField.setText(appletParam.getPackageAid());
             instanceAidTextField.setText(appletParam.getInstanceAid());
-            lifeCycleTextField.setText(appletParam.getLifeCycle());
+            cmbLifeCycle.setValue(appletParam.getLifeCycle());
         }
         else {
             packageAidTextField.setText("");
             instanceAidTextField.setText("");
-            lifeCycleTextField.setText("");
+            cmbLifeCycle.setValue("");
         }
     }
 
@@ -685,7 +693,7 @@ public class CardiotestController {
         // add new applet param
         String packageAid = packageAidTextField.getText();
         String instanceAid = instanceAidTextField.getText();
-        String lifeCycle = lifeCycleTextField.getText();
+        String lifeCycle = cmbLifeCycle.getValue();
         AppletParam appletParam = new AppletParam(packageAid, instanceAid, lifeCycle);
         root.getAppletParams().add(appletParam);
     }

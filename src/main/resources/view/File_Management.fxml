@@ -23,7 +23,7 @@
             <CheckBox fx:id="chkIncludeLinkFileTest" layoutX="12.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleIncludeLinkFileCheck" selected="true" text="Include 'Link Files'" AnchorPane.leftAnchor="280.0" AnchorPane.topAnchor="12.0" />
             <CheckBox fx:id="chkIncludeRuwiTest" layoutX="653.0" layoutY="13.0" mnemonicParsing="false" onAction="#handleIncludeRuwiCheck" selected="true" text="Include 'Readable &amp; Updateable when Invalidated'" AnchorPane.leftAnchor="560.0" AnchorPane.topAnchor="12.0" />
             <CheckBox fx:id="chkIncludeSfiTest" layoutX="1050.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleIncludeSfiCheck" selected="true" text="Include 'SFI Check'" AnchorPane.leftAnchor="970.0" AnchorPane.topAnchor="12.0" />
-            <TitledPane animated="false" collapsible="false" focusTraversable="false" layoutX="530.0" layoutY="300.0" prefHeight="540.0" prefWidth="590.0" text="Linked File Test" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="990.0" AnchorPane.topAnchor="46.0">
+            <TitledPane animated="false" collapsible="false" focusTraversable="false" layoutX="530.0" layoutY="300.0" prefHeight="540.0" prefWidth="590.0" text="Linked File Test" AnchorPane.bottomAnchor="36.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="990.0" AnchorPane.topAnchor="46.0">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="514.0" prefWidth="590.0">
                   <children>
@@ -44,7 +44,7 @@
                 </AnchorPane>
               </content>
             </TitledPane>
-            <TitledPane animated="false" collapsible="false" focusTraversable="false" layoutX="653.0" layoutY="49.0" prefHeight="535.0" prefWidth="285.0" text="Readable &amp; Updateable when Invalidated" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="560.0" AnchorPane.rightAnchor="580.0" AnchorPane.topAnchor="46.0">
+            <TitledPane animated="false" collapsible="false" focusTraversable="false" layoutX="653.0" layoutY="49.0" prefHeight="535.0" prefWidth="285.0" text="Readable &amp; Updateable when Invalidated" AnchorPane.bottomAnchor="36.0" AnchorPane.leftAnchor="560.0" AnchorPane.rightAnchor="580.0" AnchorPane.topAnchor="46.0">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="514.0" prefWidth="301.0">
                   <children>
@@ -63,11 +63,11 @@
                 </AnchorPane>
               </content>
             </TitledPane>
-            <TitledPane animated="false" collapsible="false" focusTraversable="false" layoutX="961.0" layoutY="50.0" text="SFI Check" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="970.0" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="46.0">
+            <TitledPane animated="false" collapsible="false" focusTraversable="false" layoutX="961.0" layoutY="50.0" text="SFI Check" AnchorPane.bottomAnchor="36.0" AnchorPane.leftAnchor="970.0" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="46.0">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="120.0" prefWidth="576.0">
                   <children>
-                    <GridPane prefHeight="45.0" prefWidth="440.0" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="28.0">
+                    <GridPane prefHeight="48.0" prefWidth="440.0" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="28.0">
                       <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -83,7 +83,7 @@
                         <CheckBox fx:id="SFI_Dir_2F00_1E_Checkbox" mnemonicParsing="false" selected="true" text="'2F00' '1E' (EF_DIR)" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                       </children>
                     </GridPane>
-                    <GridPane prefHeight="320.0" prefWidth="440.0" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="102.0">
+                    <GridPane prefHeight="340.0" prefWidth="440.0" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="102.0">
                       <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -135,7 +135,7 @@
                         <CheckBox fx:id="SFI_ACM_6F39_1C_Checkbox" mnemonicParsing="false" selected="true" text="'6F39' '1C' (EF_ACM)" GridPane.columnIndex="1" GridPane.rowIndex="13" />
                       </children>
                     </GridPane>
-                    <GridPane prefWidth="440.0" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="448.0">
+                    <GridPane prefWidth="440.0" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="465.0">
                       <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -150,7 +150,7 @@
                     </GridPane>
                     <Label layoutX="23.0" layoutY="22.0" text="List of SFI Values at the MF Level (TS 102 221)" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="8.0" />
                     <Label layoutX="28.0" layoutY="121.0" text="List of SFI Values at USIM ADF Level (TS 131 102)" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="82.0" />
-                    <Label layoutX="38.0" layoutY="131.0" text="List of SFI Values at USIM ADF Level (TS 131 102)" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="432.0" />
+                    <Label layoutX="38.0" layoutY="131.0" text="List of SFI Values at USIM ADF Level (TS 131 102)" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="450.0" />
                   </children>
                 </AnchorPane>
               </content>

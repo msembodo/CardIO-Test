@@ -17,6 +17,8 @@ public class RamService {
     @Autowired
     private RootLayoutController root;
 
+    @Autowired private ApduService apduService;
+
     public StringBuilder generateRam(Ram ram) {
         StringBuilder ramBuffer = new StringBuilder();
         // call mappings and load DLLs
@@ -881,7 +883,7 @@ public class RamService {
         );
         if(isUpdateRecord) {
             routine.append(
-                    "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n" +
+                    apduService.verifyPin1() + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n" +
                     "A0 A4 00 00 02 7F10 (9F22) ;select DF Telecom\n" +
                     "A0 A4 00 00 02 6F3C (9F0F) ;select EF SMS\n" +
                     "A0 DC 01 04 G J (90XX) ;update EF SMS\n" +
@@ -1103,7 +1105,7 @@ public class RamService {
         if(isUpdateRecord) {
             routine.append(
                     "\n" +
-                    "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n" +
+                    apduService.verifyPin1() + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n" +
                     "A0 A4 00 00 02 7F10 (9F22) ;select DF Telecom\n" +
                     "A0 A4 00 00 02 6F3C (9F0F) ;select EF SMS\n" +
                     "A0 DC 01 04 G J (91XX) ;update EF SMS\n" +
@@ -1177,7 +1179,7 @@ public class RamService {
         if(isUpdateRecord) {
             routine.append(
                     "\n" +
-                            "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n" +
+                            apduService.verifyPin1() + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n" +
                             "A0 A4 00 00 02 7F10 (9F22) ;select DF Telecom\n" +
                             "A0 A4 00 00 02 6F3C (9F0F) ;select EF SMS\n" +
                             "A0 DC 01 04 G J (91XX) ;update EF SMS\n" +
@@ -1251,7 +1253,7 @@ public class RamService {
         if(isUpdateRecord) {
             routine.append(
                     "\n" +
-                            "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n" +
+                            apduService.verifyPin1() + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n" +
                             "A0 A4 00 00 02 7F10 (9F22) ;select DF Telecom\n" +
                             "A0 A4 00 00 02 6F3C (9F0F) ;select EF SMS\n" +
                             "A0 DC 01 04 G J (91XX) ;update EF SMS\n" +
@@ -1859,7 +1861,7 @@ public class RamService {
         StringBuilder routine = new StringBuilder();
         if(isUpdateRecord) {
             routine.append(
-                    "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n" +
+                    apduService.verifyPin1() + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n" +
                     "A0 A4 00 00 02 7F10 (9F22) ;select DF Telecom\n" +
                     "A0 A4 00 00 02 6F3C (9F0F) ;select EF SMS\n" +
                     "A0 DC 01 04 G J (91XX) ;update EF SMS\n" +

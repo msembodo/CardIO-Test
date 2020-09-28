@@ -45,6 +45,7 @@ public class CardiotestApplication extends Application {
 	private Stage toolOptionsDialogStage;
 	private Stage importDialogStage;
 	private Stage aboutStage;
+	private Stage customApduStage;
 
 	private ObservableList<AdvSaveVariable> advSaveVariables = FXCollections.observableArrayList();
 	private ObservableList<VariableMapping> mappings = FXCollections.observableArrayList();
@@ -217,6 +218,29 @@ public class CardiotestApplication extends Application {
 		catch (IOException e) { e.printStackTrace(); }
 	}
 
+	public void showCustomApdu() {
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/CustomApdu.fxml"));
+			loader.setControllerFactory(springContext::getBean);
+			AnchorPane customApdu = loader.load();
+
+			// give controller access to main app
+			CustomAPDUController controller = loader.getController();
+			controller.setMainApp(this);
+
+			// create dialog
+			customApduStage = new Stage();
+			customApduStage.setTitle("Custom APDU");
+			customApduStage.setResizable(false);
+			customApduStage.initModality(Modality.WINDOW_MODAL);
+			customApduStage.initOwner(primaryStage);
+			Scene scene = new Scene(customApdu);
+			customApduStage.setScene(scene);
+			customApduStage.showAndWait();
+		}
+		catch (IOException e) { e.printStackTrace(); }
+	}
+
 	public Optional<CardioUser> domainLogin() {
 		Dialog<CardioUser> loginDialog = new Dialog<>();
 		loginDialog.setTitle("card.io");
@@ -295,5 +319,6 @@ public class CardiotestApplication extends Application {
 	public Stage getToolOptionsDialogStage() { return toolOptionsDialogStage; }
 	public Stage getImportDialogStage() { return importDialogStage; }
 	public Stage getAboutStage() { return aboutStage; }
+	public Stage getCustomApduStage() { return customApduStage; }
 
 }

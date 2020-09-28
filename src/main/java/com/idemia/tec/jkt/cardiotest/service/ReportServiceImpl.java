@@ -1661,7 +1661,7 @@ public class ReportServiceImpl implements ReportService {
         return header.toString();
     }
 
-    private String createDocumentFooter() { return "\n<div><i>Created by CARDIO</i></div>\n</body>\n</html>"; }
+    private String createDocumentFooter() { return "\n<div><i>Created by card.io</i></div>\n</body>\n</html>"; }
 
     private String createTableHeader() { return "\n<div>\n" + "<table>\n" + "<tbody>"; }
 

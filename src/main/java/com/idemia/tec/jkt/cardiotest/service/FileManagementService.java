@@ -13,6 +13,7 @@ public class FileManagementService {
 
     @Autowired private RootLayoutController root;
     @Autowired private FileManagementController FMCon;
+    @Autowired private ApduService apduService;
 
     ObservableList <FMLinkFiles> allFMLinkFiles;
 
@@ -55,22 +56,22 @@ public class FileManagementService {
 
 
         linkFileTestBuffer.append(
-                         "00 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000)\n"
-                        + "00 20 00 0A 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+                         apduService.verifyGpin() + root.getRunSettings().getSecretCodes().getGpin() + " (9000)\n"
+                        + apduService.verify3gAdm1() + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
                 );
 
         linkFileTestBuffer.append(
             "00 A4 04 00 <?> %USIM_AID\t(9000, 61xx)\n"
-                    + "00 20 00 81 08 %" + root.getRunSettings().getSecretCodes().getLpin() + " (9000)\n\n"
+                    + apduService.verifyLpin() + root.getRunSettings().getSecretCodes().getLpin() + " (9000)\n\n"
         );
 
 
         if (root.getRunSettings().getSecretCodes().isUseIsc2())
-            linkFileTestBuffer.append("00 20 00 0B 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+            linkFileTestBuffer.append(apduService.verify3gAdm2() + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc3())
-            linkFileTestBuffer.append("00 20 00 0C 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+            linkFileTestBuffer.append(apduService.verify3gAdm3() + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc4())
-            linkFileTestBuffer.append("00 20 00 0D 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+            linkFileTestBuffer.append(apduService.verify3gAdm4() + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
 
 
         for (int i=0;i < root.getRunSettings().getFileManagement().getRow() ;i++)
@@ -602,36 +603,36 @@ public class FileManagementService {
 
 
                 ruwiTestBuffer.append(
-                        "00 20 00 0A 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
-                                + "00 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000)\n\n"
+                        apduService.verify3gAdm1() + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+                                + apduService.verifyGpin() + root.getRunSettings().getSecretCodes().getGpin() + " (9000)\n\n"
                 );
 
                 ruwiTestBuffer.append(
                         "00A40400<?> %USIM_AID\t(9000, 61xx)\n"
-                                + "00 20 00 81 08 %" + root.getRunSettings().getSecretCodes().getLpin() + " (9000)\n\n"
+                                + apduService.verifyLpin() + root.getRunSettings().getSecretCodes().getLpin() + " (9000)\n\n"
                 );
 
 
                 if (root.getRunSettings().getSecretCodes().isUseIsc2())
-                    ruwiTestBuffer.append("00 20 00 0B 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+                    ruwiTestBuffer.append(apduService.verify3gAdm2() + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
                 if (root.getRunSettings().getSecretCodes().isUseIsc3())
-                    ruwiTestBuffer.append("00 20 00 0C 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+                    ruwiTestBuffer.append(apduService.verify3gAdm3() + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
                 if (root.getRunSettings().getSecretCodes().isUseIsc4())
-                    ruwiTestBuffer.append("00 20 00 0D 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+                    ruwiTestBuffer.append(apduService.verify3gAdm4() + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
 
 
                 ruwiTestBuffer.append(
-                        ".DEFINE %_VERIFY_ADM1_ 00 2000 0A 08  %" + root.getRunSettings().getSecretCodes().getIsc1() + "\n"
-                                + ".DEFINE %_VERIFY_CHV1_ 00 2000 01 08 %" + root.getRunSettings().getSecretCodes().getGpin()+ "\n"
-                                + ".DEFINE %_VERIFY_CHV2_ 00 2000 81 08 %" + root.getRunSettings().getSecretCodes().getLpin()+ "\n"
+                        ".DEFINE %_VERIFY_ADM1_ " + apduService.verify3gAdm1() + root.getRunSettings().getSecretCodes().getIsc1() + "\n"
+                                + ".DEFINE %_VERIFY_CHV1_ " + apduService.verifyGpin() + root.getRunSettings().getSecretCodes().getGpin()+ "\n"
+                                + ".DEFINE %_VERIFY_CHV2_ " + apduService.verifyLpin() + root.getRunSettings().getSecretCodes().getLpin()+ "\n"
                 );
 
                 if (root.getRunSettings().getSecretCodes().isUseIsc2())
-                    ruwiTestBuffer.append(".DEFINE %_VERIFY_ADM2_ 00 2000 0B 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+                    ruwiTestBuffer.append(".DEFINE %_VERIFY_ADM2_ " + apduService.verify3gAdm2() + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
                 if (root.getRunSettings().getSecretCodes().isUseIsc3())
-                    ruwiTestBuffer.append(".DEFINE %_VERIFY_ADM3_ 00 2000 0C 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+                    ruwiTestBuffer.append(".DEFINE %_VERIFY_ADM3_ " + apduService.verify3gAdm3() + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
                 if (root.getRunSettings().getSecretCodes().isUseIsc4())
-                    ruwiTestBuffer.append(".DEFINE %_VERIFY_ADM4_ 00 2000 0D 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+                    ruwiTestBuffer.append(".DEFINE %_VERIFY_ADM4_ " + apduService.verify3gAdm4() + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
 
                 ruwiTestBuffer.append(
                         "\n.DEFINE %_SELECT_ \t\t\t00 A4 00 04 02\n"
@@ -833,31 +834,31 @@ public class FileManagementService {
 
 
                 ruwiTestBuffer.append(
-                        "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
-                                + "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
-                                + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+                        apduService.verify2gAdm1() + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+                                + apduService.verifyPin1() + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+                                + apduService.verifyPin2() + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
                 );
 
                 if (root.getRunSettings().getSecretCodes().isUseIsc2())
-                    ruwiTestBuffer.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+                    ruwiTestBuffer.append(apduService.verify2gAdm2() + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
                 if (root.getRunSettings().getSecretCodes().isUseIsc3())
-                    ruwiTestBuffer.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+                    ruwiTestBuffer.append(apduService.verify2gAdm3() + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
                 if (root.getRunSettings().getSecretCodes().isUseIsc4())
-                    ruwiTestBuffer.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n\n");
+                    ruwiTestBuffer.append(apduService.verify2gAdm4() + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n\n");
 
 
                 ruwiTestBuffer.append(
-                        ".DEFINE %_VERIFY_ADM1_ A0 2000 00 08  %" + root.getRunSettings().getSecretCodes().getIsc1() + "\n"
-                                + ".DEFINE %_VERIFY_CHV1_ A0 2000 01 08 %" + root.getRunSettings().getSecretCodes().getChv1()+ "\n"
-                                + ".DEFINE %_VERIFY_CHV2_ A0 2000 02 08 %" + root.getRunSettings().getSecretCodes().getChv2()+ "\n"
+                        ".DEFINE %_VERIFY_ADM1_ " + apduService.verify2gAdm1() + root.getRunSettings().getSecretCodes().getIsc1() + "\n"
+                                + ".DEFINE %_VERIFY_CHV1_ " + apduService.verifyPin1() + root.getRunSettings().getSecretCodes().getChv1()+ "\n"
+                                + ".DEFINE %_VERIFY_CHV2_ " + apduService.verifyPin2() + root.getRunSettings().getSecretCodes().getChv2()+ "\n"
                 );
 
                 if (root.getRunSettings().getSecretCodes().isUseIsc2())
-                    ruwiTestBuffer.append(".DEFINE %_VERIFY_ADM2_ A0 2000 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+                    ruwiTestBuffer.append(".DEFINE %_VERIFY_ADM2_ " + apduService.verify2gAdm2() + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
                 if (root.getRunSettings().getSecretCodes().isUseIsc3())
-                    ruwiTestBuffer.append(".DEFINE %_VERIFY_ADM3_ A0 2000 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+                    ruwiTestBuffer.append(".DEFINE %_VERIFY_ADM3_ " + apduService.verify2gAdm3() + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
                 if (root.getRunSettings().getSecretCodes().isUseIsc4())
-                    ruwiTestBuffer.append(".DEFINE %_VERIFY_ADM4_ A0 2000 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+                    ruwiTestBuffer.append(".DEFINE %_VERIFY_ADM4_ " + apduService.verify2gAdm4() + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
 
 
                 ruwiTestBuffer.append(
@@ -1294,21 +1295,21 @@ public class FileManagementService {
 
         sfiTestBuffer.append(
                 //"00A40400<?> %USIM_AID\t(61xx)\n"
-                        "00 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000)\n"
+                        apduService.verifyGpin() + root.getRunSettings().getSecretCodes().getGpin() + " (9000)\n"
                         //+ "00 20 00 81 08 %" + root.getRunSettings().getSecretCodes().getLpin() + " (9000)\n"
-                        + "00 20 00 0A 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n");
+                        + apduService.verify3gAdm1() + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n");
 
         if (root.getRunSettings().getSecretCodes().isUseIsc2())
-            sfiTestBuffer.append("00 20 00 0B 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+            sfiTestBuffer.append(apduService.verify3gAdm2() + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc3())
-            sfiTestBuffer.append("00 20 00 0C 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+            sfiTestBuffer.append(apduService.verify3gAdm3() + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc4())
-            sfiTestBuffer.append("00 20 00 0D 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+            sfiTestBuffer.append(apduService.verify3gAdm4() + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
 
 
             sfiTestBuffer.append(
                     "00 A4 04 00 <?> %USIM_AID\t(9000,61xx)\n"
-                            + "00 20 00 81 08 %" + root.getRunSettings().getSecretCodes().getLpin() + " (9000)\n\n"
+                            + apduService.verifyLpin() + root.getRunSettings().getSecretCodes().getLpin() + " (9000)\n\n"
                             + "00 A4 00 04 02 3F00 \t(61xx,9000)\n"
             );
 

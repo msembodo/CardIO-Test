@@ -13,6 +13,7 @@ import java.io.File;
 public class RfmUsimService {
 
     @Autowired private RootLayoutController root;
+    @Autowired private ApduService apduService;
 
     private String headerScriptRfmUsim(RfmUsim rfmUsim){
         StringBuilder headerScript = new StringBuilder();
@@ -685,7 +686,7 @@ public class RfmUsimService {
         else {
             routine.append(
                 "\n; update EF SMS record\n" // Case 4 (Bad Case) use unknown TAR, code manually
-                + "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000)\n"
+                + apduService.verifyPin1() + root.getRunSettings().getSecretCodes().getGpin() + " (9000)\n"
                 + "A0 A4 00 00 02 7F10 (9FXX) ;select DF Telecom\n"
                 + "A0 A4 00 00 02 6F3C (9F0F) ;select EF SMS\n"
                 + "A0 DC 01 04 G J (9000, 91XX) ;update EF SMS\n\n"
@@ -1121,7 +1122,7 @@ public class RfmUsimService {
 
         updateSMSRecord.append(
             "\n; update EF SMS record\n"
-            + "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000)\n"
+            + apduService.verifyPin1() + root.getRunSettings().getSecretCodes().getGpin() + " (9000)\n"
             + "A0 A4 00 00 02 7F10 (9FXX) ;select DF Telecom\n"
             + "A0 A4 00 00 02 6F3C (9F0F) ;select EF SMS\n"
             + "A0 DC 01 04 G J (91XX) ;update EF SMS\n"
@@ -1375,18 +1376,18 @@ public class RfmUsimService {
                 "\n.POWER_ON\n"
                 + "00 A4 04 00 <?> " + root.getRunSettings().getCardParameters().getUsimAid()  + " ; select USIM AID \n"
                 + "; check initial content\n"
-                + "00 20 00 0A 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+                + apduService.verify3gAdm1() + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
         );
 
         if (root.getRunSettings().getSecretCodes().isUseIsc2())
-            checkInitialContent.append("00 20 00 0B 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+            checkInitialContent.append(apduService.verify3gAdm2() + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc3())
-            checkInitialContent.append("00 20 00 0C 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+            checkInitialContent.append(apduService.verify3gAdm3() + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc4())
-            checkInitialContent.append("00 20 00 0D 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+            checkInitialContent.append(apduService.verify3gAdm4() + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
         checkInitialContent.append(
-                "00 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
-                + "00 20 00 81 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+                apduService.verifyGpin() + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+                + apduService.verifyLpin() + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
                 + "00 A4 00 04 02 %DF_ID (61XX)\n"
                 +"00 A4 00 04 02 %EF_ID (61XX)\n"
                 +"00 B0 00 00 01 (9000)\n"
@@ -1405,18 +1406,18 @@ public class RfmUsimService {
             "\n.POWER_ON\n"
             + "00 A4 04 00 <?> " + root.getRunSettings().getCardParameters().getUsimAid()  + " ; select USIM AID \n"
             + "; check initial content\n"
-            + "00 20 00 0A 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+            + apduService.verify3gAdm1() + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
         );
 
         if (root.getRunSettings().getSecretCodes().isUseIsc2())
-            checkInitialContent.append("00 20 00 0B 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+            checkInitialContent.append(apduService.verify3gAdm2() + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc3())
-            checkInitialContent.append("00 20 00 0C 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+            checkInitialContent.append(apduService.verify3gAdm3() + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc4())
-            checkInitialContent.append("00 20 00 0D 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+            checkInitialContent.append(apduService.verify3gAdm4() + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
         checkInitialContent.append(
-            "00 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
-            + "00 20 00 81 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+            apduService.verifyGpin() + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+            + apduService.verifyLpin() + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
             + "00 A4 00 04 02 %DF_ID (61XX)\n"
         );
 
@@ -1490,18 +1491,18 @@ public class RfmUsimService {
             "\n.POWER_ON\n"
             + "00 A4 04 00 <?> " + root.getRunSettings().getCardParameters().getUsimAid()  + " ; select USIM AID \n"
             + "; check initial content\n"
-            + "00 20 00 0A 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+            + apduService.verify3gAdm1() + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
         );
 
         if (root.getRunSettings().getSecretCodes().isUseIsc2())
-            checkInitialContentBadCase.append("00 20 00 0B 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+            checkInitialContentBadCase.append(apduService.verify3gAdm2() + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc3())
-            checkInitialContentBadCase.append("00 20 00 0C 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+            checkInitialContentBadCase.append(apduService.verify3gAdm3() + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc4())
-            checkInitialContentBadCase.append("00 20 00 0D 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+            checkInitialContentBadCase.append(apduService.verify3gAdm4() + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
         checkInitialContentBadCase.append(
-            "00 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
-            + "00 20 00 81 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+            apduService.verifyGpin() + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+            + apduService.verifyLpin() + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
             + "00 A4 00 04 02 %DF_ID (61XX)\n"
         );
 
@@ -1722,18 +1723,18 @@ public class RfmUsimService {
             "\n; check update has been done on EF\n"
             + ".POWER_ON\n"
             + "00 A4 04 00 <?> " + root.getRunSettings().getCardParameters().getUsimAid()  + " ; select USIM AID \n"
-            + "00 20 00 0A 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+            + apduService.verify3gAdm1() + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
         );
 
         if (root.getRunSettings().getSecretCodes().isUseIsc2())
-            checkUpdateHasBeenDone.append("00 20 00 0B 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+            checkUpdateHasBeenDone.append(apduService.verify3gAdm2() + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc3())
-            checkUpdateHasBeenDone.append("00 20 00 0C 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+            checkUpdateHasBeenDone.append(apduService.verify3gAdm3() + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc4())
-            checkUpdateHasBeenDone.append("00 20 00 0D 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+            checkUpdateHasBeenDone.append(apduService.verify3gAdm4() + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
         checkUpdateHasBeenDone.append(
-            "00 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
-            + "00 20 00 81 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+            apduService.verifyGpin() + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+            + apduService.verifyLpin() + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
             + "00 A4 00 04 02 %DF_ID (61XX)\n"
             +"00 A4 00 04 02 %EF_ID (61XX)\n"
             + "00 B0 00 00 01 [AA] (9000)\n"
@@ -1751,18 +1752,18 @@ public class RfmUsimService {
             "\n; check update has been done on EF\n"
             + ".POWER_ON\n"
             + "00 A4 04 00 <?> " + root.getRunSettings().getCardParameters().getUsimAid()  + " ; select USIM AID \n"
-            + "00 20 00 0A 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+            + apduService.verify3gAdm1() + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
         );
 
         if (root.getRunSettings().getSecretCodes().isUseIsc2())
-            checkUpdateHasBeenDone.append("00 20 00 0B 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+            checkUpdateHasBeenDone.append(apduService.verify3gAdm2() + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc3())
-            checkUpdateHasBeenDone.append("00 20 00 0C 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+            checkUpdateHasBeenDone.append(apduService.verify3gAdm3() + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc4())
-            checkUpdateHasBeenDone.append("00 20 00 0D 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+            checkUpdateHasBeenDone.append(apduService.verify3gAdm4() + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
         checkUpdateHasBeenDone.append(
-            "00 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
-            + "00 20 00 81 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+            apduService.verifyGpin() + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+            + apduService.verifyLpin() + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
             + "00 A4 00 04 02 %DF_ID (61XX)\n"
         );
 
@@ -1827,18 +1828,18 @@ public class RfmUsimService {
             "\n; check update has failed on EF\n"
             + ".POWER_ON\n"
             + "00 A4 04 00 <?> " + root.getRunSettings().getCardParameters().getUsimAid()  + " ; select USIM AID \n"
-            + "00 20 00 0A 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+            + apduService.verify3gAdm1() + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
         );
 
         if (root.getRunSettings().getSecretCodes().isUseIsc2())
-            checkUpdateHasFailed.append("00 20 00 0B 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+            checkUpdateHasFailed.append(apduService.verify3gAdm2() + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc3())
-            checkUpdateHasFailed.append("00 20 00 0C 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+            checkUpdateHasFailed.append(apduService.verify3gAdm3() + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc4())
-            checkUpdateHasFailed.append("00 20 00 0D 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+            checkUpdateHasFailed.append(apduService.verify3gAdm4() + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
         checkUpdateHasFailed.append(
-            "00 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
-            + "00 20 00 81 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+            apduService.verifyGpin() + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+            + apduService.verifyLpin() + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
             + "00 A4 00 04 02 %DF_ID (61XX)\n"
         );
 
@@ -1903,18 +1904,18 @@ public class RfmUsimService {
             "\n; restore initial content of EF\n"
             + ".POWER_ON\n"
             + "00 A4 04 00 <?> " + root.getRunSettings().getCardParameters().getUsimAid()  + " ; select USIM AID \n"
-            + "00 20 00 0A 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+            + apduService.verify3gAdm1() + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
         );
 
         if (root.getRunSettings().getSecretCodes().isUseIsc2())
-            restoreInitialContent.append("00 20 00 0B 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+            restoreInitialContent.append(apduService.verify3gAdm2() + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc3())
-            restoreInitialContent.append("00 20 00 0C 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+            restoreInitialContent.append(apduService.verify3gAdm3() + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc4())
-            restoreInitialContent.append("00 20 00 0D 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+            restoreInitialContent.append(apduService.verify3gAdm4() + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
         restoreInitialContent.append(
-            "00 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
-            + "00 20 00 81 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+            apduService.verifyGpin() + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+            + apduService.verifyLpin() + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
             + "00 A4 00 04 02 %DF_ID (61XX)\n"
             +"00 A4 00 04 02 %EF_ID (61XX)\n"
             + "00 D6 00 00 01 %EF_CONTENT (9000)\n"
@@ -1932,18 +1933,18 @@ public class RfmUsimService {
             "\n; restore initial content of EF\n"
             + ".POWER_ON\n"
             + "00 A4 04 00 <?> " + root.getRunSettings().getCardParameters().getUsimAid()  + " ; select USIM AID \n"
-            + "00 20 00 0A 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+            + apduService.verify3gAdm1() + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
         );
 
         if (root.getRunSettings().getSecretCodes().isUseIsc2())
-            restoreInitialContent.append("00 20 00 0B 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+            restoreInitialContent.append(apduService.verify3gAdm2() + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc3())
-            restoreInitialContent.append("00 20 00 0C 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+            restoreInitialContent.append(apduService.verify3gAdm3() + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc4())
-            restoreInitialContent.append("00 20 00 0D 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+            restoreInitialContent.append(apduService.verify3gAdm4() + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
         restoreInitialContent.append(
-            "00 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
-            + "00 20 00 81 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+            apduService.verifyGpin() + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+            + apduService.verifyLpin() + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
             + "00 A4 00 04 02 %DF_ID (61XX)\n"
         );
 

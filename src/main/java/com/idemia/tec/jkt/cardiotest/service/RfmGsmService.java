@@ -13,6 +13,7 @@ import java.io.File;
 public class RfmGsmService {
 
     @Autowired private RootLayoutController root;
+    @Autowired private ApduService apduService;
 
     private String headerScriptRfmGsm(RfmGsm rfmGsm){
         StringBuilder headerScript = new StringBuilder();
@@ -685,7 +686,7 @@ public class RfmGsmService {
         else {
             routine.append(
                 "\n; update EF SMS record\n" // Case 4 (Bad Case) use unknown TAR, code manually
-                + "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000)\n"
+                + apduService.verifyPin1() + root.getRunSettings().getSecretCodes().getGpin() + " (9000)\n"
                 + "A0 A4 00 00 02 7F10 (9FXX) ;select DF Telecom\n"
                 + "A0 A4 00 00 02 6F3C (9F0F) ;select EF SMS\n"
                 + "A0 DC 01 04 G J (9000) ;update EF SMS\n"
@@ -1121,7 +1122,7 @@ public class RfmGsmService {
 
         updateSMSRecord.append(
             "\n; update EF SMS record\n"
-            + "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000)\n"
+            + apduService.verifyPin1() + root.getRunSettings().getSecretCodes().getGpin() + " (9000)\n"
             + "A0 A4 00 00 02 7F10 (9FXX) ;select DF Telecom\n"
             + "A0 A4 00 00 02 6F3C (9F0F) ;select EF SMS\n"
             + "A0 DC 01 04 G J (91XX) ;update EF SMS\n"
@@ -1372,18 +1373,18 @@ public class RfmGsmService {
         checkInitialContent.append(
             "\n.POWER_ON\n"
             + "; check initial content\n"
-            + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+            + apduService.verify2gAdm1() + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
         );
 
         if (root.getRunSettings().getSecretCodes().isUseIsc2())
-            checkInitialContent.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+            checkInitialContent.append(apduService.verify2gAdm2() + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc3())
-            checkInitialContent.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+            checkInitialContent.append(apduService.verify2gAdm3() + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc4())
-            checkInitialContent.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+            checkInitialContent.append(apduService.verify2gAdm4() + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
         checkInitialContent.append(
-            "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
-            + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+            apduService.verifyPin1() + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+            + apduService.verifyPin2() + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
             + "A0 A4 00 00 02 %DF_ID (9FXX)\n"
             +"A0 A4 00 00 02 %EF_ID (9F0F)\n"
             +"A0 B0 00 00 01 (9000)\n"
@@ -1401,18 +1402,18 @@ public class RfmGsmService {
         checkInitialContent.append(
             "\n.POWER_ON\n"
             + "; check initial content\n"
-            + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+            + apduService.verify2gAdm1() + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
         );
 
         if (root.getRunSettings().getSecretCodes().isUseIsc2())
-            checkInitialContent.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+            checkInitialContent.append(apduService.verify2gAdm2() + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc3())
-            checkInitialContent.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+            checkInitialContent.append(apduService.verify2gAdm3() + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc4())
-            checkInitialContent.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+            checkInitialContent.append(apduService.verify2gAdm4() + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
         checkInitialContent.append(
-            "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
-            + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+            apduService.verifyPin1() + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+            + apduService.verifyPin2() + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
             + "A0 A4 00 00 02 %DF_ID (9FXX)\n"
         );
 
@@ -1484,18 +1485,18 @@ public class RfmGsmService {
         checkInitialContentBadCase.append(
             "\n.POWER_ON\n"
             + "; check initial content\n"
-            + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+            + apduService.verify2gAdm1() + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
         );
 
         if (root.getRunSettings().getSecretCodes().isUseIsc2())
-            checkInitialContentBadCase.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+            checkInitialContentBadCase.append(apduService.verify2gAdm2() + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc3())
-            checkInitialContentBadCase.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+            checkInitialContentBadCase.append(apduService.verify2gAdm3() + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc4())
-            checkInitialContentBadCase.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+            checkInitialContentBadCase.append(apduService.verify2gAdm4() + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
         checkInitialContentBadCase.append(
-                "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
-                        + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+                apduService.verifyPin1() + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+                        + apduService.verifyPin2() + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
                         + "A0 A4 00 00 02 %DF_ID (9FXX)\n"
         );
 
@@ -1716,18 +1717,18 @@ public class RfmGsmService {
         checkUpdateHasBeenDone.append(
             "\n; check update has been done on EF\n"
             + ".POWER_ON\n"
-            + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+            + apduService.verify2gAdm1() + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
         );
 
         if (root.getRunSettings().getSecretCodes().isUseIsc2())
-            checkUpdateHasBeenDone.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+            checkUpdateHasBeenDone.append(apduService.verify2gAdm2() + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc3())
-            checkUpdateHasBeenDone.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+            checkUpdateHasBeenDone.append(apduService.verify2gAdm3() + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc4())
-            checkUpdateHasBeenDone.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+            checkUpdateHasBeenDone.append(apduService.verify2gAdm4() + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
         checkUpdateHasBeenDone.append(
-            "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
-            + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+            apduService.verifyPin1() + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+            + apduService.verifyPin2() + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
             + "A0 A4 00 00 02 %DF_ID (9FXX)\n"
             +"A0 A4 00 00 02 %EF_ID (9F0F)\n"
             + "A0 B0 00 00 01 [AA] (9000)\n"
@@ -1744,18 +1745,18 @@ public class RfmGsmService {
         checkUpdateHasBeenDone.append(
             "\n; check update has been done on EF\n"
             + ".POWER_ON\n"
-            + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+            + apduService.verify2gAdm1() + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
         );
 
         if (root.getRunSettings().getSecretCodes().isUseIsc2())
-            checkUpdateHasBeenDone.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+            checkUpdateHasBeenDone.append(apduService.verify2gAdm2() + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc3())
-            checkUpdateHasBeenDone.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+            checkUpdateHasBeenDone.append(apduService.verify2gAdm3() + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc4())
-            checkUpdateHasBeenDone.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+            checkUpdateHasBeenDone.append(apduService.verify2gAdm4() + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
         checkUpdateHasBeenDone.append(
-            "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
-            + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+            apduService.verifyPin1() + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+            + apduService.verifyPin2() + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
             + "A0 A4 00 00 02 %DF_ID (9FXX)\n"
         );
 
@@ -1819,18 +1820,18 @@ public class RfmGsmService {
         checkUpdateHasFailed.append(
             "\n; check update has failed on EF\n"
             + ".POWER_ON\n"
-            + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+            + apduService.verify2gAdm1() + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
         );
 
         if (root.getRunSettings().getSecretCodes().isUseIsc2())
-            checkUpdateHasFailed.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+            checkUpdateHasFailed.append(apduService.verify2gAdm2() + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc3())
-            checkUpdateHasFailed.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+            checkUpdateHasFailed.append(apduService.verify2gAdm3() + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc4())
-            checkUpdateHasFailed.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+            checkUpdateHasFailed.append(apduService.verify2gAdm4() + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
         checkUpdateHasFailed.append(
-            "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
-            + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+            apduService.verifyPin1() + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+            + apduService.verifyPin2() + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
             + "A0 A4 00 00 02 %DF_ID (9FXX)\n"
         );
 
@@ -1894,18 +1895,18 @@ public class RfmGsmService {
         restoreInitialContent.append(
             "\n; restore initial content of EF\n"
             + ".POWER_ON\n"
-            + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+            + apduService.verify2gAdm1() + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
         );
 
         if (root.getRunSettings().getSecretCodes().isUseIsc2())
-            restoreInitialContent.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+            restoreInitialContent.append(apduService.verify2gAdm2() + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc3())
-            restoreInitialContent.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+            restoreInitialContent.append(apduService.verify2gAdm3() + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc4())
-            restoreInitialContent.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+            restoreInitialContent.append(apduService.verify2gAdm4() + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
         restoreInitialContent.append(
-            "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
-            + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+            apduService.verifyPin1() + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+            + apduService.verifyPin2() + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
             + "A0 A4 00 00 02 %DF_ID (9FXX)\n"
             +"A0 A4 00 00 02 %EF_ID (9F0F)\n"
             + "A0 D6 00 00 01 %EF_CONTENT (9000)\n"
@@ -1922,18 +1923,18 @@ public class RfmGsmService {
         restoreInitialContent.append(
             "\n; restore initial content of EF\n"
             + ".POWER_ON\n"
-            + "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
+            + apduService.verify2gAdm1() + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
         );
 
         if (root.getRunSettings().getSecretCodes().isUseIsc2())
-            restoreInitialContent.append("A0 20 00 05 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
+            restoreInitialContent.append(apduService.verify2gAdm2() + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc3())
-            restoreInitialContent.append("A0 20 00 06 08 %" + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
+            restoreInitialContent.append(apduService.verify2gAdm3() + root.getRunSettings().getSecretCodes().getIsc3() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc4())
-            restoreInitialContent.append("A0 20 00 07 08 %" + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
+            restoreInitialContent.append(apduService.verify2gAdm4() + root.getRunSettings().getSecretCodes().getIsc4() + " (9000)\n");
         restoreInitialContent.append(
-            "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
-            + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+            apduService.verifyPin1() + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
+            + apduService.verifyPin2() + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
             + "A0 A4 00 00 02 %DF_ID (9FXX)\n"
         );
 

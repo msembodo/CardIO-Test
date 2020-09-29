@@ -1,5 +1,6 @@
 package com.idemia.tec.jkt.cardiotest.service;
 
+import com.idemia.tec.jkt.cardiotest.controller.RootLayoutController;
 import com.idemia.tec.jkt.cardiotest.model.SecretCodes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class SecretCodesService {
 
+    @Autowired private RootLayoutController root;
     @Autowired private ApduService apduService;
 
     public StringBuilder generateSecretCodes2g(SecretCodes secretCodes) {
@@ -89,10 +91,16 @@ public class SecretCodesService {
             + "; verify ADM1\n"
             + apduService.verify2gAdm1() + secretCodes.getIsc1() + " (9000)\n"
             + "; change ADM1 and verify\n"
-            + "A0 24 00 00 10 %" + secretCodes.getIsc1() + " 0123456789ABCDEF (9000)\n"
-            + "A0 20 00 00 08 0123456789ABCDEF (9000)\n"
+            + "A0 24 " + root.getRunSettings().getCustomApdu().getVerify2g().getVerify2gAdm1().getP1() + " "
+                    + root.getRunSettings().getCustomApdu().getVerify2g().getVerify2gAdm1().getP2() + " 10 %"
+                    + secretCodes.getIsc1() + " 0123456789ABCDEF (9000)\n"
+            + "A0 20 " + root.getRunSettings().getCustomApdu().getVerify2g().getVerify2gAdm1().getP1() + " "
+                    + root.getRunSettings().getCustomApdu().getVerify2g().getVerify2gAdm1().getP2() + " "
+                    + "08 0123456789ABCDEF (9000)\n"
             + "; restore initial ADM1 and verify\n"
-            + "A0 24 00 00 10 0123456789ABCDEF %" + secretCodes.getIsc1() + " (9000)\n"
+            + "A0 24 " + root.getRunSettings().getCustomApdu().getVerify2g().getVerify2gAdm1().getP1() + " "
+                    + root.getRunSettings().getCustomApdu().getVerify2g().getVerify2gAdm1().getP2() + " 10 " +
+                    "0123456789ABCDEF %" + secretCodes.getIsc1() + " (9000)\n"
             + apduService.verify2gAdm1() + secretCodes.getIsc1() + " (9000)\n\n"
         );
         if (secretCodes.isUseIsc2()) {
@@ -111,10 +119,14 @@ public class SecretCodesService {
 //                + "A0 2C 00 05 10 %" + secretCodes.getIsc1() + " %" + secretCodes.getIsc2() + " (9000)\n"
 //                + apduService.verify2gAdm2() + secretCodes.getIsc2() + " (9000)\n"
                 + "; change ADM2 and verify\n"
-                + "A0 24 00 05 10 %" + secretCodes.getIsc2() + " %" + secretCodes.getIsc1() + " (9000)\n"
+                + "A0 24 " + root.getRunSettings().getCustomApdu().getVerify2g().getVerify2gAdm2().getP1() + " "
+                        + root.getRunSettings().getCustomApdu().getVerify2g().getVerify2gAdm2().getP2() + " 10 %"
+                        + secretCodes.getIsc2() + " %" + secretCodes.getIsc1() + " (9000)\n"
                 + apduService.verify2gAdm2() + secretCodes.getIsc1() + " (9000)\n"
                 + "; restore initial ADM2 and verify\n"
-                + "A0 24 00 05 10 %" + secretCodes.getIsc1() + " %" + secretCodes.getIsc2() + " (9000)\n"
+                + "A0 24 " + root.getRunSettings().getCustomApdu().getVerify2g().getVerify2gAdm2().getP1() + " "
+                        + root.getRunSettings().getCustomApdu().getVerify2g().getVerify2gAdm2().getP2() + " "
+                        + "10 %" + secretCodes.getIsc1() + " %" + secretCodes.getIsc2() + " (9000)\n"
                 + apduService.verify2gAdm2() + secretCodes.getIsc2() + " (9000)\n\n"
             );
         }
@@ -134,10 +146,14 @@ public class SecretCodesService {
 //                + "A0 2C 00 06 10 %" + secretCodes.getIsc1() + " %" + secretCodes.getIsc3() + " (9000)\n"
 //                + apduService.verify2gAdm3() + secretCodes.getIsc3() + " (9000)\n"
                 + "; change ADM3 and verify\n"
-                + "A0 24 00 06 10 %" + secretCodes.getIsc3() + " %" + secretCodes.getIsc1() + " (9000)\n"
+                + "A0 24 " + root.getRunSettings().getCustomApdu().getVerify2g().getVerify2gAdm3().getP1() + " "
+                        + root.getRunSettings().getCustomApdu().getVerify2g().getVerify2gAdm3().getP2() + " 10 %"
+                        + secretCodes.getIsc3() + " %" + secretCodes.getIsc1() + " (9000)\n"
                 + apduService.verify2gAdm3() + secretCodes.getIsc1() + " (9000)\n"
                 + "; restore initial ADM3 and verify\n"
-                + "A0 24 00 06 10 %" + secretCodes.getIsc1() + " %" + secretCodes.getIsc3() + " (9000)\n"
+                + "A0 24 " + root.getRunSettings().getCustomApdu().getVerify2g().getVerify2gAdm3().getP1() + " "
+                        + root.getRunSettings().getCustomApdu().getVerify2g().getVerify2gAdm3().getP2() + " 10 %"
+                        + secretCodes.getIsc1() + " %" + secretCodes.getIsc3() + " (9000)\n"
                 + apduService.verify2gAdm3() + secretCodes.getIsc3() + " (9000)\n\n"
             );
         }
@@ -157,10 +173,14 @@ public class SecretCodesService {
 //                + "A0 2C 00 07 10 %" + secretCodes.getIsc1() + " %" + secretCodes.getIsc4() + " (9000)\n"
 //                + apduService.verify2gAdm4() + secretCodes.getIsc4() + " (9000)\n"
                 + "; change ADM4 and verify\n"
-                + "A0 24 00 07 10 %" + secretCodes.getIsc4() + " %" + secretCodes.getIsc1() + " (9000)\n"
+                + "A0 24 " + root.getRunSettings().getCustomApdu().getVerify2g().getVerify2gAdm4().getP1() + " "
+                        + root.getRunSettings().getCustomApdu().getVerify2g().getVerify2gAdm4().getP2() + " 10 %"
+                        + secretCodes.getIsc4() + " %" + secretCodes.getIsc1() + " (9000)\n"
                 + apduService.verify2gAdm4() + secretCodes.getIsc1() + " (9000)\n"
                 + "; restore initial ADM4 and verify\n"
-                + "A0 24 00 07 10 %" + secretCodes.getIsc1() + " %" + secretCodes.getIsc4() + " (9000)\n"
+                + "A0 24 " + root.getRunSettings().getCustomApdu().getVerify2g().getVerify2gAdm4().getP1() + " "
+                        + root.getRunSettings().getCustomApdu().getVerify2g().getVerify2gAdm4().getP2() + " 10 %"
+                        + secretCodes.getIsc1() + " %" + secretCodes.getIsc4() + " (9000)\n"
                 + apduService.verify2gAdm4() + secretCodes.getIsc4() + " (9000)\n\n"
             );
         }
@@ -168,7 +188,7 @@ public class SecretCodesService {
             codes2gBuffer.append(
                 "; Block PUK1\n"
                 + "; verify CHV1\n"
-                + "A0 2000 01 08 %" + secretCodes.getChv1() + " (9000)\n"
+                + apduService.verifyPin1() + secretCodes.getChv1() + " (9000)\n"
                 + "; verify wrong CHV1\n"
             );
             for (int i = 0; i < secretCodes.getChv1Retries(); i++)

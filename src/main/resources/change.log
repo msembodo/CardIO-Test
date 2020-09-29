@@ -1,3 +1,6 @@
+Release 2020.09.30
+- Bugfix in change ADM in secret codes 2G
+
 Release 2020.09.29
 - Mapping definitions from advance save variables
 - Configuration of SCP80 keysets

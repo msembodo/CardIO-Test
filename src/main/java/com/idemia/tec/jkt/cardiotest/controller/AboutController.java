@@ -42,7 +42,7 @@ public class AboutController {
     @Autowired public AboutController(ResourceLoader resourceLoader) { this.resourceLoader = resourceLoader; }
 
     @FXML private void initialize() {
-        lblRelease.setText("Release 2020.09.29");
+        lblRelease.setText("Release 2020.09.30");
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {

@@ -123,12 +123,6 @@ public class RunServiceImpl implements RunService {
             runAllBuffer.append(addRam(root.getRunSettings().getRam()));
         }
 
-        //Custom RFM --------------------------------------
-        if (root.getRunSettings().getRfmCustom().isIncludeRfmCustom() ||
-                root.getRunSettings().getRfmCustom().isIncludeRfmCustomUpdateRecord() ||
-                root.getRunSettings().getRfmCustom().isIncludeRfmCustomExpandedMode()) {
-            runAllBuffer.append(addRfmCustom(root.getRunSettings().getRfmCustom()));}
-
         // custom scripts section 3
         if (root.getRunSettings().getCustomScriptsSection3().size() > 0) {
             runAllBuffer.append(addCustomScripts(root.getRunSettings().getCustomScriptsSection3()));

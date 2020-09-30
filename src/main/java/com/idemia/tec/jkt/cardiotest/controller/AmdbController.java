@@ -1,6 +1,7 @@
 package com.idemia.tec.jkt.cardiotest.controller;
 
 import com.idemia.tec.jkt.cardiotest.model.SCP80Keyset;
+import com.idemia.tec.jkt.cardiotest.service.AmdbService;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Modality;
@@ -44,6 +45,9 @@ public class AmdbController {
 
     @Autowired private RootLayoutController root;
     @Autowired private CardiotestController cardiotest;
+    @Autowired private AmdbService amdbService;
+
+    private boolean checkOpenChannelOk;
 
     public AmdbController() {}
 
@@ -170,9 +174,7 @@ public class AmdbController {
         handleUseTransportLevelCheck();
     }
 
-    @FXML private void handleCipherKeysetContextMenu() {
-        cmbCipherKeyset.setItems(cardiotest.getScp80KeysetLabels());
-    }
+    @FXML private void handleCipherKeysetContextMenu() { cmbCipherKeyset.setItems(cardiotest.getScp80KeysetLabels()); }
 
     @FXML private void handleCipherKeysetSelection() {
         for (SCP80Keyset keyset : root.getScp80Keysets()) {
@@ -183,9 +185,7 @@ public class AmdbController {
         }
     }
 
-    @FXML private void handleAuthKeysetContextMenu() {
-        cmbAuthKeyset.setItems(cardiotest.getScp80KeysetLabels());
-    }
+    @FXML private void handleAuthKeysetContextMenu() { cmbAuthKeyset.setItems(cardiotest.getScp80KeysetLabels()); }
 
     @FXML private void handleAuthKeysetSelection() {
         for (SCP80Keyset keyset : root.getScp80Keysets()) {
@@ -426,6 +426,11 @@ public class AmdbController {
         if (type.equals("UDP")) return 1;
         if (type.equals("TCP")) return 2;
         return 0;
+    }
+
+    @FXML private void handleCheckOpenChannel() {
+        checkOpenChannelOk = amdbService.checkOpenChannel();
+        // TODO
     }
 
     public void saveControlState() {

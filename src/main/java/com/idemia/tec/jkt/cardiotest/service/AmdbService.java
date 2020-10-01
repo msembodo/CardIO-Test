@@ -101,9 +101,11 @@ public class AmdbService {
             + ".END_MESSAGE I J\n"
             + "A0 C2 00 00 I J (91XX)\n"
             + "; PoR as SMS-submit\n"
+            + ".MESSAGE #CHECK001:Get PoR as SMS-submit\n"
             + "A0 12 00 00 2F [D02D8103011300820281838500060280018B1C410005811250F300F612027100000D0A %SD_TAR XXXXXXXXXX00009000] (9000)\n"
             + "A0 14 00 00 0C 810301130002028281030100 (91XX)\n"
             + "; check for open channel\n"
+            + ".MESSAGE #CHECK002:Fetch open channel\n"
             + "A0 12 00 00 W(2:2) (9000)\n"
         );
         openChannelBuffer.append(
@@ -276,8 +278,9 @@ public class AmdbService {
         cmdArray.add("TPDUMode");
         if (root.getRunSettings().isStopOnError()) cmdArray.add("-stoponerror");
         try {
-            logger.info("Executing.. " + scriptName);
+//            logger.info("Executing.. " + scriptName);
             launchProcess(cmdArray);
+//            logger.info("Exit val: " + exitVal);
         }
         catch (IOException | InterruptedException e) { e.printStackTrace(); }
     }

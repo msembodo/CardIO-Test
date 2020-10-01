@@ -1,18 +1,25 @@
 package com.idemia.tec.jkt.cardiotest.controller;
 
+import com.idemia.tec.jkt.cardiotest.model.CheckPoint;
 import com.idemia.tec.jkt.cardiotest.model.SCP80Keyset;
 import com.idemia.tec.jkt.cardiotest.service.AmdbService;
+import com.idemia.tec.jkt.cardiotest.service.ApduService;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Modality;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
 public class AmdbController {
+
+    static Logger logger = Logger.getLogger(AmdbController.class);
 
     @FXML private TextField txtSdTar;
     @FXML private ComboBox<String> cmbCipherKeyset;
@@ -46,6 +53,7 @@ public class AmdbController {
     @Autowired private RootLayoutController root;
     @Autowired private CardiotestController cardiotest;
     @Autowired private AmdbService amdbService;
+    @Autowired private ApduService apduService;
 
     private boolean checkOpenChannelOk;
 
@@ -429,7 +437,53 @@ public class AmdbController {
     }
 
     @FXML private void handleCheckOpenChannel() {
-        checkOpenChannelOk = amdbService.checkOpenChannel();
+        // TODO: save settings?
+
+        root.showWaiting("Checking open channel..");
+        root.appendTextFlow("Checking open channel..\n");
+        Task<Void> task = new Task<Void>() {
+            @Override protected Void call() throws Exception {
+                checkOpenChannelOk = amdbService.checkOpenChannel();
+                return null;
+            }
+            @Override protected void succeeded() {
+                super.succeeded();
+                root.getWaitingStage().close();
+                if (checkOpenChannelOk) {
+                    logger.info("Open channel: OK");
+                    root.appendTextFlow("\n>> OK\n", 0);
+                }
+                else {
+                    logger.error("Open channel: NOK");
+                    root.appendTextFlow(">> \nNOT OK\n", 1);
+                }
+                String logFileName = root.getRunSettings().getProjectPath() + "\\scripts\\check_open_channel.L00";
+                try {
+                    List<CheckPoint> checkPoints = apduService.parsePcomLog(logFileName);
+                    if (checkPoints.size() > 0) {
+                        for (CheckPoint cp : checkPoints) {
+                            if (cp.isSuccess()) {
+                                root.appendTextFlow("\n" + cp.getCheckPointMsg() + "\n");
+                                logger.info("output: " + cp.getOutputData());
+                                root.appendTextFlow("Response: " + cp.getOutputData() + "\n");
+                                root.appendTextFlow("Status: " + cp.getStatus());
+                            }
+                            else {
+                                root.appendTextFlow("\n" + cp.getCheckPointMsg() + "\n", 1);
+                                root.appendTextFlow("Response: " + cp.getOutputData() + "\n", 1);
+                                root.appendTextFlow("Expected: " + cp.getExpectedData() + "\n", 1);
+                                root.appendTextFlow("Status: " + cp.getStatus(), 1);
+                                root.appendTextFlow("Expected: " + cp.getExpectedStatus(), 1);
+                            }
+                        }
+                    }
+                }
+                catch (FileNotFoundException e) { e.printStackTrace(); }
+            }
+        };
+        Thread openChannelThread = new Thread(task);
+        openChannelThread.start();
+
         // TODO
     }
 

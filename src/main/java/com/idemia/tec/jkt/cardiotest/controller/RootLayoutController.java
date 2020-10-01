@@ -13,16 +13,23 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.geometry.Orientation;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.apache.log4j.Logger;
+import org.controlsfx.control.MaskerPane;
 import org.controlsfx.control.Notifications;
 import org.controlsfx.control.StatusBar;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -133,6 +140,8 @@ public class RootLayoutController {
 
     private File importProjectDir;
     private File importVarFile;
+
+    private Stage waitingStage;
 
     public RootLayoutController() {}
 
@@ -1933,12 +1942,12 @@ public class RootLayoutController {
         catch (IOException e) { e.printStackTrace(); }
     }
 
-    private void appendTextFlow(String text) {
+    public void appendTextFlow(String text) {
         Text message = new Text(text);
         cardiotest.getTxtInterpretedLog().getChildren().add(message);
     }
 
-    private void appendTextFlow(String text, int style) {
+    public void appendTextFlow(String text, int style) {
         Text message = new Text(text);
         if (style == 0) message.setStyle("-fx-fill: #4F8A10;-fx-font-weight:bold;");
         if (style == 1) message.setStyle("-fx-fill: RED;-fx-font-weight:normal;");
@@ -1957,6 +1966,23 @@ public class RootLayoutController {
         return Optional.ofNullable(scriptName)
                 .filter(f -> f.contains("."))
                 .map(f -> f.substring(scriptName.lastIndexOf(".") + 1));
+    }
+
+    public void showWaiting(String message) {
+        waitingStage = new Stage();
+        waitingStage.initStyle(StageStyle.UNDECORATED);
+        waitingStage.setOpacity(0.8);
+        waitingStage.initOwner(application.getPrimaryStage());
+        waitingStage.initModality(Modality.APPLICATION_MODAL);
+        StackPane sPane = new StackPane();
+        MaskerPane wmPane = new MaskerPane();
+        wmPane.setText(message);
+        wmPane.setVisible(true);
+        sPane.getChildren().add(wmPane);
+        final Scene scene = new Scene(sPane, 240, 160);
+        scene.setFill(null);
+        waitingStage.setScene(scene);
+        waitingStage.show();
     }
 
     public StatusBar getAppStatusBar() { return appStatusBar; }
@@ -1994,4 +2020,7 @@ public class RootLayoutController {
 
     public void setImportProjectDir(File importProjectDir) { this.importProjectDir = importProjectDir; }
     public void setImportVarFile(File importVarFile) { this.importVarFile = importVarFile; }
+
+    public Stage getWaitingStage() { return waitingStage; }
+
 }

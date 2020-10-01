@@ -608,6 +608,7 @@ public class RunServiceImpl implements RunService {
         try {
             logger.info("Executing.. " + scriptName);
             launchProcess(cmdArray);
+            logger.info("Exit val: " + exitVal);
         }
         catch (IOException | InterruptedException e) { e.printStackTrace(); }
     }

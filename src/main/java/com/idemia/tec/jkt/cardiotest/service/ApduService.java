@@ -105,8 +105,6 @@ public class ApduService {
                 if (matcher.find())
                     checkPointName = line.substring(matcher.start(), matcher.end());
                 String checkpointMsg = line.split(":")[1];
-//                System.out.println("\n" + checkPointName);
-//                System.out.println(checkpointMsg);
                 String outputData = "";
                 String expectedData = "";
                 String status = "";
@@ -115,59 +113,91 @@ public class ApduService {
                 int forwardIndex = 1;
                 while (!pcomLogBuffer.get(i + forwardIndex).matches("^\\s+#CHECK.+")) {
                     forwardIndex++;
-                    if ((i + forwardIndex) < pcomLogBuffer.size())
-                        continue;
-                    else
-                        break;
+                    if ((i + forwardIndex) < pcomLogBuffer.size()) continue;
+                    else break;
                 }
+                int cOut = 0;
+                int cExpData = 0;
+                int cStat = 0;
+                int cExpStat = 0;
+                boolean getExpectedOutput = true;
+                boolean getExpectedStatus = true;
                 for (int j = 1; j < forwardIndex; j++) {
                     // get output data
                     if (pcomLogBuffer.get(i+j).matches("^\\s+Output Data\\s+:\\s.+")) {
-                        String[] splitFirstRow = pcomLogBuffer.get(i+j).split(":");
-                        outputData = splitFirstRow[1].replaceAll("[^a-fA-F0-9]", "");
-                        int k = 1;
-                        while (pcomLogBuffer.get(i+j+k).matches("^\\s+:\\s.+")) {
-                            String[] splitNextRow = pcomLogBuffer.get(i+j+k).split(":");
-                            outputData += splitNextRow[1].replaceAll("[^a-fA-F0-9]", "");
-                            k++;
+                        if (cOut < 1) {
+                            String[] splitFirstRow = pcomLogBuffer.get(i + j).split(":");
+                            if (!splitFirstRow[1].contains("none")) {
+                                outputData = splitFirstRow[1].replaceAll("[^a-fA-F0-9]", "");
+                                int k = 1;
+                                while (pcomLogBuffer.get(i + j + k).matches("^\\s+:\\s.+")) {
+                                    String[] splitNextRow = pcomLogBuffer.get(i + j + k).split(":");
+                                    outputData += splitNextRow[1].replaceAll("[^a-fA-F0-9]", "");
+                                    k++;
+                                }
+                            }
+                            cOut++;
                         }
+                        else getExpectedOutput = false;
                     }
                     // get expected data
                     if (pcomLogBuffer.get(i+j).matches("^\\s+Expected Data\\s+:\\s.+")) {
-                        String[] splitFirstRow = pcomLogBuffer.get(i+j).split(":");
-                        expectedData = splitFirstRow[1].replaceAll("[^a-fA-F0-9xX]", "");
-                        int k = 1;
-                        while (pcomLogBuffer.get(i+j+k).matches("^\\s+:\\s.+")) {
-                            String[] splitNextRow = pcomLogBuffer.get(i + j + k).split(":");
-                            expectedData += splitNextRow[1].replaceAll("[^a-fA-F0-9xX]", "");
-                            k++;
+                        if (getExpectedOutput) {
+                            if (cExpData < 1) {
+                                String[] splitFirstRow = pcomLogBuffer.get(i + j).split(":");
+                                expectedData = splitFirstRow[1].replaceAll("[^a-fA-F0-9xX]", "");
+                                int k = 1;
+                                while (pcomLogBuffer.get(i + j + k).matches("^\\s+:\\s.+")) {
+                                    String[] splitNextRow = pcomLogBuffer.get(i + j + k).split(":");
+                                    expectedData += splitNextRow[1].replaceAll("[^a-fA-F0-9xX]", "");
+                                    k++;
+                                }
+                                success = false;
+                                cExpData++;
+                            }
                         }
-                        success = false;
                     }
                     // get status
                     if (pcomLogBuffer.get(i+j).matches("^\\s+Status\\s+:\\s.+")) {
-                        String[] splitFirstRow = pcomLogBuffer.get(i+j).split(":");
-                        status = splitFirstRow[1].replaceAll("[^a-fA-F0-9]", "");
+                        if (cStat < 1) {
+                            String[] splitFirstRow = pcomLogBuffer.get(i + j).split(":");
+                            status = splitFirstRow[1].replaceAll("[^a-fA-F0-9]", "");
+                            cStat++;
+                        }
+                        else getExpectedStatus = false;
                     }
                     // get expected status
                     if (pcomLogBuffer.get(i+j).matches("^\\s+Expected Status\\s+:\\s.+")) {
-                        String[] splitFirstRow = pcomLogBuffer.get(i+j).split(":");
-                        expectedStatus = splitFirstRow[1].replaceAll("[^a-fA-F0-9xX]", "");
-                        success = false;
+                        if (getExpectedStatus) {
+                            if (cExpStat < 1) {
+                                String[] splitFirstRow = pcomLogBuffer.get(i + j).split(":");
+                                expectedStatus = splitFirstRow[1].replaceAll("[^a-fA-F0-9xX]", "");
+                                success = false;
+                                cExpStat++;
+                            }
+                        }
                     }
                 }
-//                System.out.println("Success         : " + success);
-//                System.out.println("Output data     : " + outputData);
-//                if (expectedData != "")
-//                    System.out.println("Expected data   : " + expectedData);
-//                System.out.println("Status          : " + status);
-//                if (expectedStatus != "")
-//                    System.out.println("Expected status : " + expectedStatus);
+                CheckPoint cp = new CheckPoint();
+                cp.setCheckPointName(checkPointName);
+                cp.setCheckPointMsg(checkpointMsg);
+                cp.setSuccess(success);
+                cp.setOutputData(outputData);
+                if (!expectedData.equals("")) cp.setExpectedData(expectedData);
+                cp.setStatus(status);
+                if (!expectedStatus.equals("")) cp.setExpectedStatus(expectedStatus);
 
-                checkPoints.add(new CheckPoint(checkPointName, checkpointMsg, success, outputData, expectedData, status, expectedStatus));
+                checkPoints.add(cp);
             }
         }
         return checkPoints;
+    }
+
+    public String formatByteStr(String byteStr) {
+        StringBuilder formattedByteStr = new StringBuilder();
+        for (int i = 0; i < byteStr.length(); i += 2)
+            formattedByteStr.append(byteStr, i, i + 2).append(" ");
+        return formattedByteStr.toString();
     }
 
 }

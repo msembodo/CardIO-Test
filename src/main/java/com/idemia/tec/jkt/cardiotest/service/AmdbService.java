@@ -68,6 +68,7 @@ public class AmdbService {
             openChannelBuffer.append("\nA0 28 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000) ; enable GPIN1\n");
         openChannelBuffer.append(
             "\n.DEFINE %SD_TAR " + ammendmentB.getSdTar() + "\n"
+//            + ".DEFINE %CONNECTION_PARAMETERS 8307 8405 3C0302215F ; fails\n"
             + ".DEFINE %CONNECTION_PARAMETERS 830E 840C 3C0302215F 3E05217F000001\n" // TODO
             + "\n.POWER_ON\n"
             + proactiveInitialization()

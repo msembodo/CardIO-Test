@@ -440,7 +440,9 @@ public class AmdbController {
         // TODO: save settings?
 
         root.showWaiting("Checking open channel..");
+        cardiotest.getTxtInterpretedLog().getChildren().clear();
         root.appendTextFlow("Checking open channel..\n");
+        logger.info("Checking open channel..");
         Task<Void> task = new Task<Void>() {
             @Override protected Void call() throws Exception {
                 checkOpenChannelOk = amdbService.checkOpenChannel();
@@ -450,12 +452,12 @@ public class AmdbController {
                 super.succeeded();
                 root.getWaitingStage().close();
                 if (checkOpenChannelOk) {
-                    logger.info("Open channel: OK");
+                    logger.info(">> OK");
                     root.appendTextFlow("\n>> OK\n", 0);
                 }
                 else {
-                    logger.error("Open channel: NOK");
-                    root.appendTextFlow(">> \nNOT OK\n", 1);
+                    logger.error(">> NOT OK");
+                    root.appendTextFlow("\n>> NOT OK\n", 1);
                 }
                 String logFileName = root.getRunSettings().getProjectPath() + "\\scripts\\check_open_channel.L00";
                 try {
@@ -463,17 +465,40 @@ public class AmdbController {
                     if (checkPoints.size() > 0) {
                         for (CheckPoint cp : checkPoints) {
                             if (cp.isSuccess()) {
+                                logger.info(cp.getCheckPointMsg());
                                 root.appendTextFlow("\n" + cp.getCheckPointMsg() + "\n");
-                                logger.info("output: " + cp.getOutputData());
-                                root.appendTextFlow("Response: " + cp.getOutputData() + "\n");
-                                root.appendTextFlow("Status: " + cp.getStatus());
+                                if (!cp.getOutputData().equals("")) {
+                                    logger.info("Response: " + cp.getOutputData());
+                                    root.appendTextFlow("Response: " + apduService.formatByteStr(cp.getOutputData()) + "\n");
+                                }
+                                else {
+                                    logger.info("Response: (none)");
+                                    root.appendTextFlow("Response: (none)\n");
+                                }
+                                logger.info("Status: " + cp.getStatus());
+                                root.appendTextFlow("Status: " + apduService.formatByteStr(cp.getStatus()) + "\n");
                             }
                             else {
+                                logger.error(cp.getCheckPointMsg());
                                 root.appendTextFlow("\n" + cp.getCheckPointMsg() + "\n", 1);
-                                root.appendTextFlow("Response: " + cp.getOutputData() + "\n", 1);
-                                root.appendTextFlow("Expected: " + cp.getExpectedData() + "\n", 1);
-                                root.appendTextFlow("Status: " + cp.getStatus(), 1);
-                                root.appendTextFlow("Expected: " + cp.getExpectedStatus(), 1);
+                                if (!cp.getOutputData().equals("")) {
+                                    logger.error("Response: " + cp.getOutputData());
+                                    root.appendTextFlow("Response: " + apduService.formatByteStr(cp.getOutputData()) + "\n", 1);
+                                }
+                                else {
+                                    logger.error("Response: (none)");
+                                    root.appendTextFlow("Response: (none)\n", 1);
+                                }
+                                if (cp.getExpectedData() != null) {
+                                    logger.error("Expected: " + cp.getExpectedData());
+                                    root.appendTextFlow("Expected: " + apduService.formatByteStr(cp.getExpectedData()) + "\n", 1);
+                                }
+                                logger.error("Status: " + cp.getStatus());
+                                root.appendTextFlow("Status: " + apduService.formatByteStr(cp.getStatus()) + "\n", 1);
+                                if (cp.getExpectedStatus() != null) {
+                                    logger.error("Expected: " + cp.getExpectedStatus());
+                                    root.appendTextFlow("Expected: " + apduService.formatByteStr(cp.getExpectedStatus()) + "\n", 1);
+                                }
                             }
                         }
                     }

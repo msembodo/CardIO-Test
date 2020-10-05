@@ -750,7 +750,6 @@ public class RamService {
         }
 
         routine.append(
-                ".EXPORT_BUFFER L COUNTER.bin\n" +
                 ";===========================================================\n" +
                 ";Buffer L contains the anti replay counter for OTA message\n" +
                 ";===========================================================\n" +
@@ -997,7 +996,6 @@ public class RamService {
         }
 
         routine.append(
-                        ".EXPORT_BUFFER L COUNTER.bin\n" +
                         ";===========================================================\n" +
                         ";Buffer L contains the anti replay counter for OTA message\n" +
                         ";===========================================================\n" +

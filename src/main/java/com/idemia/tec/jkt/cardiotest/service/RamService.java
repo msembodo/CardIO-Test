@@ -750,7 +750,6 @@ public class RamService {
         }
 
         routine.append(
-                ".EXPORT_BUFFER L COUNTER.bin\n" +
                 ";===========================================================\n" +
                 ";Buffer L contains the anti replay counter for OTA message\n" +
                 ";===========================================================\n" +
@@ -884,8 +883,8 @@ public class RamService {
         if(isUpdateRecord) {
             routine.append(
                     apduService.verifyPin1() + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n" +
-                    "A0 A4 00 00 02 7F10 (9F22) ;select DF Telecom\n" +
-                    "A0 A4 00 00 02 6F3C (9F0F) ;select EF SMS\n" +
+                    "A0 A4 00 00 02 7F10 (9FXX) ;select DF Telecom\n" +
+                    "A0 A4 00 00 02 6F3C (9FXX) ;select EF SMS\n" +
                     "A0 DC 01 04 G J (90XX) ;update EF SMS\n" +
                     ".GET_NEXT_MESSAGE G J\n" +
                     "A0 DC 01 04 G J (90XX) ;update EF SMS\n" +
@@ -997,7 +996,6 @@ public class RamService {
         }
 
         routine.append(
-                        ".EXPORT_BUFFER L COUNTER.bin\n" +
                         ";===========================================================\n" +
                         ";Buffer L contains the anti replay counter for OTA message\n" +
                         ";===========================================================\n" +
@@ -1106,8 +1104,8 @@ public class RamService {
             routine.append(
                     "\n" +
                     apduService.verifyPin1() + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n" +
-                    "A0 A4 00 00 02 7F10 (9F22) ;select DF Telecom\n" +
-                    "A0 A4 00 00 02 6F3C (9F0F) ;select EF SMS\n" +
+                    "A0 A4 00 00 02 7F10 (9FXX) ;select DF Telecom\n" +
+                    "A0 A4 00 00 02 6F3C (9FXX) ;select EF SMS\n" +
                     "A0 DC 01 04 G J (91XX) ;update EF SMS\n" +
                     ".CLEAR_SCRIPT\n" +
                     "\n" +
@@ -1180,8 +1178,8 @@ public class RamService {
             routine.append(
                     "\n" +
                             apduService.verifyPin1() + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n" +
-                            "A0 A4 00 00 02 7F10 (9F22) ;select DF Telecom\n" +
-                            "A0 A4 00 00 02 6F3C (9F0F) ;select EF SMS\n" +
+                            "A0 A4 00 00 02 7F10 (9FXX) ;select DF Telecom\n" +
+                            "A0 A4 00 00 02 6F3C (9FXX) ;select EF SMS\n" +
                             "A0 DC 01 04 G J (91XX) ;update EF SMS\n" +
                             ".CLEAR_SCRIPT\n" +
                             "\n" +
@@ -1254,8 +1252,8 @@ public class RamService {
             routine.append(
                     "\n" +
                             apduService.verifyPin1() + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n" +
-                            "A0 A4 00 00 02 7F10 (9F22) ;select DF Telecom\n" +
-                            "A0 A4 00 00 02 6F3C (9F0F) ;select EF SMS\n" +
+                            "A0 A4 00 00 02 7F10 (9FXX) ;select DF Telecom\n" +
+                            "A0 A4 00 00 02 6F3C (9FXX) ;select EF SMS\n" +
                             "A0 DC 01 04 G J (91XX) ;update EF SMS\n" +
                             ".CLEAR_SCRIPT\n" +
                             "\n" +
@@ -1862,8 +1860,8 @@ public class RamService {
         if(isUpdateRecord) {
             routine.append(
                     apduService.verifyPin1() + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n" +
-                    "A0 A4 00 00 02 7F10 (9F22) ;select DF Telecom\n" +
-                    "A0 A4 00 00 02 6F3C (9F0F) ;select EF SMS\n" +
+                    "A0 A4 00 00 02 7F10 (9FXX) ;select DF Telecom\n" +
+                    "A0 A4 00 00 02 6F3C (9FXX) ;select EF SMS\n" +
                     "A0 DC 01 04 G J (91XX) ;update EF SMS\n" +
                     ".CLEAR_SCRIPT\n" +
                     "\n" +

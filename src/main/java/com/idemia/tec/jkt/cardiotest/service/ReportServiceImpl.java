@@ -962,10 +962,9 @@ public class ReportServiceImpl implements ReportService {
             html.append(createTableFooter());
         }
 
-        // TODO RFM CUSTOM Generate Report
         // RFM CUSTOM
         if (runSettings.getRfmCustom().isIncludeRfmCustom() || runSettings.getRfmCustom().isIncludeRfmCustomUpdateRecord() || runSettings.getRfmCustom().isIncludeRfmCustomExpandedMode()) {
-            html.append("\n<div><h2>RFM CUSTOM</h2></div>");
+            html.append("\n<div><h2>RFM CUSTOM: " + runSettings.getRfmCustom().getCustomRfmDesc() + "</h2></div>");
             html.append("\n<div><h3>Test modules</h3></div>");
             html.append(createTableHeaderModule());
             if (runSettings.getRfmCustom().isIncludeRfmCustom()) {

@@ -24,9 +24,9 @@ public class SecretCodesService {
             codes2gBuffer.append("A0 28 00 02 08 %" + secretCodes.getChv1() + " (9000) ; enable CHV2\n\n");
         codes2gBuffer.append(
             "; CHV1\n"
-            + "; check CHV1 remaining attempts\n"
-            + "A0 A4 00 00 02 3F00 (9FXX)\n"
-            + "A0 C0 00 00 W(2;1) (9000) [XXXX XXXX 3F00 XX XX XXXXXX XX 15 XX XX XX XX XX (80 | " + String.format("%02X", secretCodes.getChv1Retries()) + ") XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX] ; remaining attempts for CHV1\n"
+//            + "; check CHV1 remaining attempts\n" // commented in bugfix_release_2020.09.30
+//            + "A0 A4 00 00 02 3F00 (9FXX)\n"
+//            + "A0 C0 00 00 W(2;1) (9000) [XXXX XXXX 3F00 XX XX XXXXXX XX 15 XX XX XX XX XX (80 | " + String.format("%02X", secretCodes.getChv1Retries()) + ") XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX] ; remaining attempts for CHV1\n"
             + "; verify CHV1\n"
             + apduService.verifyPin1() + secretCodes.getChv1() + " (9000)\n"
             + "; disable CHV1 and verify\n"

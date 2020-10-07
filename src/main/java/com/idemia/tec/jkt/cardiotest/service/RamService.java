@@ -647,46 +647,42 @@ public class RamService {
                         + ".SET_BUFFER J 80E602001F0CA0000000185302000000001000000EEF0CC6020000C8020000C702000000\n"
                         + ".APPEND_SCRIPT J\n"
                         + ".END_MESSAGE G J\n"
-                        + sendBuffer(isUpdateRecord)
+                        + sendBuffer(isUpdateRecord, msl, false)
                         + ";SMS 2: LOAD PACKAGE\n"
                         + ".CHANGE_COUNTER L\n"
                         + ".INCREASE_BUFFER L(04:05) 0001\n"
                         + ".SET_BUFFER J 80E8000067C48201CC010016DECAFFED01020400020CA0000000185302000000001002001F0016001F0010001E0046001A00C6000A001E0000009400000000000002010004001E02000107A0000000620101010210A0000000090003FFFFFFFF8910710002030010010CA000\n"
                         + ".APPEND_SCRIPT J\n"
                         + ".END_MESSAGE G J\n"
-                        + getNextMessage(msl)
-                        + sendBuffer(isUpdateRecord)
+                        + sendBuffer(isUpdateRecord, msl, true)
                         + ";SMS 3: LOAD PACKAGE\n"
                         + ".CHANGE_COUNTER L\n"
                         + ".INCREASE_BUFFER L(04:05) 0001\n"
                         + ".SET_BUFFER J 80E800016700001853020000000110001F06001A43800300FF00070300000035003800A4800200810101088100000700C6020048803E008800060093800B00A000060210188C00008D0001058B00027A05318F00033D8C00042E1B181D0441181D258B00057A00207A03221D\n"
                         + ".APPEND_SCRIPT J\n"
                         + ".END_MESSAGE G J\n"
-                        + getNextMessage(msl)
-                        + sendBuffer(isUpdateRecord)
+                        + sendBuffer(isUpdateRecord, msl, true)
                         + ";SMS 4: LOAD PACKAGE\n"
                         + ".CHANGE_COUNTER L\n"
                         + ".INCREASE_BUFFER L(04:05) 0001\n"
                         + ".SET_BUFFER J 80E800026775006800020002000D001300588D00072E1B8B0008311B1E8B000910F06B4B1B1E04418B0009100C6B401B1E05418B000961371B1E06418B000910126B2C1B1E07418B00096123188B000A701D3B8D0001103C8B000B7012188B000A8D0001038B000B70053B70\n"
                         + ".APPEND_SCRIPT J\n"
                         + ".END_MESSAGE G J\n"
-                        + getNextMessage(msl)
-                        + sendBuffer(isUpdateRecord)
+                        + sendBuffer(isUpdateRecord, msl, true)
                         + ";SMS 5: LOAD PACKAGE\n"
                         + ".CHANGE_COUNTER L\n"
                         + ".INCREASE_BUFFER L(04:05) 0001\n"
                         + ".SET_BUFFER J 80E8000367027A041110178D000C601A8D000D2C19040310828B000E198B000F10206B06058D00107A08000A00000000000000000000050046001106800300068109000381090901000000060000110380030201810700068108000381080D03810204030000090381090C06\n"
                         + ".APPEND_SCRIPT J\n"
                         + ".END_MESSAGE G J\n"
-                        + getNextMessage(msl)
-                        + sendBuffer(isUpdateRecord)
+                        + sendBuffer(isUpdateRecord, msl, true)
                         + ";SMS 6: LOAD PACKAGE\n"
                         + ".CHANGE_COUNTER L\n"
                         + ".INCREASE_BUFFER L(04:05) 0001\n"
                         + ".SET_BUFFER J 80E880043481030006810A0003810A1503810A160681070009001E0000001A070806030406040C1705060B0B090B0606050603040D05090408\n"
                         + ".APPEND_SCRIPT J\n"
                         + ".END_MESSAGE G J\n"
-                        + sendBuffer(isUpdateRecord)
+                        + sendBuffer(isUpdateRecord, msl, false)
                         + ".EXPORT_BUFFER L COUNTER.bin\n\n\n"
                         + ";CHECK LOADED PACKAGE\n"
                         + ".POWER_ON\n"
@@ -804,7 +800,7 @@ public class RamService {
                 ".APPEND_SCRIPT J\n" +
                 ".END_MESSAGE G J\n" +
                 "\n" +
-                sendBuffer(isUpdateRecord)
+                sendBuffer(isUpdateRecord, msl, false)
         );
         return routine.toString();
     }
@@ -1049,7 +1045,7 @@ public class RamService {
                         ".APPEND_SCRIPT J\n" +
                         ".END_MESSAGE G J\n" +
                         "\n" +
-                        sendBuffer(isUpdateRecord)
+                        sendBuffer(isUpdateRecord, msl, false)
         );
         return routine.toString();
     }
@@ -1296,13 +1292,20 @@ public class RamService {
         return routine.toString();
     }
 
-    private String getNextMessage(MinimumSecurityLevel msl) {
+    private String getNextMessage(Boolean isUpdateRecord, MinimumSecurityLevel msl, Boolean longSms) {
         StringBuilder routine = new StringBuilder();
         String auth_verif = msl.getAuthVerification();
-        if(auth_verif.equals("Cryptographic Checksum") && msl.isUseCipher()) {
+        if(auth_verif.equals("Cryptographic Checksum") && msl.isUseCipher() && !isUpdateRecord && longSms) {
             routine.append(
-                    "A0 C2 00 00 G J (9000)\n"
-                        + ".GET_NEXT_MESSAGE G J \n"
+                    "A0 C2 00 00 G J (9000)\n" +
+                    ".GET_NEXT_MESSAGE G J \n"
+
+            );
+        } else if(auth_verif.equals("Cryptographic Checksum") && msl.isUseCipher() && isUpdateRecord && longSms) {
+            routine.append(
+                    "A0 DC 01 04 G J (9000)\n" +
+                     ".GET_NEXT_MESSAGE G J \n"
+
             );
         }
         return routine.toString();
@@ -1855,13 +1858,14 @@ public class RamService {
         return null; // intentionally raise syntax error in pcom
     }
 
-    private String sendBuffer(Boolean isUpdateRecord) {
+    private String sendBuffer(Boolean isUpdateRecord, MinimumSecurityLevel msl, Boolean longSms) {
         StringBuilder routine = new StringBuilder();
         if(isUpdateRecord) {
             routine.append(
                     apduService.verifyPin1() + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n" +
                     "A0 A4 00 00 02 7F10 (9FXX) ;select DF Telecom\n" +
                     "A0 A4 00 00 02 6F3C (9FXX) ;select EF SMS\n" +
+                    getNextMessage(isUpdateRecord, msl, longSms)+
                     "A0 DC 01 04 G J (91XX) ;update EF SMS\n" +
                     ".CLEAR_SCRIPT\n" +
                     "\n" +
@@ -1872,6 +1876,7 @@ public class RamService {
             );
         } else {
             routine.append(
+                    getNextMessage(isUpdateRecord, msl, longSms) +
                     "A0 C2 00 00 G J (9FXX)\n" +
                     ".CLEAR_SCRIPT\n" +
                     "\n" +

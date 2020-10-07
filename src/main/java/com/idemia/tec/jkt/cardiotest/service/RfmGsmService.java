@@ -689,9 +689,9 @@ public class RfmGsmService {
                 + apduService.verifyPin1() + root.getRunSettings().getSecretCodes().getGpin() + " (9000)\n"
                 + "A0 A4 00 00 02 7F10 (9FXX) ;select DF Telecom\n"
                 + "A0 A4 00 00 02 6F3C (9F0F) ;select EF SMS\n"
-                + "A0 DC 01 04 G J (9000) ;update EF SMS\n"
+                + "A0 DC 01 04 G J (9000, 91XX) ;update EF SMS, FOR SIMbiOS CTD will have SW 91 XX\n"
                 + ".CLEAR_SCRIPT\n"
-                + "A0 B2 01 04 B0 (9000, 91XX) ;FOR SIMbiOS CTD will have SW 91 XX\n\n"
+                + "A0 B2 01 04 B0 \n\n"
                 + ".SWITCH W(2:2) \n"
                 + " .CASE 00\n"
                 + "     ;can not check PoR\n"
@@ -1149,7 +1149,7 @@ public class RfmGsmService {
         POR_NOT_OK                  = "";
         BAD_CASE_WRONG_KEYSET       = "XX XX XX XX XX XX %TAR XX XX XX XX XX XX 06";
         BAD_CASE_WRONG_CLASS_3G     = "XX XX XX XX XX XX %TAR XX XX XX XX XX XX 00 XX 6E 00";
-        BAD_CASE_WRONG_CLASS_2G     = "XX XX XX XX XX XX %TAR XX XX XX XX XX XX 00 XX 6D 00";
+        BAD_CASE_WRONG_CLASS_2G     = "XX XX XX XX XX XX %TAR XX XX XX XX XX XX 00 XX (6D 00|6E 00)";
         BAD_CASE_COUNTER_LOW        = "XX XX XX XX XX XX %TAR XX XX XX XX XX XX 02";
         BAD_CASE_WRONG_KEY_VALUE    = "XX XX XX XX XX XX %TAR XX XX XX XX XX XX 01";
         BAD_CASE_INSUFFICIENT_MSL   = "XX XX XX XX XX XX %TAR XX XX XX XX XX XX 0A";
@@ -1201,7 +1201,7 @@ public class RfmGsmService {
         POR_NOT_OK                  = tag33UpdateRecord+" XX XX 98 04";
         BAD_CASE_WRONG_KEYSET       = tag30UpdateRecord+" 06";
         BAD_CASE_WRONG_CLASS_3G     = tag33UpdateRecord+" XX XX 6E 00";
-        BAD_CASE_WRONG_CLASS_2G     = tag33UpdateRecord+" XX XX 6D 00";
+        BAD_CASE_WRONG_CLASS_2G     = tag33UpdateRecord+" XX XX (6D 00|6E 00)";
         BAD_CASE_COUNTER_LOW        = tag30UpdateRecord+" 02";
         BAD_CASE_WRONG_KEY_VALUE    = tag30UpdateRecord+" 01";
         BAD_CASE_INSUFFICIENT_MSL   = tag30UpdateRecord+" 0A";
@@ -1941,7 +1941,7 @@ public class RfmGsmService {
 
         if(rfmGsm.getRfmGsmAccessDomain().isUseAlways()){
             restoreInitialContent.append(
-                "; check Read Binary on EF-" + rfmGsm.getCustomTargetEfIsc1() +  "\n"
+                "; check Read Binary on EF-" + rfmGsm.getCustomTargetEfAlw() +  "\n"
                 +"A0 A4 00 00 02 %EF_ID_GSM_ALW (9F0F)\n"
                 + "A0 B0 00 00 02 [%EF_CONTENT_ALW] (9000) ; Read Binary\n"
             );

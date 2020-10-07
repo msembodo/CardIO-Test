@@ -1951,7 +1951,7 @@ public class RfmUsimService {
 
         if(rfmUsim.getRfmUsimAccessDomain().isUseAlways()){
             restoreInitialContent.append(
-                "; check Read Binary on EF-" + rfmUsim.getCustomTargetEfIsc1() +  "\n"
+                "; check Read Binary on EF-" + rfmUsim.getCustomTargetEfAlw() +  "\n"
                 +"00 A4 00 04 02 %EF_ID_USIM_ALW (61XX)\n"
                 + "00 B0 00 00 01 [%EF_CONTENT_ALW] (9000) ; Read Binary\n"
             );

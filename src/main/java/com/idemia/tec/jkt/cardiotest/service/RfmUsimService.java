@@ -933,7 +933,7 @@ public class RfmUsimService {
         StringBuilder routine = new StringBuilder();
         routine.append(
                 "; proactive initialization\n"
-                        + "A010000013 FFFFFFFF7F3F00DFFF00001FE28A0D02030900 (91XX)\n"
+                        + "A010000013 FFFFFFFF7F3F00DFFF00001FE28A0D02030900 (9XXX)\n"
                         + ".BEGIN_LOOP\n"
                         + "\t.SWITCH W(1:1)\n"
                         + "\t.CASE 91\n"

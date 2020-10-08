@@ -1,3 +1,7 @@
+Release 2020.10.08
+- Bugfix: get next message in RAM update record
+- Bugfix: expected PoR, status word, and access domain EF in RFM USIM and GSM
+
 Release 2020.09.30
 - Bugfix in change ADM in secret codes 2G
 

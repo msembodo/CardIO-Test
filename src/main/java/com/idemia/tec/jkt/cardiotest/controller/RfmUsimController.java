@@ -684,161 +684,193 @@ public class RfmUsimController {
             // set components accordingly
             if (mslInteger == 0) {
                 chkRfmUsimUseCipher.setSelected(false);
+                cmbRfmUsimCipherAlgo.setValue("no cipher");
                 cmbRfmUsimAuthVerif.getSelectionModel().select("No verification");
                 cmbRfmUsimCounterCheck.getSelectionModel().select("No counter available");
             }
             if (mslInteger == 1) {
                 chkRfmUsimUseCipher.setSelected(false);
+                cmbRfmUsimCipherAlgo.setValue("no cipher");
                 cmbRfmUsimAuthVerif.getSelectionModel().select("Redundancy Check");
                 cmbRfmUsimCounterCheck.getSelectionModel().select("No counter available");
             }
             if (mslInteger == 2) {
                 chkRfmUsimUseCipher.setSelected(false);
+                cmbRfmUsimCipherAlgo.setValue("no cipher");
                 cmbRfmUsimAuthVerif.getSelectionModel().select("Cryptographic Checksum");
                 cmbRfmUsimCounterCheck.getSelectionModel().select("No counter available");
             }
             if (mslInteger == 3) {
                 chkRfmUsimUseCipher.setSelected(false);
+                cmbRfmUsimCipherAlgo.setValue("no cipher");
                 cmbRfmUsimAuthVerif.getSelectionModel().select("Digital Signature");
                 cmbRfmUsimCounterCheck.getSelectionModel().select("No counter available");
             }
             if (mslInteger == 4) {
                 chkRfmUsimUseCipher.setSelected(true);
+                cmbRfmUsimCipherAlgo.setValue("as defined in keyset");
                 cmbRfmUsimAuthVerif.getSelectionModel().select("No verification");
                 cmbRfmUsimCounterCheck.getSelectionModel().select("No counter available");
             }
             if (mslInteger == 5) {
                 chkRfmUsimUseCipher.setSelected(true);
+                cmbRfmUsimCipherAlgo.setValue("as defined in keyset");
                 cmbRfmUsimAuthVerif.getSelectionModel().select("Redundancy Check");
                 cmbRfmUsimCounterCheck.getSelectionModel().select("No counter available");
             }
             if (mslInteger == 6) {
                 chkRfmUsimUseCipher.setSelected(true);
+                cmbRfmUsimCipherAlgo.setValue("as defined in keyset");
                 cmbRfmUsimAuthVerif.getSelectionModel().select("Cryptographic Checksum");
                 cmbRfmUsimCounterCheck.getSelectionModel().select("No counter available");
             }
             if (mslInteger == 7) {
                 chkRfmUsimUseCipher.setSelected(true);
+                cmbRfmUsimCipherAlgo.setValue("as defined in keyset");
                 cmbRfmUsimAuthVerif.getSelectionModel().select("Digital Signature");
                 cmbRfmUsimCounterCheck.getSelectionModel().select("No counter available");
             }
             if (mslInteger == 8) {
                 chkRfmUsimUseCipher.setSelected(false);
+                cmbRfmUsimCipherAlgo.setValue("no cipher");
                 cmbRfmUsimAuthVerif.getSelectionModel().select("No verification");
                 cmbRfmUsimCounterCheck.getSelectionModel().select("Counter available no checking");
             }
             if (mslInteger == 9) {
                 chkRfmUsimUseCipher.setSelected(false);
+                cmbRfmUsimCipherAlgo.setValue("no cipher");
                 cmbRfmUsimAuthVerif.getSelectionModel().select("Redundancy Check");
                 cmbRfmUsimCounterCheck.getSelectionModel().select("Counter available no checking");
             }
             if (mslInteger == 10) {
                 chkRfmUsimUseCipher.setSelected(false);
+                cmbRfmUsimCipherAlgo.setValue("no cipher");
                 cmbRfmUsimAuthVerif.getSelectionModel().select("Cryptographic Checksum");
                 cmbRfmUsimCounterCheck.getSelectionModel().select("Counter available no checking");
             }
             if (mslInteger == 11) {
                 chkRfmUsimUseCipher.setSelected(false);
+                cmbRfmUsimCipherAlgo.setValue("no cipher");
                 cmbRfmUsimAuthVerif.getSelectionModel().select("Digital Signature");
                 cmbRfmUsimCounterCheck.getSelectionModel().select("Counter available no checking");
             }
             if (mslInteger == 12) {
                 chkRfmUsimUseCipher.setSelected(true);
+                cmbRfmUsimCipherAlgo.setValue("as defined in keyset");
                 cmbRfmUsimAuthVerif.getSelectionModel().select("No verification");
                 cmbRfmUsimCounterCheck.getSelectionModel().select("Counter available no checking");
             }
             if (mslInteger == 13) {
                 chkRfmUsimUseCipher.setSelected(true);
+                cmbRfmUsimCipherAlgo.setValue("as defined in keyset");
                 cmbRfmUsimAuthVerif.getSelectionModel().select("Redundancy Check");
                 cmbRfmUsimCounterCheck.getSelectionModel().select("Counter available no checking");
             }
             if (mslInteger == 14) {
                 chkRfmUsimUseCipher.setSelected(true);
+                cmbRfmUsimCipherAlgo.setValue("as defined in keyset");
                 cmbRfmUsimAuthVerif.getSelectionModel().select("Cryptographic Checksum");
                 cmbRfmUsimCounterCheck.getSelectionModel().select("Counter available no checking");
             }
             if (mslInteger == 15) {
                 chkRfmUsimUseCipher.setSelected(true);
+                cmbRfmUsimCipherAlgo.setValue("as defined in keyset");
                 cmbRfmUsimAuthVerif.getSelectionModel().select("Digital Signature");
                 cmbRfmUsimCounterCheck.getSelectionModel().select("Counter available no checking");
             }
             if (mslInteger == 16) {
                 chkRfmUsimUseCipher.setSelected(false);
+                cmbRfmUsimCipherAlgo.setValue("no cipher");
                 cmbRfmUsimAuthVerif.getSelectionModel().select("No verification");
                 cmbRfmUsimCounterCheck.getSelectionModel().select("Counter must be higher");
             }
             if (mslInteger == 17) {
                 chkRfmUsimUseCipher.setSelected(false);
+                cmbRfmUsimCipherAlgo.setValue("no cipher");
                 cmbRfmUsimAuthVerif.getSelectionModel().select("Redundancy Check");
                 cmbRfmUsimCounterCheck.getSelectionModel().select("Counter must be higher");
             }
             if (mslInteger == 18) {
                 chkRfmUsimUseCipher.setSelected(false);
+                cmbRfmUsimCipherAlgo.setValue("no cipher");
                 cmbRfmUsimAuthVerif.getSelectionModel().select("Cryptographic Checksum");
                 cmbRfmUsimCounterCheck.getSelectionModel().select("Counter must be higher");
             }
             if (mslInteger == 19) {
                 chkRfmUsimUseCipher.setSelected(false);
+                cmbRfmUsimCipherAlgo.setValue("no cipher");
                 cmbRfmUsimAuthVerif.getSelectionModel().select("Digital Signature");
                 cmbRfmUsimCounterCheck.getSelectionModel().select("Counter must be higher");
             }
             if (mslInteger == 20) {
                 chkRfmUsimUseCipher.setSelected(true);
+                cmbRfmUsimCipherAlgo.setValue("as defined in keyset");
                 cmbRfmUsimAuthVerif.getSelectionModel().select("No verification");
                 cmbRfmUsimCounterCheck.getSelectionModel().select("Counter must be higher");
             }
             if (mslInteger == 21) {
                 chkRfmUsimUseCipher.setSelected(true);
+                cmbRfmUsimCipherAlgo.setValue("as defined in keyset");
                 cmbRfmUsimAuthVerif.getSelectionModel().select("Redundancy Check");
                 cmbRfmUsimCounterCheck.getSelectionModel().select("Counter must be higher");
             }
             if (mslInteger == 22) {
                 chkRfmUsimUseCipher.setSelected(true);
+                cmbRfmUsimCipherAlgo.setValue("as defined in keyset");
                 cmbRfmUsimAuthVerif.getSelectionModel().select("Cryptographic Checksum");
                 cmbRfmUsimCounterCheck.getSelectionModel().select("Counter must be higher");
             }
             if (mslInteger == 23) {
                 chkRfmUsimUseCipher.setSelected(true);
+                cmbRfmUsimCipherAlgo.setValue("as defined in keyset");
                 cmbRfmUsimAuthVerif.getSelectionModel().select("Digital Signature");
                 cmbRfmUsimCounterCheck.getSelectionModel().select("Counter must be higher");
             }
             if (mslInteger == 24) {
                 chkRfmUsimUseCipher.setSelected(false);
+                cmbRfmUsimCipherAlgo.setValue("no cipher");
                 cmbRfmUsimAuthVerif.getSelectionModel().select("No verification");
                 cmbRfmUsimCounterCheck.getSelectionModel().select("Counter must be one higher");
             }
             if (mslInteger == 25) {
                 chkRfmUsimUseCipher.setSelected(false);
+                cmbRfmUsimCipherAlgo.setValue("no cipher");
                 cmbRfmUsimAuthVerif.getSelectionModel().select("Redundancy Check");
                 cmbRfmUsimCounterCheck.getSelectionModel().select("Counter must be one higher");
             }
             if (mslInteger == 26) {
                 chkRfmUsimUseCipher.setSelected(false);
+                cmbRfmUsimCipherAlgo.setValue("no cipher");
                 cmbRfmUsimAuthVerif.getSelectionModel().select("Cryptographic Checksum");
                 cmbRfmUsimCounterCheck.getSelectionModel().select("Counter must be one higher");
             }
             if (mslInteger == 27) {
                 chkRfmUsimUseCipher.setSelected(false);
+                cmbRfmUsimCipherAlgo.setValue("no cipher");
                 cmbRfmUsimAuthVerif.getSelectionModel().select("Digital Signature");
                 cmbRfmUsimCounterCheck.getSelectionModel().select("Counter must be one higher");
             }
             if (mslInteger == 28) {
                 chkRfmUsimUseCipher.setSelected(true);
+                cmbRfmUsimCipherAlgo.setValue("as defined in keyset");
                 cmbRfmUsimAuthVerif.getSelectionModel().select("No verification");
                 cmbRfmUsimCounterCheck.getSelectionModel().select("Counter must be one higher");
             }
             if (mslInteger == 29) {
                 chkRfmUsimUseCipher.setSelected(true);
+                cmbRfmUsimCipherAlgo.setValue("as defined in keyset");
                 cmbRfmUsimAuthVerif.getSelectionModel().select("Redundancy Check");
                 cmbRfmUsimCounterCheck.getSelectionModel().select("Counter must be one higher");
             }
             if (mslInteger == 30) {
                 chkRfmUsimUseCipher.setSelected(true);
+                cmbRfmUsimCipherAlgo.setValue("as defined in keyset");
                 cmbRfmUsimAuthVerif.getSelectionModel().select("Cryptographic Checksum");
                 cmbRfmUsimCounterCheck.getSelectionModel().select("Counter must be one higher");
             }
             if (mslInteger == 31) {
                 chkRfmUsimUseCipher.setSelected(true);
+                cmbRfmUsimCipherAlgo.setValue("as defined in keyset");
                 cmbRfmUsimAuthVerif.getSelectionModel().select("Digital Signature");
                 cmbRfmUsimCounterCheck.getSelectionModel().select("Counter must be one higher");
             }
@@ -848,12 +880,18 @@ public class RfmUsimController {
     }
 
     @FXML private void handleRfmUsimUseCipherCheck() {
+        if (!chkRfmUsimUseCipher.isSelected()) cmbRfmUsimCipherAlgo.setValue("no cipher");
+        else cmbRfmUsimCipherAlgo.setValue("as defined in keyset");
         root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setUseCipher(chkRfmUsimUseCipher.isSelected());
         root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().computeMsl();
         txtRfmUsimMslByte.setText(root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().getComputedMsl());
     }
 
     @FXML private void handleRfmUsimAuthVerifSelection() {
+        if (cmbRfmUsimAuthVerif.getSelectionModel().getSelectedItem().equals("No verification"))
+            cmbRfmUsimSigningAlgo.setValue("no algorithm");
+        else
+            cmbRfmUsimSigningAlgo.setValue("as defined in keyset");
         root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().setAuthVerification(cmbRfmUsimAuthVerif.getSelectionModel().getSelectedItem());
         root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().computeMsl();
         txtRfmUsimMslByte.setText(root.getRunSettings().getRfmUsim().getMinimumSecurityLevel().getComputedMsl());

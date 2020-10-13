@@ -680,161 +680,193 @@ public class RfmGsmController {
             // set components accordingly
             if (mslInteger == 0) {
                 chkRfmGsmUseCipher.setSelected(false);
+                cmbRfmGsmCipherAlgo.setValue("no cipher");
                 cmbRfmGsmAuthVerif.getSelectionModel().select("No verification");
                 cmbRfmGsmCounterCheck.getSelectionModel().select("No counter available");
             }
             if (mslInteger == 1) {
                 chkRfmGsmUseCipher.setSelected(false);
+                cmbRfmGsmCipherAlgo.setValue("no cipher");
                 cmbRfmGsmAuthVerif.getSelectionModel().select("Redundancy Check");
                 cmbRfmGsmCounterCheck.getSelectionModel().select("No counter available");
             }
             if (mslInteger == 2) {
                 chkRfmGsmUseCipher.setSelected(false);
+                cmbRfmGsmCipherAlgo.setValue("no cipher");
                 cmbRfmGsmAuthVerif.getSelectionModel().select("Cryptographic Checksum");
                 cmbRfmGsmCounterCheck.getSelectionModel().select("No counter available");
             }
             if (mslInteger == 3) {
                 chkRfmGsmUseCipher.setSelected(false);
+                cmbRfmGsmCipherAlgo.setValue("no cipher");
                 cmbRfmGsmAuthVerif.getSelectionModel().select("Digital Signature");
                 cmbRfmGsmCounterCheck.getSelectionModel().select("No counter available");
             }
             if (mslInteger == 4) {
                 chkRfmGsmUseCipher.setSelected(true);
+                cmbRfmGsmCipherAlgo.setValue("as defined in keyset");
                 cmbRfmGsmAuthVerif.getSelectionModel().select("No verification");
                 cmbRfmGsmCounterCheck.getSelectionModel().select("No counter available");
             }
             if (mslInteger == 5) {
                 chkRfmGsmUseCipher.setSelected(true);
+                cmbRfmGsmCipherAlgo.setValue("as defined in keyset");
                 cmbRfmGsmAuthVerif.getSelectionModel().select("Redundancy Check");
                 cmbRfmGsmCounterCheck.getSelectionModel().select("No counter available");
             }
             if (mslInteger == 6) {
                 chkRfmGsmUseCipher.setSelected(true);
+                cmbRfmGsmCipherAlgo.setValue("as defined in keyset");
                 cmbRfmGsmAuthVerif.getSelectionModel().select("Cryptographic Checksum");
                 cmbRfmGsmCounterCheck.getSelectionModel().select("No counter available");
             }
             if (mslInteger == 7) {
                 chkRfmGsmUseCipher.setSelected(true);
+                cmbRfmGsmCipherAlgo.setValue("as defined in keyset");
                 cmbRfmGsmAuthVerif.getSelectionModel().select("Digital Signature");
                 cmbRfmGsmCounterCheck.getSelectionModel().select("No counter available");
             }
             if (mslInteger == 8) {
                 chkRfmGsmUseCipher.setSelected(false);
+                cmbRfmGsmCipherAlgo.setValue("no cipher");
                 cmbRfmGsmAuthVerif.getSelectionModel().select("No verification");
                 cmbRfmGsmCounterCheck.getSelectionModel().select("Counter available no checking");
             }
             if (mslInteger == 9) {
                 chkRfmGsmUseCipher.setSelected(false);
+                cmbRfmGsmCipherAlgo.setValue("no cipher");
                 cmbRfmGsmAuthVerif.getSelectionModel().select("Redundancy Check");
                 cmbRfmGsmCounterCheck.getSelectionModel().select("Counter available no checking");
             }
             if (mslInteger == 10) {
                 chkRfmGsmUseCipher.setSelected(false);
+                cmbRfmGsmCipherAlgo.setValue("no cipher");
                 cmbRfmGsmAuthVerif.getSelectionModel().select("Cryptographic Checksum");
                 cmbRfmGsmCounterCheck.getSelectionModel().select("Counter available no checking");
             }
             if (mslInteger == 11) {
                 chkRfmGsmUseCipher.setSelected(false);
+                cmbRfmGsmCipherAlgo.setValue("no cipher");
                 cmbRfmGsmAuthVerif.getSelectionModel().select("Digital Signature");
                 cmbRfmGsmCounterCheck.getSelectionModel().select("Counter available no checking");
             }
             if (mslInteger == 12) {
                 chkRfmGsmUseCipher.setSelected(true);
+                cmbRfmGsmCipherAlgo.setValue("as defined in keyset");
                 cmbRfmGsmAuthVerif.getSelectionModel().select("No verification");
                 cmbRfmGsmCounterCheck.getSelectionModel().select("Counter available no checking");
             }
             if (mslInteger == 13) {
                 chkRfmGsmUseCipher.setSelected(true);
+                cmbRfmGsmCipherAlgo.setValue("as defined in keyset");
                 cmbRfmGsmAuthVerif.getSelectionModel().select("Redundancy Check");
                 cmbRfmGsmCounterCheck.getSelectionModel().select("Counter available no checking");
             }
             if (mslInteger == 14) {
                 chkRfmGsmUseCipher.setSelected(true);
+                cmbRfmGsmCipherAlgo.setValue("as defined in keyset");
                 cmbRfmGsmAuthVerif.getSelectionModel().select("Cryptographic Checksum");
                 cmbRfmGsmCounterCheck.getSelectionModel().select("Counter available no checking");
             }
             if (mslInteger == 15) {
                 chkRfmGsmUseCipher.setSelected(true);
+                cmbRfmGsmCipherAlgo.setValue("as defined in keyset");
                 cmbRfmGsmAuthVerif.getSelectionModel().select("Digital Signature");
                 cmbRfmGsmCounterCheck.getSelectionModel().select("Counter available no checking");
             }
             if (mslInteger == 16) {
                 chkRfmGsmUseCipher.setSelected(false);
+                cmbRfmGsmCipherAlgo.setValue("no cipher");
                 cmbRfmGsmAuthVerif.getSelectionModel().select("No verification");
                 cmbRfmGsmCounterCheck.getSelectionModel().select("Counter must be higher");
             }
             if (mslInteger == 17) {
                 chkRfmGsmUseCipher.setSelected(false);
+                cmbRfmGsmCipherAlgo.setValue("no cipher");
                 cmbRfmGsmAuthVerif.getSelectionModel().select("Redundancy Check");
                 cmbRfmGsmCounterCheck.getSelectionModel().select("Counter must be higher");
             }
             if (mslInteger == 18) {
                 chkRfmGsmUseCipher.setSelected(false);
+                cmbRfmGsmCipherAlgo.setValue("no cipher");
                 cmbRfmGsmAuthVerif.getSelectionModel().select("Cryptographic Checksum");
                 cmbRfmGsmCounterCheck.getSelectionModel().select("Counter must be higher");
             }
             if (mslInteger == 19) {
                 chkRfmGsmUseCipher.setSelected(false);
+                cmbRfmGsmCipherAlgo.setValue("no cipher");
                 cmbRfmGsmAuthVerif.getSelectionModel().select("Digital Signature");
                 cmbRfmGsmCounterCheck.getSelectionModel().select("Counter must be higher");
             }
             if (mslInteger == 20) {
                 chkRfmGsmUseCipher.setSelected(true);
+                cmbRfmGsmCipherAlgo.setValue("as defined in keyset");
                 cmbRfmGsmAuthVerif.getSelectionModel().select("No verification");
                 cmbRfmGsmCounterCheck.getSelectionModel().select("Counter must be higher");
             }
             if (mslInteger == 21) {
                 chkRfmGsmUseCipher.setSelected(true);
+                cmbRfmGsmCipherAlgo.setValue("as defined in keyset");
                 cmbRfmGsmAuthVerif.getSelectionModel().select("Redundancy Check");
                 cmbRfmGsmCounterCheck.getSelectionModel().select("Counter must be higher");
             }
             if (mslInteger == 22) {
                 chkRfmGsmUseCipher.setSelected(true);
+                cmbRfmGsmCipherAlgo.setValue("as defined in keyset");
                 cmbRfmGsmAuthVerif.getSelectionModel().select("Cryptographic Checksum");
                 cmbRfmGsmCounterCheck.getSelectionModel().select("Counter must be higher");
             }
             if (mslInteger == 23) {
                 chkRfmGsmUseCipher.setSelected(true);
+                cmbRfmGsmCipherAlgo.setValue("as defined in keyset");
                 cmbRfmGsmAuthVerif.getSelectionModel().select("Digital Signature");
                 cmbRfmGsmCounterCheck.getSelectionModel().select("Counter must be higher");
             }
             if (mslInteger == 24) {
                 chkRfmGsmUseCipher.setSelected(false);
+                cmbRfmGsmCipherAlgo.setValue("no cipher");
                 cmbRfmGsmAuthVerif.getSelectionModel().select("No verification");
                 cmbRfmGsmCounterCheck.getSelectionModel().select("Counter must be one higher");
             }
             if (mslInteger == 25) {
                 chkRfmGsmUseCipher.setSelected(false);
+                cmbRfmGsmCipherAlgo.setValue("no cipher");
                 cmbRfmGsmAuthVerif.getSelectionModel().select("Redundancy Check");
                 cmbRfmGsmCounterCheck.getSelectionModel().select("Counter must be one higher");
             }
             if (mslInteger == 26) {
                 chkRfmGsmUseCipher.setSelected(false);
+                cmbRfmGsmCipherAlgo.setValue("no cipher");
                 cmbRfmGsmAuthVerif.getSelectionModel().select("Cryptographic Checksum");
                 cmbRfmGsmCounterCheck.getSelectionModel().select("Counter must be one higher");
             }
             if (mslInteger == 27) {
                 chkRfmGsmUseCipher.setSelected(false);
+                cmbRfmGsmCipherAlgo.setValue("no cipher");
                 cmbRfmGsmAuthVerif.getSelectionModel().select("Digital Signature");
                 cmbRfmGsmCounterCheck.getSelectionModel().select("Counter must be one higher");
             }
             if (mslInteger == 28) {
                 chkRfmGsmUseCipher.setSelected(true);
+                cmbRfmGsmCipherAlgo.setValue("as defined in keyset");
                 cmbRfmGsmAuthVerif.getSelectionModel().select("No verification");
                 cmbRfmGsmCounterCheck.getSelectionModel().select("Counter must be one higher");
             }
             if (mslInteger == 29) {
                 chkRfmGsmUseCipher.setSelected(true);
+                cmbRfmGsmCipherAlgo.setValue("as defined in keyset");
                 cmbRfmGsmAuthVerif.getSelectionModel().select("Redundancy Check");
                 cmbRfmGsmCounterCheck.getSelectionModel().select("Counter must be one higher");
             }
             if (mslInteger == 30) {
                 chkRfmGsmUseCipher.setSelected(true);
+                cmbRfmGsmCipherAlgo.setValue("as defined in keyset");
                 cmbRfmGsmAuthVerif.getSelectionModel().select("Cryptographic Checksum");
                 cmbRfmGsmCounterCheck.getSelectionModel().select("Counter must be one higher");
             }
             if (mslInteger == 31) {
                 chkRfmGsmUseCipher.setSelected(true);
+                cmbRfmGsmCipherAlgo.setValue("as defined in keyset");
                 cmbRfmGsmAuthVerif.getSelectionModel().select("Digital Signature");
                 cmbRfmGsmCounterCheck.getSelectionModel().select("Counter must be one higher");
             }
@@ -844,12 +876,18 @@ public class RfmGsmController {
     }
 
     @FXML private void handleRfmGsmUseCipherCheck() {
+        if (!chkRfmGsmUseCipher.isSelected()) cmbRfmGsmCipherAlgo.setValue("no cipher");
+        else cmbRfmGsmCipherAlgo.setValue("as defined in keyset");
         root.getRunSettings().getRfmGsm().getMinimumSecurityLevel().setUseCipher(chkRfmGsmUseCipher.isSelected());
         root.getRunSettings().getRfmGsm().getMinimumSecurityLevel().computeMsl();
         txtRfmGsmMslByte.setText(root.getRunSettings().getRfmGsm().getMinimumSecurityLevel().getComputedMsl());
     }
 
     @FXML private void handleRfmGsmAuthVerifSelection() {
+        if (cmbRfmGsmAuthVerif.getSelectionModel().getSelectedItem().equals("No verification"))
+            cmbRfmGsmSigningAlgo.setValue("no algorithm");
+        else
+            cmbRfmGsmSigningAlgo.setValue("as defined in keyset");
         root.getRunSettings().getRfmGsm().getMinimumSecurityLevel().setAuthVerification(cmbRfmGsmAuthVerif.getSelectionModel().getSelectedItem());
         root.getRunSettings().getRfmGsm().getMinimumSecurityLevel().computeMsl();
         txtRfmGsmMslByte.setText(root.getRunSettings().getRfmGsm().getMinimumSecurityLevel().getComputedMsl());

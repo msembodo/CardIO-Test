@@ -311,161 +311,193 @@ public class RamController {
             // set components accordingly
             if (mslInteger == 0) {
                 chkRamUseCipher.setSelected(false);
+                cmbRamCipherAlgo.setValue("no cipher");
                 cmbRamAuthVerif.getSelectionModel().select("No verification");
                 cmbRamCounterCheck.getSelectionModel().select("No counter available");
             }
             if (mslInteger == 1) {
                 chkRamUseCipher.setSelected(false);
+                cmbRamCipherAlgo.setValue("no cipher");
                 cmbRamAuthVerif.getSelectionModel().select("Redundancy Check");
                 cmbRamCounterCheck.getSelectionModel().select("No counter available");
             }
             if (mslInteger == 2) {
                 chkRamUseCipher.setSelected(false);
+                cmbRamCipherAlgo.setValue("no cipher");
                 cmbRamAuthVerif.getSelectionModel().select("Cryptographic Checksum");
                 cmbRamCounterCheck.getSelectionModel().select("No counter available");
             }
             if (mslInteger == 3) {
                 chkRamUseCipher.setSelected(false);
+                cmbRamCipherAlgo.setValue("no cipher");
                 cmbRamAuthVerif.getSelectionModel().select("Digital Signature");
                 cmbRamCounterCheck.getSelectionModel().select("No counter available");
             }
             if (mslInteger == 4) {
                 chkRamUseCipher.setSelected(true);
+                cmbRamCipherAlgo.setValue("as defined in keyset");
                 cmbRamAuthVerif.getSelectionModel().select("No verification");
                 cmbRamCounterCheck.getSelectionModel().select("No counter available");
             }
             if (mslInteger == 5) {
                 chkRamUseCipher.setSelected(true);
+                cmbRamCipherAlgo.setValue("as defined in keyset");
                 cmbRamAuthVerif.getSelectionModel().select("Redundancy Check");
                 cmbRamCounterCheck.getSelectionModel().select("No counter available");
             }
             if (mslInteger == 6) {
                 chkRamUseCipher.setSelected(true);
+                cmbRamCipherAlgo.setValue("as defined in keyset");
                 cmbRamAuthVerif.getSelectionModel().select("Cryptographic Checksum");
                 cmbRamCounterCheck.getSelectionModel().select("No counter available");
             }
             if (mslInteger == 7) {
                 chkRamUseCipher.setSelected(true);
+                cmbRamCipherAlgo.setValue("as defined in keyset");
                 cmbRamAuthVerif.getSelectionModel().select("Digital Signature");
                 cmbRamCounterCheck.getSelectionModel().select("No counter available");
             }
             if (mslInteger == 8) {
                 chkRamUseCipher.setSelected(false);
+                cmbRamCipherAlgo.setValue("no cipher");
                 cmbRamAuthVerif.getSelectionModel().select("No verification");
                 cmbRamCounterCheck.getSelectionModel().select("Counter available no checking");
             }
             if (mslInteger == 9) {
                 chkRamUseCipher.setSelected(false);
+                cmbRamCipherAlgo.setValue("no cipher");
                 cmbRamAuthVerif.getSelectionModel().select("Redundancy Check");
                 cmbRamCounterCheck.getSelectionModel().select("Counter available no checking");
             }
             if (mslInteger == 10) {
                 chkRamUseCipher.setSelected(false);
+                cmbRamCipherAlgo.setValue("no cipher");
                 cmbRamAuthVerif.getSelectionModel().select("Cryptographic Checksum");
                 cmbRamCounterCheck.getSelectionModel().select("Counter available no checking");
             }
             if (mslInteger == 11) {
                 chkRamUseCipher.setSelected(false);
+                cmbRamCipherAlgo.setValue("no cipher");
                 cmbRamAuthVerif.getSelectionModel().select("Digital Signature");
                 cmbRamCounterCheck.getSelectionModel().select("Counter available no checking");
             }
             if (mslInteger == 12) {
                 chkRamUseCipher.setSelected(true);
+                cmbRamCipherAlgo.setValue("as defined in keyset");
                 cmbRamAuthVerif.getSelectionModel().select("No verification");
                 cmbRamCounterCheck.getSelectionModel().select("Counter available no checking");
             }
             if (mslInteger == 13) {
                 chkRamUseCipher.setSelected(true);
+                cmbRamCipherAlgo.setValue("as defined in keyset");
                 cmbRamAuthVerif.getSelectionModel().select("Redundancy Check");
                 cmbRamCounterCheck.getSelectionModel().select("Counter available no checking");
             }
             if (mslInteger == 14) {
                 chkRamUseCipher.setSelected(true);
+                cmbRamCipherAlgo.setValue("as defined in keyset");
                 cmbRamAuthVerif.getSelectionModel().select("Cryptographic Checksum");
                 cmbRamCounterCheck.getSelectionModel().select("Counter available no checking");
             }
             if (mslInteger == 15) {
                 chkRamUseCipher.setSelected(true);
+                cmbRamCipherAlgo.setValue("as defined in keyset");
                 cmbRamAuthVerif.getSelectionModel().select("Digital Signature");
                 cmbRamCounterCheck.getSelectionModel().select("Counter available no checking");
             }
             if (mslInteger == 16) {
                 chkRamUseCipher.setSelected(false);
+                cmbRamCipherAlgo.setValue("no cipher");
                 cmbRamAuthVerif.getSelectionModel().select("No verification");
                 cmbRamCounterCheck.getSelectionModel().select("Counter must be higher");
             }
             if (mslInteger == 17) {
                 chkRamUseCipher.setSelected(false);
+                cmbRamCipherAlgo.setValue("no cipher");
                 cmbRamAuthVerif.getSelectionModel().select("Redundancy Check");
                 cmbRamCounterCheck.getSelectionModel().select("Counter must be higher");
             }
             if (mslInteger == 18) {
                 chkRamUseCipher.setSelected(false);
+                cmbRamCipherAlgo.setValue("no cipher");
                 cmbRamAuthVerif.getSelectionModel().select("Cryptographic Checksum");
                 cmbRamCounterCheck.getSelectionModel().select("Counter must be higher");
             }
             if (mslInteger == 19) {
                 chkRamUseCipher.setSelected(false);
+                cmbRamCipherAlgo.setValue("no cipher");
                 cmbRamAuthVerif.getSelectionModel().select("Digital Signature");
                 cmbRamCounterCheck.getSelectionModel().select("Counter must be higher");
             }
             if (mslInteger == 20) {
                 chkRamUseCipher.setSelected(true);
+                cmbRamCipherAlgo.setValue("as defined in keyset");
                 cmbRamAuthVerif.getSelectionModel().select("No verification");
                 cmbRamCounterCheck.getSelectionModel().select("Counter must be higher");
             }
             if (mslInteger == 21) {
                 chkRamUseCipher.setSelected(true);
+                cmbRamCipherAlgo.setValue("as defined in keyset");
                 cmbRamAuthVerif.getSelectionModel().select("Redundancy Check");
                 cmbRamCounterCheck.getSelectionModel().select("Counter must be higher");
             }
             if (mslInteger == 22) {
                 chkRamUseCipher.setSelected(true);
+                cmbRamCipherAlgo.setValue("as defined in keyset");
                 cmbRamAuthVerif.getSelectionModel().select("Cryptographic Checksum");
                 cmbRamCounterCheck.getSelectionModel().select("Counter must be higher");
             }
             if (mslInteger == 23) {
                 chkRamUseCipher.setSelected(true);
+                cmbRamCipherAlgo.setValue("as defined in keyset");
                 cmbRamAuthVerif.getSelectionModel().select("Digital Signature");
                 cmbRamCounterCheck.getSelectionModel().select("Counter must be higher");
             }
             if (mslInteger == 24) {
                 chkRamUseCipher.setSelected(false);
+                cmbRamCipherAlgo.setValue("no cipher");
                 cmbRamAuthVerif.getSelectionModel().select("No verification");
                 cmbRamCounterCheck.getSelectionModel().select("Counter must be one higher");
             }
             if (mslInteger == 25) {
                 chkRamUseCipher.setSelected(false);
+                cmbRamCipherAlgo.setValue("no cipher");
                 cmbRamAuthVerif.getSelectionModel().select("Redundancy Check");
                 cmbRamCounterCheck.getSelectionModel().select("Counter must be one higher");
             }
             if (mslInteger == 26) {
                 chkRamUseCipher.setSelected(false);
+                cmbRamCipherAlgo.setValue("no cipher");
                 cmbRamAuthVerif.getSelectionModel().select("Cryptographic Checksum");
                 cmbRamCounterCheck.getSelectionModel().select("Counter must be one higher");
             }
             if (mslInteger == 27) {
                 chkRamUseCipher.setSelected(false);
+                cmbRamCipherAlgo.setValue("no cipher");
                 cmbRamAuthVerif.getSelectionModel().select("Digital Signature");
                 cmbRamCounterCheck.getSelectionModel().select("Counter must be one higher");
             }
             if (mslInteger == 28) {
                 chkRamUseCipher.setSelected(true);
+                cmbRamCipherAlgo.setValue("as defined in keyset");
                 cmbRamAuthVerif.getSelectionModel().select("No verification");
                 cmbRamCounterCheck.getSelectionModel().select("Counter must be one higher");
             }
             if (mslInteger == 29) {
                 chkRamUseCipher.setSelected(true);
+                cmbRamCipherAlgo.setValue("as defined in keyset");
                 cmbRamAuthVerif.getSelectionModel().select("Redundancy Check");
                 cmbRamCounterCheck.getSelectionModel().select("Counter must be one higher");
             }
             if (mslInteger == 30) {
                 chkRamUseCipher.setSelected(true);
+                cmbRamCipherAlgo.setValue("as defined in keyset");
                 cmbRamAuthVerif.getSelectionModel().select("Cryptographic Checksum");
                 cmbRamCounterCheck.getSelectionModel().select("Counter must be one higher");
             }
             if (mslInteger == 31) {
                 chkRamUseCipher.setSelected(true);
+                cmbRamCipherAlgo.setValue("as defined in keyset");
                 cmbRamAuthVerif.getSelectionModel().select("Digital Signature");
                 cmbRamCounterCheck.getSelectionModel().select("Counter must be one higher");
             }
@@ -475,15 +507,18 @@ public class RamController {
     }
 
     @FXML private void handleRamUseCipherCheck() {
-        if (chkRamUseCipher.isSelected())
-            root.getRunSettings().getRam().getMinimumSecurityLevel().setUseCipher(true);
-        else
-            root.getRunSettings().getRam().getMinimumSecurityLevel().setUseCipher(false);
+        if (!chkRamUseCipher.isSelected()) cmbRamCipherAlgo.setValue("no cipher");
+        else cmbRamCipherAlgo.setValue("as defined in keyset");
+        root.getRunSettings().getRam().getMinimumSecurityLevel().setUseCipher(chkRamUseCipher.isSelected());
         root.getRunSettings().getRam().getMinimumSecurityLevel().computeMsl();
         txtRamMslByte.setText(root.getRunSettings().getRam().getMinimumSecurityLevel().getComputedMsl());
     }
 
     @FXML private void handleRamAuthVerifSelection() {
+        if (cmbRamAuthVerif.getSelectionModel().getSelectedItem().equals("No verification"))
+            cmbRamSigningAlgo.setValue("no algorithm");
+        else
+            cmbRamSigningAlgo.setValue("as defined in keyset");
         root.getRunSettings().getRam().getMinimumSecurityLevel().setAuthVerification(cmbRamAuthVerif.getSelectionModel().getSelectedItem());
         root.getRunSettings().getRam().getMinimumSecurityLevel().computeMsl();
         txtRamMslByte.setText(root.getRunSettings().getRam().getMinimumSecurityLevel().getComputedMsl());
